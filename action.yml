@@ -1,0 +1,9 @@
+name: 'template name'
+description: 'template description'
+author: 'MeilCli'
+branding:
+  icon: package
+  color: gray-dark
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
