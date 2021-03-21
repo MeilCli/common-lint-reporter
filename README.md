@@ -1,7 +1,7 @@
 # common-lint-reporter
 
 This repository is my GitHub Action Repository template
-
+t
 ## License
 
 MIT License
