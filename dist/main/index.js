@@ -42077,7 +42077,7 @@ var CheckRunReporter = /** @class */ (function () {
             messages.push(failureCount + " failures");
         }
         if (messages.length == 0) {
-            return "lint message does not found";
+            return "lint message is empty";
         }
         return messages.join(" and ") + " found";
     };
@@ -42193,7 +42193,7 @@ var CheckRunReporter = /** @class */ (function () {
         var score = noticeCount * option.conclusionNoticeWeight +
             warningCount * option.conclusionWarningWeight +
             failureCount * option.conclusionFailureWeight;
-        return option.conclusionFailureThreshold < score ? graphql_1.CheckConclusionState.Success : graphql_1.CheckConclusionState.Failure;
+        return score < option.conclusionFailureThreshold ? graphql_1.CheckConclusionState.Success : graphql_1.CheckConclusionState.Failure;
     };
     return CheckRunReporter;
 }());

@@ -106,7 +106,7 @@ export class CheckRunReporter implements Reporter {
             messages.push(`${failureCount} failures`);
         }
         if (messages.length == 0) {
-            return "lint message does not found";
+            return "lint message is empty";
         }
         return `${messages.join(" and ")} found`;
     }
@@ -228,6 +228,6 @@ export class CheckRunReporter implements Reporter {
             noticeCount * option.conclusionNoticeWeight +
             warningCount * option.conclusionWarningWeight +
             failureCount * option.conclusionFailureWeight;
-        return option.conclusionFailureThreshold < score ? CheckConclusionState.Success : CheckConclusionState.Failure;
+        return score < option.conclusionFailureThreshold ? CheckConclusionState.Success : CheckConclusionState.Failure;
     }
 }
