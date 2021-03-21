@@ -18,6 +18,7 @@ jobs:
           name: eslint
       # ToDo: remove and use published version
       - uses: actions/checkout@v2
+      - run: ls
       - name: Transform report file
         uses: ./transformer/eslint/
         with:
