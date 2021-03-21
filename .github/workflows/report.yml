@@ -1,0 +1,28 @@
+name: Report
+
+on:
+  workflow_run:
+    workflows: [CI"]
+    types:
+      - completed
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
+    steps:
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: ci.yml
+          run_id: ${{ github.event.workflow_run.id }}
+          name: eslint
+      - name: Transform report file
+        uses: ./transformer/eslint/
+        with:
+          report_files: |
+            eslint_report.json
+      - name: Report lint result
+        uses: ./
+        with:
+          report_files: |
+            eslint_report.json.transformed

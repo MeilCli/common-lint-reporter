@@ -1,9 +1,47 @@
-name: 'template name'
-description: 'template description'
+name: 'common lint reporter'
+description: 'common lint reporter that can handle various lint report files'
 author: 'MeilCli'
 branding:
-  icon: package
-  color: gray-dark
+  icon: alert-circle
+  color: orange
+inputs:
+  github_token:
+    description: 'github app token, using to read and write repository'
+    required: true
+    default: ${{ github.token }}
+  workspace_path:
+    description: 'workspace path, using to convert relative path from absolute path'
+  repository:
+    description: 'running repository, format: owner/repository'
+  pull_request:
+    description: 'running pull request number'
+  commit_sha:
+    description: 'running commit sha'
+  report_files:
+    description: 'report file glob pattern'
+    required: true
+  report_files_follow_symbolic_links:
+    description: 'report file glob pattern option'
+  report_name:
+    description: 'report name, if multiple report, should be unique name'
+    required: true
+    default: 'Lint report'
+  conclusion_failure_threshold:
+    description: 'threshold of conclution as failure'
+    required: true
+    default: '100'
+  conclusion_failure_weight:
+    description: 'weight of reported failure by lint for conclusion'
+    required: true
+    default: '100'
+  conclusion_warning_weight:
+    description: 'weight of reported warning by lint for conclusion'
+    required: true
+    default: '1'
+  conclusion_notice_weight:
+    description: 'weight of reported notice by lint for conclusion'
+    required: true
+    default: '0'
 runs:
   using: 'node12'
-  main: 'dist/index.js'
+  main: 'dist/main/index.js'

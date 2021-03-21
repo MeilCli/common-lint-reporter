@@ -1,0 +1,5 @@
+mutation UpdateCheckRun($repositoryId: ID!, $checkRunId: ID!, $name: String!, $startedAt: DateTime, $completedAt: DateTime, $conclusion: CheckConclusionState, $status: RequestableCheckStatusState, $output: CheckRunOutput) {
+  updateCheckRun(input: {repositoryId: $repositoryId, checkRunId: $checkRunId, name: $name, startedAt: $startedAt, completedAt: $completedAt, conclusion: $conclusion, status: $status, output: $output}) {
+    clientMutationId
+  }
+}
