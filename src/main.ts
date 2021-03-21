@@ -9,6 +9,7 @@ async function run() {
         const lintResults = await readLintResults(option);
         const reporter = new CheckRunReporter();
         reporter.report(option, lintResults);
+        const a: any = "a";
     } catch (error) {
         core.setFailed(error.message);
     }

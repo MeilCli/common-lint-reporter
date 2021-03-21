@@ -23,6 +23,10 @@ jobs:
         with:
           report_files: |
             eslint_report.json
+      - uses: actions/upload-artifact@v2
+        with:
+          name: eslint_transformed
+          path: eslint_report.json.transformed
       - name: Report lint result
         uses: ./
         with:
