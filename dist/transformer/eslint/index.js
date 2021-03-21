@@ -2687,6 +2687,7 @@ function run() {
                         })];
                 case 1:
                     globber = _f.sent();
+                    core.info("run");
                     _f.label = 2;
                 case 2:
                     _f.trys.push([2, 7, 8, 13]);
@@ -2696,8 +2697,10 @@ function run() {
                 case 4:
                     if (!(_c = _f.sent(), !_c.done)) return [3 /*break*/, 6];
                     path = _c.value;
+                    core.info("path: " + path);
                     lintResults = [];
                     esLintReports = JSON.parse(fs.readFileSync(path, "utf-8"));
+                    core.info("reports: " + esLintReports.length);
                     for (_i = 0, esLintReports_1 = esLintReports; _i < esLintReports_1.length; _i++) {
                         esLintReport = esLintReports_1[_i];
                         for (_d = 0, _e = esLintReport.messages; _d < _e.length; _d++) {
@@ -2715,6 +2718,7 @@ function run() {
                             });
                         }
                     }
+                    core.info("result: " + JSON.stringify(lintResults));
                     fs.writeFileSync(path + ".transformed", JSON.stringify(lintResults));
                     _f.label = 5;
                 case 5: return [3 /*break*/, 3];

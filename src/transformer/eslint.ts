@@ -25,9 +25,12 @@ async function run() {
         const globber = await glob.create(option.reportFiles, {
             followSymbolicLinks: option.reportFilesFollowSymbolicLinks,
         });
+        core.info("run");
         for await (const path of globber.globGenerator()) {
+            core.info(`path: ${path}`);
             const lintResults: LintResult[] = [];
             const esLintReports = JSON.parse(fs.readFileSync(path, "utf-8")) as EsLintReport[];
+            core.info(`reports: ${esLintReports.length}`);
             for (const esLintReport of esLintReports) {
                 for (const message of esLintReport.messages) {
                     const level = message.severity == 1 ? "warning" : "failure";
@@ -43,6 +46,7 @@ async function run() {
                     });
                 }
             }
+            core.info(`result: ${JSON.stringify(lintResults)}`);
             fs.writeFileSync(`${path}.transformed`, JSON.stringify(lintResults));
         }
     } catch (error) {

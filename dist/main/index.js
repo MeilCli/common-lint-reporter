@@ -41809,7 +41809,7 @@ var lint_result_1 = __nccwpck_require__(119);
 var check_run_reporter_1 = __nccwpck_require__(6870);
 function run() {
     return __awaiter(this, void 0, void 0, function () {
-        var option, lintResults, reporter, error_1;
+        var option, lintResults, reporter, a, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -41820,6 +41820,7 @@ function run() {
                     lintResults = _a.sent();
                     reporter = new check_run_reporter_1.CheckRunReporter();
                     reporter.report(option, lintResults);
+                    a = "a";
                     return [3 /*break*/, 3];
                 case 2:
                     error_1 = _a.sent();
