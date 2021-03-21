@@ -18,7 +18,6 @@ jobs:
           workflow: ci.yml
           run_id: ${{ github.event.workflow_run.id }}
           name: eslint
-      - run: ls
       - name: Transform report file
         uses: ./transformer/eslint/
         with:

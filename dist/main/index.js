@@ -42102,7 +42102,7 @@ var CheckRunReporter = /** @class */ (function () {
                 line += "-L" + lintResult.endLine;
             }
             var baseUrl = "https://github.com/" + context.owner() + "/" + context.repository();
-            var link = baseUrl + "/blob/" + context.commitSha + "/" + this.trimPath(context, lintResult.path) + "#" + line;
+            var link = baseUrl + "/blob/" + context.commitSha() + "/" + this.trimPath(context, lintResult.path) + "#" + line;
             result += "### [" + this.trimPath(context, lintResult.path) + " " + line + "](" + link + ")\n";
             result += "- Rule: " + lintResult.rule + "\n";
             result += lintResult.message;
