@@ -16,6 +16,8 @@ jobs:
           workflow: ci.yml
           run_id: ${{ github.event.workflow_run.id }}
           name: eslint
+      # ToDo: remove and use published version
+      - uses: actions/checkout@v2
       - name: Transform report file
         uses: ./transformer/eslint/
         with:
