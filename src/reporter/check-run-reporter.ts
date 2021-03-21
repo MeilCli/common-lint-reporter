@@ -1,5 +1,4 @@
 import * as path from "path";
-import * as core from "@actions/core";
 import { LintResult, LintResultLevel } from "../lint-result";
 import { Option } from "../option";
 import { Reporter } from "../reporter";
@@ -113,11 +112,6 @@ export class CheckRunReporter implements Reporter {
     }
 
     private trimPath(context: GitHubContext, filePath: string): string {
-        core.info("trim");
-        core.info(filePath);
-        core.info(context.workspacePath());
-        core.info(path.sep);
-        core.info(filePath.replace(`${context.workspacePath()}${path.sep}`, ""));
         return filePath.replace(`${context.workspacePath()}${path.sep}`, "");
     }
 

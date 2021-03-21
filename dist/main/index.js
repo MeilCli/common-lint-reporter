@@ -41964,7 +41964,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CheckRunReporter = void 0;
 var path = __importStar(__nccwpck_require__(5622));
-var core = __importStar(__nccwpck_require__(2186));
 var client_1 = __nccwpck_require__(7047);
 var context_1 = __nccwpck_require__(3804);
 var graphql_1 = __nccwpck_require__(6877);
@@ -42084,11 +42083,6 @@ var CheckRunReporter = /** @class */ (function () {
         return messages.join(" and ") + " found";
     };
     CheckRunReporter.prototype.trimPath = function (context, filePath) {
-        core.info("trim");
-        core.info(filePath);
-        core.info(context.workspacePath());
-        core.info(path.sep);
-        core.info(filePath.replace("" + context.workspacePath() + path.sep, ""));
         return filePath.replace("" + context.workspacePath() + path.sep, "");
     };
     CheckRunReporter.prototype.markdownLevelMessage = function (context, lintResults, targetLevel) {
