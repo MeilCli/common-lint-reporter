@@ -12,4 +12,4 @@ inputs:
     description: 'report file glob pattern option'
 runs:
   using: 'node12'
-  main: '../dist/transformer/eslint/index.js'
+  main: '../../dist/transformer/eslint/index.js'
