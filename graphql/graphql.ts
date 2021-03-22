@@ -29468,9 +29468,9 @@ export const GetRepositoryId = gql`
 }
     `;
 export const UpdateCheckRun = gql`
-    mutation UpdateCheckRun($repositoryId: ID!, $checkRunId: ID!, $name: String!, $startedAt: DateTime, $completedAt: DateTime, $conclusion: CheckConclusionState, $status: RequestableCheckStatusState, $output: CheckRunOutput) {
+    mutation UpdateCheckRun($repositoryId: ID!, $checkRunId: ID!, $completedAt: DateTime, $conclusion: CheckConclusionState, $status: RequestableCheckStatusState, $output: CheckRunOutput) {
   updateCheckRun(
-    input: {repositoryId: $repositoryId, checkRunId: $checkRunId, name: $name, startedAt: $startedAt, completedAt: $completedAt, conclusion: $conclusion, status: $status, output: $output}
+    input: {repositoryId: $repositoryId, checkRunId: $checkRunId, completedAt: $completedAt, conclusion: $conclusion, status: $status, output: $output}
   ) {
     clientMutationId
   }
@@ -29544,8 +29544,6 @@ export type GetRepositoryIdQuery = (
 export type UpdateCheckRunMutationVariables = Exact<{
   repositoryId: Scalars['ID'];
   checkRunId: Scalars['ID'];
-  name: Scalars['String'];
-  startedAt?: Maybe<Scalars['DateTime']>;
   completedAt?: Maybe<Scalars['DateTime']>;
   conclusion?: Maybe<CheckConclusionState>;
   status?: Maybe<RequestableCheckStatusState>;
