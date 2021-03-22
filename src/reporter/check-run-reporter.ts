@@ -44,7 +44,6 @@ export class CheckRunReporter implements Reporter {
             await client.updateCheckRun({
                 repositoryId: repositoryId,
                 checkRunId: checkRunId,
-                name: option.reportName,
                 status: RequestableCheckStatusState.InProgress,
                 output: {
                     title: option.reportName,
@@ -59,7 +58,6 @@ export class CheckRunReporter implements Reporter {
         await client.updateCheckRun({
             repositoryId: repositoryId,
             checkRunId: checkRunId,
-            name: option.reportName,
             status: RequestableCheckStatusState.Completed,
             conclusion: this.calculateConclusion(option, lintResults),
             completedAt: new Date().toISOString(),
