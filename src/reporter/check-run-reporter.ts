@@ -1,5 +1,4 @@
 import * as path from "path";
-import * as core from "@actions/core";
 import { LintResult, LintResultLevel } from "../lint-result";
 import { Option } from "../option";
 import { Reporter } from "../reporter";
@@ -53,11 +52,9 @@ export class CheckRunReporter implements Reporter {
                 },
             });
             currentIndex += batchSize;
-            core.info(`batch: ${JSON.stringify(batchedAnnotations)}`);
         }
 
         const annotations = lintResults.slice(currentIndex);
-        core.info(`final: ${JSON.stringify(annotations)}`);
         await client.updateCheckRun({
             repositoryId: repositoryId,
             checkRunId: checkRunId,
@@ -215,7 +212,7 @@ export class CheckRunReporter implements Reporter {
                     endColumn: endColumn,
                 },
                 annotationLevel: level,
-                message: `- Rule: ${lintResult.rule}\n${lintResult.message}`,
+                message: `Rule: ${lintResult.rule}\n${lintResult.message}`,
             });
         }
         return result;
