@@ -137,7 +137,7 @@ export class CheckRunReporter implements Reporter {
             const baseUrl = `https://github.com/${context.owner()}/${context.repository()}`;
             const link = `${baseUrl}/blob/${context.commitSha()}/${this.trimPath(context, lintResult.path)}#${line}`;
             result += `### [${this.trimPath(context, lintResult.path)} ${line}](${link})\n`;
-            result += `- Rule: ${lintResult.rule}\n`;
+            result += `Rule: ${lintResult.rule}\n`;
             result += lintResult.message;
             result += "\n";
         }
