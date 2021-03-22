@@ -41964,7 +41964,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CheckRunReporter = void 0;
 var path = __importStar(__nccwpck_require__(5622));
-var core = __importStar(__nccwpck_require__(2186));
 var client_1 = __nccwpck_require__(7047);
 var context_1 = __nccwpck_require__(3804);
 var graphql_1 = __nccwpck_require__(6877);
@@ -42020,11 +42019,9 @@ var CheckRunReporter = /** @class */ (function () {
                     case 4:
                         _e.sent();
                         currentIndex += batchSize;
-                        core.info("batch: " + JSON.stringify(batchedAnnotations));
                         return [3 /*break*/, 3];
                     case 5:
                         annotations = lintResults.slice(currentIndex);
-                        core.info("final: " + JSON.stringify(annotations));
                         return [4 /*yield*/, client.updateCheckRun({
                                 repositoryId: repositoryId,
                                 checkRunId: checkRunId,
@@ -42183,7 +42180,7 @@ var CheckRunReporter = /** @class */ (function () {
                     endColumn: endColumn,
                 },
                 annotationLevel: level,
-                message: "- Rule: " + lintResult.rule + "\n" + lintResult.message,
+                message: "Rule: " + lintResult.rule + "\n" + lintResult.message,
             });
         }
         return result;
