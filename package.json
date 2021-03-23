@@ -9,6 +9,10 @@
         "pack:main": "ncc build src/main.ts -o dist/main",
         "pack:transformer:eslint": "ncc build src/transformer/eslint.ts -o dist/transformer/eslint",
         "test": "jest",
+        "test:data": "npm run test:data:eslint",
+        "test:data:eslint": "npm run test:data:eslint:report -s || npm run test:data:eslint:replace",
+        "test:data:eslint:report": "eslint --config .eslintrc.data.json --output-file data/eslint.json --format json data/source.ts",
+        "test:data:eslint:replace": "replace-in-files --regex '\\\"[a-zA-Z0-9]+:?((\\\\\\\\|\\/)[a-zA-Z0-9_\\-\\.]+)+\\\"' --replacement '\\\"filepath.txt\\\"' data/eslint.json",
         "lint": "eslint --ext .ts src/",
         "lint:report": "eslint --output-file eslint_report.json --format json --ext .ts src/",
         "codegen": "graphql-codegen --config codegen.yml"
@@ -44,6 +48,7 @@
         "jest-circus": "^26.6.3",
         "prettier": "^2.2.1",
         "react": "^17.0.1",
+        "replace-in-files-cli": "^1.0.0",
         "ts-jest": "^26.5.3",
         "typescript": "^4.2.3"
     },
