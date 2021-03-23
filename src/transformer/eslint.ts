@@ -1,8 +1,7 @@
 import * as core from "@actions/core";
-import * as fs from "fs";
-import * as glob from "@actions/glob";
 import { getOption } from "./option";
 import { LintResult } from "../lint-result";
+import { Transformer } from "./transformer";
 
 interface EsLintReport {
     filePath: string;
@@ -19,32 +18,34 @@ interface EsLintReportMessage {
     endColumn: number;
 }
 
+export class EslintTransformer extends Transformer {
+    parse(body: string): LintResult[] {
+        const lintResults: LintResult[] = [];
+        const esLintReports = JSON.parse(body) as EsLintReport[];
+        for (const esLintReport of esLintReports) {
+            for (const message of esLintReport.messages) {
+                const level = message.severity == 1 ? "warning" : "failure";
+                lintResults.push({
+                    path: esLintReport.filePath,
+                    rule: message.ruleId,
+                    message: message.message,
+                    startLine: message.line,
+                    endLine: message.endLine,
+                    startColumn: message.column,
+                    endColumn: message.endColumn,
+                    level: level,
+                });
+            }
+        }
+        return lintResults;
+    }
+}
+
 async function run() {
     try {
         const option = getOption();
-        const globber = await glob.create(option.reportFiles, {
-            followSymbolicLinks: option.reportFilesFollowSymbolicLinks,
-        });
-        for await (const path of globber.globGenerator()) {
-            const lintResults: LintResult[] = [];
-            const esLintReports = JSON.parse(fs.readFileSync(path, "utf-8")) as EsLintReport[];
-            for (const esLintReport of esLintReports) {
-                for (const message of esLintReport.messages) {
-                    const level = message.severity == 1 ? "warning" : "failure";
-                    lintResults.push({
-                        path: esLintReport.filePath,
-                        rule: message.ruleId,
-                        message: message.message,
-                        startLine: message.line,
-                        endLine: message.endLine,
-                        startColumn: message.column,
-                        endColumn: message.endColumn,
-                        level: level,
-                    });
-                }
-            }
-            fs.writeFileSync(`${path}.transformed`, JSON.stringify(lintResults));
-        }
+        const transformer = new EslintTransformer();
+        await transformer.transform(option);
     } catch (error) {
         core.setFailed(error.message);
     }
