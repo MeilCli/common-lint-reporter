@@ -11,7 +11,7 @@ inputs:
     default: 'common_lint.json'
   report_files_follow_symbolic_links:
     description: 'report file glob pattern option'
-  method:
+  function:
     description: 'the function of this action'
     required: true
   output_path:

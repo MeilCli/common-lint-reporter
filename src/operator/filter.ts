@@ -1,8 +1,8 @@
 import * as core from "@actions/core";
-import { getOption } from "./option";
-import { Operator } from "./operator";
+import { getFunctionalOption } from "./option";
+import { FunctionalOperator } from "./operator";
 
-export class FilterOperator extends Operator {
+export class FilterOperator extends FunctionalOperator {
     createScript(method: string): string {
         return `for(const lintResult of source){ const predicate = (${method})(Object.assign({}, lintResult)); if(predicate) result.push(lintResult); }`;
     }
@@ -10,7 +10,7 @@ export class FilterOperator extends Operator {
 
 async function run() {
     try {
-        const option = getOption();
+        const option = getFunctionalOption();
         const operator = new FilterOperator();
         await operator.operate(option);
     } catch (error) {

@@ -3,15 +3,18 @@ import * as core from "@actions/core";
 export interface Option {
     reportFiles: string;
     reportFilesFollowSymbolicLinks: boolean;
-    method: string;
     outputPath: string;
 }
 
-export function getOption(): Option {
+export interface FunctionalOption extends Option {
+    func: string;
+}
+
+export function getFunctionalOption(): FunctionalOption {
     return {
         reportFiles: getInput("report_files"),
         reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
-        method: getInput("method"),
+        func: getInput("function"),
         outputPath: getInput("output_path"),
     };
 }

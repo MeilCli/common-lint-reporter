@@ -1,5 +1,6 @@
 import { MapOperator } from "../../src/operator/map";
 import { LintResult } from "../../src/lint-result";
+import { FunctionalOption } from "../../src/operator/option";
 
 function createSource(): LintResult[] {
     return [
@@ -74,10 +75,22 @@ function expectResult(result: LintResult[]) {
     } as LintResult);
 }
 
+function createOption(func: string): FunctionalOption {
+    return {
+        reportFiles: "",
+        reportFilesFollowSymbolicLinks: true,
+        func: func,
+        outputPath: "",
+    };
+}
+
 test("executeAsFunctionStyle", () => {
     const operator = new MapOperator();
     const source = createSource();
-    const result = operator.execute(source, "function map(x) { return { ...x, message: `[${x.rule}] ${x.message}` } }");
+    const result = operator.execute(
+        source,
+        createOption("function map(x) { return { ...x, message: `[${x.rule}] ${x.message}` } }")
+    );
 
     expectSource(source);
     expectResult(result);
@@ -86,7 +99,10 @@ test("executeAsFunctionStyle", () => {
 test("executeAsNoNameFunctionStyle", () => {
     const operator = new MapOperator();
     const source = createSource();
-    const result = operator.execute(source, "function (x) { return { ...x, message: `[${x.rule}] ${x.message}` } }");
+    const result = operator.execute(
+        source,
+        createOption("function (x) { return { ...x, message: `[${x.rule}] ${x.message}` } }")
+    );
 
     expectSource(source);
     expectResult(result);
@@ -95,7 +111,10 @@ test("executeAsNoNameFunctionStyle", () => {
 test("executeAsArrowStyle", () => {
     const operator = new MapOperator();
     const source = createSource();
-    const result = operator.execute(source, "x => Object.assign(x, { message: `[${x.rule}] ${x.message}` })");
+    const result = operator.execute(
+        source,
+        createOption("x => Object.assign(x, { message: `[${x.rule}] ${x.message}` })")
+    );
 
     expectSource(source);
     expectResult(result);

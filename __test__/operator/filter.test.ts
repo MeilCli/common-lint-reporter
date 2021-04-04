@@ -1,5 +1,6 @@
 import { FilterOperator } from "../../src/operator/filter";
 import { LintResult } from "../../src/lint-result";
+import { FunctionalOption } from "../../src/operator/option";
 
 function createSource(): LintResult[] {
     return [
@@ -64,10 +65,19 @@ function expectResult(result: LintResult[]) {
     } as LintResult);
 }
 
+function createOption(func: string): FunctionalOption {
+    return {
+        reportFiles: "",
+        reportFilesFollowSymbolicLinks: true,
+        func: func,
+        outputPath: "",
+    };
+}
+
 test("executeAsFunctionStyle", () => {
     const operator = new FilterOperator();
     const source = createSource();
-    const result = operator.execute(source, "function filter(x) { return x.level == 'failure' }");
+    const result = operator.execute(source, createOption("function filter(x) { return x.level == 'failure' }"));
 
     expectSource(source);
     expectResult(result);
@@ -76,7 +86,7 @@ test("executeAsFunctionStyle", () => {
 test("executeAsNoNameFunctionStyle", () => {
     const operator = new FilterOperator();
     const source = createSource();
-    const result = operator.execute(source, "function (x) { return x.level == 'failure' }");
+    const result = operator.execute(source, createOption("function (x) { return x.level == 'failure' }"));
 
     expectSource(source);
     expectResult(result);
@@ -85,7 +95,7 @@ test("executeAsNoNameFunctionStyle", () => {
 test("executeAsArrowStyle", () => {
     const operator = new FilterOperator();
     const source = createSource();
-    const result = operator.execute(source, "x => x.level == 'failure'");
+    const result = operator.execute(source, createOption("x => x.level == 'failure'"));
 
     expectSource(source);
     expectResult(result);
