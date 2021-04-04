@@ -4656,6 +4656,7 @@ function getOption() {
     return {
         reportFiles: getInput("report_files"),
         reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
+        outputPath: getInput("output_path"),
     };
 }
 exports.getOption = getOption;
@@ -4750,7 +4751,7 @@ var Transformer = /** @class */ (function () {
     Transformer.prototype.transform = function (option) {
         var e_1, _a;
         return __awaiter(this, void 0, void 0, function () {
-            var globber, _b, _c, path, lintResults, e_1_1;
+            var globber, result, _b, _c, path, lintResults, e_1_1;
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0: return [4 /*yield*/, glob.create(option.reportFiles, {
@@ -4758,6 +4759,7 @@ var Transformer = /** @class */ (function () {
                         })];
                     case 1:
                         globber = _d.sent();
+                        result = [];
                         _d.label = 2;
                     case 2:
                         _d.trys.push([2, 7, 8, 13]);
@@ -4768,7 +4770,7 @@ var Transformer = /** @class */ (function () {
                         if (!(_c = _d.sent(), !_c.done)) return [3 /*break*/, 6];
                         path = _c.value;
                         lintResults = this.parse(fs.readFileSync(path, "utf-8"));
-                        this.writeFile(path, lintResults);
+                        result.push.apply(result, lintResults);
                         _d.label = 5;
                     case 5: return [3 /*break*/, 3];
                     case 6: return [3 /*break*/, 13];
@@ -4788,13 +4790,15 @@ var Transformer = /** @class */ (function () {
                         if (e_1) throw e_1.error;
                         return [7 /*endfinally*/];
                     case 12: return [7 /*endfinally*/];
-                    case 13: return [2 /*return*/];
+                    case 13:
+                        this.writeFile(option.outputPath, result);
+                        return [2 /*return*/];
                 }
             });
         });
     };
-    Transformer.prototype.writeFile = function (originalPath, lintResults) {
-        fs.writeFileSync(originalPath + ".transformed", JSON.stringify(lintResults));
+    Transformer.prototype.writeFile = function (path, lintResults) {
+        fs.writeFileSync(path, JSON.stringify(lintResults));
     };
     return Transformer;
 }());

@@ -20,6 +20,7 @@ inputs:
   report_files:
     description: 'report file glob pattern'
     required: true
+    default: 'common_lint.json'
   report_files_follow_symbolic_links:
     description: 'report file glob pattern option'
   report_name:

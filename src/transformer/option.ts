@@ -3,12 +3,14 @@ import * as core from "@actions/core";
 export interface Option {
     reportFiles: string;
     reportFilesFollowSymbolicLinks: boolean;
+    outputPath: string;
 }
 
 export function getOption(): Option {
     return {
         reportFiles: getInput("report_files"),
         reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
+        outputPath: getInput("output_path"),
     };
 }
 

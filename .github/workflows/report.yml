@@ -25,6 +25,3 @@ jobs:
             eslint_report.json
       - name: Report lint result
         uses: ./
-        with:
-          report_files: |
-            eslint_report.json.transformed

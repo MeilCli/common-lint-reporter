@@ -4,6 +4,7 @@ export interface Option {
     reportFiles: string;
     reportFilesFollowSymbolicLinks: boolean;
     method: string;
+    outputPath: string;
 }
 
 export function getOption(): Option {
@@ -11,6 +12,7 @@ export function getOption(): Option {
         reportFiles: getInput("report_files"),
         reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
         method: getInput("method"),
+        outputPath: getInput("output_path"),
     };
 }
 

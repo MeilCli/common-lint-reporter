@@ -8,15 +8,17 @@ export abstract class Transformer {
         const globber = await glob.create(option.reportFiles, {
             followSymbolicLinks: option.reportFilesFollowSymbolicLinks,
         });
+        const result: LintResult[] = [];
         for await (const path of globber.globGenerator()) {
             const lintResults = this.parse(fs.readFileSync(path, "utf-8"));
-            this.writeFile(path, lintResults);
+            result.push(...lintResults);
         }
+        this.writeFile(option.outputPath, result);
     }
 
     protected abstract parse(body: string): LintResult[];
 
-    private writeFile(originalPath: string, lintResults: LintResult[]) {
-        fs.writeFileSync(`${originalPath}.transformed`, JSON.stringify(lintResults));
+    private writeFile(path: string, lintResults: LintResult[]) {
+        fs.writeFileSync(path, JSON.stringify(lintResults));
     }
 }

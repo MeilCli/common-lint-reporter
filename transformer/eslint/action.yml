@@ -10,6 +10,10 @@ inputs:
     required: true
   report_files_follow_symbolic_links:
     description: 'report file glob pattern option'
+  output_path:
+    description: 'output path'
+    required: true
+    default: 'common_lint.json'
 runs:
   using: 'node12'
   main: '../../dist/transformer/eslint/index.js'

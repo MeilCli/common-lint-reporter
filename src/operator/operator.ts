@@ -14,11 +14,13 @@ export abstract class Operator {
         const globber = await glob.create(option.reportFiles, {
             followSymbolicLinks: option.reportFilesFollowSymbolicLinks,
         });
+        const result: LintResult[] = [];
         for await (const path of globber.globGenerator()) {
             const lintResults = JSON.parse(fs.readFileSync(path, "utf-8")) as LintResult[];
             const executeResults = this.execute(lintResults, option.method);
-            this.writeFile(path, executeResults);
+            result.push(...executeResults);
         }
+        this.writeFile(option.outputPath, result);
     }
 
     execute(lintResults: LintResult[], method: string): LintResult[] {
@@ -37,7 +39,7 @@ export abstract class Operator {
 
     protected abstract createScript(method: string): string;
 
-    private writeFile(originalPath: string, lintResults: LintResult[]) {
-        fs.writeFileSync(`${originalPath}.transformed`, JSON.stringify(lintResults));
+    private writeFile(path: string, lintResults: LintResult[]) {
+        fs.writeFileSync(path, JSON.stringify(lintResults));
     }
 }

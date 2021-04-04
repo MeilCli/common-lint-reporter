@@ -2797,7 +2797,7 @@ var Operator = /** @class */ (function () {
     Operator.prototype.operate = function (option) {
         var e_1, _a;
         return __awaiter(this, void 0, void 0, function () {
-            var globber, _b, _c, path, lintResults, executeResults, e_1_1;
+            var globber, result, _b, _c, path, lintResults, executeResults, e_1_1;
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0: return [4 /*yield*/, glob.create(option.reportFiles, {
@@ -2805,6 +2805,7 @@ var Operator = /** @class */ (function () {
                         })];
                     case 1:
                         globber = _d.sent();
+                        result = [];
                         _d.label = 2;
                     case 2:
                         _d.trys.push([2, 7, 8, 13]);
@@ -2816,7 +2817,7 @@ var Operator = /** @class */ (function () {
                         path = _c.value;
                         lintResults = JSON.parse(fs.readFileSync(path, "utf-8"));
                         executeResults = this.execute(lintResults, option.method);
-                        this.writeFile(path, executeResults);
+                        result.push.apply(result, executeResults);
                         _d.label = 5;
                     case 5: return [3 /*break*/, 3];
                     case 6: return [3 /*break*/, 13];
@@ -2836,7 +2837,9 @@ var Operator = /** @class */ (function () {
                         if (e_1) throw e_1.error;
                         return [7 /*endfinally*/];
                     case 12: return [7 /*endfinally*/];
-                    case 13: return [2 /*return*/];
+                    case 13:
+                        this.writeFile(option.outputPath, result);
+                        return [2 /*return*/];
                 }
             });
         });
@@ -2853,8 +2856,8 @@ var Operator = /** @class */ (function () {
             result: [],
         };
     };
-    Operator.prototype.writeFile = function (originalPath, lintResults) {
-        fs.writeFileSync(originalPath + ".transformed", JSON.stringify(lintResults));
+    Operator.prototype.writeFile = function (path, lintResults) {
+        fs.writeFileSync(path, JSON.stringify(lintResults));
     };
     return Operator;
 }());
@@ -2895,6 +2898,7 @@ function getOption() {
         reportFiles: getInput("report_files"),
         reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
         method: getInput("method"),
+        outputPath: getInput("output_path"),
     };
 }
 exports.getOption = getOption;
