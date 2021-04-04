@@ -1,0 +1,18 @@
+name: 'map operator of common lint reporter'
+description: 'operator of map report file to common lint report'
+author: 'MeilCli'
+branding:
+  icon: layers
+  color: orange
+inputs:
+  report_files:
+    description: 'report file glob pattern'
+    required: true
+  report_files_follow_symbolic_links:
+    description: 'report file glob pattern option'
+  method:
+    description: 'the function of this action'
+    required: true
+runs:
+  using: 'node12'
+  main: '../../dist/operator/map/index.js'
