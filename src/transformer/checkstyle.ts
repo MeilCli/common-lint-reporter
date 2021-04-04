@@ -68,4 +68,6 @@ async function run() {
     }
 }
 
-run();
+if (process.env.NODE_ENV != "test") {
+    run();
+}
