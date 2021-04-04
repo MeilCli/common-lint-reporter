@@ -1,6 +1,10 @@
 # common-lint-reporter
 
-This repository is my GitHub Action Repository template
+This is generalized lint reporter action
+
+## Usage
+
+ToDo
 
 ## License
 
