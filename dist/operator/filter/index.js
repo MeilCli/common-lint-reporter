@@ -2601,7 +2601,7 @@ function regExpEscape (s) {
 
 /***/ }),
 
-/***/ 193:
+/***/ 929:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -2677,21 +2677,21 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.MapOperator = void 0;
+exports.FilterOperator = void 0;
 var core = __importStar(__nccwpck_require__(186));
 var option_1 = __nccwpck_require__(540);
 var operator_1 = __nccwpck_require__(69);
-var MapOperator = /** @class */ (function (_super) {
-    __extends(MapOperator, _super);
-    function MapOperator() {
+var FilterOperator = /** @class */ (function (_super) {
+    __extends(FilterOperator, _super);
+    function FilterOperator() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    MapOperator.prototype.createScript = function (method) {
-        return "for(const lintResult of source){ const mapped = (" + method + ")(Object.assign({}, lintResult)); result.push(mapped); }";
+    FilterOperator.prototype.createScript = function (method) {
+        return "for(const lintResult of source){ const predicate = (" + method + ")(Object.assign({}, lintResult)); if(predicate) result.push(lintResult); }";
     };
-    return MapOperator;
+    return FilterOperator;
 }(operator_1.Operator));
-exports.MapOperator = MapOperator;
+exports.FilterOperator = FilterOperator;
 function run() {
     return __awaiter(this, void 0, void 0, function () {
         var option, operator, error_1;
@@ -2700,7 +2700,7 @@ function run() {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
                     option = option_1.getOption();
-                    operator = new MapOperator();
+                    operator = new FilterOperator();
                     return [4 /*yield*/, operator.operate(option)];
                 case 1:
                     _a.sent();
@@ -2996,6 +2996,6 @@ module.exports = require("vm");;
 /******/ 	// module exports must be returned from runtime so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	return __nccwpck_require__(193);
+/******/ 	return __nccwpck_require__(929);
 /******/ })()
 ;
