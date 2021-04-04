@@ -1,0 +1,15 @@
+name: 'checkstyle transformer of common lint reporter'
+description: 'transformer of checkstyle report file to common lint report'
+author: 'MeilCli'
+branding:
+  icon: layers
+  color: orange
+inputs:
+  report_files:
+    description: 'report file glob pattern'
+    required: true
+  report_files_follow_symbolic_links:
+    description: 'report file glob pattern option'
+runs:
+  using: 'node12'
+  main: '../../dist/transformer/checkstyle/index.js'
