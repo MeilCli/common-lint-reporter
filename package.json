@@ -4,7 +4,7 @@
     "description": "",
     "main": "lib/src/main.js",
     "scripts": {
-        "build": "tsc && webpack",
+        "build": "tsc",
         "pack": "npm run pack:main && npm run pack:transformer && npm run pack:operator",
         "pack:main": "ncc build src/main.ts -o dist/main",
         "pack:transformer": "npm run pack:transformer:eslint && npm run pack:transformer:checkstyle",
