@@ -16,4 +16,4 @@ inputs:
     default: 'common_lint.json'
 runs:
   using: 'node12'
-  main: '../../dist/transformer/checkstyle/index.js'
+  main: '../../dist_test/transformerCheckstyle.js'

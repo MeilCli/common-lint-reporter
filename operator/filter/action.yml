@@ -20,4 +20,4 @@ inputs:
     default: 'common_lint.json'
 runs:
   using: 'node12'
-  main: '../../dist/operator/filter/index.js'
+  main: '../../dist_test/operatorFilter.js'
