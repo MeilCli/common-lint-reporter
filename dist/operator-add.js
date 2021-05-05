@@ -168,7 +168,7 @@ var AddOperator = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     AddOperator.prototype.createScript = function (method) {
-        return "\nconst add = (x) => {\n    if(x.path !== undefined && x.rule !== undefined && x.message !== undefined) {\n        if(x.level === \"level\" || x.level == \"warning\" || x.level == \"failure\") {\n            result.push(x);\n        }\n    }\n};\n(" + method + ")()";
+        return "\nconst add = (x) => {\n    if(x.path !== undefined && x.rule !== undefined && x.message !== undefined) {\n        if(x.level === \"notice\" || x.level == \"warning\" || x.level == \"failure\") {\n            result.push(x);\n        }\n    }\n};\nresult.push(...source);\n(" + method + ")()";
     };
     return AddOperator;
 }(operator_1.FunctionalOperator));
