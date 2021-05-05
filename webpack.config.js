@@ -11,6 +11,7 @@ module.exports = {
         "operator-map": "./src/operator/map.ts",
         "operator-distinct": "./src/operator/distinct.ts",
         "operator-add": "./src/operator/add.ts",
+        "testing-create": "./src/testing/create.ts",
     },
     output: {
         path: path.resolve(__dirname, "dist"),
