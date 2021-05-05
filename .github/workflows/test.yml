@@ -118,7 +118,7 @@ jobs:
       - uses: ./operator/map
         with:
           function: |
-            (x) => {message: "message: " + x.message, ...x}
+            (x) => Object.assign(x, {message: "message: " + x.message})
       - uses: ./testing/expect
         with:
           expect_data_json: |
