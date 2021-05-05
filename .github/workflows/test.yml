@@ -1,0 +1,63 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  operator-add:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./testing/create
+      - uses: ./operator/add
+        with:
+          function: |
+            () => add({path: "test/path3.txt", rule: "test-rule-ext", message: "hello", level: "notice"})
+      - uses: ./testing/expect
+        with:
+          expect_data_json: |
+            [
+              {
+                "path": "test/path1.txt",
+                "rule": "test-rule1",
+                "message": "test message",
+                "level": "notice",
+                "startLine": undefined,
+                "startColumn": undefined,
+                "endLine": undefined,
+                "endColumn": undefined,
+              },
+              {
+                "path": "test/path1.txt",
+                "rule": "test-rule2",
+                "message": "test message",
+                "level": "warning",
+                "startLine": 1,
+                "startColumn": 10,
+                "endLine": 1,
+                "endColumn": 15,
+              },
+              {
+                "path": "test/path2.txt",
+                "rule": "test-rule2",
+                "message": "test message",
+                "level": "failure",
+                "startLine": 1,
+                "startColumn": 10,
+                "endLine": 1,
+                "endColumn": 15,
+              },
+              {
+                "path": "test/path3.txt",
+                "rule": "test-rule-ext",
+                "message": "hello",
+                "level": "notice",
+                "startLine": undefined,
+                "startColumn": undefined,
+                "endLine": undefined,
+                "endColumn": undefined,
+              },
+            ]
