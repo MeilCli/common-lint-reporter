@@ -2,6 +2,87 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ 2754:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.GitHubContext = exports.githubContext = void 0;
+var github = __importStar(__webpack_require__(8142));
+function githubContext(option) {
+    return new GitHubContext(option);
+}
+exports.githubContext = githubContext;
+var GitHubContext = /** @class */ (function () {
+    function GitHubContext(option) {
+        this.option = option;
+    }
+    GitHubContext.prototype.workspacePath = function () {
+        var _a;
+        if (this.option.workspacePath != null) {
+            return this.option.workspacePath;
+        }
+        return (_a = process.env.GITHUB_WORKSPACE) !== null && _a !== void 0 ? _a : "";
+    };
+    GitHubContext.prototype.owner = function () {
+        if (this.option.repository != null) {
+            return this.option.repository.split("/")[0];
+        }
+        return github.context.repo.owner;
+    };
+    GitHubContext.prototype.repository = function () {
+        if (this.option.repository != null) {
+            return this.option.repository.split("/")[1];
+        }
+        return github.context.repo.repo;
+    };
+    GitHubContext.prototype.pullRequest = function () {
+        if (this.option.pullRequest != null) {
+            return this.option.pullRequest;
+        }
+        if (github.context.payload.pull_request != undefined) {
+            return github.context.payload.pull_request.number;
+        }
+        return null;
+    };
+    GitHubContext.prototype.commitSha = function () {
+        if (this.option.commitSha != null) {
+            return this.option.commitSha;
+        }
+        if (github.context.payload.pull_request != undefined) {
+            return github.context.payload.pull_request.head.sha;
+        }
+        if (github.context.payload.workflow_run != undefined) {
+            return github.context.payload.workflow_run.head_sha;
+        }
+        return github.context.sha;
+    };
+    return GitHubContext;
+}());
+exports.GitHubContext = GitHubContext;
+
+
+/***/ }),
+
 /***/ 8021:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
@@ -207,6 +288,7 @@ exports.FunctionalOperator = exports.Operator = void 0;
 var fs = __importStar(__webpack_require__(5747));
 var glob = __importStar(__webpack_require__(5826));
 var vm = __importStar(__webpack_require__(2184));
+var context_1 = __webpack_require__(2754);
 var Operator = /** @class */ (function () {
     function Operator() {
     }
@@ -260,10 +342,21 @@ var Operator = /** @class */ (function () {
             });
         });
     };
-    Operator.prototype.createContext = function (lintResults) {
+    Operator.prototype.createContext = function (option, lintResults) {
         return {
             source: lintResults,
             result: [],
+            github: this.createGitHubContext(option),
+        };
+    };
+    Operator.prototype.createGitHubContext = function (option) {
+        var github = context_1.githubContext(option);
+        return {
+            workspacePath: github.workspacePath(),
+            owner: github.owner(),
+            repository: github.repository(),
+            pullRequest: github.pullRequest(),
+            commitSha: github.commitSha(),
         };
     };
     Operator.prototype.writeFile = function (path, lintResults) {
@@ -278,7 +371,7 @@ var FunctionalOperator = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     FunctionalOperator.prototype.execute = function (lintResults, option) {
-        var context = this.createContext(lintResults);
+        var context = this.createContext(option, lintResults);
         var script = new vm.Script(this.createScript(option.func));
         script.runInNewContext(context);
         return context.result;
@@ -294,6 +387,17 @@ exports.FunctionalOperator = FunctionalOperator;
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -316,13 +420,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getFunctionalOption = void 0;
 var core = __importStar(__webpack_require__(2225));
+var option_1 = __webpack_require__(8089);
 function getFunctionalOption() {
-    return {
-        reportFiles: getInput("report_files"),
-        reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
-        func: getInput("function"),
-        outputPath: getInput("output_path"),
-    };
+    return __assign({ reportFiles: getInput("report_files"), reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true", func: getInput("function"), outputPath: getInput("output_path") }, option_1.getCommonOption());
 }
 exports.getFunctionalOption = getFunctionalOption;
 function getInput(key) {
@@ -339,6 +439,77 @@ function getInputOrNull(key) {
 
 /***/ }),
 
+/***/ 8089:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getOption = exports.getCommonOption = void 0;
+var core = __importStar(__webpack_require__(2225));
+function getCommonOption() {
+    return {
+        workspacePath: getInputOrNull("workspace_path"),
+        repository: getInputOrNull("repository"),
+        pullRequest: getInputNumberOrNull("pull_request"),
+        commitSha: getInputOrNull("commit_sha"),
+    };
+}
+exports.getCommonOption = getCommonOption;
+function getOption() {
+    return __assign({ githubToken: getInput("github_token"), reportFiles: getInput("report_files"), reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true", reportName: getInput("report_name"), conclusionFailureThreshold: parseInt(getInput("conclusion_failure_threshold")), conclusionFailureWeight: parseInt(getInput("conclusion_failure_weight")), conclusionWarningWeight: parseInt(getInput("conclusion_warning_weight")), conclusionNoticeWeight: parseInt(getInput("conclusion_notice_weight")) }, getCommonOption());
+}
+exports.getOption = getOption;
+function getInput(key) {
+    return core.getInput(key, { required: true });
+}
+function getInputOrNull(key) {
+    var result = core.getInput(key, { required: false });
+    if (result.length == 0) {
+        return null;
+    }
+    return result;
+}
+function getInputNumberOrNull(key) {
+    var value = getInputOrNull(key);
+    if (value == null) {
+        return null;
+    }
+    return parseInt(value);
+}
+
+
+/***/ }),
+
 /***/ 2357:
 /***/ ((module) => {
 
@@ -346,10 +517,38 @@ module.exports = require("assert");;
 
 /***/ }),
 
+/***/ 8614:
+/***/ ((module) => {
+
+module.exports = require("events");;
+
+/***/ }),
+
 /***/ 5747:
 /***/ ((module) => {
 
 module.exports = require("fs");;
+
+/***/ }),
+
+/***/ 8605:
+/***/ ((module) => {
+
+module.exports = require("http");;
+
+/***/ }),
+
+/***/ 7211:
+/***/ ((module) => {
+
+module.exports = require("https");;
+
+/***/ }),
+
+/***/ 1631:
+/***/ ((module) => {
+
+module.exports = require("net");;
 
 /***/ }),
 
@@ -367,10 +566,45 @@ module.exports = require("path");;
 
 /***/ }),
 
+/***/ 2413:
+/***/ ((module) => {
+
+module.exports = require("stream");;
+
+/***/ }),
+
+/***/ 4016:
+/***/ ((module) => {
+
+module.exports = require("tls");;
+
+/***/ }),
+
+/***/ 8835:
+/***/ ((module) => {
+
+module.exports = require("url");;
+
+/***/ }),
+
+/***/ 1669:
+/***/ ((module) => {
+
+module.exports = require("util");;
+
+/***/ }),
+
 /***/ 2184:
 /***/ ((module) => {
 
 module.exports = require("vm");;
+
+/***/ }),
+
+/***/ 8761:
+/***/ ((module) => {
+
+module.exports = require("zlib");;
 
 /***/ })
 
