@@ -443,6 +443,17 @@ run();
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -463,23 +474,19 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getOption = void 0;
+exports.getOption = exports.getCommonOption = void 0;
 var core = __importStar(__webpack_require__(2225));
-function getOption() {
+function getCommonOption() {
     return {
-        githubToken: getInput("github_token"),
         workspacePath: getInputOrNull("workspace_path"),
         repository: getInputOrNull("repository"),
         pullRequest: getInputNumberOrNull("pull_request"),
         commitSha: getInputOrNull("commit_sha"),
-        reportFiles: getInput("report_files"),
-        reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
-        reportName: getInput("report_name"),
-        conclusionFailureThreshold: parseInt(getInput("conclusion_failure_threshold")),
-        conclusionFailureWeight: parseInt(getInput("conclusion_failure_weight")),
-        conclusionWarningWeight: parseInt(getInput("conclusion_warning_weight")),
-        conclusionNoticeWeight: parseInt(getInput("conclusion_notice_weight")),
     };
+}
+exports.getCommonOption = getCommonOption;
+function getOption() {
+    return __assign({ githubToken: getInput("github_token"), reportFiles: getInput("report_files"), reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true", reportName: getInput("report_name"), conclusionFailureThreshold: parseInt(getInput("conclusion_failure_threshold")), conclusionFailureWeight: parseInt(getInput("conclusion_failure_weight")), conclusionWarningWeight: parseInt(getInput("conclusion_warning_weight")), conclusionNoticeWeight: parseInt(getInput("conclusion_notice_weight")) }, getCommonOption());
 }
 exports.getOption = getOption;
 function getInput(key) {

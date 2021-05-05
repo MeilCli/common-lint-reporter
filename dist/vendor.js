@@ -11556,7 +11556,7 @@ const composePaginateRest = Object.assign(paginate, {
     iterator,
 });
 
-const paginatingEndpoints = (/* runtime-dependent pure expression or super */ 179 == __webpack_require__.j ? ([
+const paginatingEndpoints = (/* runtime-dependent pure expression or super */ !/^(622|889)$/.test(__webpack_require__.j) ? ([
     "GET /app/installations",
     "GET /applications/grants",
     "GET /authorizations",
@@ -22608,7 +22608,7 @@ fetch.isRedirect = function (code) {
 // expose Promise
 fetch.Promise = global.Promise;
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((/* runtime-dependent pure expression or super */ 179 == __webpack_require__.j ? (fetch) : null));
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((/* runtime-dependent pure expression or super */ !/^(622|889)$/.test(__webpack_require__.j) ? (fetch) : null));
 
 
 
