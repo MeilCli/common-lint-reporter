@@ -68,7 +68,7 @@ function expectResult(result: LintResult[]) {
 test("executeAsFunctionStyle", () => {
     const operator = new DistinctOperator();
     const source = createSource();
-    const result = operator.execute(source, createOption("function filter(x) { return x.path }"));
+    const result = operator.execute(source, createOption("function distinct(x) { return x.path }"));
 
     expectSource(source);
     expectResult(result);
