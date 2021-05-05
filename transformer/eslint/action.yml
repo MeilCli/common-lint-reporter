@@ -16,4 +16,4 @@ inputs:
     default: 'common_lint.json'
 runs:
   using: 'node12'
-  main: '../../dist_test/transformerEslint.js'
+  main: '../../dist/transformer-eslint.js'

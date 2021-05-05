@@ -20,4 +20,4 @@ inputs:
     default: 'common_lint.json'
 runs:
   using: 'node12'
-  main: '../../dist_test/operatorMap.js'
+  main: '../../dist/operator-map.js'

@@ -5,21 +5,30 @@ module.exports = {
     target: "node",
     entry: {
         main: "./src/main.ts",
-        transformerCheckstyle: "./src/transformer/checkstyle.ts",
-        transformerEslint: "./src/transformer/eslint.ts",
-        operatorFilter: "./src/operator/filter.ts",
-        operatorMap: "./src/operator/map.ts",
+        "transformer-checkstyle": "./src/transformer/checkstyle.ts",
+        "transformer-eslint": "./src/transformer/eslint.ts",
+        "operator-filter": "./src/operator/filter.ts",
+        "operator-map": "./src/operator/map.ts",
     },
     output: {
-        path: path.resolve(__dirname, "dist_test"),
+        path: path.resolve(__dirname, "dist"),
         filename: "[name].js",
     },
     devtool: false,
     optimization: {
         minimize: false,
         splitChunks: {
-            name: "vendor",
             chunks: "all",
+            cacheGroups: {
+                vendor: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: "vendor",
+                },
+                graphql: {
+                    test: /[\\/]graphql[\\/]/,
+                    name: "graphql",
+                },
+            },
         },
     },
     module: {
