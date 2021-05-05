@@ -1,4 +1,4 @@
-import { MockedResponse, MockLink } from "@apollo/react-testing";
+import { MockedResponse, MockLink } from "@apollo/client/testing";
 import { ApolloClient, InMemoryCache, NormalizedCacheObject } from "@apollo/client";
 import {
     GetPullRequestChangedFile,
