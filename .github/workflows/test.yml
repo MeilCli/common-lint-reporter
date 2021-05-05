@@ -130,10 +130,10 @@ jobs:
                 "level": "notice"
               },
               {
-                "path": "test/path2.txt",
+                "path": "test/path1.txt",
                 "rule": "test-rule2",
                 "message": "message: test message",
-                "level": "failure",
+                "level": "warning",
                 "startLine": 1,
                 "startColumn": 10,
                 "endLine": 1,
