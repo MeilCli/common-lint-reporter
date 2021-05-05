@@ -7,11 +7,12 @@ export class AddOperator extends FunctionalOperator {
         return `
 const add = (x) => {
     if(x.path !== undefined && x.rule !== undefined && x.message !== undefined) {
-        if(x.level === "level" || x.level == "warning" || x.level == "failure") {
+        if(x.level === "notice" || x.level == "warning" || x.level == "failure") {
             result.push(x);
         }
     }
 };
+result.push(...source);
 (${method})()`;
     }
 }
