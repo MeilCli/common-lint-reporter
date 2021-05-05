@@ -1,11 +1,23 @@
 import * as core from "@actions/core";
 
-export interface Option {
-    githubToken: string;
+export interface CommonOption {
     workspacePath: string | null;
     repository: string | null;
     pullRequest: number | null;
     commitSha: string | null;
+}
+
+export function getCommonOption(): CommonOption {
+    return {
+        workspacePath: getInputOrNull("workspace_path"),
+        repository: getInputOrNull("repository"),
+        pullRequest: getInputNumberOrNull("pull_request"),
+        commitSha: getInputOrNull("commit_sha"),
+    };
+}
+
+export interface Option extends CommonOption {
+    githubToken: string;
     reportFiles: string;
     reportFilesFollowSymbolicLinks: boolean;
     reportName: string;
@@ -18,10 +30,6 @@ export interface Option {
 export function getOption(): Option {
     return {
         githubToken: getInput("github_token"),
-        workspacePath: getInputOrNull("workspace_path"),
-        repository: getInputOrNull("repository"),
-        pullRequest: getInputNumberOrNull("pull_request"),
-        commitSha: getInputOrNull("commit_sha"),
         reportFiles: getInput("report_files"),
         reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
         reportName: getInput("report_name"),
@@ -29,6 +37,7 @@ export function getOption(): Option {
         conclusionFailureWeight: parseInt(getInput("conclusion_failure_weight")),
         conclusionWarningWeight: parseInt(getInput("conclusion_warning_weight")),
         conclusionNoticeWeight: parseInt(getInput("conclusion_notice_weight")),
+        ...getCommonOption(),
     };
 }
 

@@ -1,12 +1,13 @@
 import * as core from "@actions/core";
+import { CommonOption, getCommonOption } from "../option";
 
-export interface Option {
+export interface OperatorOption extends CommonOption {
     reportFiles: string;
     reportFilesFollowSymbolicLinks: boolean;
     outputPath: string;
 }
 
-export interface FunctionalOption extends Option {
+export interface FunctionalOption extends OperatorOption {
     func: string;
 }
 
@@ -16,6 +17,7 @@ export function getFunctionalOption(): FunctionalOption {
         reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
         func: getInput("function"),
         outputPath: getInput("output_path"),
+        ...getCommonOption(),
     };
 }
 

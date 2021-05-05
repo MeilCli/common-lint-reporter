@@ -5,6 +5,14 @@ branding:
   icon: layers
   color: orange
 inputs:
+  workspace_path:
+    description: 'workspace path, using to convert relative path from absolute path'
+  repository:
+    description: 'running repository, format: owner/repository'
+  pull_request:
+    description: 'running pull request number'
+  commit_sha:
+    description: 'running commit sha'
   report_files:
     description: 'report file glob pattern'
     required: true

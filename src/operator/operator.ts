@@ -1,15 +1,25 @@
 import * as fs from "fs";
 import * as glob from "@actions/glob";
 import * as vm from "vm";
-import { Option, FunctionalOption } from "./option";
+import { OperatorOption, FunctionalOption } from "./option";
 import { LintResult } from "../lint-result";
+import { githubContext } from "../github/context";
 
 interface Context {
     source: LintResult[];
     result: LintResult[];
+    github: GitHubContext;
 }
 
-export abstract class Operator<TOption extends Option> {
+interface GitHubContext {
+    workspacePath: string;
+    owner: string;
+    repository: string;
+    pullRequest: number | null;
+    commitSha: string;
+}
+
+export abstract class Operator<TOption extends OperatorOption> {
     async operate(option: TOption): Promise<void> {
         const globber = await glob.create(option.reportFiles, {
             followSymbolicLinks: option.reportFilesFollowSymbolicLinks,
@@ -25,10 +35,22 @@ export abstract class Operator<TOption extends Option> {
 
     public abstract execute(lintResults: LintResult[], option: TOption): LintResult[];
 
-    protected createContext(lintResults: LintResult[]): Context {
+    protected createContext(option: TOption, lintResults: LintResult[]): Context {
         return {
             source: lintResults,
             result: [],
+            github: this.createGitHubContext(option),
+        };
+    }
+
+    private createGitHubContext(option: TOption): GitHubContext {
+        const github = githubContext(option);
+        return {
+            workspacePath: github.workspacePath(),
+            owner: github.owner(),
+            repository: github.repository(),
+            pullRequest: github.pullRequest(),
+            commitSha: github.commitSha(),
         };
     }
 
@@ -39,7 +61,7 @@ export abstract class Operator<TOption extends Option> {
 
 export abstract class FunctionalOperator extends Operator<FunctionalOption> {
     execute(lintResults: LintResult[], option: FunctionalOption): LintResult[] {
-        const context = this.createContext(lintResults);
+        const context = this.createContext(option, lintResults);
         const script = new vm.Script(this.createScript(option.func));
         script.runInNewContext(context);
         return context.result;

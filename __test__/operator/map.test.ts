@@ -1,6 +1,6 @@
 import { MapOperator } from "../../src/operator/map";
 import { LintResult } from "../../src/lint-result";
-import { FunctionalOption } from "../../src/operator/option";
+import { createOption } from "./functional-option.test";
 
 function createSource(): LintResult[] {
     return [
@@ -73,15 +73,6 @@ function expectResult(result: LintResult[]) {
         endColumn: 20,
         level: "warning",
     } as LintResult);
-}
-
-function createOption(func: string): FunctionalOption {
-    return {
-        reportFiles: "",
-        reportFilesFollowSymbolicLinks: true,
-        func: func,
-        outputPath: "",
-    };
 }
 
 test("executeAsFunctionStyle", () => {

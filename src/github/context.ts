@@ -1,12 +1,12 @@
 import * as github from "@actions/github";
-import { Option } from "../option";
+import { CommonOption } from "../option";
 
-export function githubContext(option: Option): GitHubContext {
+export function githubContext(option: CommonOption): GitHubContext {
     return new GitHubContext(option);
 }
 
 export class GitHubContext {
-    constructor(private readonly option: Option) {}
+    constructor(private readonly option: CommonOption) {}
 
     workspacePath(): string {
         if (this.option.workspacePath != null) {
