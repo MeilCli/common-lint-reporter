@@ -9,8 +9,8 @@ module.exports = {
         "transformer-eslint": "./src/transformer/eslint.ts",
         "operator-filter": "./src/operator/filter.ts",
         "operator-map": "./src/operator/map.ts",
-        "operator-distinct": "./src/operaor/distinct.ts",
-        "operator-add": "./src/operaor/add.ts",
+        "operator-distinct": "./src/operator/distinct.ts",
+        "operator-add": "./src/operator/add.ts",
     },
     output: {
         path: path.resolve(__dirname, "dist"),
