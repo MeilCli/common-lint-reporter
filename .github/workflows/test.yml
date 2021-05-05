@@ -53,3 +53,100 @@ jobs:
                 "level": "notice"
               }
             ]
+
+  operator-filter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./testing/create
+      - uses: ./operator/filter
+        with:
+          function: |
+            (x) => x.path != "test/path1.txt"
+      - uses: ./testing/expect
+        with:
+          expect_data_json: |
+            [
+              {
+                "path": "test/path2.txt",
+                "rule": "test-rule2",
+                "message": "test message",
+                "level": "failure",
+                "startLine": 1,
+                "startColumn": 10,
+                "endLine": 1,
+                "endColumn": 15
+              }
+            ]
+
+  operator-distinct:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./testing/create
+      - uses: ./operator/distinct
+        with:
+          function: |
+            (x) => x.path
+      - uses: ./testing/expect
+        with:
+          expect_data_json: |
+            [
+              {
+                "path": "test/path1.txt",
+                "rule": "test-rule1",
+                "message": "test message",
+                "level": "notice"
+              },
+              {
+                "path": "test/path2.txt",
+                "rule": "test-rule2",
+                "message": "test message",
+                "level": "failure",
+                "startLine": 1,
+                "startColumn": 10,
+                "endLine": 1,
+                "endColumn": 15
+              }
+            ]
+
+  operator-map:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./testing/create
+      - uses: ./operator/map
+        with:
+          function: |
+            (x) => {message: "message: " + x.message, ...x}
+      - uses: ./testing/expect
+        with:
+          expect_data_json: |
+            [
+              {
+                "path": "test/path1.txt",
+                "rule": "test-rule1",
+                "message": "message: test message",
+                "level": "notice"
+              },
+              {
+                "path": "test/path2.txt",
+                "rule": "test-rule2",
+                "message": "message: test message",
+                "level": "failure",
+                "startLine": 1,
+                "startColumn": 10,
+                "endLine": 1,
+                "endColumn": 15
+              },
+              {
+                "path": "test/path2.txt",
+                "rule": "test-rule2",
+                "message": "message: test message",
+                "level": "failure",
+                "startLine": 1,
+                "startColumn": 10,
+                "endLine": 1,
+                "endColumn": 15
+              }
+            ]
