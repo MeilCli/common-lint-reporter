@@ -24,11 +24,7 @@ jobs:
                 "path": "test/path1.txt",
                 "rule": "test-rule1",
                 "message": "test message",
-                "level": "notice",
-                "startLine": undefined,
-                "startColumn": undefined,
-                "endLine": undefined,
-                "endColumn": undefined,
+                "level": "notice"
               },
               {
                 "path": "test/path1.txt",
@@ -38,7 +34,7 @@ jobs:
                 "startLine": 1,
                 "startColumn": 10,
                 "endLine": 1,
-                "endColumn": 15,
+                "endColumn": 15
               },
               {
                 "path": "test/path2.txt",
@@ -48,16 +44,12 @@ jobs:
                 "startLine": 1,
                 "startColumn": 10,
                 "endLine": 1,
-                "endColumn": 15,
+                "endColumn": 15
               },
               {
                 "path": "test/path3.txt",
                 "rule": "test-rule-ext",
                 "message": "hello",
-                "level": "notice",
-                "startLine": undefined,
-                "startColumn": undefined,
-                "endLine": undefined,
-                "endColumn": undefined,
-              },
+                "level": "notice"
+              }
             ]
