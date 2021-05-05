@@ -1,0 +1,19 @@
+name: 'testing tool of common lint reporter'
+description: 'testing of expect report file to common lint report'
+author: 'MeilCli'
+branding:
+  icon: layers
+  color: orange
+inputs:
+  report_files:
+    description: 'report file glob pattern'
+    required: true
+    default: 'common_lint.json'
+  report_files_follow_symbolic_links:
+    description: 'report file glob pattern option'
+  expect_data_json:
+    description: 'expect lint results, json array'
+    required: true
+runs:
+  using: 'node12'
+  main: '../../dist/testing-expect.js'
