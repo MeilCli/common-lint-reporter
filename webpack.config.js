@@ -10,6 +10,7 @@ module.exports = {
         "operator-filter": "./src/operator/filter.ts",
         "operator-map": "./src/operator/map.ts",
         "operator-distinct": "./src/operaor/distinct.ts",
+        "operator-add": "./src/operaor/add.ts",
     },
     output: {
         path: path.resolve(__dirname, "dist"),

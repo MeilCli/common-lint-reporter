@@ -1,0 +1,31 @@
+name: 'add operator of common lint reporter'
+description: 'operator of add report file to common lint report'
+author: 'MeilCli'
+branding:
+  icon: layers
+  color: orange
+inputs:
+  workspace_path:
+    description: 'workspace path, using to convert relative path from absolute path'
+  repository:
+    description: 'running repository, format: owner/repository'
+  pull_request:
+    description: 'running pull request number'
+  commit_sha:
+    description: 'running commit sha'
+  report_files:
+    description: 'report file glob pattern'
+    required: true
+    default: 'common_lint.json'
+  report_files_follow_symbolic_links:
+    description: 'report file glob pattern option'
+  function:
+    description: 'the function of this action'
+    required: true
+  output_path:
+    description: 'output path'
+    required: true
+    default: 'common_lint.json'
+runs:
+  using: 'node12'
+  main: '../../dist/operator-add.js'
