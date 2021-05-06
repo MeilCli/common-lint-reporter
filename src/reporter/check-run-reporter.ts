@@ -4,6 +4,7 @@ import { Option } from "../option";
 import { Reporter } from "../reporter";
 import { githubClient } from "../github/client";
 import { GitHubContext, githubContext } from "../github/context";
+import { getCommitStatusAndCheckRunWithPaging } from "../github/paging";
 import {
     RequestableCheckStatusState,
     CheckAnnotationData,
@@ -22,15 +23,35 @@ export class CheckRunReporter implements Reporter {
             throw Error("not found repository");
         }
 
-        const checkRunId = (
-            await client.createCheckRun({
+        const statusAndCheckRuns = await getCommitStatusAndCheckRunWithPaging(client, {
+            owner: context.owner(),
+            name: context.repository(),
+            commitSha: context.commitSha(),
+        });
+        const foundSameCheckRun = statusAndCheckRuns.find(
+            (x) => x.__typename == "CheckRun" && x.name == option.reportName
+        );
+
+        if (foundSameCheckRun != undefined) {
+            await client.updateCheckRun({
                 repositoryId: repositoryId,
-                headSha: context.commitSha(),
-                name: option.reportName,
-                startedAt: new Date().toISOString(),
+                checkRunId: foundSameCheckRun.id,
                 status: RequestableCheckStatusState.InProgress,
-            })
-        )?.createCheckRun?.checkRun?.id;
+            });
+        }
+
+        const checkRunId =
+            foundSameCheckRun == undefined
+                ? (
+                      await client.createCheckRun({
+                          repositoryId: repositoryId,
+                          headSha: context.commitSha(),
+                          name: option.reportName,
+                          startedAt: new Date().toISOString(),
+                          status: RequestableCheckStatusState.InProgress,
+                      })
+                  )?.createCheckRun?.checkRun?.id
+                : foundSameCheckRun.id;
         if (checkRunId == undefined) {
             throw Error("cannot create check-run");
         }
