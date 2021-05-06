@@ -29548,6 +29548,37 @@ export const CreateCheckRun = gql`
   }
 }
     `;
+export const GetCommitStatusAndCheckRun = gql`
+    query GetCommitStatusAndCheckRun($owner: String!, $name: String!, $commitSha: GitObjectID!, $after: String) {
+  repository(owner: $owner, name: $name) {
+    object(oid: $commitSha) {
+      ... on Commit {
+        statusCheckRollup {
+          contexts(first: 100, after: $after) {
+            pageInfo {
+              hasNextPage
+              endCursor
+            }
+            nodes {
+              __typename
+              ... on StatusContext {
+                id
+                state
+                context
+              }
+              ... on CheckRun {
+                id
+                name
+                status
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
 export const GetPullRequestChangedFile = gql`
     query GetPullRequestChangedFile($owner: String!, $name: String!, $pull_request: Int!, $after: String) {
   repository(owner: $owner, name: $name) {
@@ -29601,6 +29632,40 @@ export type CreateCheckRunMutation = (
       { __typename?: 'CheckRun' }
       & Pick<CheckRun, 'id'>
     )> }
+  )> }
+);
+
+export type GetCommitStatusAndCheckRunQueryVariables = Exact<{
+  owner: Scalars['String'];
+  name: Scalars['String'];
+  commitSha: Scalars['GitObjectID'];
+  after?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetCommitStatusAndCheckRunQuery = (
+  { __typename?: 'Query' }
+  & { repository?: Maybe<(
+    { __typename?: 'Repository' }
+    & { object?: Maybe<{ __typename?: 'Blob' } | (
+      { __typename?: 'Commit' }
+      & { statusCheckRollup?: Maybe<(
+        { __typename?: 'StatusCheckRollup' }
+        & { contexts: (
+          { __typename?: 'StatusCheckRollupContextConnection' }
+          & { pageInfo: (
+            { __typename?: 'PageInfo' }
+            & Pick<PageInfo, 'hasNextPage' | 'endCursor'>
+          ), nodes?: Maybe<Array<Maybe<(
+            { __typename: 'CheckRun' }
+            & Pick<CheckRun, 'id' | 'name' | 'status'>
+          ) | (
+            { __typename: 'StatusContext' }
+            & Pick<StatusContext, 'id' | 'state' | 'context'>
+          )>>> }
+        ) }
+      )> }
+    ) | { __typename?: 'Tag' } | { __typename?: 'Tree' }> }
   )> }
 );
 

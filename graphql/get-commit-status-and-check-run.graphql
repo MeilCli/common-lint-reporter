@@ -1,0 +1,29 @@
+query GetCommitStatusAndCheckRun($owner: String!, $name: String!, $commitSha: GitObjectID!, $after: String) {
+    repository(owner: $owner, name: $name) {
+        object(oid: $commitSha) {
+            ... on Commit {
+                statusCheckRollup {
+                    contexts(first: 100, after: $after) {
+                        pageInfo {
+                            hasNextPage
+                            endCursor
+                        }
+                        nodes {
+                            __typename
+                            ... on StatusContext {
+                                id
+                                state
+                                context
+                            }
+                            ... on CheckRun {
+                                id
+                                name
+                                status
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

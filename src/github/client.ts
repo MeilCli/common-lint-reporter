@@ -14,6 +14,9 @@ import {
     UpdateCheckRun,
     UpdateCheckRunMutation,
     UpdateCheckRunMutationVariables,
+    GetCommitStatusAndCheckRun,
+    GetCommitStatusAndCheckRunQuery,
+    GetCommitStatusAndCheckRunQueryVariables,
 } from "../../graphql/graphql";
 
 export function githubClient(option: Option): GitHubClient {
@@ -65,6 +68,16 @@ export class GitHubClient {
     ): Promise<UpdateCheckRunMutation | null | undefined> {
         const result = await this.client.mutate<UpdateCheckRunMutation>({
             mutation: UpdateCheckRun,
+            variables: variables,
+        });
+        return result.data;
+    }
+
+    async getCommitStatusAndCheckRun(
+        variables: GetCommitStatusAndCheckRunQueryVariables
+    ): Promise<GetCommitStatusAndCheckRunQuery> {
+        const result = await this.client.query<GetCommitStatusAndCheckRunQuery>({
+            query: GetCommitStatusAndCheckRun,
             variables: variables,
         });
         return result.data;
