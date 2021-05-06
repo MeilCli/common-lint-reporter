@@ -5,7 +5,6 @@ import { CheckRunReporter } from "./reporter/check-run-reporter";
 
 async function run() {
     try {
-        core.info("test dist");
         const option = getOption();
         const lintResults = await readLintResults(option);
         const reporter = new CheckRunReporter();
