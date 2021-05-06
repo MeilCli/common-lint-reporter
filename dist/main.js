@@ -129,6 +129,22 @@ var GitHubClient = /** @class */ (function () {
             });
         });
     };
+    GitHubClient.prototype.getCommitStatusAndCheckRun = function (variables) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.client.query({
+                            query: graphql_1.GetCommitStatusAndCheckRun,
+                            variables: variables,
+                        })];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, result.data];
+                }
+            });
+        });
+    };
     return GitHubClient;
 }());
 exports.GitHubClient = GitHubClient;
@@ -213,6 +229,185 @@ var GitHubContext = /** @class */ (function () {
     return GitHubContext;
 }());
 exports.GitHubContext = GitHubContext;
+
+
+/***/ }),
+
+/***/ 9639:
+/***/ (function(__unused_webpack_module, exports) {
+
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getCommitStatusAndCheckRunWithPaging = exports.getPullRequestChangedFileWithPaging = void 0;
+// gurad for infinity loop
+var maxLoop = 100;
+function getPullRequestChangedFileWithPaging(client, variables) {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+    return __awaiter(this, void 0, void 0, function () {
+        var result, response, pageInfo, _i, _o, node, loopCount, _p, _q, node;
+        return __generator(this, function (_r) {
+            switch (_r.label) {
+                case 0:
+                    result = [];
+                    return [4 /*yield*/, client.getPullRequestChangedFile(variables)];
+                case 1:
+                    response = _r.sent();
+                    pageInfo = (_c = (_b = (_a = response.repository) === null || _a === void 0 ? void 0 : _a.pullRequest) === null || _b === void 0 ? void 0 : _b.files) === null || _c === void 0 ? void 0 : _c.pageInfo;
+                    if (((_f = (_e = (_d = response.repository) === null || _d === void 0 ? void 0 : _d.pullRequest) === null || _e === void 0 ? void 0 : _e.files) === null || _f === void 0 ? void 0 : _f.nodes) == null ||
+                        response.repository.pullRequest.files.nodes == undefined) {
+                        return [2 /*return*/, result];
+                    }
+                    for (_i = 0, _o = response.repository.pullRequest.files.nodes; _i < _o.length; _i++) {
+                        node = _o[_i];
+                        if (node == null || node == undefined) {
+                            continue;
+                        }
+                        result.push(node);
+                    }
+                    loopCount = 0;
+                    _r.label = 2;
+                case 2:
+                    if (!(pageInfo != null &&
+                        pageInfo != undefined &&
+                        pageInfo.hasNextPage &&
+                        pageInfo.endCursor != null &&
+                        pageInfo.endCursor != undefined)) return [3 /*break*/, 4];
+                    loopCount += 1;
+                    return [4 /*yield*/, client.getPullRequestChangedFile(__assign(__assign({}, variables), { after: pageInfo.endCursor }))];
+                case 3:
+                    response = _r.sent();
+                    pageInfo = (_j = (_h = (_g = response.repository) === null || _g === void 0 ? void 0 : _g.pullRequest) === null || _h === void 0 ? void 0 : _h.files) === null || _j === void 0 ? void 0 : _j.pageInfo;
+                    if (((_m = (_l = (_k = response.repository) === null || _k === void 0 ? void 0 : _k.pullRequest) === null || _l === void 0 ? void 0 : _l.files) === null || _m === void 0 ? void 0 : _m.nodes) == null ||
+                        response.repository.pullRequest.files.nodes == undefined) {
+                        return [2 /*return*/, result];
+                    }
+                    for (_p = 0, _q = response.repository.pullRequest.files.nodes; _p < _q.length; _p++) {
+                        node = _q[_p];
+                        if (node == null || node == undefined) {
+                            continue;
+                        }
+                        result.push(node);
+                    }
+                    if (maxLoop <= loopCount) {
+                        throw Error("infinity loop detected");
+                    }
+                    return [3 /*break*/, 2];
+                case 4: return [2 /*return*/, result];
+            }
+        });
+    });
+}
+exports.getPullRequestChangedFileWithPaging = getPullRequestChangedFileWithPaging;
+function getCommitStatusAndCheckRunWithPaging(client, variables) {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
+    return __awaiter(this, void 0, void 0, function () {
+        var result, response, pageInfo, _i, _r, node, loopCount, _s, _t, node;
+        return __generator(this, function (_u) {
+            switch (_u.label) {
+                case 0:
+                    result = [];
+                    return [4 /*yield*/, client.getCommitStatusAndCheckRun(variables)];
+                case 1:
+                    response = _u.sent();
+                    if (((_b = (_a = response.repository) === null || _a === void 0 ? void 0 : _a.object) === null || _b === void 0 ? void 0 : _b.__typename) != "Commit") {
+                        return [2 /*return*/, result];
+                    }
+                    pageInfo = (_d = (_c = response.repository) === null || _c === void 0 ? void 0 : _c.object.statusCheckRollup) === null || _d === void 0 ? void 0 : _d.contexts.pageInfo;
+                    if (((_e = response.repository.object.statusCheckRollup) === null || _e === void 0 ? void 0 : _e.contexts.nodes) == null ||
+                        response.repository.object.statusCheckRollup.contexts.nodes == undefined) {
+                        return [2 /*return*/, result];
+                    }
+                    for (_i = 0, _r = response.repository.object.statusCheckRollup.contexts.nodes; _i < _r.length; _i++) {
+                        node = _r[_i];
+                        if (node == null || node == undefined) {
+                            continue;
+                        }
+                        result.push(node);
+                    }
+                    loopCount = 0;
+                    _u.label = 2;
+                case 2:
+                    if (!(pageInfo != null &&
+                        pageInfo != undefined &&
+                        pageInfo.hasNextPage &&
+                        pageInfo.endCursor != null &&
+                        pageInfo.endCursor != undefined)) return [3 /*break*/, 4];
+                    loopCount += 1;
+                    return [4 /*yield*/, client.getCommitStatusAndCheckRun(__assign(__assign({}, variables), { after: pageInfo.endCursor }))];
+                case 3:
+                    response = _u.sent();
+                    if (((_g = (_f = response.repository) === null || _f === void 0 ? void 0 : _f.object) === null || _g === void 0 ? void 0 : _g.__typename) != "Commit") {
+                        return [2 /*return*/, result];
+                    }
+                    pageInfo = (_j = (_h = response.repository) === null || _h === void 0 ? void 0 : _h.object.statusCheckRollup) === null || _j === void 0 ? void 0 : _j.contexts.pageInfo;
+                    if (((_l = (_k = response.repository) === null || _k === void 0 ? void 0 : _k.object.statusCheckRollup) === null || _l === void 0 ? void 0 : _l.contexts.nodes) == null ||
+                        ((_o = (_m = response.repository) === null || _m === void 0 ? void 0 : _m.object.statusCheckRollup) === null || _o === void 0 ? void 0 : _o.contexts.nodes) == undefined) {
+                        return [2 /*return*/, result];
+                    }
+                    for (_s = 0, _t = (_q = (_p = response.repository) === null || _p === void 0 ? void 0 : _p.object.statusCheckRollup) === null || _q === void 0 ? void 0 : _q.contexts.nodes; _s < _t.length; _s++) {
+                        node = _t[_s];
+                        if (node == null || node == undefined) {
+                            continue;
+                        }
+                        result.push(node);
+                    }
+                    if (maxLoop <= loopCount) {
+                        throw Error("infinity loop detected");
+                    }
+                    return [3 /*break*/, 2];
+                case 4: return [2 /*return*/, result];
+            }
+        });
+    });
+}
+exports.getCommitStatusAndCheckRunWithPaging = getCommitStatusAndCheckRunWithPaging;
 
 
 /***/ }),
@@ -574,6 +769,7 @@ exports.CheckRunReporter = void 0;
 var path = __importStar(__webpack_require__(5622));
 var client_1 = __webpack_require__(9330);
 var context_1 = __webpack_require__(2754);
+var paging_1 = __webpack_require__(9639);
 var graphql_1 = __webpack_require__(1973);
 var CheckRunReporter = /** @class */ (function () {
     function CheckRunReporter() {
@@ -581,19 +777,38 @@ var CheckRunReporter = /** @class */ (function () {
     CheckRunReporter.prototype.report = function (option, lintResults) {
         var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function () {
-            var client, context, repositoryId, checkRunId, batchSize, currentIndex, batchNumber, surmmary, batchedAnnotations, annotations;
-            return __generator(this, function (_e) {
-                switch (_e.label) {
+            var client, context, repositoryId, statusAndCheckRuns, foundSameCheckRun, checkRunId, _e, batchSize, currentIndex, batchNumber, surmmary, batchedAnnotations, annotations;
+            return __generator(this, function (_f) {
+                switch (_f.label) {
                     case 0:
                         client = client_1.githubClient(option);
                         context = context_1.githubContext(option);
                         return [4 /*yield*/, client.getRepositoryId({ owner: context.owner(), name: context.repository() })];
                     case 1:
-                        repositoryId = (_a = (_e.sent())
+                        repositoryId = (_a = (_f.sent())
                             .repository) === null || _a === void 0 ? void 0 : _a.id;
                         if (repositoryId == undefined) {
                             throw Error("not found repository");
                         }
+                        return [4 /*yield*/, paging_1.getCommitStatusAndCheckRunWithPaging(client, {
+                                owner: context.owner(),
+                                name: context.repository(),
+                                commitSha: context.commitSha(),
+                            })];
+                    case 2:
+                        statusAndCheckRuns = _f.sent();
+                        foundSameCheckRun = statusAndCheckRuns.find(function (x) { return x.__typename == "CheckRun" && x.name == option.reportName; });
+                        if (!(foundSameCheckRun != undefined)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, client.updateCheckRun({
+                                repositoryId: repositoryId,
+                                checkRunId: foundSameCheckRun.id,
+                                status: graphql_1.RequestableCheckStatusState.InProgress,
+                            })];
+                    case 3:
+                        _f.sent();
+                        _f.label = 4;
+                    case 4:
+                        if (!(foundSameCheckRun == undefined)) return [3 /*break*/, 6];
                         return [4 /*yield*/, client.createCheckRun({
                                 repositoryId: repositoryId,
                                 headSha: context.commitSha(),
@@ -601,16 +816,22 @@ var CheckRunReporter = /** @class */ (function () {
                                 startedAt: new Date().toISOString(),
                                 status: graphql_1.RequestableCheckStatusState.InProgress,
                             })];
-                    case 2:
-                        checkRunId = (_d = (_c = (_b = (_e.sent())) === null || _b === void 0 ? void 0 : _b.createCheckRun) === null || _c === void 0 ? void 0 : _c.checkRun) === null || _d === void 0 ? void 0 : _d.id;
+                    case 5:
+                        _e = (_d = (_c = (_b = (_f.sent())) === null || _b === void 0 ? void 0 : _b.createCheckRun) === null || _c === void 0 ? void 0 : _c.checkRun) === null || _d === void 0 ? void 0 : _d.id;
+                        return [3 /*break*/, 7];
+                    case 6:
+                        _e = foundSameCheckRun.id;
+                        _f.label = 7;
+                    case 7:
+                        checkRunId = _e;
                         if (checkRunId == undefined) {
                             throw Error("cannot create check-run");
                         }
                         batchSize = 50;
                         currentIndex = 0;
-                        _e.label = 3;
-                    case 3:
-                        if (!(currentIndex + batchSize < lintResults.length)) return [3 /*break*/, 5];
+                        _f.label = 8;
+                    case 8:
+                        if (!(currentIndex + batchSize < lintResults.length)) return [3 /*break*/, 10];
                         batchNumber = currentIndex / batchSize + 1 + "/" + Math.ceil(lintResults.length / batchSize);
                         surmmary = this.summary(lintResults) + ", while batch " + batchNumber;
                         batchedAnnotations = lintResults.slice(currentIndex, currentIndex + batchSize);
@@ -624,11 +845,11 @@ var CheckRunReporter = /** @class */ (function () {
                                     annotations: this.convertToCheckAnnotationData(context, batchedAnnotations),
                                 },
                             })];
-                    case 4:
-                        _e.sent();
+                    case 9:
+                        _f.sent();
                         currentIndex += batchSize;
-                        return [3 /*break*/, 3];
-                    case 5:
+                        return [3 /*break*/, 8];
+                    case 10:
                         annotations = lintResults.slice(currentIndex);
                         return [4 /*yield*/, client.updateCheckRun({
                                 repositoryId: repositoryId,
@@ -643,8 +864,8 @@ var CheckRunReporter = /** @class */ (function () {
                                     annotations: this.convertToCheckAnnotationData(context, annotations),
                                 },
                             })];
-                    case 6:
-                        _e.sent();
+                    case 11:
+                        _f.sent();
                         return [2 /*return*/];
                 }
             });
