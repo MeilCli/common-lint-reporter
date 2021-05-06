@@ -611,7 +611,6 @@ function run() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    core.info("test dist");
                     option = option_1.getOption();
                     return [4 /*yield*/, lint_result_1.readLintResults(option)];
                 case 1:
