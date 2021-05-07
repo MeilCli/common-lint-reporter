@@ -914,7 +914,7 @@ var CheckRunReporter = /** @class */ (function () {
                         batchSize = 50;
                         currentIndex = 0;
                         rawAnnotations = this.convertToCheckAnnotationData(context, lintResults);
-                        newAnnotations = rawAnnotations.filter(function (x) { return pastAnnotations.filter(function (y) { return annotation_1.equalsAnnotation(y, x); }).length != 0; });
+                        newAnnotations = rawAnnotations.filter(function (x) { return pastAnnotations.filter(function (y) { return annotation_1.equalsAnnotation(y, x); }).length == 0; });
                         _a.label = 1;
                     case 1:
                         if (!(currentIndex + batchSize < newAnnotations.length)) return [3 /*break*/, 3];
