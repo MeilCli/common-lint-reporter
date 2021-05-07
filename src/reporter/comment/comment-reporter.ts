@@ -103,6 +103,9 @@ export class CommentReporter implements Reporter {
             }
         }
 
+        if (lintResults.length == 0) {
+            return;
+        }
         await client.addComment({
             id: pullRequestId,
             body: createLintComment(createComment(context, lintResults), option.reportName),
