@@ -76,7 +76,7 @@ export class CheckRunReporter implements Reporter {
         let currentIndex = 0;
         const rawAnnotations = this.convertToCheckAnnotationData(context, lintResults);
         const newAnnotations = rawAnnotations.filter(
-            (x) => pastAnnotations.filter((y) => equalsAnnotation(y, x)).length != 0
+            (x) => pastAnnotations.filter((y) => equalsAnnotation(y, x)).length == 0
         );
         while (currentIndex + batchSize < newAnnotations.length) {
             const batchNumber = `${currentIndex / batchSize + 1}/${Math.ceil(newAnnotations.length / batchSize)}`;
