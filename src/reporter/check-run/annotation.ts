@@ -3,6 +3,7 @@ import { GetCheckRunAnnotationsQueryCheckRunAnnotationsNode } from "../../github
 import { LintResult } from "../../lint-result";
 import { GitHubContext } from "../../github/context";
 import { trimPath } from "./path";
+import * as core from "@actions/core";
 
 export function createAnnotation(context: GitHubContext, lintResult: LintResult): CheckAnnotationData | null {
     if (lintResult.startLine == undefined) {
@@ -46,27 +47,35 @@ export function equalsAnnotation(
     right: CheckAnnotationData
 ): boolean {
     if (left.path !== right.path) {
+        core.info(`path: left: ${left.path}, right: ${right.path}`);
         return false;
     }
     if (left.message !== right.message) {
+        core.info(`message: left: ${left.message}, right: ${right.message}`);
         return false;
     }
     if (left.title !== right.title) {
+        core.info(`title: left: ${left.title}, right: ${right.title}`);
         return false;
     }
     if (left.annotationLevel !== right.annotationLevel) {
+        core.info(`annotationLevel: left: ${left.annotationLevel}, right: ${right.annotationLevel}`);
         return false;
     }
     if (left.location.start.line != right.location.startLine) {
+        core.info(`start line: left: ${left.location.start.line}, right: ${right.location.startLine}`);
         return false;
     }
     if (left.location.start.column != right.location.startColumn) {
+        core.info(`start column, left: ${left.location.start.column}, right: ${right.location.startColumn}`);
+        return false;
+    }
+    if (left.location.end.line != right.location.endLine) {
+        core.info(`end line: left: ${left.location.end.line}, right: ${right.location.endLine}`);
         return false;
     }
     if (left.location.end.column != right.location.endColumn) {
-        return false;
-    }
-    if (left.location.end.line != right.location.endColumn) {
+        core.info(`end column: left: ${left.location.end.column}, right: ${right.location.endColumn}`);
         return false;
     }
 
