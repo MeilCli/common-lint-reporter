@@ -746,7 +746,8 @@ function createAnnotation(context, lintResult) {
             endColumn: endColumn,
         },
         annotationLevel: level,
-        message: "Rule: " + lintResult.rule + "\n" + lintResult.message,
+        title: "Rule: " + lintResult.rule,
+        message: lintResult.message,
     };
 }
 exports.createAnnotation = createAnnotation;
