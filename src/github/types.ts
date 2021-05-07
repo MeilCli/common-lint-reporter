@@ -12,6 +12,10 @@ export type GetPullRequestChangedFileQueryPullRequestFile = Exclude<
     GetPullRequestChangedFileQueryPullRequest["files"],
     null | undefined
 >;
+export type GetPullRequestChangedFileQueryPullRequestFilePageInfo = Exclude<
+    GetPullRequestChangedFileQueryPullRequestFile["pageInfo"],
+    null | undefined
+>;
 export type GetPullRequestChangedFileQueryPullRequestFileNodes = Exclude<
     GetPullRequestChangedFileQueryPullRequestFile["nodes"],
     null | undefined
@@ -36,6 +40,10 @@ export type GetCommitStatusAndCheckRunQueryCommitStatusCheckRollup = Exclude<
 >;
 export type GetCommitStatusAndCheckRunQueryCommitStatusCheckRollupContexts = Exclude<
     GetCommitStatusAndCheckRunQueryCommitStatusCheckRollup["contexts"],
+    null | undefined
+>;
+export type GetCommitStatusAndCheckRunQueryCommitStatusCheckRollupContextsPageInfo = Exclude<
+    GetCommitStatusAndCheckRunQueryCommitStatusCheckRollupContexts["pageInfo"],
     null | undefined
 >;
 export type GetCommitStatusAndCheckRunQueryCommitStatusCheckRollupContextsNodes = Exclude<

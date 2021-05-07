@@ -1,28 +1,44 @@
-import { GetPullRequestChangedFileQueryVariables, GetCommitStatusAndCheckRunQueryVariables } from "../graphql";
+import {
+    GetPullRequestChangedFileQuery,
+    GetPullRequestChangedFileQueryVariables,
+    GetCommitStatusAndCheckRunQuery,
+    GetCommitStatusAndCheckRunQueryVariables,
+    Maybe,
+} from "../graphql";
 import { GitHubClient } from "./client";
 import {
+    GetPullRequestChangedFileQueryPullRequestFilePageInfo,
+    GetPullRequestChangedFileQueryPullRequestFileNodes,
     GetPullRequestChangedFileQueryPullRequestFileNode,
+    GetCommitStatusAndCheckRunQueryCommitStatusCheckRollupContextsPageInfo,
+    GetCommitStatusAndCheckRunQueryCommitStatusCheckRollupContextsNodes,
     GetCommitStatusAndCheckRunQueryCommitStatusCheckRollupContextsNode,
 } from "./types";
 
 // gurad for infinity loop
 const maxLoop = 100;
 
-export async function getPullRequestChangedFileWithPaging(
-    client: GitHubClient,
-    variables: GetPullRequestChangedFileQueryVariables
-): Promise<GetPullRequestChangedFileQueryPullRequestFileNode[]> {
-    const result: GetPullRequestChangedFileQueryPullRequestFileNode[] = [];
+async function getResponseWithPaging<
+    TVariables extends { after?: Maybe<string> | undefined },
+    TResponse,
+    TPageInfo extends { hasNextPage: boolean; endCursor?: Maybe<string> | undefined },
+    TNode,
+    TNodes extends Array<TNode | null | undefined>
+>(
+    variables: TVariables,
+    getResponse: (variables: TVariables) => Promise<TResponse>,
+    selectorPageInfo: (response: TResponse) => TPageInfo | null | undefined,
+    selectorNodes: (response: TResponse) => TNodes | null | undefined
+): Promise<TNode[]> {
+    const result: TNode[] = [];
 
-    let response = await client.getPullRequestChangedFile(variables);
-    let pageInfo = response.repository?.pullRequest?.files?.pageInfo;
-    if (
-        response.repository?.pullRequest?.files?.nodes == null ||
-        response.repository.pullRequest.files.nodes == undefined
-    ) {
+    let response = await getResponse(variables);
+    let pageInfo = selectorPageInfo(response);
+    let nodes = selectorNodes(response);
+    if (nodes == null || nodes == undefined) {
         return result;
     }
-    for (const node of response.repository.pullRequest.files.nodes) {
+    for (const node of nodes) {
         if (node == null || node == undefined) {
             continue;
         }
@@ -38,16 +54,15 @@ export async function getPullRequestChangedFileWithPaging(
         pageInfo.endCursor != undefined
     ) {
         loopCount += 1;
-        response = await client.getPullRequestChangedFile({ ...variables, after: pageInfo.endCursor });
-        pageInfo = response.repository?.pullRequest?.files?.pageInfo;
+        response = await getResponse({ ...variables, after: pageInfo.endCursor });
+        pageInfo = selectorPageInfo(response);
+        nodes = selectorNodes(response);
 
-        if (
-            response.repository?.pullRequest?.files?.nodes == null ||
-            response.repository.pullRequest.files.nodes == undefined
-        ) {
+        if (nodes == null || nodes == undefined) {
             return result;
         }
-        for (const node of response.repository.pullRequest.files.nodes) {
+
+        for (const node of nodes) {
             if (node == null || node == undefined) {
                 continue;
             }
@@ -62,62 +77,48 @@ export async function getPullRequestChangedFileWithPaging(
     return result;
 }
 
+export async function getPullRequestChangedFileWithPaging(
+    client: GitHubClient,
+    variables: GetPullRequestChangedFileQueryVariables
+): Promise<GetPullRequestChangedFileQueryPullRequestFileNode[]> {
+    return getResponseWithPaging<
+        GetPullRequestChangedFileQueryVariables,
+        GetPullRequestChangedFileQuery,
+        GetPullRequestChangedFileQueryPullRequestFilePageInfo,
+        GetPullRequestChangedFileQueryPullRequestFileNode,
+        GetPullRequestChangedFileQueryPullRequestFileNodes
+    >(
+        variables,
+        (variables) => client.getPullRequestChangedFile(variables),
+        (response) => response.repository?.pullRequest?.files?.pageInfo,
+        (response) => response.repository?.pullRequest?.files?.nodes
+    );
+}
+
 export async function getCommitStatusAndCheckRunWithPaging(
     client: GitHubClient,
     variables: GetCommitStatusAndCheckRunQueryVariables
 ): Promise<GetCommitStatusAndCheckRunQueryCommitStatusCheckRollupContextsNode[]> {
-    const result: GetCommitStatusAndCheckRunQueryCommitStatusCheckRollupContextsNode[] = [];
-
-    let response = await client.getCommitStatusAndCheckRun(variables);
-    if (response.repository?.object?.__typename != "Commit") {
-        return result;
-    }
-    let pageInfo = response.repository?.object.statusCheckRollup?.contexts.pageInfo;
-    if (
-        response.repository.object.statusCheckRollup?.contexts.nodes == null ||
-        response.repository.object.statusCheckRollup.contexts.nodes == undefined
-    ) {
-        return result;
-    }
-    for (const node of response.repository.object.statusCheckRollup.contexts.nodes) {
-        if (node == null || node == undefined) {
-            continue;
-        }
-        result.push(node);
-    }
-
-    let loopCount = 0;
-    while (
-        pageInfo != null &&
-        pageInfo != undefined &&
-        pageInfo.hasNextPage &&
-        pageInfo.endCursor != null &&
-        pageInfo.endCursor != undefined
-    ) {
-        loopCount += 1;
-        response = await client.getCommitStatusAndCheckRun({ ...variables, after: pageInfo.endCursor });
-        if (response.repository?.object?.__typename != "Commit") {
-            return result;
-        }
-        pageInfo = response.repository?.object.statusCheckRollup?.contexts.pageInfo;
-
-        if (
-            response.repository?.object.statusCheckRollup?.contexts.nodes == null ||
-            response.repository?.object.statusCheckRollup?.contexts.nodes == undefined
-        ) {
-            return result;
-        }
-        for (const node of response.repository?.object.statusCheckRollup?.contexts.nodes) {
-            if (node == null || node == undefined) {
-                continue;
+    return getResponseWithPaging<
+        GetCommitStatusAndCheckRunQueryVariables,
+        GetCommitStatusAndCheckRunQuery,
+        GetCommitStatusAndCheckRunQueryCommitStatusCheckRollupContextsPageInfo,
+        GetCommitStatusAndCheckRunQueryCommitStatusCheckRollupContextsNode,
+        GetCommitStatusAndCheckRunQueryCommitStatusCheckRollupContextsNodes
+    >(
+        variables,
+        (variables) => client.getCommitStatusAndCheckRun(variables),
+        (response) => {
+            if (response.repository?.object?.__typename != "Commit") {
+                return null;
             }
-            result.push(node);
+            return response.repository.object.statusCheckRollup?.contexts.pageInfo;
+        },
+        (response) => {
+            if (response.repository?.object?.__typename != "Commit") {
+                return null;
+            }
+            return response.repository.object.statusCheckRollup?.contexts.nodes;
         }
-
-        if (maxLoop <= loopCount) {
-            throw Error("infinity loop detected");
-        }
-    }
-
-    return result;
+    );
 }
