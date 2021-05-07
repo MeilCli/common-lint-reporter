@@ -704,33 +704,13 @@ function getInputNumberOrNull(key) {
 /***/ }),
 
 /***/ 4523:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.equalsAnnotation = exports.createAnnotation = void 0;
 var graphql_1 = __webpack_require__(1973);
 var path_1 = __webpack_require__(197);
-var core = __importStar(__webpack_require__(2225));
 function createAnnotation(context, lintResult) {
     var _a;
     if (lintResult.startLine == undefined) {
@@ -773,35 +753,27 @@ function createAnnotation(context, lintResult) {
 exports.createAnnotation = createAnnotation;
 function equalsAnnotation(left, right) {
     if (left.path !== right.path) {
-        core.info("path: left: " + left.path + ", right: " + right.path);
         return false;
     }
     if (left.message !== right.message) {
-        core.info("message: left: " + left.message + ", right: " + right.message);
         return false;
     }
     if (left.title !== right.title) {
-        core.info("title: left: " + left.title + ", right: " + right.title);
         return false;
     }
     if (left.annotationLevel !== right.annotationLevel) {
-        core.info("annotationLevel: left: " + left.annotationLevel + ", right: " + right.annotationLevel);
         return false;
     }
     if (left.location.start.line != right.location.startLine) {
-        core.info("start line: left: " + left.location.start.line + ", right: " + right.location.startLine);
         return false;
     }
     if (left.location.start.column != right.location.startColumn) {
-        core.info("start column, left: " + left.location.start.column + ", right: " + right.location.startColumn);
         return false;
     }
     if (left.location.end.line != right.location.endLine) {
-        core.info("end line: left: " + left.location.end.line + ", right: " + right.location.endLine);
         return false;
     }
     if (left.location.end.column != right.location.endColumn) {
-        core.info("end column: left: " + left.location.end.column + ", right: " + right.location.endColumn);
         return false;
     }
     return true;
