@@ -42,4 +42,4 @@ jobs:
         with:
           report_type: 'comment'
           report_name: 'Comment Report'
-          pull_request: steps.lint_context.outputs.pull_request
+          pull_request: ${{ steps.lint_context.outputs.pull_request }}
