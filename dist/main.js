@@ -1366,10 +1366,14 @@ var CommentReporter = /** @class */ (function () {
                     case 6:
                         _i++;
                         return [3 /*break*/, 4];
-                    case 7: return [4 /*yield*/, client.addComment({
-                            id: pullRequestId,
-                            body: comment_1.createLintComment(comment_1.createComment(context, lintResults), option.reportName),
-                        })];
+                    case 7:
+                        if (lintResults.length == 0) {
+                            return [2 /*return*/];
+                        }
+                        return [4 /*yield*/, client.addComment({
+                                id: pullRequestId,
+                                body: comment_1.createLintComment(comment_1.createComment(context, lintResults), option.reportName),
+                            })];
                     case 8:
                         _d.sent();
                         return [2 /*return*/];
