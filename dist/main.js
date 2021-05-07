@@ -145,6 +145,22 @@ var GitHubClient = /** @class */ (function () {
             });
         });
     };
+    GitHubClient.prototype.getCheckRunAnnotations = function (variables) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.client.query({
+                            query: graphql_1.GetCheckRunAnnotations,
+                            variables: variables,
+                        })];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, result.data];
+                }
+            });
+        });
+    };
     return GitHubClient;
 }());
 exports.GitHubClient = GitHubClient;
@@ -285,7 +301,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getCommitStatusAndCheckRunWithPaging = exports.getPullRequestChangedFileWithPaging = void 0;
+exports.getCheckRunAnnotationsWithPaging = exports.getCommitStatusAndCheckRunWithPaging = exports.getPullRequestChangedFileWithPaging = void 0;
 // gurad for infinity loop
 var maxLoop = 100;
 function getResponseWithPaging(variables, getResponse, selectorPageInfo, selectorNodes) {
@@ -371,6 +387,26 @@ function getCommitStatusAndCheckRunWithPaging(client, variables) {
     });
 }
 exports.getCommitStatusAndCheckRunWithPaging = getCommitStatusAndCheckRunWithPaging;
+function getCheckRunAnnotationsWithPaging(client, variables) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, getResponseWithPaging(variables, function (variables) { return client.getCheckRunAnnotations(variables); }, function (response) {
+                    var _a, _b;
+                    if (((_a = response.node) === null || _a === void 0 ? void 0 : _a.__typename) != "CheckRun") {
+                        return null;
+                    }
+                    return (_b = response.node.annotations) === null || _b === void 0 ? void 0 : _b.pageInfo;
+                }, function (response) {
+                    var _a, _b;
+                    if (((_a = response.node) === null || _a === void 0 ? void 0 : _a.__typename) != "CheckRun") {
+                        return null;
+                    }
+                    return (_b = response.node.annotations) === null || _b === void 0 ? void 0 : _b.nodes;
+                })];
+        });
+    });
+}
+exports.getCheckRunAnnotationsWithPaging = getCheckRunAnnotationsWithPaging;
 
 
 /***/ }),
