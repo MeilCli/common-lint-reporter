@@ -36,7 +36,8 @@ export function createAnnotation(context: GitHubContext, lintResult: LintResult)
             endColumn: endColumn,
         },
         annotationLevel: level,
-        message: `Rule: ${lintResult.rule}\n${lintResult.message}`,
+        title: `Rule: ${lintResult.rule}`,
+        message: lintResult.message,
     };
 }
 
