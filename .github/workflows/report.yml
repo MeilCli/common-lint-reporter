@@ -18,6 +18,14 @@ jobs:
           workflow: ci.yml
           run_id: ${{ github.event.workflow_run.id }}
           name: eslint
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: ci.yml
+          run_id: ${{ github.event.workflow_run.id }}
+          name: lint_context
+      - uses: ./utils/import-context/
+        id: lint_context
       - name: Transform report file
         uses: ./transformer/eslint/
         with:
@@ -25,3 +33,13 @@ jobs:
             eslint_report.json
       - name: Report lint result
         uses: ./
+        with:
+          report_type: 'check_run'
+          report_name: 'Check Run Report'
+      - name: Report lint result
+        uses: ./
+        if: steps.lint_context.outputs.pull_request != 'null'
+        with:
+          report_type: 'comment'
+          report_name: 'Comment Report'
+          pull_request: steps.lint_context.outputs.pull_request
