@@ -2,6 +2,7 @@ import {
     GetPullRequestChangedFileQuery,
     GetCommitStatusAndCheckRunQuery,
     GetCheckRunAnnotationsQuery,
+    GetPullRequestCommentQuery,
 } from "../../graphql/graphql";
 
 export type GetPullRequestChangedFileQueryRepository = Exclude<
@@ -75,5 +76,27 @@ export type GetCheckRunAnnotationsQueryCheckRunAnnotationsNodes = Exclude<
 >;
 export type GetCheckRunAnnotationsQueryCheckRunAnnotationsNode = Exclude<
     GetCheckRunAnnotationsQueryCheckRunAnnotationsNodes[number],
+    null | undefined
+>;
+
+export type GetPullRequestCommentQueryRepository = Exclude<GetPullRequestCommentQuery["repository"], null | undefined>;
+export type GetPullRequestCommentQueryPullRequest = Exclude<
+    GetPullRequestCommentQueryRepository["pullRequest"],
+    null | undefined
+>;
+export type GetPullRequestCommentQueryPullRequestComments = Exclude<
+    GetPullRequestCommentQueryPullRequest["comments"],
+    null | undefined
+>;
+export type GetPullRequestCommentQueryPullRequestCommentsPageInfo = Exclude<
+    GetPullRequestCommentQueryPullRequestComments["pageInfo"],
+    null | undefined
+>;
+export type GetPullRequestCommentQueryPullRequestCommentsNodes = Exclude<
+    GetPullRequestCommentQueryPullRequestComments["nodes"],
+    null | undefined
+>;
+export type GetPullRequestCommentQueryPullRequestCommentsNode = Exclude<
+    GetPullRequestCommentQueryPullRequestCommentsNodes[number],
     null | undefined
 >;

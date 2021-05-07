@@ -5,6 +5,8 @@ import {
     GetCommitStatusAndCheckRunQueryVariables,
     GetCheckRunAnnotationsQuery,
     GetCheckRunAnnotationsQueryVariables,
+    GetPullRequestCommentQuery,
+    GetPullRequestCommentQueryVariables,
     Maybe,
 } from "../graphql";
 import { GitHubClient } from "./client";
@@ -18,6 +20,9 @@ import {
     GetCheckRunAnnotationsQueryCheckRunAnnotationsPageInfo,
     GetCheckRunAnnotationsQueryCheckRunAnnotationsNodes,
     GetCheckRunAnnotationsQueryCheckRunAnnotationsNode,
+    GetPullRequestCommentQueryPullRequestCommentsPageInfo,
+    GetPullRequestCommentQueryPullRequestCommentsNodes,
+    GetPullRequestCommentQueryPullRequestCommentsNode,
 } from "./types";
 
 // gurad for infinity loop
@@ -153,5 +158,23 @@ export async function getCheckRunAnnotationsWithPaging(
             }
             return response.node.annotations?.nodes;
         }
+    );
+}
+
+export async function getPullRequestCommentsWithPaging(
+    client: GitHubClient,
+    variables: GetPullRequestCommentQueryVariables
+): Promise<GetPullRequestCommentQueryPullRequestCommentsNode[]> {
+    return getResponseWithPaging<
+        GetPullRequestCommentQueryVariables,
+        GetPullRequestCommentQuery,
+        GetPullRequestCommentQueryPullRequestCommentsPageInfo,
+        GetPullRequestCommentQueryPullRequestCommentsNode,
+        GetPullRequestCommentQueryPullRequestCommentsNodes
+    >(
+        variables,
+        (variables) => client.getPullRequestComments(variables),
+        (response) => response.repository?.pullRequest?.comments.pageInfo,
+        (response) => response.repository?.pullRequest?.comments.nodes
     );
 }

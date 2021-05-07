@@ -29537,6 +29537,13 @@ export type Resolvers<ContextType = any> = {
 export type IResolvers<ContextType = any> = Resolvers<ContextType>;
 
 
+export const AddComment = gql`
+    mutation AddComment($id: ID!, $body: String!) {
+  addComment(input: {subjectId: $id, body: $body}) {
+    clientMutationId
+  }
+}
+    `;
 export const CreateCheckRun = gql`
     mutation CreateCheckRun($repositoryId: ID!, $headSha: GitObjectID!, $name: String!, $startedAt: DateTime, $completedAt: DateTime, $conclusion: CheckConclusionState, $status: RequestableCheckStatusState, $output: CheckRunOutput) {
   createCheckRun(
@@ -29545,6 +29552,13 @@ export const CreateCheckRun = gql`
     checkRun {
       id
     }
+  }
+}
+    `;
+export const DeleteComment = gql`
+    mutation DeleteComment($id: ID!) {
+  deleteIssueComment(input: {id: $id}) {
+    clientMutationId
   }
 }
     `;
@@ -29628,6 +29642,37 @@ export const GetPullRequestChangedFile = gql`
   }
 }
     `;
+export const GetPullRequestComment = gql`
+    query GetPullRequestComment($owner: String!, $name: String!, $pull_request: Int!, $after: String) {
+  repository(owner: $owner, name: $name) {
+    pullRequest(number: $pull_request) {
+      id
+      comments(first: 100, after: $after) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        nodes {
+          author {
+            login
+          }
+          id
+          body
+        }
+      }
+    }
+  }
+}
+    `;
+export const GetPullRequest = gql`
+    query GetPullRequest($owner: String!, $name: String!, $number: Int!) {
+  repository(owner: $owner, name: $name) {
+    pullRequest(number: $number) {
+      id
+    }
+  }
+}
+    `;
 export const GetRepositoryId = gql`
     query GetRepositoryId($owner: String!, $name: String!) {
   repository(owner: $owner, name: $name) {
@@ -29644,6 +29689,20 @@ export const UpdateCheckRun = gql`
   }
 }
     `;
+export type AddCommentMutationVariables = Exact<{
+  id: Scalars['ID'];
+  body: Scalars['String'];
+}>;
+
+
+export type AddCommentMutation = (
+  { __typename?: 'Mutation' }
+  & { addComment?: Maybe<(
+    { __typename?: 'AddCommentPayload' }
+    & Pick<AddCommentPayload, 'clientMutationId'>
+  )> }
+);
+
 export type CreateCheckRunMutationVariables = Exact<{
   repositoryId: Scalars['ID'];
   headSha: Scalars['GitObjectID'];
@@ -29664,6 +29723,19 @@ export type CreateCheckRunMutation = (
       { __typename?: 'CheckRun' }
       & Pick<CheckRun, 'id'>
     )> }
+  )> }
+);
+
+export type DeleteCommentMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type DeleteCommentMutation = (
+  { __typename?: 'Mutation' }
+  & { deleteIssueComment?: Maybe<(
+    { __typename?: 'DeleteIssueCommentPayload' }
+    & Pick<DeleteIssueCommentPayload, 'clientMutationId'>
   )> }
 );
 
@@ -29759,6 +29831,69 @@ export type GetPullRequestChangedFileQuery = (
           & Pick<PullRequestChangedFile, 'path'>
         )>>> }
       )> }
+    )> }
+  )> }
+);
+
+export type GetPullRequestCommentQueryVariables = Exact<{
+  owner: Scalars['String'];
+  name: Scalars['String'];
+  pull_request: Scalars['Int'];
+  after?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetPullRequestCommentQuery = (
+  { __typename?: 'Query' }
+  & { repository?: Maybe<(
+    { __typename?: 'Repository' }
+    & { pullRequest?: Maybe<(
+      { __typename?: 'PullRequest' }
+      & Pick<PullRequest, 'id'>
+      & { comments: (
+        { __typename?: 'IssueCommentConnection' }
+        & { pageInfo: (
+          { __typename?: 'PageInfo' }
+          & Pick<PageInfo, 'hasNextPage' | 'endCursor'>
+        ), nodes?: Maybe<Array<Maybe<(
+          { __typename?: 'IssueComment' }
+          & Pick<IssueComment, 'id' | 'body'>
+          & { author?: Maybe<(
+            { __typename?: 'Bot' }
+            & Pick<Bot, 'login'>
+          ) | (
+            { __typename?: 'EnterpriseUserAccount' }
+            & Pick<EnterpriseUserAccount, 'login'>
+          ) | (
+            { __typename?: 'Mannequin' }
+            & Pick<Mannequin, 'login'>
+          ) | (
+            { __typename?: 'Organization' }
+            & Pick<Organization, 'login'>
+          ) | (
+            { __typename?: 'User' }
+            & Pick<User, 'login'>
+          )> }
+        )>>> }
+      ) }
+    )> }
+  )> }
+);
+
+export type GetPullRequestQueryVariables = Exact<{
+  owner: Scalars['String'];
+  name: Scalars['String'];
+  number: Scalars['Int'];
+}>;
+
+
+export type GetPullRequestQuery = (
+  { __typename?: 'Query' }
+  & { repository?: Maybe<(
+    { __typename?: 'Repository' }
+    & { pullRequest?: Maybe<(
+      { __typename?: 'PullRequest' }
+      & Pick<PullRequest, 'id'>
     )> }
   )> }
 );

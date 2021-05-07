@@ -20,6 +20,18 @@ import {
     GetCheckRunAnnotations,
     GetCheckRunAnnotationsQuery,
     GetCheckRunAnnotationsQueryVariables,
+    GetPullRequest,
+    GetPullRequestQuery,
+    GetPullRequestQueryVariables,
+    GetPullRequestComment,
+    GetPullRequestCommentQuery,
+    GetPullRequestCommentQueryVariables,
+    AddComment,
+    AddCommentMutation,
+    AddCommentMutationVariables,
+    DeleteComment,
+    DeleteCommentMutation,
+    DeleteCommentMutationVariables,
 } from "../../graphql/graphql";
 
 export function githubClient(option: Option): GitHubClient {
@@ -91,6 +103,38 @@ export class GitHubClient {
     ): Promise<GetCheckRunAnnotationsQuery> {
         const result = await this.client.query<GetCheckRunAnnotationsQuery>({
             query: GetCheckRunAnnotations,
+            variables: variables,
+        });
+        return result.data;
+    }
+
+    async getPullRequest(variables: GetPullRequestQueryVariables): Promise<GetPullRequestQuery> {
+        const result = await this.client.query<GetPullRequestQuery>({
+            query: GetPullRequest,
+            variables: variables,
+        });
+        return result.data;
+    }
+
+    async getPullRequestComments(variables: GetPullRequestCommentQueryVariables): Promise<GetPullRequestCommentQuery> {
+        const result = await this.client.query<GetPullRequestCommentQuery>({
+            query: GetPullRequestComment,
+            variables: variables,
+        });
+        return result.data;
+    }
+
+    async addComment(variables: AddCommentMutationVariables): Promise<AddCommentMutation | null | undefined> {
+        const result = await this.client.mutate<AddCommentMutation>({
+            mutation: AddComment,
+            variables: variables,
+        });
+        return result.data;
+    }
+
+    async deleteComment(variables: DeleteCommentMutationVariables): Promise<DeleteCommentMutation | null | undefined> {
+        const result = await this.client.mutate<DeleteCommentMutation>({
+            mutation: DeleteComment,
             variables: variables,
         });
         return result.data;

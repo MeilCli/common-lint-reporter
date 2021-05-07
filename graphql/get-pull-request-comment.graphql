@@ -1,0 +1,20 @@
+query GetPullRequestComment($owner: String!, $name: String!, $pull_request: Int!, $after: String) {
+    repository(owner: $owner, name: $name) {
+        pullRequest(number: $pull_request) {
+            id
+            comments(first: 100, after: $after) {
+                pageInfo {
+                    hasNextPage
+                    endCursor
+                }
+                nodes {
+                    author {
+                        login
+                    }
+                    id
+                    body
+                }
+            }
+        }
+    }
+}
