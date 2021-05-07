@@ -68,13 +68,14 @@ function getInput(key) {
     return core.getInput(key, { required: true });
 }
 function run() {
+    var _a;
     return __awaiter(this, void 0, void 0, function () {
         var inputPath, context;
-        return __generator(this, function (_a) {
+        return __generator(this, function (_b) {
             try {
                 inputPath = getInput("input_path");
                 context = JSON.parse(fs.readFileSync(inputPath, "utf-8"));
-                core.setOutput("pull_request", context.pullRequest);
+                core.setOutput("pull_request", (_a = context.pullRequest) !== null && _a !== void 0 ? _a : "null");
             }
             catch (error) {
                 core.setFailed(error.message);
