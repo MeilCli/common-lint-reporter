@@ -288,31 +288,30 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getCommitStatusAndCheckRunWithPaging = exports.getPullRequestChangedFileWithPaging = void 0;
 // gurad for infinity loop
 var maxLoop = 100;
-function getPullRequestChangedFileWithPaging(client, variables) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m;
+function getResponseWithPaging(variables, getResponse, selectorPageInfo, selectorNodes) {
     return __awaiter(this, void 0, void 0, function () {
-        var result, response, pageInfo, _i, _o, node, loopCount, _p, _q, node;
-        return __generator(this, function (_r) {
-            switch (_r.label) {
+        var result, response, pageInfo, nodes, _i, nodes_1, node, loopCount, _a, nodes_2, node;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
                     result = [];
-                    return [4 /*yield*/, client.getPullRequestChangedFile(variables)];
+                    return [4 /*yield*/, getResponse(variables)];
                 case 1:
-                    response = _r.sent();
-                    pageInfo = (_c = (_b = (_a = response.repository) === null || _a === void 0 ? void 0 : _a.pullRequest) === null || _b === void 0 ? void 0 : _b.files) === null || _c === void 0 ? void 0 : _c.pageInfo;
-                    if (((_f = (_e = (_d = response.repository) === null || _d === void 0 ? void 0 : _d.pullRequest) === null || _e === void 0 ? void 0 : _e.files) === null || _f === void 0 ? void 0 : _f.nodes) == null ||
-                        response.repository.pullRequest.files.nodes == undefined) {
+                    response = _b.sent();
+                    pageInfo = selectorPageInfo(response);
+                    nodes = selectorNodes(response);
+                    if (nodes == null || nodes == undefined) {
                         return [2 /*return*/, result];
                     }
-                    for (_i = 0, _o = response.repository.pullRequest.files.nodes; _i < _o.length; _i++) {
-                        node = _o[_i];
+                    for (_i = 0, nodes_1 = nodes; _i < nodes_1.length; _i++) {
+                        node = nodes_1[_i];
                         if (node == null || node == undefined) {
                             continue;
                         }
                         result.push(node);
                     }
                     loopCount = 0;
-                    _r.label = 2;
+                    _b.label = 2;
                 case 2:
                     if (!(pageInfo != null &&
                         pageInfo != undefined &&
@@ -320,16 +319,16 @@ function getPullRequestChangedFileWithPaging(client, variables) {
                         pageInfo.endCursor != null &&
                         pageInfo.endCursor != undefined)) return [3 /*break*/, 4];
                     loopCount += 1;
-                    return [4 /*yield*/, client.getPullRequestChangedFile(__assign(__assign({}, variables), { after: pageInfo.endCursor }))];
+                    return [4 /*yield*/, getResponse(__assign(__assign({}, variables), { after: pageInfo.endCursor }))];
                 case 3:
-                    response = _r.sent();
-                    pageInfo = (_j = (_h = (_g = response.repository) === null || _g === void 0 ? void 0 : _g.pullRequest) === null || _h === void 0 ? void 0 : _h.files) === null || _j === void 0 ? void 0 : _j.pageInfo;
-                    if (((_m = (_l = (_k = response.repository) === null || _k === void 0 ? void 0 : _k.pullRequest) === null || _l === void 0 ? void 0 : _l.files) === null || _m === void 0 ? void 0 : _m.nodes) == null ||
-                        response.repository.pullRequest.files.nodes == undefined) {
+                    response = _b.sent();
+                    pageInfo = selectorPageInfo(response);
+                    nodes = selectorNodes(response);
+                    if (nodes == null || nodes == undefined) {
                         return [2 /*return*/, result];
                     }
-                    for (_p = 0, _q = response.repository.pullRequest.files.nodes; _p < _q.length; _p++) {
-                        node = _q[_p];
+                    for (_a = 0, nodes_2 = nodes; _a < nodes_2.length; _a++) {
+                        node = nodes_2[_a];
                         if (node == null || node == undefined) {
                             continue;
                         }
@@ -344,66 +343,30 @@ function getPullRequestChangedFileWithPaging(client, variables) {
         });
     });
 }
+function getPullRequestChangedFileWithPaging(client, variables) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, getResponseWithPaging(variables, function (variables) { return client.getPullRequestChangedFile(variables); }, function (response) { var _a, _b, _c; return (_c = (_b = (_a = response.repository) === null || _a === void 0 ? void 0 : _a.pullRequest) === null || _b === void 0 ? void 0 : _b.files) === null || _c === void 0 ? void 0 : _c.pageInfo; }, function (response) { var _a, _b, _c; return (_c = (_b = (_a = response.repository) === null || _a === void 0 ? void 0 : _a.pullRequest) === null || _b === void 0 ? void 0 : _b.files) === null || _c === void 0 ? void 0 : _c.nodes; })];
+        });
+    });
+}
 exports.getPullRequestChangedFileWithPaging = getPullRequestChangedFileWithPaging;
 function getCommitStatusAndCheckRunWithPaging(client, variables) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q;
     return __awaiter(this, void 0, void 0, function () {
-        var result, response, pageInfo, _i, _r, node, loopCount, _s, _t, node;
-        return __generator(this, function (_u) {
-            switch (_u.label) {
-                case 0:
-                    result = [];
-                    return [4 /*yield*/, client.getCommitStatusAndCheckRun(variables)];
-                case 1:
-                    response = _u.sent();
+        return __generator(this, function (_a) {
+            return [2 /*return*/, getResponseWithPaging(variables, function (variables) { return client.getCommitStatusAndCheckRun(variables); }, function (response) {
+                    var _a, _b, _c;
                     if (((_b = (_a = response.repository) === null || _a === void 0 ? void 0 : _a.object) === null || _b === void 0 ? void 0 : _b.__typename) != "Commit") {
-                        return [2 /*return*/, result];
+                        return null;
                     }
-                    pageInfo = (_d = (_c = response.repository) === null || _c === void 0 ? void 0 : _c.object.statusCheckRollup) === null || _d === void 0 ? void 0 : _d.contexts.pageInfo;
-                    if (((_e = response.repository.object.statusCheckRollup) === null || _e === void 0 ? void 0 : _e.contexts.nodes) == null ||
-                        response.repository.object.statusCheckRollup.contexts.nodes == undefined) {
-                        return [2 /*return*/, result];
+                    return (_c = response.repository.object.statusCheckRollup) === null || _c === void 0 ? void 0 : _c.contexts.pageInfo;
+                }, function (response) {
+                    var _a, _b, _c;
+                    if (((_b = (_a = response.repository) === null || _a === void 0 ? void 0 : _a.object) === null || _b === void 0 ? void 0 : _b.__typename) != "Commit") {
+                        return null;
                     }
-                    for (_i = 0, _r = response.repository.object.statusCheckRollup.contexts.nodes; _i < _r.length; _i++) {
-                        node = _r[_i];
-                        if (node == null || node == undefined) {
-                            continue;
-                        }
-                        result.push(node);
-                    }
-                    loopCount = 0;
-                    _u.label = 2;
-                case 2:
-                    if (!(pageInfo != null &&
-                        pageInfo != undefined &&
-                        pageInfo.hasNextPage &&
-                        pageInfo.endCursor != null &&
-                        pageInfo.endCursor != undefined)) return [3 /*break*/, 4];
-                    loopCount += 1;
-                    return [4 /*yield*/, client.getCommitStatusAndCheckRun(__assign(__assign({}, variables), { after: pageInfo.endCursor }))];
-                case 3:
-                    response = _u.sent();
-                    if (((_g = (_f = response.repository) === null || _f === void 0 ? void 0 : _f.object) === null || _g === void 0 ? void 0 : _g.__typename) != "Commit") {
-                        return [2 /*return*/, result];
-                    }
-                    pageInfo = (_j = (_h = response.repository) === null || _h === void 0 ? void 0 : _h.object.statusCheckRollup) === null || _j === void 0 ? void 0 : _j.contexts.pageInfo;
-                    if (((_l = (_k = response.repository) === null || _k === void 0 ? void 0 : _k.object.statusCheckRollup) === null || _l === void 0 ? void 0 : _l.contexts.nodes) == null ||
-                        ((_o = (_m = response.repository) === null || _m === void 0 ? void 0 : _m.object.statusCheckRollup) === null || _o === void 0 ? void 0 : _o.contexts.nodes) == undefined) {
-                        return [2 /*return*/, result];
-                    }
-                    for (_s = 0, _t = (_q = (_p = response.repository) === null || _p === void 0 ? void 0 : _p.object.statusCheckRollup) === null || _q === void 0 ? void 0 : _q.contexts.nodes; _s < _t.length; _s++) {
-                        node = _t[_s];
-                        if (node == null || node == undefined) {
-                            continue;
-                        }
-                        result.push(node);
-                    }
-                    if (maxLoop <= loopCount) {
-                        throw Error("infinity loop detected");
-                    }
-                    return [3 /*break*/, 2];
-                case 4: return [2 /*return*/, result];
-            }
+                    return (_c = response.repository.object.statusCheckRollup) === null || _c === void 0 ? void 0 : _c.contexts.nodes;
+                })];
         });
     });
 }
