@@ -12,7 +12,7 @@ export function isLintComment(body: string, reportName: string): boolean {
 }
 
 export function createLintComment(body: string, reportName: string): string {
-    return `${lintCommentIdentifier(reportName)}  ${body}`;
+    return `${lintCommentIdentifier(reportName)}  \n${body}`;
 }
 
 export function createComment(context: GitHubContext, lintResults: LintResult[]): string {
@@ -63,7 +63,8 @@ function createTitle(lintResults: LintResult[]): string {
 }
 
 function createLevelTable(context: GitHubContext, lintResults: LintResult[], targetLevel: LintResultLevel): string {
-    let result = "|file|message|rule|";
+    let result = "|file|message|rule|\n";
+    result += "|:--|:--|:--|\n";
     for (const lintResult of lintResults) {
         if (lintResult.level != targetLevel) {
             continue;
@@ -80,10 +81,10 @@ function createLevelTable(context: GitHubContext, lintResults: LintResult[], tar
             line += `-L${lintResult.endLine}`;
         }
         const baseUrl = `https://github.com/${context.owner()}/${context.repository()}`;
-        const link = `${baseUrl}/blob/${context.commitSha()}/${trimPath(context, lintResult.path)}#${line}`;
-        result += `|[${trimPath(context, lintResult.path)} ${line}](${link})|${lintResult.message}|${
-            lintResult.rule
-        }|\n`;
+        const path = trimPath(context, lintResult.path);
+        const message = lintResult.message.replace(/(\r\n)|\r|\n/g, "<br />");
+        const link = `${baseUrl}/blob/${context.commitSha()}/${path}#${line}`;
+        result += `|[${path} ${line}](${link})|${message}|${lintResult.rule}|\n`;
     }
     return result;
 }
