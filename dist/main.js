@@ -602,7 +602,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 var core = __importStar(__webpack_require__(2225));
 var option_1 = __webpack_require__(8089);
 var lint_result_1 = __webpack_require__(1744);
-var check_run_reporter_1 = __webpack_require__(702);
+var check_run_reporter_1 = __webpack_require__(7334);
 function run() {
     return __awaiter(this, void 0, void 0, function () {
         var option, lintResults, reporter, a, error_1;
@@ -703,29 +703,89 @@ function getInputNumberOrNull(key) {
 
 /***/ }),
 
-/***/ 702:
+/***/ 4523:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.equalsAnnotation = exports.createAnnotation = void 0;
+var graphql_1 = __webpack_require__(1973);
+var path_1 = __webpack_require__(197);
+function createAnnotation(context, lintResult) {
+    var _a;
+    if (lintResult.startLine == undefined) {
+        // report only at summary
+        return null;
+    }
+    var level;
+    if (lintResult.level == "notice") {
+        level = graphql_1.CheckAnnotationLevel.Notice;
+    }
+    else if (lintResult.level == "warning") {
+        level = graphql_1.CheckAnnotationLevel.Warning;
+    }
+    else {
+        level = graphql_1.CheckAnnotationLevel.Failure;
+    }
+    var startColumn;
+    var endColumn;
+    if (lintResult.startLine == lintResult.endLine) {
+        startColumn = lintResult.startColumn;
+        endColumn = lintResult.endColumn;
+    }
+    else {
+        startColumn = undefined;
+        endColumn = undefined;
+    }
+    return {
+        path: path_1.trimPath(context, lintResult.path),
+        location: {
+            startLine: lintResult.startLine,
+            endLine: (_a = lintResult.endLine) !== null && _a !== void 0 ? _a : lintResult.startLine,
+            startColumn: startColumn,
+            endColumn: endColumn,
+        },
+        annotationLevel: level,
+        message: "Rule: " + lintResult.rule + "\n" + lintResult.message,
+    };
+}
+exports.createAnnotation = createAnnotation;
+function equalsAnnotation(left, right) {
+    if (left.path !== right.path) {
+        return false;
+    }
+    if (left.message !== right.message) {
+        return false;
+    }
+    if (left.title !== right.title) {
+        return false;
+    }
+    if (left.annotationLevel !== right.annotationLevel) {
+        return false;
+    }
+    if (left.location.start.line != right.location.startLine) {
+        return false;
+    }
+    if (left.location.start.column != right.location.startColumn) {
+        return false;
+    }
+    if (left.location.end.column != right.location.endColumn) {
+        return false;
+    }
+    if (left.location.end.line != right.location.endColumn) {
+        return false;
+    }
+    return true;
+}
+exports.equalsAnnotation = equalsAnnotation;
+
+
+/***/ }),
+
+/***/ 7334:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -764,26 +824,29 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CheckRunReporter = void 0;
-var path = __importStar(__webpack_require__(5622));
 var client_1 = __webpack_require__(9330);
 var context_1 = __webpack_require__(2754);
 var paging_1 = __webpack_require__(9639);
 var graphql_1 = __webpack_require__(1973);
+var conclusion_1 = __webpack_require__(2482);
+var summary_1 = __webpack_require__(8863);
+var message_1 = __webpack_require__(2507);
+var annotation_1 = __webpack_require__(4523);
 var CheckRunReporter = /** @class */ (function () {
     function CheckRunReporter() {
     }
     CheckRunReporter.prototype.report = function (option, lintResults) {
         var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function () {
-            var client, context, repositoryId, statusAndCheckRuns, foundSameCheckRun, checkRunId, _e, batchSize, currentIndex, batchNumber, surmmary, batchedAnnotations, annotations;
-            return __generator(this, function (_f) {
-                switch (_f.label) {
+            var client, context, repositoryId, statusAndCheckRuns, foundSameCheckRun, checkRunId, _e, pastAnnotations, _f;
+            return __generator(this, function (_g) {
+                switch (_g.label) {
                     case 0:
                         client = client_1.githubClient(option);
                         context = context_1.githubContext(option);
                         return [4 /*yield*/, client.getRepositoryId({ owner: context.owner(), name: context.repository() })];
                     case 1:
-                        repositoryId = (_a = (_f.sent())
+                        repositoryId = (_a = (_g.sent())
                             .repository) === null || _a === void 0 ? void 0 : _a.id;
                         if (repositoryId == undefined) {
                             throw Error("not found repository");
@@ -794,7 +857,7 @@ var CheckRunReporter = /** @class */ (function () {
                                 commitSha: context.commitSha(),
                             })];
                     case 2:
-                        statusAndCheckRuns = _f.sent();
+                        statusAndCheckRuns = _g.sent();
                         foundSameCheckRun = statusAndCheckRuns.find(function (x) { return x.__typename == "CheckRun" && x.name == option.reportName; });
                         if (!(foundSameCheckRun != undefined)) return [3 /*break*/, 4];
                         return [4 /*yield*/, client.updateCheckRun({
@@ -803,8 +866,8 @@ var CheckRunReporter = /** @class */ (function () {
                                 status: graphql_1.RequestableCheckStatusState.InProgress,
                             })];
                     case 3:
-                        _f.sent();
-                        _f.label = 4;
+                        _g.sent();
+                        _g.label = 4;
                     case 4:
                         if (!(foundSameCheckRun == undefined)) return [3 /*break*/, 6];
                         return [4 /*yield*/, client.createCheckRun({
@@ -815,24 +878,49 @@ var CheckRunReporter = /** @class */ (function () {
                                 status: graphql_1.RequestableCheckStatusState.InProgress,
                             })];
                     case 5:
-                        _e = (_d = (_c = (_b = (_f.sent())) === null || _b === void 0 ? void 0 : _b.createCheckRun) === null || _c === void 0 ? void 0 : _c.checkRun) === null || _d === void 0 ? void 0 : _d.id;
+                        _e = (_d = (_c = (_b = (_g.sent())) === null || _b === void 0 ? void 0 : _b.createCheckRun) === null || _c === void 0 ? void 0 : _c.checkRun) === null || _d === void 0 ? void 0 : _d.id;
                         return [3 /*break*/, 7];
                     case 6:
                         _e = foundSameCheckRun.id;
-                        _f.label = 7;
+                        _g.label = 7;
                     case 7:
                         checkRunId = _e;
                         if (checkRunId == undefined) {
                             throw Error("cannot create check-run");
                         }
+                        if (!(foundSameCheckRun == undefined)) return [3 /*break*/, 8];
+                        _f = [];
+                        return [3 /*break*/, 10];
+                    case 8: return [4 /*yield*/, paging_1.getCheckRunAnnotationsWithPaging(client, { checkRunId: foundSameCheckRun.id })];
+                    case 9:
+                        _f = _g.sent();
+                        _g.label = 10;
+                    case 10:
+                        pastAnnotations = _f;
+                        return [4 /*yield*/, this.uploadResult(client, context, option, repositoryId, checkRunId, lintResults, pastAnnotations)];
+                    case 11:
+                        _g.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    CheckRunReporter.prototype.uploadResult = function (client, context, option, repositoryId, checkRunId, lintResults, pastAnnotations) {
+        return __awaiter(this, void 0, void 0, function () {
+            var batchSize, currentIndex, rawAnnotations, newAnnotations, batchNumber, surmmary, batchedAnnotations, annotations;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
                         batchSize = 50;
                         currentIndex = 0;
-                        _f.label = 8;
-                    case 8:
-                        if (!(currentIndex + batchSize < lintResults.length)) return [3 /*break*/, 10];
-                        batchNumber = currentIndex / batchSize + 1 + "/" + Math.ceil(lintResults.length / batchSize);
-                        surmmary = this.summary(lintResults) + ", while batch " + batchNumber;
-                        batchedAnnotations = lintResults.slice(currentIndex, currentIndex + batchSize);
+                        rawAnnotations = this.convertToCheckAnnotationData(context, lintResults);
+                        newAnnotations = rawAnnotations.filter(function (x) { return pastAnnotations.filter(function (y) { return annotation_1.equalsAnnotation(y, x); }).length != 0; });
+                        _a.label = 1;
+                    case 1:
+                        if (!(currentIndex + batchSize < newAnnotations.length)) return [3 /*break*/, 3];
+                        batchNumber = currentIndex / batchSize + 1 + "/" + Math.ceil(newAnnotations.length / batchSize);
+                        surmmary = summary_1.createSummary(lintResults) + ", while batch " + batchNumber;
+                        batchedAnnotations = newAnnotations.slice(currentIndex, currentIndex + batchSize);
                         return [4 /*yield*/, client.updateCheckRun({
                                 repositoryId: repositoryId,
                                 checkRunId: checkRunId,
@@ -840,190 +928,238 @@ var CheckRunReporter = /** @class */ (function () {
                                 output: {
                                     title: option.reportName,
                                     summary: surmmary,
-                                    annotations: this.convertToCheckAnnotationData(context, batchedAnnotations),
+                                    annotations: batchedAnnotations,
                                 },
                             })];
-                    case 9:
-                        _f.sent();
+                    case 2:
+                        _a.sent();
                         currentIndex += batchSize;
-                        return [3 /*break*/, 8];
-                    case 10:
-                        annotations = lintResults.slice(currentIndex);
+                        return [3 /*break*/, 1];
+                    case 3:
+                        annotations = newAnnotations.slice(currentIndex);
                         return [4 /*yield*/, client.updateCheckRun({
                                 repositoryId: repositoryId,
                                 checkRunId: checkRunId,
                                 status: graphql_1.RequestableCheckStatusState.Completed,
-                                conclusion: this.calculateConclusion(option, lintResults),
+                                conclusion: conclusion_1.calculateConclusion(option, lintResults),
                                 completedAt: new Date().toISOString(),
                                 output: {
                                     title: option.reportName,
-                                    summary: this.summary(lintResults),
-                                    text: this.markdownMessage(context, lintResults),
-                                    annotations: this.convertToCheckAnnotationData(context, annotations),
+                                    summary: summary_1.createSummary(lintResults),
+                                    text: message_1.createMessage(context, lintResults),
+                                    annotations: annotations,
                                 },
                             })];
-                    case 11:
-                        _f.sent();
+                    case 4:
+                        _a.sent();
                         return [2 /*return*/];
                 }
             });
         });
     };
-    CheckRunReporter.prototype.countLevel = function (lintResults, targetLevel) {
-        var count = 0;
+    CheckRunReporter.prototype.convertToCheckAnnotationData = function (context, lintResults) {
+        var result = [];
         for (var _i = 0, lintResults_1 = lintResults; _i < lintResults_1.length; _i++) {
             var lintResult = lintResults_1[_i];
-            if (lintResult.level == targetLevel) {
-                count += 1;
+            var annotation = annotation_1.createAnnotation(context, lintResult);
+            if (annotation != null) {
+                result.push(annotation);
             }
-        }
-        return count;
-    };
-    CheckRunReporter.prototype.summary = function (lintResults) {
-        var noticeCount = this.countLevel(lintResults, "notice");
-        var warningCount = this.countLevel(lintResults, "warning");
-        var failureCount = this.countLevel(lintResults, "failure");
-        var messages = [];
-        if (noticeCount == 1) {
-            messages.push("1 notice");
-        }
-        if (2 <= noticeCount) {
-            messages.push(noticeCount + " notices");
-        }
-        if (warningCount == 1) {
-            messages.push("1 warning");
-        }
-        if (2 <= warningCount) {
-            messages.push(warningCount + " warnings");
-        }
-        if (failureCount == 1) {
-            messages.push("1 failure");
-        }
-        if (2 <= failureCount) {
-            messages.push(failureCount + " failures");
-        }
-        if (messages.length == 0) {
-            return "lint message is empty";
-        }
-        return messages.join(" and ") + " found";
-    };
-    CheckRunReporter.prototype.trimPath = function (context, filePath) {
-        return filePath.replace("" + context.workspacePath() + path.sep, "");
-    };
-    CheckRunReporter.prototype.markdownLevelMessage = function (context, lintResults, targetLevel) {
-        var result = "";
-        for (var _i = 0, lintResults_2 = lintResults; _i < lintResults_2.length; _i++) {
-            var lintResult = lintResults_2[_i];
-            if (lintResult.level != targetLevel) {
-                continue;
-            }
-            var line = "";
-            if (lintResult.startLine != undefined) {
-                line += "L" + lintResult.startLine;
-            }
-            if (lintResult.startLine != undefined &&
-                lintResult.endLine != undefined &&
-                lintResult.startLine != lintResult.endLine) {
-                line += "-L" + lintResult.endLine;
-            }
-            var baseUrl = "https://github.com/" + context.owner() + "/" + context.repository();
-            var link = baseUrl + "/blob/" + context.commitSha() + "/" + this.trimPath(context, lintResult.path) + "#" + line;
-            result += "### [" + this.trimPath(context, lintResult.path) + " " + line + "](" + link + ")\n";
-            result += "Rule: " + lintResult.rule + "\n";
-            result += lintResult.message;
-            result += "\n";
         }
         return result;
-    };
-    CheckRunReporter.prototype.markdownMessage = function (context, lintResults) {
-        var noticeCount = this.countLevel(lintResults, "notice");
-        var warningCount = this.countLevel(lintResults, "warning");
-        var failureCount = this.countLevel(lintResults, "failure");
-        var result = "";
-        if (0 < failureCount) {
-            if (failureCount == 1) {
-                result += "## 1 Failure\n";
-            }
-            else {
-                result += "## " + failureCount + " Failures\n";
-            }
-            result += this.markdownLevelMessage(context, lintResults, "failure");
-        }
-        if (0 < warningCount) {
-            if (warningCount == 1) {
-                result += "## 1 Warning\n";
-            }
-            else {
-                result += "## " + warningCount + " Warnings\n";
-            }
-            result += this.markdownLevelMessage(context, lintResults, "warning");
-        }
-        if (0 < noticeCount) {
-            if (noticeCount == 1) {
-                result += "## 1 Notice\n";
-            }
-            else {
-                result += "## " + noticeCount + " Notices\n";
-            }
-            result += this.markdownLevelMessage(context, lintResults, "notice");
-        }
-        return result;
-    };
-    CheckRunReporter.prototype.convertToCheckAnnotationData = function (context, lintResults) {
-        var _a;
-        var result = [];
-        for (var _i = 0, lintResults_3 = lintResults; _i < lintResults_3.length; _i++) {
-            var lintResult = lintResults_3[_i];
-            if (lintResult.startLine == undefined) {
-                // report only at summary
-                continue;
-            }
-            var level = void 0;
-            if (lintResult.level == "notice") {
-                level = graphql_1.CheckAnnotationLevel.Notice;
-            }
-            else if (lintResult.level == "warning") {
-                level = graphql_1.CheckAnnotationLevel.Warning;
-            }
-            else {
-                level = graphql_1.CheckAnnotationLevel.Failure;
-            }
-            var startColumn = void 0;
-            var endColumn = void 0;
-            if (lintResult.startLine == lintResult.endLine) {
-                startColumn = lintResult.startColumn;
-                endColumn = lintResult.endColumn;
-            }
-            else {
-                startColumn = undefined;
-                endColumn = undefined;
-            }
-            result.push({
-                path: this.trimPath(context, lintResult.path),
-                location: {
-                    startLine: lintResult.startLine,
-                    endLine: (_a = lintResult.endLine) !== null && _a !== void 0 ? _a : lintResult.startLine,
-                    startColumn: startColumn,
-                    endColumn: endColumn,
-                },
-                annotationLevel: level,
-                message: "Rule: " + lintResult.rule + "\n" + lintResult.message,
-            });
-        }
-        return result;
-    };
-    CheckRunReporter.prototype.calculateConclusion = function (option, lintResults) {
-        var noticeCount = this.countLevel(lintResults, "notice");
-        var warningCount = this.countLevel(lintResults, "warning");
-        var failureCount = this.countLevel(lintResults, "failure");
-        var score = noticeCount * option.conclusionNoticeWeight +
-            warningCount * option.conclusionWarningWeight +
-            failureCount * option.conclusionFailureWeight;
-        return score < option.conclusionFailureThreshold ? graphql_1.CheckConclusionState.Success : graphql_1.CheckConclusionState.Failure;
     };
     return CheckRunReporter;
 }());
 exports.CheckRunReporter = CheckRunReporter;
+
+
+/***/ }),
+
+/***/ 2482:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.calculateConclusion = void 0;
+var graphql_1 = __webpack_require__(1973);
+var level_1 = __webpack_require__(5281);
+function calculateConclusion(option, lintResults) {
+    var noticeCount = level_1.countLevel(lintResults, "notice");
+    var warningCount = level_1.countLevel(lintResults, "warning");
+    var failureCount = level_1.countLevel(lintResults, "failure");
+    var score = noticeCount * option.conclusionNoticeWeight +
+        warningCount * option.conclusionWarningWeight +
+        failureCount * option.conclusionFailureWeight;
+    return score < option.conclusionFailureThreshold ? graphql_1.CheckConclusionState.Success : graphql_1.CheckConclusionState.Failure;
+}
+exports.calculateConclusion = calculateConclusion;
+
+
+/***/ }),
+
+/***/ 5281:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.countLevel = void 0;
+function countLevel(lintResults, targetLevel) {
+    var count = 0;
+    for (var _i = 0, lintResults_1 = lintResults; _i < lintResults_1.length; _i++) {
+        var lintResult = lintResults_1[_i];
+        if (lintResult.level == targetLevel) {
+            count += 1;
+        }
+    }
+    return count;
+}
+exports.countLevel = countLevel;
+
+
+/***/ }),
+
+/***/ 2507:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.createMessage = void 0;
+var path_1 = __webpack_require__(197);
+var level_1 = __webpack_require__(5281);
+function markdownLevelMessage(context, lintResults, targetLevel) {
+    var result = "";
+    for (var _i = 0, lintResults_1 = lintResults; _i < lintResults_1.length; _i++) {
+        var lintResult = lintResults_1[_i];
+        if (lintResult.level != targetLevel) {
+            continue;
+        }
+        var line = "";
+        if (lintResult.startLine != undefined) {
+            line += "L" + lintResult.startLine;
+        }
+        if (lintResult.startLine != undefined &&
+            lintResult.endLine != undefined &&
+            lintResult.startLine != lintResult.endLine) {
+            line += "-L" + lintResult.endLine;
+        }
+        var baseUrl = "https://github.com/" + context.owner() + "/" + context.repository();
+        var link = baseUrl + "/blob/" + context.commitSha() + "/" + path_1.trimPath(context, lintResult.path) + "#" + line;
+        result += "### [" + path_1.trimPath(context, lintResult.path) + " " + line + "](" + link + ")\n";
+        result += "Rule: " + lintResult.rule + "\n";
+        result += lintResult.message;
+        result += "\n";
+    }
+    return result;
+}
+function createMessage(context, lintResults) {
+    var noticeCount = level_1.countLevel(lintResults, "notice");
+    var warningCount = level_1.countLevel(lintResults, "warning");
+    var failureCount = level_1.countLevel(lintResults, "failure");
+    var result = "";
+    if (0 < failureCount) {
+        if (failureCount == 1) {
+            result += "## 1 Failure\n";
+        }
+        else {
+            result += "## " + failureCount + " Failures\n";
+        }
+        result += markdownLevelMessage(context, lintResults, "failure");
+    }
+    if (0 < warningCount) {
+        if (warningCount == 1) {
+            result += "## 1 Warning\n";
+        }
+        else {
+            result += "## " + warningCount + " Warnings\n";
+        }
+        result += markdownLevelMessage(context, lintResults, "warning");
+    }
+    if (0 < noticeCount) {
+        if (noticeCount == 1) {
+            result += "## 1 Notice\n";
+        }
+        else {
+            result += "## " + noticeCount + " Notices\n";
+        }
+        result += markdownLevelMessage(context, lintResults, "notice");
+    }
+    return result;
+}
+exports.createMessage = createMessage;
+
+
+/***/ }),
+
+/***/ 197:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.trimPath = void 0;
+var path = __importStar(__webpack_require__(5622));
+function trimPath(context, filePath) {
+    return filePath.replace("" + context.workspacePath() + path.sep, "");
+}
+exports.trimPath = trimPath;
+
+
+/***/ }),
+
+/***/ 8863:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.createSummary = void 0;
+var level_1 = __webpack_require__(5281);
+function createSummary(lintResults) {
+    var noticeCount = level_1.countLevel(lintResults, "notice");
+    var warningCount = level_1.countLevel(lintResults, "warning");
+    var failureCount = level_1.countLevel(lintResults, "failure");
+    var messages = [];
+    if (noticeCount == 1) {
+        messages.push("1 notice");
+    }
+    if (2 <= noticeCount) {
+        messages.push(noticeCount + " notices");
+    }
+    if (warningCount == 1) {
+        messages.push("1 warning");
+    }
+    if (2 <= warningCount) {
+        messages.push(warningCount + " warnings");
+    }
+    if (failureCount == 1) {
+        messages.push("1 failure");
+    }
+    if (2 <= failureCount) {
+        messages.push(failureCount + " failures");
+    }
+    if (messages.length == 0) {
+        return "lint message is empty";
+    }
+    return messages.join(" and ") + " found";
+}
+exports.createSummary = createSummary;
 
 
 /***/ }),
