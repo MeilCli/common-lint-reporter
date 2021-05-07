@@ -10,7 +10,7 @@ async function run() {
     try {
         const inputPath = getInput("input_path");
         const context = JSON.parse(fs.readFileSync(inputPath, "utf-8")) as Context;
-        core.setOutput("pull_request", context.pullRequest);
+        core.setOutput("pull_request", context.pullRequest ?? "null");
     } catch (error) {
         core.setFailed(error.message);
     }

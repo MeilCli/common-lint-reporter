@@ -1,3 +1,4 @@
 node_modules
 lib
 eslint_report.json
+common_lint_context.json
