@@ -225,6 +225,22 @@ var GitHubClient = /** @class */ (function () {
             });
         });
     };
+    GitHubClient.prototype.getLoginUser = function (variables) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.client.query({
+                            query: graphql_1.GetLoginUser,
+                            variables: variables,
+                        })];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, result.data];
+                }
+            });
+        });
+    };
     return GitHubClient;
 }());
 exports.GitHubClient = GitHubClient;
@@ -679,6 +695,7 @@ var core = __importStar(__webpack_require__(2225));
 var option_1 = __webpack_require__(8089);
 var lint_result_1 = __webpack_require__(1744);
 var check_run_reporter_1 = __webpack_require__(7334);
+var comment_reporter_1 = __webpack_require__(7390);
 function run() {
     return __awaiter(this, void 0, void 0, function () {
         var option, lintResults, reporter, a, error_1;
@@ -690,7 +707,13 @@ function run() {
                     return [4 /*yield*/, lint_result_1.readLintResults(option)];
                 case 1:
                     lintResults = _a.sent();
-                    reporter = new check_run_reporter_1.CheckRunReporter();
+                    reporter = void 0;
+                    if (option.reportType == option_1.ReportType.Comment) {
+                        reporter = new comment_reporter_1.CommentReporter();
+                    }
+                    else {
+                        reporter = new check_run_reporter_1.CheckRunReporter();
+                    }
                     reporter.report(option, lintResults);
                     a = "a";
                     return [3 /*break*/, 3];
@@ -743,7 +766,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getOption = exports.getCommonOption = void 0;
+exports.getOption = exports.ReportType = exports.getCommonOption = void 0;
 var core = __importStar(__webpack_require__(2225));
 function getCommonOption() {
     return {
@@ -754,8 +777,18 @@ function getCommonOption() {
     };
 }
 exports.getCommonOption = getCommonOption;
+var ReportType;
+(function (ReportType) {
+    ReportType[ReportType["CheckRun"] = 0] = "CheckRun";
+    ReportType[ReportType["Comment"] = 1] = "Comment";
+})(ReportType = exports.ReportType || (exports.ReportType = {}));
 function getOption() {
-    return __assign({ githubToken: getInput("github_token"), reportFiles: getInput("report_files"), reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true", reportName: getInput("report_name"), conclusionFailureThreshold: parseInt(getInput("conclusion_failure_threshold")), conclusionFailureWeight: parseInt(getInput("conclusion_failure_weight")), conclusionWarningWeight: parseInt(getInput("conclusion_warning_weight")), conclusionNoticeWeight: parseInt(getInput("conclusion_notice_weight")) }, getCommonOption());
+    var reportTypeString = getInput("report_type");
+    var reportType = ReportType.CheckRun;
+    if (reportTypeString == "comment") {
+        reportType = ReportType.Comment;
+    }
+    return __assign({ githubToken: getInput("github_token"), reportFiles: getInput("report_files"), reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true", reportName: getInput("report_name"), reportType: reportType, conclusionFailureThreshold: parseInt(getInput("conclusion_failure_threshold")), conclusionFailureWeight: parseInt(getInput("conclusion_failure_weight")), conclusionWarningWeight: parseInt(getInput("conclusion_warning_weight")), conclusionNoticeWeight: parseInt(getInput("conclusion_notice_weight")) }, getCommonOption());
 }
 exports.getOption = getOption;
 function getInput(key) {
@@ -786,7 +819,7 @@ function getInputNumberOrNull(key) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.equalsAnnotation = exports.createAnnotation = void 0;
 var graphql_1 = __webpack_require__(1973);
-var path_1 = __webpack_require__(197);
+var path_1 = __webpack_require__(5565);
 function createAnnotation(context, lintResult) {
     var _a;
     if (lintResult.startLine == undefined) {
@@ -905,7 +938,7 @@ var client_1 = __webpack_require__(9330);
 var context_1 = __webpack_require__(2754);
 var paging_1 = __webpack_require__(9639);
 var graphql_1 = __webpack_require__(1973);
-var conclusion_1 = __webpack_require__(2482);
+var conclusion_1 = __webpack_require__(2135);
 var summary_1 = __webpack_require__(8863);
 var message_1 = __webpack_require__(2507);
 var annotation_1 = __webpack_require__(4523);
@@ -1052,57 +1085,14 @@ exports.CheckRunReporter = CheckRunReporter;
 
 /***/ }),
 
-/***/ 2482:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.calculateConclusion = void 0;
-var graphql_1 = __webpack_require__(1973);
-var level_1 = __webpack_require__(5281);
-function calculateConclusion(option, lintResults) {
-    var noticeCount = level_1.countLevel(lintResults, "notice");
-    var warningCount = level_1.countLevel(lintResults, "warning");
-    var failureCount = level_1.countLevel(lintResults, "failure");
-    var score = noticeCount * option.conclusionNoticeWeight +
-        warningCount * option.conclusionWarningWeight +
-        failureCount * option.conclusionFailureWeight;
-    return score < option.conclusionFailureThreshold ? graphql_1.CheckConclusionState.Success : graphql_1.CheckConclusionState.Failure;
-}
-exports.calculateConclusion = calculateConclusion;
-
-
-/***/ }),
-
-/***/ 5281:
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.countLevel = void 0;
-function countLevel(lintResults, targetLevel) {
-    var count = 0;
-    for (var _i = 0, lintResults_1 = lintResults; _i < lintResults_1.length; _i++) {
-        var lintResult = lintResults_1[_i];
-        if (lintResult.level == targetLevel) {
-            count += 1;
-        }
-    }
-    return count;
-}
-exports.countLevel = countLevel;
-
-
-/***/ }),
-
 /***/ 2507:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createMessage = void 0;
-var path_1 = __webpack_require__(197);
-var level_1 = __webpack_require__(5281);
+var path_1 = __webpack_require__(5565);
+var level_1 = __webpack_require__(4507);
 function markdownLevelMessage(context, lintResults, targetLevel) {
     var result = "";
     for (var _i = 0, lintResults_1 = lintResults; _i < lintResults_1.length; _i++) {
@@ -1167,47 +1157,13 @@ exports.createMessage = createMessage;
 
 /***/ }),
 
-/***/ 197:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.trimPath = void 0;
-var path = __importStar(__webpack_require__(5622));
-function trimPath(context, filePath) {
-    return filePath.replace("" + context.workspacePath() + path.sep, "");
-}
-exports.trimPath = trimPath;
-
-
-/***/ }),
-
 /***/ 8863:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createSummary = void 0;
-var level_1 = __webpack_require__(5281);
+var level_1 = __webpack_require__(4507);
 function createSummary(lintResults) {
     var noticeCount = level_1.countLevel(lintResults, "notice");
     var warningCount = level_1.countLevel(lintResults, "warning");
@@ -1237,6 +1193,361 @@ function createSummary(lintResults) {
     return messages.join(" and ") + " found";
 }
 exports.createSummary = createSummary;
+
+
+/***/ }),
+
+/***/ 7390:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CommentReporter = void 0;
+var client_1 = __webpack_require__(9330);
+var context_1 = __webpack_require__(2754);
+var paging_1 = __webpack_require__(9639);
+var graphql_1 = __webpack_require__(1973);
+var conclusion_1 = __webpack_require__(2135);
+var comment_1 = __webpack_require__(3973);
+var CommentReporter = /** @class */ (function () {
+    function CommentReporter() {
+    }
+    CommentReporter.prototype.report = function (option, lintResults) {
+        var _a, _b, _c, _d;
+        return __awaiter(this, void 0, void 0, function () {
+            var client, context, repositoryId, statusAndCheckRuns, foundSameCheckRun, checkRunId, _e;
+            return __generator(this, function (_f) {
+                switch (_f.label) {
+                    case 0:
+                        client = client_1.githubClient(option);
+                        context = context_1.githubContext(option);
+                        return [4 /*yield*/, client.getRepositoryId({ owner: context.owner(), name: context.repository() })];
+                    case 1:
+                        repositoryId = (_a = (_f.sent())
+                            .repository) === null || _a === void 0 ? void 0 : _a.id;
+                        if (repositoryId == undefined) {
+                            throw Error("not found repository");
+                        }
+                        return [4 /*yield*/, paging_1.getCommitStatusAndCheckRunWithPaging(client, {
+                                owner: context.owner(),
+                                name: context.repository(),
+                                commitSha: context.commitSha(),
+                            })];
+                    case 2:
+                        statusAndCheckRuns = _f.sent();
+                        foundSameCheckRun = statusAndCheckRuns.find(function (x) { return x.__typename == "CheckRun" && x.name == option.reportName; });
+                        if (!(foundSameCheckRun != undefined)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, client.updateCheckRun({
+                                repositoryId: repositoryId,
+                                checkRunId: foundSameCheckRun.id,
+                                status: graphql_1.RequestableCheckStatusState.InProgress,
+                            })];
+                    case 3:
+                        _f.sent();
+                        _f.label = 4;
+                    case 4:
+                        if (!(foundSameCheckRun == undefined)) return [3 /*break*/, 6];
+                        return [4 /*yield*/, client.createCheckRun({
+                                repositoryId: repositoryId,
+                                headSha: context.commitSha(),
+                                name: option.reportName,
+                                startedAt: new Date().toISOString(),
+                                status: graphql_1.RequestableCheckStatusState.InProgress,
+                            })];
+                    case 5:
+                        _e = (_d = (_c = (_b = (_f.sent())) === null || _b === void 0 ? void 0 : _b.createCheckRun) === null || _c === void 0 ? void 0 : _c.checkRun) === null || _d === void 0 ? void 0 : _d.id;
+                        return [3 /*break*/, 7];
+                    case 6:
+                        _e = foundSameCheckRun.id;
+                        _f.label = 7;
+                    case 7:
+                        checkRunId = _e;
+                        if (checkRunId == undefined) {
+                            throw Error("cannot create check-run");
+                        }
+                        return [4 /*yield*/, this.reportComment(client, context, option, lintResults)];
+                    case 8:
+                        _f.sent();
+                        return [4 /*yield*/, client.updateCheckRun({
+                                repositoryId: repositoryId,
+                                checkRunId: checkRunId,
+                                status: graphql_1.RequestableCheckStatusState.Completed,
+                                conclusion: conclusion_1.calculateConclusion(option, lintResults),
+                                completedAt: new Date().toISOString(),
+                            })];
+                    case 9:
+                        _f.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    CommentReporter.prototype.reportComment = function (client, context, option, lintResults) {
+        var _a, _b, _c;
+        return __awaiter(this, void 0, void 0, function () {
+            var pullRequestNumber, pullRequest, pullRequestId, loginUser, comments, _i, comments_1, comment;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        pullRequestNumber = context.pullRequest();
+                        if (pullRequestNumber == null) {
+                            throw Error("pull_request number is not provided");
+                        }
+                        return [4 /*yield*/, client.getPullRequest({
+                                owner: context.owner(),
+                                name: context.repository(),
+                                number: pullRequestNumber,
+                            })];
+                    case 1:
+                        pullRequest = _d.sent();
+                        pullRequestId = (_b = (_a = pullRequest.repository) === null || _a === void 0 ? void 0 : _a.pullRequest) === null || _b === void 0 ? void 0 : _b.id;
+                        if (pullRequestId == null || pullRequestId == undefined) {
+                            throw Error("not found pull request id");
+                        }
+                        return [4 /*yield*/, client.getLoginUser({})];
+                    case 2:
+                        loginUser = (_d.sent()).viewer.login.split("[")[0];
+                        return [4 /*yield*/, paging_1.getPullRequestCommentsWithPaging(client, {
+                                owner: context.owner(),
+                                name: context.repository(),
+                                pull_request: pullRequestNumber,
+                            })];
+                    case 3:
+                        comments = _d.sent();
+                        _i = 0, comments_1 = comments;
+                        _d.label = 4;
+                    case 4:
+                        if (!(_i < comments_1.length)) return [3 /*break*/, 7];
+                        comment = comments_1[_i];
+                        if (((_c = comment.author) === null || _c === void 0 ? void 0 : _c.login) != loginUser) {
+                            return [3 /*break*/, 6];
+                        }
+                        if (!comment_1.isLintComment(comment.body, option.reportName)) return [3 /*break*/, 6];
+                        return [4 /*yield*/, client.deleteComment({ id: comment.id })];
+                    case 5:
+                        _d.sent();
+                        _d.label = 6;
+                    case 6:
+                        _i++;
+                        return [3 /*break*/, 4];
+                    case 7: return [4 /*yield*/, client.addComment({
+                            id: pullRequestId,
+                            body: comment_1.createLintComment(comment_1.createComment(context, lintResults), option.reportName),
+                        })];
+                    case 8:
+                        _d.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    return CommentReporter;
+}());
+exports.CommentReporter = CommentReporter;
+
+
+/***/ }),
+
+/***/ 3973:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.createComment = exports.createLintComment = exports.isLintComment = void 0;
+var level_1 = __webpack_require__(4507);
+var path_1 = __webpack_require__(5565);
+function lintCommentIdentifier(reportName) {
+    return "<!-- common-lint-reporter: " + reportName + " -->";
+}
+function isLintComment(body, reportName) {
+    return body.startsWith(lintCommentIdentifier(reportName));
+}
+exports.isLintComment = isLintComment;
+function createLintComment(body, reportName) {
+    return lintCommentIdentifier(reportName) + "  " + body;
+}
+exports.createLintComment = createLintComment;
+function createComment(context, lintResults) {
+    var result = "# " + createTitle(lintResults) + "\n";
+    result += "\n";
+    if (0 < level_1.countLevel(lintResults, "failure")) {
+        result += "## Failure\n";
+        result += createLevelTable(context, lintResults, "failure");
+    }
+    if (0 < level_1.countLevel(lintResults, "warning")) {
+        result += "## Warning\n";
+        result += createLevelTable(context, lintResults, "warning");
+    }
+    if (0 < level_1.countLevel(lintResults, "notice")) {
+        result += "## Notice\n";
+        result += createLevelTable(context, lintResults, "notice");
+    }
+    return result;
+}
+exports.createComment = createComment;
+function createTitle(lintResults) {
+    var noticeCount = level_1.countLevel(lintResults, "notice");
+    var warningCount = level_1.countLevel(lintResults, "warning");
+    var failureCount = level_1.countLevel(lintResults, "failure");
+    var messages = [];
+    if (noticeCount == 1) {
+        messages.push("1 notice");
+    }
+    if (2 <= noticeCount) {
+        messages.push(noticeCount + " notices");
+    }
+    if (warningCount == 1) {
+        messages.push("1 warning");
+    }
+    if (2 <= warningCount) {
+        messages.push(warningCount + " warnings");
+    }
+    if (failureCount == 1) {
+        messages.push("1 failure");
+    }
+    if (2 <= failureCount) {
+        messages.push(failureCount + " failures");
+    }
+    if (messages.length == 0) {
+        return "lint message is empty";
+    }
+    return messages.join(" and ") + " found";
+}
+function createLevelTable(context, lintResults, targetLevel) {
+    var result = "|file|message|rule|";
+    for (var _i = 0, lintResults_1 = lintResults; _i < lintResults_1.length; _i++) {
+        var lintResult = lintResults_1[_i];
+        if (lintResult.level != targetLevel) {
+            continue;
+        }
+        var line = "";
+        if (lintResult.startLine != undefined) {
+            line += "L" + lintResult.startLine;
+        }
+        if (lintResult.startLine != undefined &&
+            lintResult.endLine != undefined &&
+            lintResult.startLine != lintResult.endLine) {
+            line += "-L" + lintResult.endLine;
+        }
+        var baseUrl = "https://github.com/" + context.owner() + "/" + context.repository();
+        var link = baseUrl + "/blob/" + context.commitSha() + "/" + path_1.trimPath(context, lintResult.path) + "#" + line;
+        result += "|[" + path_1.trimPath(context, lintResult.path) + " " + line + "](" + link + ")|" + lintResult.message + "|" + lintResult.rule + "|\n";
+    }
+    return result;
+}
+
+
+/***/ }),
+
+/***/ 2135:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.calculateConclusion = void 0;
+var graphql_1 = __webpack_require__(1973);
+var level_1 = __webpack_require__(4507);
+function calculateConclusion(option, lintResults) {
+    var noticeCount = level_1.countLevel(lintResults, "notice");
+    var warningCount = level_1.countLevel(lintResults, "warning");
+    var failureCount = level_1.countLevel(lintResults, "failure");
+    var score = noticeCount * option.conclusionNoticeWeight +
+        warningCount * option.conclusionWarningWeight +
+        failureCount * option.conclusionFailureWeight;
+    return score < option.conclusionFailureThreshold ? graphql_1.CheckConclusionState.Success : graphql_1.CheckConclusionState.Failure;
+}
+exports.calculateConclusion = calculateConclusion;
+
+
+/***/ }),
+
+/***/ 4507:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.countLevel = void 0;
+function countLevel(lintResults, targetLevel) {
+    var count = 0;
+    for (var _i = 0, lintResults_1 = lintResults; _i < lintResults_1.length; _i++) {
+        var lintResult = lintResults_1[_i];
+        if (lintResult.level == targetLevel) {
+            count += 1;
+        }
+    }
+    return count;
+}
+exports.countLevel = countLevel;
+
+
+/***/ }),
+
+/***/ 5565:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.trimPath = void 0;
+var path = __importStar(__webpack_require__(5622));
+function trimPath(context, filePath) {
+    return filePath.replace("" + context.workspacePath() + path.sep, "");
+}
+exports.trimPath = trimPath;
 
 
 /***/ }),

@@ -478,7 +478,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getOption = exports.getCommonOption = void 0;
+exports.getOption = exports.ReportType = exports.getCommonOption = void 0;
 var core = __importStar(__webpack_require__(2225));
 function getCommonOption() {
     return {
@@ -489,8 +489,18 @@ function getCommonOption() {
     };
 }
 exports.getCommonOption = getCommonOption;
+var ReportType;
+(function (ReportType) {
+    ReportType[ReportType["CheckRun"] = 0] = "CheckRun";
+    ReportType[ReportType["Comment"] = 1] = "Comment";
+})(ReportType = exports.ReportType || (exports.ReportType = {}));
 function getOption() {
-    return __assign({ githubToken: getInput("github_token"), reportFiles: getInput("report_files"), reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true", reportName: getInput("report_name"), conclusionFailureThreshold: parseInt(getInput("conclusion_failure_threshold")), conclusionFailureWeight: parseInt(getInput("conclusion_failure_weight")), conclusionWarningWeight: parseInt(getInput("conclusion_warning_weight")), conclusionNoticeWeight: parseInt(getInput("conclusion_notice_weight")) }, getCommonOption());
+    var reportTypeString = getInput("report_type");
+    var reportType = ReportType.CheckRun;
+    if (reportTypeString == "comment") {
+        reportType = ReportType.Comment;
+    }
+    return __assign({ githubToken: getInput("github_token"), reportFiles: getInput("report_files"), reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true", reportName: getInput("report_name"), reportType: reportType, conclusionFailureThreshold: parseInt(getInput("conclusion_failure_threshold")), conclusionFailureWeight: parseInt(getInput("conclusion_failure_weight")), conclusionWarningWeight: parseInt(getInput("conclusion_warning_weight")), conclusionNoticeWeight: parseInt(getInput("conclusion_notice_weight")) }, getCommonOption());
 }
 exports.getOption = getOption;
 function getInput(key) {
