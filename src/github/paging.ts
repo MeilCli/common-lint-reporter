@@ -3,6 +3,8 @@ import {
     GetPullRequestChangedFileQueryVariables,
     GetCommitStatusAndCheckRunQuery,
     GetCommitStatusAndCheckRunQueryVariables,
+    GetCheckRunAnnotationsQuery,
+    GetCheckRunAnnotationsQueryVariables,
     Maybe,
 } from "../graphql";
 import { GitHubClient } from "./client";
@@ -13,6 +15,9 @@ import {
     GetCommitStatusAndCheckRunQueryCommitStatusCheckRollupContextsPageInfo,
     GetCommitStatusAndCheckRunQueryCommitStatusCheckRollupContextsNodes,
     GetCommitStatusAndCheckRunQueryCommitStatusCheckRollupContextsNode,
+    GetCheckRunAnnotationsQueryCheckRunAnnotationsPageInfo,
+    GetCheckRunAnnotationsQueryCheckRunAnnotationsNodes,
+    GetCheckRunAnnotationsQueryCheckRunAnnotationsNode,
 } from "./types";
 
 // gurad for infinity loop
@@ -119,6 +124,34 @@ export async function getCommitStatusAndCheckRunWithPaging(
                 return null;
             }
             return response.repository.object.statusCheckRollup?.contexts.nodes;
+        }
+    );
+}
+
+export async function getCheckRunAnnotationsWithPaging(
+    client: GitHubClient,
+    variables: GetCheckRunAnnotationsQueryVariables
+): Promise<GetCheckRunAnnotationsQueryCheckRunAnnotationsNode[]> {
+    return getResponseWithPaging<
+        GetCheckRunAnnotationsQueryVariables,
+        GetCheckRunAnnotationsQuery,
+        GetCheckRunAnnotationsQueryCheckRunAnnotationsPageInfo,
+        GetCheckRunAnnotationsQueryCheckRunAnnotationsNode,
+        GetCheckRunAnnotationsQueryCheckRunAnnotationsNodes
+    >(
+        variables,
+        (variables) => client.getCheckRunAnnotations(variables),
+        (response) => {
+            if (response.node?.__typename != "CheckRun") {
+                return null;
+            }
+            return response.node.annotations?.pageInfo;
+        },
+        (response) => {
+            if (response.node?.__typename != "CheckRun") {
+                return null;
+            }
+            return response.node.annotations?.nodes;
         }
     );
 }

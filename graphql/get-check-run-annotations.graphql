@@ -1,0 +1,30 @@
+query GetCheckRunAnnotations($checkRunId: ID!, $after: String) {
+    node(id: $checkRunId) {
+        __typename
+        ... on CheckRun {
+            id
+            annotations(first: 100, after: $after) {
+                pageInfo {
+                    hasNextPage
+                    endCursor
+                }
+                nodes {
+                    path
+                    message
+                    title
+                    annotationLevel
+                    location {
+                        start {
+                            line
+                            column
+                        }
+                        end {
+                            line
+                            column
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,4 +1,8 @@
-import { GetPullRequestChangedFileQuery, GetCommitStatusAndCheckRunQuery } from "../../graphql/graphql";
+import {
+    GetPullRequestChangedFileQuery,
+    GetCommitStatusAndCheckRunQuery,
+    GetCheckRunAnnotationsQuery,
+} from "../../graphql/graphql";
 
 export type GetPullRequestChangedFileQueryRepository = Exclude<
     GetPullRequestChangedFileQuery["repository"],
@@ -52,5 +56,24 @@ export type GetCommitStatusAndCheckRunQueryCommitStatusCheckRollupContextsNodes 
 >;
 export type GetCommitStatusAndCheckRunQueryCommitStatusCheckRollupContextsNode = Exclude<
     GetCommitStatusAndCheckRunQueryCommitStatusCheckRollupContextsNodes[number],
+    null | undefined
+>;
+
+export type GetCheckRunAnnotationsQueryNode = Exclude<GetCheckRunAnnotationsQuery["node"], null | undefined>;
+export type GetCheckRunAnnotationsQueryCheckRun = GetCheckRunAnnotationsQueryNode & { __typename: "CheckRun" };
+export type GetCheckRunAnnotationsQueryCheckRunAnnotations = Exclude<
+    GetCheckRunAnnotationsQueryCheckRun["annotations"],
+    null | undefined
+>;
+export type GetCheckRunAnnotationsQueryCheckRunAnnotationsPageInfo = Exclude<
+    GetCheckRunAnnotationsQueryCheckRunAnnotations["pageInfo"],
+    null | undefined
+>;
+export type GetCheckRunAnnotationsQueryCheckRunAnnotationsNodes = Exclude<
+    GetCheckRunAnnotationsQueryCheckRunAnnotations["nodes"],
+    null | undefined
+>;
+export type GetCheckRunAnnotationsQueryCheckRunAnnotationsNode = Exclude<
+    GetCheckRunAnnotationsQueryCheckRunAnnotationsNodes[number],
     null | undefined
 >;
