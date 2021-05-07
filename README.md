@@ -2,6 +2,7 @@
 
 This is generalized lint reporter action
 
+test
 ## Usage
 
 ToDo
