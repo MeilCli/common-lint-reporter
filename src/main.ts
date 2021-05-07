@@ -1,7 +1,7 @@
 import * as core from "@actions/core";
 import { getOption } from "./option";
 import { readLintResults } from "./lint-result";
-import { CheckRunReporter } from "./reporter/check-run-reporter";
+import { CheckRunReporter } from "./reporter/check-run/check-run-reporter";
 
 async function run() {
     try {
