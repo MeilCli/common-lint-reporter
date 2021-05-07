@@ -1,0 +1,17 @@
+name: 'utils of common lint reporter'
+description: 'utils of import context to common lint report'
+author: 'MeilCli'
+branding:
+  icon: layers
+  color: orange
+inputs:
+  input_path:
+    description: 'input path'
+    required: true
+    default: 'common_lint_context.json'
+outputs:
+  pull_request:
+    description: 'pull request number'
+runs:
+  using: 'node12'
+  main: '../../dist/utils-import-context.js'

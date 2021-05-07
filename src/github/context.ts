@@ -1,36 +1,36 @@
 import * as github from "@actions/github";
 import { CommonOption } from "../option";
 
-export function githubContext(option: CommonOption): GitHubContext {
+export function githubContext(option: CommonOption | null): GitHubContext {
     return new GitHubContext(option);
 }
 
 export class GitHubContext {
-    constructor(private readonly option: CommonOption) {}
+    constructor(private readonly option: CommonOption | null) {}
 
     workspacePath(): string {
-        if (this.option.workspacePath != null) {
+        if (this.option?.workspacePath != null) {
             return this.option.workspacePath;
         }
         return process.env.GITHUB_WORKSPACE ?? "";
     }
 
     owner(): string {
-        if (this.option.repository != null) {
+        if (this.option?.repository != null) {
             return this.option.repository.split("/")[0];
         }
         return github.context.repo.owner;
     }
 
     repository(): string {
-        if (this.option.repository != null) {
+        if (this.option?.repository != null) {
             return this.option.repository.split("/")[1];
         }
         return github.context.repo.repo;
     }
 
     pullRequest(): number | null {
-        if (this.option.pullRequest != null) {
+        if (this.option?.pullRequest != null) {
             return this.option.pullRequest;
         }
         if (github.context.payload.pull_request != undefined) {
@@ -40,7 +40,7 @@ export class GitHubContext {
     }
 
     commitSha(): string {
-        if (this.option.commitSha != null) {
+        if (this.option?.commitSha != null) {
             return this.option.commitSha;
         }
         if (github.context.payload.pull_request != undefined) {

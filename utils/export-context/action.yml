@@ -1,0 +1,14 @@
+name: 'utils of common lint reporter'
+description: 'utils of export context to common lint report'
+author: 'MeilCli'
+branding:
+  icon: layers
+  color: orange
+inputs:
+  output_path:
+    description: 'output path'
+    required: true
+    default: 'common_lint_context.json'
+runs:
+  using: 'node12'
+  main: '../../dist/utils-export-context.js'

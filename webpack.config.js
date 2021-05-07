@@ -11,6 +11,8 @@ module.exports = {
         "operator-map": "./src/operator/map.ts",
         "operator-distinct": "./src/operator/distinct.ts",
         "operator-add": "./src/operator/add.ts",
+        "utils-export-context": "./src/utils/export-context.ts",
+        "utils-import-context": "./src/utils/import-context.ts",
         "testing-create": "./src/testing/create.ts",
         "testing-expect": "./src/testing/expect.ts",
     },
