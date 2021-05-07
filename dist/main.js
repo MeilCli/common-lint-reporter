@@ -161,6 +161,70 @@ var GitHubClient = /** @class */ (function () {
             });
         });
     };
+    GitHubClient.prototype.getPullRequest = function (variables) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.client.query({
+                            query: graphql_1.GetPullRequest,
+                            variables: variables,
+                        })];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, result.data];
+                }
+            });
+        });
+    };
+    GitHubClient.prototype.getPullRequestComments = function (variables) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.client.query({
+                            query: graphql_1.GetPullRequestComment,
+                            variables: variables,
+                        })];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, result.data];
+                }
+            });
+        });
+    };
+    GitHubClient.prototype.addComment = function (variables) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.client.mutate({
+                            mutation: graphql_1.AddComment,
+                            variables: variables,
+                        })];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, result.data];
+                }
+            });
+        });
+    };
+    GitHubClient.prototype.deleteComment = function (variables) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.client.mutate({
+                            mutation: graphql_1.DeleteComment,
+                            variables: variables,
+                        })];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, result.data];
+                }
+            });
+        });
+    };
     return GitHubClient;
 }());
 exports.GitHubClient = GitHubClient;
@@ -203,26 +267,29 @@ var GitHubContext = /** @class */ (function () {
         this.option = option;
     }
     GitHubContext.prototype.workspacePath = function () {
-        var _a;
-        if (this.option.workspacePath != null) {
+        var _a, _b;
+        if (((_a = this.option) === null || _a === void 0 ? void 0 : _a.workspacePath) != null) {
             return this.option.workspacePath;
         }
-        return (_a = process.env.GITHUB_WORKSPACE) !== null && _a !== void 0 ? _a : "";
+        return (_b = process.env.GITHUB_WORKSPACE) !== null && _b !== void 0 ? _b : "";
     };
     GitHubContext.prototype.owner = function () {
-        if (this.option.repository != null) {
+        var _a;
+        if (((_a = this.option) === null || _a === void 0 ? void 0 : _a.repository) != null) {
             return this.option.repository.split("/")[0];
         }
         return github.context.repo.owner;
     };
     GitHubContext.prototype.repository = function () {
-        if (this.option.repository != null) {
+        var _a;
+        if (((_a = this.option) === null || _a === void 0 ? void 0 : _a.repository) != null) {
             return this.option.repository.split("/")[1];
         }
         return github.context.repo.repo;
     };
     GitHubContext.prototype.pullRequest = function () {
-        if (this.option.pullRequest != null) {
+        var _a;
+        if (((_a = this.option) === null || _a === void 0 ? void 0 : _a.pullRequest) != null) {
             return this.option.pullRequest;
         }
         if (github.context.payload.pull_request != undefined) {
@@ -231,7 +298,8 @@ var GitHubContext = /** @class */ (function () {
         return null;
     };
     GitHubContext.prototype.commitSha = function () {
-        if (this.option.commitSha != null) {
+        var _a;
+        if (((_a = this.option) === null || _a === void 0 ? void 0 : _a.commitSha) != null) {
             return this.option.commitSha;
         }
         if (github.context.payload.pull_request != undefined) {
@@ -301,7 +369,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getCheckRunAnnotationsWithPaging = exports.getCommitStatusAndCheckRunWithPaging = exports.getPullRequestChangedFileWithPaging = void 0;
+exports.getPullRequestCommentsWithPaging = exports.getCheckRunAnnotationsWithPaging = exports.getCommitStatusAndCheckRunWithPaging = exports.getPullRequestChangedFileWithPaging = void 0;
 // gurad for infinity loop
 var maxLoop = 100;
 function getResponseWithPaging(variables, getResponse, selectorPageInfo, selectorNodes) {
@@ -407,6 +475,14 @@ function getCheckRunAnnotationsWithPaging(client, variables) {
     });
 }
 exports.getCheckRunAnnotationsWithPaging = getCheckRunAnnotationsWithPaging;
+function getPullRequestCommentsWithPaging(client, variables) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, getResponseWithPaging(variables, function (variables) { return client.getPullRequestComments(variables); }, function (response) { var _a, _b; return (_b = (_a = response.repository) === null || _a === void 0 ? void 0 : _a.pullRequest) === null || _b === void 0 ? void 0 : _b.comments.pageInfo; }, function (response) { var _a, _b; return (_b = (_a = response.repository) === null || _a === void 0 ? void 0 : _a.pullRequest) === null || _b === void 0 ? void 0 : _b.comments.nodes; })];
+        });
+    });
+}
+exports.getPullRequestCommentsWithPaging = getPullRequestCommentsWithPaging;
 
 
 /***/ }),

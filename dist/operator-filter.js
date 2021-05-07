@@ -37,26 +37,29 @@ var GitHubContext = /** @class */ (function () {
         this.option = option;
     }
     GitHubContext.prototype.workspacePath = function () {
-        var _a;
-        if (this.option.workspacePath != null) {
+        var _a, _b;
+        if (((_a = this.option) === null || _a === void 0 ? void 0 : _a.workspacePath) != null) {
             return this.option.workspacePath;
         }
-        return (_a = process.env.GITHUB_WORKSPACE) !== null && _a !== void 0 ? _a : "";
+        return (_b = process.env.GITHUB_WORKSPACE) !== null && _b !== void 0 ? _b : "";
     };
     GitHubContext.prototype.owner = function () {
-        if (this.option.repository != null) {
+        var _a;
+        if (((_a = this.option) === null || _a === void 0 ? void 0 : _a.repository) != null) {
             return this.option.repository.split("/")[0];
         }
         return github.context.repo.owner;
     };
     GitHubContext.prototype.repository = function () {
-        if (this.option.repository != null) {
+        var _a;
+        if (((_a = this.option) === null || _a === void 0 ? void 0 : _a.repository) != null) {
             return this.option.repository.split("/")[1];
         }
         return github.context.repo.repo;
     };
     GitHubContext.prototype.pullRequest = function () {
-        if (this.option.pullRequest != null) {
+        var _a;
+        if (((_a = this.option) === null || _a === void 0 ? void 0 : _a.pullRequest) != null) {
             return this.option.pullRequest;
         }
         if (github.context.payload.pull_request != undefined) {
@@ -65,7 +68,8 @@ var GitHubContext = /** @class */ (function () {
         return null;
     };
     GitHubContext.prototype.commitSha = function () {
-        if (this.option.commitSha != null) {
+        var _a;
+        if (((_a = this.option) === null || _a === void 0 ? void 0 : _a.commitSha) != null) {
             return this.option.commitSha;
         }
         if (github.context.payload.pull_request != undefined) {
