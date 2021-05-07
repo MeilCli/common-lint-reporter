@@ -7,6 +7,7 @@ import { getCommitStatusAndCheckRunWithPaging, getPullRequestCommentsWithPaging 
 import { RequestableCheckStatusState } from "../../../graphql/graphql";
 import { calculateConclusion } from "../conclusion";
 import { isLintComment, createLintComment, createComment } from "./comment";
+import * as core from "@actions/core";
 
 export class CommentReporter implements Reporter {
     async report(option: Option, lintResults: LintResult[]): Promise<void> {
@@ -73,6 +74,8 @@ export class CommentReporter implements Reporter {
         if (pullRequestNumber == null) {
             throw Error("pull_request number is not provided");
         }
+
+        core.info("pullRequestNumber: " + pullRequestNumber);
 
         const pullRequest = await client.getPullRequest({
             owner: context.owner(),
