@@ -27,6 +27,10 @@ inputs:
     description: 'report name, if multiple report, should be unique name'
     required: true
     default: 'Lint report'
+  report_type:
+    description: 'report type, value is check_run or comment'
+    required: true
+    default: 'check_run'
   conclusion_failure_threshold:
     description: 'threshold of conclution as failure'
     required: true

@@ -1,5 +1,5 @@
 import { LintResult } from "../../lint-result";
-import { countLevel } from "./level";
+import { countLevel } from "../level";
 
 export function createSummary(lintResults: LintResult[]): string {
     const noticeCount = countLevel(lintResults, "notice");

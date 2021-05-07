@@ -6,7 +6,7 @@ import { githubContext, GitHubContext } from "../../github/context";
 import { getCommitStatusAndCheckRunWithPaging, getCheckRunAnnotationsWithPaging } from "../../github/paging";
 import { GetCheckRunAnnotationsQueryCheckRunAnnotationsNode } from "../../github/types";
 import { RequestableCheckStatusState, CheckAnnotationData } from "../../../graphql/graphql";
-import { calculateConclusion } from "./conclusion";
+import { calculateConclusion } from "../conclusion";
 import { createSummary } from "./summary";
 import { createMessage } from "./message";
 import { createAnnotation, equalsAnnotation } from "./annotation";

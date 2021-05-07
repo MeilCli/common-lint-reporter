@@ -2,7 +2,7 @@ import { CheckAnnotationData, CheckAnnotationLevel } from "../../../graphql/grap
 import { GetCheckRunAnnotationsQueryCheckRunAnnotationsNode } from "../../github/types";
 import { LintResult } from "../../lint-result";
 import { GitHubContext } from "../../github/context";
-import { trimPath } from "./path";
+import { trimPath } from "../path";
 
 export function createAnnotation(context: GitHubContext, lintResult: LintResult): CheckAnnotationData | null {
     if (lintResult.startLine == undefined) {

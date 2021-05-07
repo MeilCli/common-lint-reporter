@@ -32,6 +32,9 @@ import {
     DeleteComment,
     DeleteCommentMutation,
     DeleteCommentMutationVariables,
+    GetLoginUser,
+    GetLoginUserQuery,
+    GetLoginUserQueryVariables,
 } from "../../graphql/graphql";
 
 export function githubClient(option: Option): GitHubClient {
@@ -135,6 +138,14 @@ export class GitHubClient {
     async deleteComment(variables: DeleteCommentMutationVariables): Promise<DeleteCommentMutation | null | undefined> {
         const result = await this.client.mutate<DeleteCommentMutation>({
             mutation: DeleteComment,
+            variables: variables,
+        });
+        return result.data;
+    }
+
+    async getLoginUser(variables: GetLoginUserQueryVariables): Promise<GetLoginUserQuery> {
+        const result = await this.client.query<GetLoginUserQuery>({
+            query: GetLoginUser,
             variables: variables,
         });
         return result.data;

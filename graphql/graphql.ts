@@ -29625,6 +29625,13 @@ export const GetCommitStatusAndCheckRun = gql`
   }
 }
     `;
+export const GetLoginUser = gql`
+    query GetLoginUser {
+  viewer {
+    login
+  }
+}
+    `;
 export const GetPullRequestChangedFile = gql`
     query GetPullRequestChangedFile($owner: String!, $name: String!, $pull_request: Int!, $after: String) {
   repository(owner: $owner, name: $name) {
@@ -29805,6 +29812,17 @@ export type GetCommitStatusAndCheckRunQuery = (
       )> }
     ) | { __typename?: 'Tag' } | { __typename?: 'Tree' }> }
   )> }
+);
+
+export type GetLoginUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetLoginUserQuery = (
+  { __typename?: 'Query' }
+  & { viewer: (
+    { __typename?: 'User' }
+    & Pick<User, 'login'>
+  ) }
 );
 
 export type GetPullRequestChangedFileQueryVariables = Exact<{

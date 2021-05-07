@@ -1,4 +1,4 @@
-import { LintResult, LintResultLevel } from "../../lint-result";
+import { LintResult, LintResultLevel } from "../lint-result";
 
 export function countLevel(lintResults: LintResult[], targetLevel: LintResultLevel): number {
     let count = 0;

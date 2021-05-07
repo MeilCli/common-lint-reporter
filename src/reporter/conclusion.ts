@@ -1,6 +1,6 @@
-import { Option } from "../../option";
-import { LintResult } from "../../lint-result";
-import { CheckConclusionState } from "../../../graphql/graphql";
+import { Option } from "../option";
+import { LintResult } from "../lint-result";
+import { CheckConclusionState } from "../../graphql/graphql";
 import { countLevel } from "./level";
 
 export function calculateConclusion(option: Option, lintResults: LintResult[]): CheckConclusionState {

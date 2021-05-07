@@ -21,18 +21,30 @@ export interface Option extends CommonOption {
     reportFiles: string;
     reportFilesFollowSymbolicLinks: boolean;
     reportName: string;
+    reportType: ReportType;
     conclusionFailureThreshold: number;
     conclusionFailureWeight: number;
     conclusionWarningWeight: number;
     conclusionNoticeWeight: number;
 }
 
+export enum ReportType {
+    CheckRun,
+    Comment,
+}
+
 export function getOption(): Option {
+    const reportTypeString = getInput("report_type");
+    let reportType: ReportType = ReportType.CheckRun;
+    if (reportTypeString == "comment") {
+        reportType = ReportType.Comment;
+    }
     return {
         githubToken: getInput("github_token"),
         reportFiles: getInput("report_files"),
         reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
         reportName: getInput("report_name"),
+        reportType: reportType,
         conclusionFailureThreshold: parseInt(getInput("conclusion_failure_threshold")),
         conclusionFailureWeight: parseInt(getInput("conclusion_failure_weight")),
         conclusionWarningWeight: parseInt(getInput("conclusion_warning_weight")),
