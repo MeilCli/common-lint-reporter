@@ -1,6 +1,8 @@
+import { GitHubContext } from "../../github/context";
 import { GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNode } from "../../github/types";
 import { LintResult } from "../../lint-result";
 import { countLevel } from "../level";
+import { trimPath } from "../path";
 
 function lintInlineCommentIdentifier(reportName: string): string {
     return `<!-- common-lint-reporter: ${reportName} -->`;
@@ -21,6 +23,7 @@ export function createInlineComment(lintResult: LintResult): string {
 export function equalsInlineComment(
     left: GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNode,
     right: LintResult,
+    context: GitHubContext,
     reportName: string
 ): boolean {
     if (left.comments.nodes == null || left.comments.nodes == undefined) {
@@ -32,7 +35,7 @@ export function equalsInlineComment(
     if (left.comments.nodes[0] == null || left.comments.nodes[0] == undefined) {
         return false;
     }
-    if (left.path != right.path) {
+    if (left.path != trimPath(context, right.path)) {
         return false;
     }
     if (left.startLine) {

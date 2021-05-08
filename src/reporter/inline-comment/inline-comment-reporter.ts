@@ -50,7 +50,7 @@ export class InlineCommentReporter extends CommentReporter {
             reviewThreads
         );
         const newLintResults = lintResults.filter(
-            (x) => pastReviewThreads.filter((y) => equalsInlineComment(y, x, option.reportName)).length == 0
+            (x) => pastReviewThreads.filter((y) => equalsInlineComment(y, x, context, option.reportName)).length == 0
         );
 
         core.info("create pull request review");
