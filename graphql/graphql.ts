@@ -29560,7 +29560,9 @@ export const AddPullRequestReviewThread = gql`
   addPullRequestReviewThread(
     input: {pullRequestId: $pullRequestId, pullRequestReviewId: $pullRequestReviewId, body: $body, path: $path, line: $line, startLine: $startLine}
   ) {
-    clientMutationId
+    thread {
+      id
+    }
   }
 }
     `;
@@ -29585,6 +29587,13 @@ export const DeleteComment = gql`
 export const DeletePullRequestReviewComment = gql`
     mutation DeletePullRequestReviewComment($pullRequestReviewCommentId: ID!) {
   deletePullRequestReviewComment(input: {id: $pullRequestReviewCommentId}) {
+    clientMutationId
+  }
+}
+    `;
+export const DeletePullRequestReview = gql`
+    mutation DeletePullRequestReview($pullRequestReviewId: ID!) {
+  deletePullRequestReview(input: {pullRequestReviewId: $pullRequestReviewId}) {
     clientMutationId
   }
 }
@@ -29756,9 +29765,9 @@ export const ResolvePullRequestReviewThread = gql`
 }
     `;
 export const SubmitPullRequestReview = gql`
-    mutation SubmitPullRequestReview($pullRequestId: ID!, $pullRequestReviewId: ID!, $body: String!) {
+    mutation SubmitPullRequestReview($pullRequestId: ID!, $pullRequestReviewId: ID!) {
   submitPullRequestReview(
-    input: {pullRequestId: $pullRequestId, pullRequestReviewId: $pullRequestReviewId, event: COMMENT, body: $body}
+    input: {pullRequestId: $pullRequestId, pullRequestReviewId: $pullRequestReviewId, event: COMMENT}
   ) {
     pullRequestReview {
       id
@@ -29820,7 +29829,10 @@ export type AddPullRequestReviewThreadMutation = (
   { __typename?: 'Mutation' }
   & { addPullRequestReviewThread?: Maybe<(
     { __typename?: 'AddPullRequestReviewThreadPayload' }
-    & Pick<AddPullRequestReviewThreadPayload, 'clientMutationId'>
+    & { thread?: Maybe<(
+      { __typename?: 'PullRequestReviewThread' }
+      & Pick<PullRequestReviewThread, 'id'>
+    )> }
   )> }
 );
 
@@ -29870,6 +29882,19 @@ export type DeletePullRequestReviewCommentMutation = (
   & { deletePullRequestReviewComment?: Maybe<(
     { __typename?: 'DeletePullRequestReviewCommentPayload' }
     & Pick<DeletePullRequestReviewCommentPayload, 'clientMutationId'>
+  )> }
+);
+
+export type DeletePullRequestReviewMutationVariables = Exact<{
+  pullRequestReviewId: Scalars['ID'];
+}>;
+
+
+export type DeletePullRequestReviewMutation = (
+  { __typename?: 'Mutation' }
+  & { deletePullRequestReview?: Maybe<(
+    { __typename?: 'DeletePullRequestReviewPayload' }
+    & Pick<DeletePullRequestReviewPayload, 'clientMutationId'>
   )> }
 );
 
@@ -30127,7 +30152,6 @@ export type ResolvePullRequestReviewThreadMutation = (
 export type SubmitPullRequestReviewMutationVariables = Exact<{
   pullRequestId: Scalars['ID'];
   pullRequestReviewId: Scalars['ID'];
-  body: Scalars['String'];
 }>;
 
 

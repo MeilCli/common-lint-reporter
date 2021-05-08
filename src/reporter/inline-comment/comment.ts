@@ -1,6 +1,7 @@
+import { GitHubContext } from "../../github/context";
 import { GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNode } from "../../github/types";
 import { LintResult } from "../../lint-result";
-import { countLevel } from "../level";
+import { trimPath } from "../path";
 
 function lintInlineCommentIdentifier(reportName: string): string {
     return `<!-- common-lint-reporter: ${reportName} -->`;
@@ -21,6 +22,7 @@ export function createInlineComment(lintResult: LintResult): string {
 export function equalsInlineComment(
     left: GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNode,
     right: LintResult,
+    context: GitHubContext,
     reportName: string
 ): boolean {
     if (left.comments.nodes == null || left.comments.nodes == undefined) {
@@ -32,7 +34,7 @@ export function equalsInlineComment(
     if (left.comments.nodes[0] == null || left.comments.nodes[0] == undefined) {
         return false;
     }
-    if (left.path != right.path) {
+    if (left.path != trimPath(context, right.path)) {
         return false;
     }
     if (left.startLine) {
@@ -52,33 +54,4 @@ export function equalsInlineComment(
     }
 
     return true;
-}
-
-export function createReviewComment(lintResults: LintResult[]): string {
-    const noticeCount = countLevel(lintResults, "notice");
-    const warningCount = countLevel(lintResults, "warning");
-    const failureCount = countLevel(lintResults, "failure");
-    const messages: string[] = [];
-    if (noticeCount == 1) {
-        messages.push("1 notice");
-    }
-    if (2 <= noticeCount) {
-        messages.push(`${noticeCount} notices`);
-    }
-    if (warningCount == 1) {
-        messages.push("1 warning");
-    }
-    if (2 <= warningCount) {
-        messages.push(`${warningCount} warnings`);
-    }
-    if (failureCount == 1) {
-        messages.push("1 failure");
-    }
-    if (2 <= failureCount) {
-        messages.push(`${failureCount} failures`);
-    }
-    if (messages.length == 0) {
-        return "lint message is empty";
-    }
-    return `${messages.join(" and ")} found`;
 }
