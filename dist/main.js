@@ -1845,6 +1845,7 @@ var option_1 = __webpack_require__(8089);
 var paging_1 = __webpack_require__(9639);
 var comment_reporter_1 = __webpack_require__(7390);
 var comment_1 = __webpack_require__(2676);
+var path_1 = __webpack_require__(5565);
 var core = __importStar(__webpack_require__(2225));
 var InlineCommentReporter = /** @class */ (function (_super) {
     __extends(InlineCommentReporter, _super);
@@ -1916,7 +1917,7 @@ var InlineCommentReporter = /** @class */ (function (_super) {
                                 pullRequestId: pullRequest.id,
                                 pullRequestReviewId: pullRequestReviewId,
                                 body: comment_1.createLintInlineComment(comment_1.createInlineComment(lintResult), option.reportName),
-                                path: lintResult.path,
+                                path: path_1.trimPath(context, lintResult.path),
                                 line: line,
                                 startLine: startLine,
                             })];
