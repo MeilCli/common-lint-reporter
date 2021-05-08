@@ -77,7 +77,7 @@ export class InlineCommentReporter extends CommentReporter {
                 continue;
             }
             try {
-                await client.addPullRequestReviewThread({
+                const thread = await client.addPullRequestReviewThread({
                     pullRequestId: pullRequest.id,
                     pullRequestReviewId: pullRequestReviewId,
                     body: createLintInlineComment(createInlineComment(lintResult), option.reportName),
@@ -85,7 +85,14 @@ export class InlineCommentReporter extends CommentReporter {
                     line: line,
                     startLine: startLine,
                 });
-                reportedLintResults.push(lintResult);
+                if (
+                    thread?.addPullRequestReviewThread?.thread?.id != null &&
+                    thread.addPullRequestReviewThread.thread.id != undefined
+                ) {
+                    reportedLintResults.push(lintResult);
+                } else {
+                    cannotReportedLintResults.push(lintResult);
+                }
             } catch (error) {
                 cannotReportedLintResults.push(lintResult);
             }
