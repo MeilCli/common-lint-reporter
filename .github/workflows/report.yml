@@ -43,3 +43,10 @@ jobs:
           report_type: 'comment'
           report_name: 'Comment Report'
           pull_request: ${{ steps.lint_context.outputs.pull_request }}
+      - name: Report lint result
+        uses: ./
+        if: steps.lint_context.outputs.pull_request != 'null'
+        with:
+          report_type: 'inline_comment'
+          report_name: 'Inline Comment Report'
+          pull_request: ${{ steps.lint_context.outputs.pull_request }}
