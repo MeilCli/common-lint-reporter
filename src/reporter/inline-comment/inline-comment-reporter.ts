@@ -80,6 +80,7 @@ export class InlineCommentReporter extends CommentReporter {
                 });
                 core.info(`create thread: ${lintResult.path} ${lintResult.message}`);
             } catch (error) {
+                core.error(error);
                 core.info(`error thread: ${lintResult.path} ${lintResult.message}`);
             }
         }
