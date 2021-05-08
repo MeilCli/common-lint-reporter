@@ -1841,28 +1841,28 @@ var InlineCommentReporter = /** @class */ (function (_super) {
     };
     // return cannot reported lint result
     InlineCommentReporter.prototype.reportInlineComment = function (client, context, option, pullRequest, loginUser, lintResults) {
-        var _a, _b;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function () {
-            var reviewThreads, pastReviewThreads, newLintResults, pullRequestReview, pullRequestReviewId, reportedLintResults, cannotReportedLintResults, _i, newLintResults_1, lintResult, line, startLine, error_1;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            var reviewThreads, pastReviewThreads, newLintResults, pullRequestReview, pullRequestReviewId, reportedLintResults, cannotReportedLintResults, _i, newLintResults_1, lintResult, line, startLine, thread, error_1;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
                     case 0: return [4 /*yield*/, paging_1.getPullRequestReviewThreadsWithPaging(client, {
                             owner: context.owner(),
                             name: context.repository(),
                             number: pullRequest.number,
                         })];
                     case 1:
-                        reviewThreads = _c.sent();
+                        reviewThreads = _e.sent();
                         return [4 /*yield*/, this.resolveOutdatedThreadsAndFiltered(client, option, loginUser, reviewThreads)];
                     case 2:
-                        pastReviewThreads = _c.sent();
+                        pastReviewThreads = _e.sent();
                         newLintResults = lintResults.filter(function (x) { return pastReviewThreads.filter(function (y) { return comment_1.equalsInlineComment(y, x, context, option.reportName); }).length == 0; });
                         return [4 /*yield*/, client.addPullRequestReviewDraft({
                                 pullRequestId: pullRequest.id,
                                 commitSha: context.commitSha(),
                             })];
                     case 3:
-                        pullRequestReview = _c.sent();
+                        pullRequestReview = _e.sent();
                         pullRequestReviewId = (_b = (_a = pullRequestReview === null || pullRequestReview === void 0 ? void 0 : pullRequestReview.addPullRequestReview) === null || _a === void 0 ? void 0 : _a.pullRequestReview) === null || _b === void 0 ? void 0 : _b.id;
                         if (pullRequestReviewId == null || pullRequestReviewId == undefined) {
                             return [2 /*return*/, []];
@@ -1870,7 +1870,7 @@ var InlineCommentReporter = /** @class */ (function (_super) {
                         reportedLintResults = [];
                         cannotReportedLintResults = [];
                         _i = 0, newLintResults_1 = newLintResults;
-                        _c.label = 4;
+                        _e.label = 4;
                     case 4:
                         if (!(_i < newLintResults_1.length)) return [3 /*break*/, 9];
                         lintResult = newLintResults_1[_i];
@@ -1883,9 +1883,9 @@ var InlineCommentReporter = /** @class */ (function (_super) {
                         if (line == undefined) {
                             return [3 /*break*/, 8];
                         }
-                        _c.label = 5;
+                        _e.label = 5;
                     case 5:
-                        _c.trys.push([5, 7, , 8]);
+                        _e.trys.push([5, 7, , 8]);
                         return [4 /*yield*/, client.addPullRequestReviewThread({
                                 pullRequestId: pullRequest.id,
                                 pullRequestReviewId: pullRequestReviewId,
@@ -1895,11 +1895,17 @@ var InlineCommentReporter = /** @class */ (function (_super) {
                                 startLine: startLine,
                             })];
                     case 6:
-                        _c.sent();
-                        reportedLintResults.push(lintResult);
+                        thread = _e.sent();
+                        if (((_d = (_c = thread === null || thread === void 0 ? void 0 : thread.addPullRequestReviewThread) === null || _c === void 0 ? void 0 : _c.thread) === null || _d === void 0 ? void 0 : _d.id) != null &&
+                            thread.addPullRequestReviewThread.thread.id != undefined) {
+                            reportedLintResults.push(lintResult);
+                        }
+                        else {
+                            cannotReportedLintResults.push(lintResult);
+                        }
                         return [3 /*break*/, 8];
                     case 7:
-                        error_1 = _c.sent();
+                        error_1 = _e.sent();
                         cannotReportedLintResults.push(lintResult);
                         return [3 /*break*/, 8];
                     case 8:
@@ -1912,12 +1918,12 @@ var InlineCommentReporter = /** @class */ (function (_super) {
                                 pullRequestReviewId: pullRequestReviewId,
                             })];
                     case 10:
-                        _c.sent();
+                        _e.sent();
                         return [3 /*break*/, 13];
                     case 11: return [4 /*yield*/, client.deletePullRequestReview({ pullRequestReviewId: pullRequestReviewId })];
                     case 12:
-                        _c.sent();
-                        _c.label = 13;
+                        _e.sent();
+                        _e.label = 13;
                     case 13: return [2 /*return*/, cannotReportedLintResults];
                 }
             });
