@@ -1,7 +1,0 @@
-mutation AddPullRequestReview($pullRequestId: ID!, $commitSha: GitObjectID, $body: String!) {
-    addPullRequestReview(input: { pullRequestId: $pullRequestId, commitOID: $commitSha, event: COMMENT, body: $body }) {
-        pullRequestReview {
-            id
-        }
-    }
-}
