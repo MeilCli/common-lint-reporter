@@ -241,13 +241,29 @@ var GitHubClient = /** @class */ (function () {
             });
         });
     };
-    GitHubClient.prototype.addPullRequestReview = function (variables) {
+    GitHubClient.prototype.addPullRequestReviewDraft = function (variables) {
         return __awaiter(this, void 0, void 0, function () {
             var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.client.mutate({
-                            mutation: graphql_1.AddPullRequestReview,
+                            mutation: graphql_1.AddPullRequestReviewDraft,
+                            variables: variables,
+                        })];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, result.data];
+                }
+            });
+        });
+    };
+    GitHubClient.prototype.submitPullRequestReview = function (variables) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.client.mutate({
+                            mutation: graphql_1.SubmitPullRequestReview,
                             variables: variables,
                         })];
                     case 1:
@@ -1857,7 +1873,7 @@ var InlineCommentReporter = /** @class */ (function (_super) {
     InlineCommentReporter.prototype.reportInlineComment = function (client, context, option, pullRequest, loginUser, lintResults) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function () {
-            var reviewThreads, pastReviewThreads, newLintResults, pullRequestReview, pullRequestReviewId, _i, newLintResults_1, lintResult, line, startLine, error_1;
+            var reviewThreads, pastReviewThreads, newLintResults, pullRequestReview, pullRequestReviewId, reportedLintResults, _i, newLintResults_1, lintResult, line, startLine, error_1;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0: return [4 /*yield*/, paging_1.getPullRequestReviewThreadsWithPaging(client, {
@@ -1872,10 +1888,9 @@ var InlineCommentReporter = /** @class */ (function (_super) {
                         pastReviewThreads = _c.sent();
                         newLintResults = lintResults.filter(function (x) { return pastReviewThreads.filter(function (y) { return comment_1.equalsInlineComment(y, x, option.reportName); }).length == 0; });
                         core.info("create pull request review");
-                        return [4 /*yield*/, client.addPullRequestReview({
+                        return [4 /*yield*/, client.addPullRequestReviewDraft({
                                 pullRequestId: pullRequest.id,
                                 commitSha: context.commitSha(),
-                                body: comment_1.createReviewComment(lintResults),
                             })];
                     case 3:
                         pullRequestReview = _c.sent();
@@ -1883,15 +1898,16 @@ var InlineCommentReporter = /** @class */ (function (_super) {
                         if (pullRequestReviewId == null || pullRequestReviewId == undefined) {
                             return [2 /*return*/];
                         }
+                        reportedLintResults = [];
                         _i = 0, newLintResults_1 = newLintResults;
                         _c.label = 4;
                     case 4:
-                        if (!(_i < newLintResults_1.length)) return [3 /*break*/, 9];
+                        if (!(_i < newLintResults_1.length)) return [3 /*break*/, 10];
                         lintResult = newLintResults_1[_i];
                         line = lintResult.endLine != undefined ? lintResult.endLine : lintResult.startLine;
                         startLine = lintResult.endLine != undefined ? lintResult.startLine : undefined;
                         if (line == undefined) {
-                            return [3 /*break*/, 8];
+                            return [3 /*break*/, 9];
                         }
                         _c.label = 5;
                     case 5:
@@ -1914,9 +1930,21 @@ var InlineCommentReporter = /** @class */ (function (_super) {
                         core.info("error thread: " + lintResult.path + " " + lintResult.message);
                         return [3 /*break*/, 8];
                     case 8:
+                        reportedLintResults.push(lintResult);
+                        _c.label = 9;
+                    case 9:
                         _i++;
                         return [3 /*break*/, 4];
-                    case 9: return [2 /*return*/];
+                    case 10:
+                        core.info("submit");
+                        return [4 /*yield*/, client.submitPullRequestReview({
+                                pullRequestId: pullRequest.id,
+                                pullRequestReviewId: pullRequestReviewId,
+                                body: comment_1.createReviewComment(reportedLintResults),
+                            })];
+                    case 11:
+                        _c.sent();
+                        return [2 /*return*/];
                 }
             });
         });
