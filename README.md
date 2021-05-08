@@ -3,7 +3,7 @@
 This is generalized lint reporter action
 
 ## Usage
-
+test
 ToDo
 
 ## License
