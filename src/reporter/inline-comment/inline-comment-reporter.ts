@@ -6,6 +6,7 @@ import { getPullRequestReviewThreadsWithPaging } from "../../github/paging";
 import { GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNode } from "../../github/types";
 import { CommentReporter, PullRequest, LoginUser } from "../comment/comment-reporter";
 import { isLintInlineComment, createLintInlineComment, createInlineComment, equalsInlineComment } from "./comment";
+import * as core from "@actions/core";
 
 export class InlineCommentReporter extends CommentReporter {
     protected async reportComment(
@@ -30,17 +31,20 @@ export class InlineCommentReporter extends CommentReporter {
         loginUser: LoginUser,
         lintResults: LintResult[]
     ) {
+        core.info("before inline comment");
         const reviewThreads = await getPullRequestReviewThreadsWithPaging(client, {
             owner: context.owner(),
             name: context.repository(),
             number: pullRequest.number,
         });
+        core.info("fetched threads");
         const pastReviewThreads = await this.resolveOutdatedThreadsAndFiltered(
             client,
             option,
             loginUser,
             reviewThreads
         );
+        core.info("redoleved outdated");
         const newLintResults = lintResults.filter(
             (x) => pastReviewThreads.filter((y) => equalsInlineComment(y, x, option.reportName)).length == 0
         );
@@ -51,6 +55,7 @@ export class InlineCommentReporter extends CommentReporter {
             if (line == undefined) {
                 continue;
             }
+            core.info(`create thread: ${lintResult.path} ${lintResult.message}`);
             await client.addPullRequestReviewThread({
                 pullRequestId: pullRequest.id,
                 body: createLintInlineComment(createInlineComment(lintResult), option.reportName),
