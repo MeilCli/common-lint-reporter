@@ -241,6 +241,70 @@ var GitHubClient = /** @class */ (function () {
             });
         });
     };
+    GitHubClient.prototype.addPullRequestReviewThread = function (variables) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.client.mutate({
+                            mutation: graphql_1.AddPullRequestReviewThread,
+                            variables: variables,
+                        })];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, result.data];
+                }
+            });
+        });
+    };
+    GitHubClient.prototype.deletePullRequestReviewComment = function (variables) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.client.mutate({
+                            mutation: graphql_1.DeletePullRequestReviewComment,
+                            variables: variables,
+                        })];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, result.data];
+                }
+            });
+        });
+    };
+    GitHubClient.prototype.resolvePullRequestReviewThread = function (variables) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.client.mutate({
+                            mutation: graphql_1.ResolvePullRequestReviewThread,
+                            variables: variables,
+                        })];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, result.data];
+                }
+            });
+        });
+    };
+    GitHubClient.prototype.getPullRequestReviewThreads = function (variables) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.client.query({
+                            query: graphql_1.GetPullRequestReviewThreads,
+                            variables: variables,
+                        })];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, result.data];
+                }
+            });
+        });
+    };
     return GitHubClient;
 }());
 exports.GitHubClient = GitHubClient;
@@ -385,7 +449,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getPullRequestCommentsWithPaging = exports.getCheckRunAnnotationsWithPaging = exports.getCommitStatusAndCheckRunWithPaging = exports.getPullRequestChangedFileWithPaging = void 0;
+exports.getPullRequestReviewThreadsWithPaging = exports.getPullRequestCommentsWithPaging = exports.getCheckRunAnnotationsWithPaging = exports.getCommitStatusAndCheckRunWithPaging = exports.getPullRequestChangedFileWithPaging = void 0;
 // gurad for infinity loop
 var maxLoop = 100;
 function getResponseWithPaging(variables, getResponse, selectorPageInfo, selectorNodes) {
@@ -499,6 +563,14 @@ function getPullRequestCommentsWithPaging(client, variables) {
     });
 }
 exports.getPullRequestCommentsWithPaging = getPullRequestCommentsWithPaging;
+function getPullRequestReviewThreadsWithPaging(client, variables) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, getResponseWithPaging(variables, function (variables) { return client.getPullRequestReviewThreads(variables); }, function (response) { var _a, _b; return (_b = (_a = response.repository) === null || _a === void 0 ? void 0 : _a.pullRequest) === null || _b === void 0 ? void 0 : _b.reviewThreads.pageInfo; }, function (response) { var _a, _b; return (_b = (_a = response.repository) === null || _a === void 0 ? void 0 : _a.pullRequest) === null || _b === void 0 ? void 0 : _b.reviewThreads.nodes; })];
+        });
+    });
+}
+exports.getPullRequestReviewThreadsWithPaging = getPullRequestReviewThreadsWithPaging;
 
 
 /***/ }),
@@ -696,6 +768,7 @@ var option_1 = __webpack_require__(8089);
 var lint_result_1 = __webpack_require__(1744);
 var check_run_reporter_1 = __webpack_require__(7334);
 var comment_reporter_1 = __webpack_require__(7390);
+var inline_comment_reporter_1 = __webpack_require__(2144);
 function run() {
     return __awaiter(this, void 0, void 0, function () {
         var option, lintResults, reporter, a, error_1;
@@ -710,6 +783,9 @@ function run() {
                     reporter = void 0;
                     if (option.reportType == option_1.ReportType.Comment) {
                         reporter = new comment_reporter_1.CommentReporter();
+                    }
+                    else if (option.reportType == option_1.ReportType.InlineComment) {
+                        reporter = new inline_comment_reporter_1.InlineCommentReporter();
                     }
                     else {
                         reporter = new check_run_reporter_1.CheckRunReporter();
@@ -766,7 +842,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getOption = exports.ReportType = exports.getCommonOption = void 0;
+exports.getOption = exports.OutdatedResolver = exports.ReportType = exports.getCommonOption = void 0;
 var core = __importStar(__webpack_require__(2225));
 function getCommonOption() {
     return {
@@ -781,14 +857,46 @@ var ReportType;
 (function (ReportType) {
     ReportType[ReportType["CheckRun"] = 0] = "CheckRun";
     ReportType[ReportType["Comment"] = 1] = "Comment";
+    ReportType[ReportType["InlineComment"] = 2] = "InlineComment";
 })(ReportType = exports.ReportType || (exports.ReportType = {}));
+var OutdatedResolver;
+(function (OutdatedResolver) {
+    OutdatedResolver[OutdatedResolver["ResolveThread"] = 0] = "ResolveThread";
+    OutdatedResolver[OutdatedResolver["ForceResolveThread"] = 1] = "ForceResolveThread";
+    OutdatedResolver[OutdatedResolver["DeleteThread"] = 2] = "DeleteThread";
+    OutdatedResolver[OutdatedResolver["DeleteOrForceResolveThread"] = 3] = "DeleteOrForceResolveThread";
+})(OutdatedResolver = exports.OutdatedResolver || (exports.OutdatedResolver = {}));
 function getOption() {
     var reportTypeString = getInput("report_type");
     var reportType = ReportType.CheckRun;
-    if (reportTypeString == "comment") {
-        reportType = ReportType.Comment;
+    switch (reportTypeString) {
+        case "comment":
+            reportType = ReportType.Comment;
+            break;
+        case "inline_comment":
+            reportType = ReportType.InlineComment;
+            break;
+        default:
+            reportType = ReportType.CheckRun;
+            break;
     }
-    return __assign({ githubToken: getInput("github_token"), reportFiles: getInput("report_files"), reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true", reportName: getInput("report_name"), reportType: reportType, conclusionFailureThreshold: parseInt(getInput("conclusion_failure_threshold")), conclusionFailureWeight: parseInt(getInput("conclusion_failure_weight")), conclusionWarningWeight: parseInt(getInput("conclusion_warning_weight")), conclusionNoticeWeight: parseInt(getInput("conclusion_notice_weight")) }, getCommonOption());
+    var outdatedResolverString = getInput("outdated_resolver");
+    var outdatedResolver = OutdatedResolver.DeleteOrForceResolveThread;
+    switch (outdatedResolverString) {
+        case "resolve_thread":
+            outdatedResolver = OutdatedResolver.ResolveThread;
+            break;
+        case "force_resolve_thread":
+            outdatedResolver = OutdatedResolver.ForceResolveThread;
+            break;
+        case "delete_thread":
+            outdatedResolver = OutdatedResolver.DeleteThread;
+            break;
+        default:
+            outdatedResolver = OutdatedResolver.DeleteOrForceResolveThread;
+            break;
+    }
+    return __assign({ githubToken: getInput("github_token"), reportFiles: getInput("report_files"), reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true", reportName: getInput("report_name"), reportType: reportType, conclusionFailureThreshold: parseInt(getInput("conclusion_failure_threshold")), conclusionFailureWeight: parseInt(getInput("conclusion_failure_weight")), conclusionWarningWeight: parseInt(getInput("conclusion_warning_weight")), conclusionNoticeWeight: parseInt(getInput("conclusion_notice_weight")), outdatedResolver: outdatedResolver }, getCommonOption());
 }
 exports.getOption = getOption;
 function getInput(key) {
@@ -1251,7 +1359,7 @@ var CommentReporter = /** @class */ (function () {
     CommentReporter.prototype.report = function (option, lintResults) {
         var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function () {
-            var client, context, repositoryId, statusAndCheckRuns, foundSameCheckRun, checkRunId, _e;
+            var client, context, repositoryId, statusAndCheckRuns, foundSameCheckRun, checkRunId, _e, pullRequest, loginUser;
             return __generator(this, function (_f) {
                 switch (_f.label) {
                     case 0:
@@ -1301,8 +1409,14 @@ var CommentReporter = /** @class */ (function () {
                         if (checkRunId == undefined) {
                             throw Error("cannot create check-run");
                         }
-                        return [4 /*yield*/, this.reportComment(client, context, option, lintResults)];
+                        return [4 /*yield*/, this.getPullRequest(client, context)];
                     case 8:
+                        pullRequest = _f.sent();
+                        return [4 /*yield*/, this.getLoginUser(client)];
+                    case 9:
+                        loginUser = _f.sent();
+                        return [4 /*yield*/, this.reportComment(client, context, option, pullRequest, loginUser, lintResults)];
+                    case 10:
                         _f.sent();
                         return [4 /*yield*/, client.updateCheckRun({
                                 repositoryId: repositoryId,
@@ -1311,19 +1425,19 @@ var CommentReporter = /** @class */ (function () {
                                 conclusion: conclusion_1.calculateConclusion(option, lintResults),
                                 completedAt: new Date().toISOString(),
                             })];
-                    case 9:
+                    case 11:
                         _f.sent();
                         return [2 /*return*/];
                 }
             });
         });
     };
-    CommentReporter.prototype.reportComment = function (client, context, option, lintResults) {
-        var _a, _b, _c;
+    CommentReporter.prototype.getPullRequest = function (client, context) {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function () {
-            var pullRequestNumber, pullRequest, pullRequestId, loginUser, comments, _i, comments_1, comment;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
+            var pullRequestNumber, pullRequest, pullRequestId;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
                         pullRequestNumber = context.pullRequest();
                         if (pullRequestNumber == null) {
@@ -1335,47 +1449,73 @@ var CommentReporter = /** @class */ (function () {
                                 number: pullRequestNumber,
                             })];
                     case 1:
-                        pullRequest = _d.sent();
+                        pullRequest = _c.sent();
                         pullRequestId = (_b = (_a = pullRequest.repository) === null || _a === void 0 ? void 0 : _a.pullRequest) === null || _b === void 0 ? void 0 : _b.id;
                         if (pullRequestId == null || pullRequestId == undefined) {
                             throw Error("not found pull request id");
                         }
-                        return [4 /*yield*/, client.getLoginUser({})];
-                    case 2:
-                        loginUser = (_d.sent()).viewer.login.split("[")[0];
-                        return [4 /*yield*/, paging_1.getPullRequestCommentsWithPaging(client, {
-                                owner: context.owner(),
-                                name: context.repository(),
-                                pull_request: pullRequestNumber,
-                            })];
-                    case 3:
-                        comments = _d.sent();
+                        return [2 /*return*/, {
+                                number: pullRequestNumber,
+                                id: pullRequestId,
+                            }];
+                }
+            });
+        });
+    };
+    CommentReporter.prototype.getLoginUser = function (client) {
+        return __awaiter(this, void 0, void 0, function () {
+            var loginUser;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, client.getLoginUser({})];
+                    case 1:
+                        loginUser = (_a.sent()).viewer.login.split("[")[0];
+                        return [2 /*return*/, {
+                                login: loginUser,
+                            }];
+                }
+            });
+        });
+    };
+    CommentReporter.prototype.reportComment = function (client, context, option, pullRequest, loginUser, lintResults) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function () {
+            var comments, _i, comments_1, comment;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, paging_1.getPullRequestCommentsWithPaging(client, {
+                            owner: context.owner(),
+                            name: context.repository(),
+                            pull_request: pullRequest.number,
+                        })];
+                    case 1:
+                        comments = _b.sent();
                         _i = 0, comments_1 = comments;
-                        _d.label = 4;
-                    case 4:
-                        if (!(_i < comments_1.length)) return [3 /*break*/, 7];
+                        _b.label = 2;
+                    case 2:
+                        if (!(_i < comments_1.length)) return [3 /*break*/, 5];
                         comment = comments_1[_i];
-                        if (((_c = comment.author) === null || _c === void 0 ? void 0 : _c.login) != loginUser) {
-                            return [3 /*break*/, 6];
+                        if (((_a = comment.author) === null || _a === void 0 ? void 0 : _a.login) != loginUser.login) {
+                            return [3 /*break*/, 4];
                         }
-                        if (!comment_1.isLintComment(comment.body, option.reportName)) return [3 /*break*/, 6];
+                        if (!comment_1.isLintComment(comment.body, option.reportName)) return [3 /*break*/, 4];
                         return [4 /*yield*/, client.deleteComment({ id: comment.id })];
-                    case 5:
-                        _d.sent();
-                        _d.label = 6;
-                    case 6:
+                    case 3:
+                        _b.sent();
+                        _b.label = 4;
+                    case 4:
                         _i++;
-                        return [3 /*break*/, 4];
-                    case 7:
+                        return [3 /*break*/, 2];
+                    case 5:
                         if (lintResults.length == 0) {
                             return [2 /*return*/];
                         }
                         return [4 /*yield*/, client.addComment({
-                                id: pullRequestId,
+                                id: pullRequest.id,
                                 body: comment_1.createLintComment(comment_1.createComment(context, lintResults), option.reportName),
                             })];
-                    case 8:
-                        _d.sent();
+                    case 6:
+                        _b.sent();
                         return [2 /*return*/];
                 }
             });
@@ -1500,6 +1640,284 @@ function calculateConclusion(option, lintResults) {
     return score < option.conclusionFailureThreshold ? graphql_1.CheckConclusionState.Success : graphql_1.CheckConclusionState.Failure;
 }
 exports.calculateConclusion = calculateConclusion;
+
+
+/***/ }),
+
+/***/ 2676:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.equalsInlineComment = exports.createInlineComment = exports.createLintInlineComment = exports.isLintInlineComment = void 0;
+function lintInlineCommentIdentifier(reportName) {
+    return "<!-- common-lint-reporter: " + reportName + " -->";
+}
+function isLintInlineComment(body, reportName) {
+    return body.startsWith(lintInlineCommentIdentifier(reportName));
+}
+exports.isLintInlineComment = isLintInlineComment;
+function createLintInlineComment(body, reportName) {
+    return lintInlineCommentIdentifier(reportName) + "  \n" + body;
+}
+exports.createLintInlineComment = createLintInlineComment;
+function createInlineComment(lintResult) {
+    return "**Rule: " + lintResult.rule + "**\n\n" + lintResult.message;
+}
+exports.createInlineComment = createInlineComment;
+function equalsInlineComment(left, right, reportName) {
+    if (left.comments.nodes == null || left.comments.nodes == undefined) {
+        return false;
+    }
+    if (left.comments.nodes.length < 1) {
+        return false;
+    }
+    if (left.comments.nodes[0] == null || left.comments.nodes[0] == undefined) {
+        return false;
+    }
+    if (left.path != right.path) {
+        return false;
+    }
+    if (left.startLine) {
+        if (left.line != right.endLine) {
+            return false;
+        }
+        if (left.startLine != right.startLine) {
+            return false;
+        }
+    }
+    else {
+        if (left.line != right.startLine) {
+            return false;
+        }
+    }
+    if (left.comments.nodes[0].body != createLintInlineComment(createInlineComment(right), reportName)) {
+        return false;
+    }
+    return true;
+}
+exports.equalsInlineComment = equalsInlineComment;
+
+
+/***/ }),
+
+/***/ 2144:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.InlineCommentReporter = void 0;
+var option_1 = __webpack_require__(8089);
+var paging_1 = __webpack_require__(9639);
+var comment_reporter_1 = __webpack_require__(7390);
+var comment_1 = __webpack_require__(2676);
+var InlineCommentReporter = /** @class */ (function (_super) {
+    __extends(InlineCommentReporter, _super);
+    function InlineCommentReporter() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    InlineCommentReporter.prototype.reportComment = function (client, context, option, pullRequest, loginUser, lintResults) {
+        return __awaiter(this, void 0, void 0, function () {
+            var inlineLintResults, notInlineLintResults;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        inlineLintResults = lintResults.filter(function (x) { return x.startLine != undefined; });
+                        notInlineLintResults = lintResults.filter(function (x) { return x.startLine == undefined; });
+                        return [4 /*yield*/, this.reportInlineComment(client, context, option, pullRequest, loginUser, inlineLintResults)];
+                    case 1:
+                        _a.sent();
+                        return [4 /*yield*/, _super.prototype.reportComment.call(this, client, context, option, pullRequest, loginUser, notInlineLintResults)];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    InlineCommentReporter.prototype.reportInlineComment = function (client, context, option, pullRequest, loginUser, lintResults) {
+        return __awaiter(this, void 0, void 0, function () {
+            var reviewThreads, pastReviewThreads, newLintResults, _i, newLintResults_1, lintResult, line, startLine;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, paging_1.getPullRequestReviewThreadsWithPaging(client, {
+                            owner: context.owner(),
+                            name: context.repository(),
+                            number: pullRequest.number,
+                        })];
+                    case 1:
+                        reviewThreads = _a.sent();
+                        return [4 /*yield*/, this.resolveOutdatedThreadsAndFiltered(client, option, loginUser, reviewThreads)];
+                    case 2:
+                        pastReviewThreads = _a.sent();
+                        newLintResults = lintResults.filter(function (x) { return pastReviewThreads.filter(function (y) { return comment_1.equalsInlineComment(y, x, option.reportName); }).length == 0; });
+                        _i = 0, newLintResults_1 = newLintResults;
+                        _a.label = 3;
+                    case 3:
+                        if (!(_i < newLintResults_1.length)) return [3 /*break*/, 6];
+                        lintResult = newLintResults_1[_i];
+                        line = lintResult.endLine != undefined ? lintResult.endLine : lintResult.startLine;
+                        startLine = lintResult.endLine != undefined ? lintResult.startLine : undefined;
+                        if (line == undefined) {
+                            return [3 /*break*/, 5];
+                        }
+                        return [4 /*yield*/, client.addPullRequestReviewThread({
+                                pullRequestId: pullRequest.id,
+                                body: comment_1.createLintInlineComment(comment_1.createInlineComment(lintResult), option.reportName),
+                                path: lintResult.path,
+                                line: line,
+                                startLine: startLine,
+                            })];
+                    case 4:
+                        _a.sent();
+                        _a.label = 5;
+                    case 5:
+                        _i++;
+                        return [3 /*break*/, 3];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    InlineCommentReporter.prototype.resolveOutdatedThreadsAndFiltered = function (client, option, loginUser, reviewThreads) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function () {
+            var result, _i, reviewThreads_1, reviewThread, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        result = [];
+                        _i = 0, reviewThreads_1 = reviewThreads;
+                        _c.label = 1;
+                    case 1:
+                        if (!(_i < reviewThreads_1.length)) return [3 /*break*/, 19];
+                        reviewThread = reviewThreads_1[_i];
+                        if (reviewThread.comments.nodes == null || reviewThread.comments.nodes == undefined) {
+                            return [3 /*break*/, 18];
+                        }
+                        if (reviewThread.comments.nodes.length == 0) {
+                            return [3 /*break*/, 18];
+                        }
+                        if (reviewThread.comments.nodes[0] == null || reviewThread.comments.nodes[0] == undefined) {
+                            return [3 /*break*/, 18];
+                        }
+                        if (((_a = reviewThread.comments.nodes[0].author) === null || _a === void 0 ? void 0 : _a.login) != loginUser.login) {
+                            return [3 /*break*/, 18];
+                        }
+                        if (comment_1.isLintInlineComment(reviewThread.comments.nodes[0].body, option.reportName) == false) {
+                            return [3 /*break*/, 18];
+                        }
+                        if (!reviewThread.isOutdated) return [3 /*break*/, 17];
+                        _b = option.outdatedResolver;
+                        switch (_b) {
+                            case option_1.OutdatedResolver.ResolveThread: return [3 /*break*/, 2];
+                            case option_1.OutdatedResolver.ForceResolveThread: return [3 /*break*/, 5];
+                            case option_1.OutdatedResolver.DeleteThread: return [3 /*break*/, 8];
+                            case option_1.OutdatedResolver.DeleteOrForceResolveThread: return [3 /*break*/, 11];
+                        }
+                        return [3 /*break*/, 16];
+                    case 2:
+                        if (!(reviewThread.isResolved == false && reviewThread.comments.pageInfo.hasNextPage == false)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, client.resolvePullRequestReviewThread({ pullRequestThreadId: reviewThread.id })];
+                    case 3:
+                        _c.sent();
+                        _c.label = 4;
+                    case 4: return [3 /*break*/, 16];
+                    case 5:
+                        if (!(reviewThread.isResolved == false)) return [3 /*break*/, 7];
+                        return [4 /*yield*/, client.resolvePullRequestReviewThread({ pullRequestThreadId: reviewThread.id })];
+                    case 6:
+                        _c.sent();
+                        _c.label = 7;
+                    case 7: return [3 /*break*/, 16];
+                    case 8:
+                        if (!(reviewThread.comments.pageInfo.hasNextPage == false)) return [3 /*break*/, 10];
+                        return [4 /*yield*/, client.deletePullRequestReviewComment({
+                                pullRequestReviewCommentId: reviewThread.comments.nodes[0].id,
+                            })];
+                    case 9:
+                        _c.sent();
+                        _c.label = 10;
+                    case 10: return [3 /*break*/, 16];
+                    case 11:
+                        if (!(reviewThread.comments.pageInfo.hasNextPage == false)) return [3 /*break*/, 13];
+                        return [4 /*yield*/, client.deletePullRequestReviewComment({
+                                pullRequestReviewCommentId: reviewThread.comments.nodes[0].id,
+                            })];
+                    case 12:
+                        _c.sent();
+                        return [3 /*break*/, 15];
+                    case 13: return [4 /*yield*/, client.resolvePullRequestReviewThread({ pullRequestThreadId: reviewThread.id })];
+                    case 14:
+                        _c.sent();
+                        _c.label = 15;
+                    case 15: return [3 /*break*/, 16];
+                    case 16: return [3 /*break*/, 18];
+                    case 17:
+                        result.push(reviewThread);
+                        _c.label = 18;
+                    case 18:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 19: return [2 /*return*/, result];
+                }
+            });
+        });
+    };
+    return InlineCommentReporter;
+}(comment_reporter_1.CommentReporter));
+exports.InlineCommentReporter = InlineCommentReporter;
 
 
 /***/ }),
