@@ -3,6 +3,7 @@ import {
     GetCommitStatusAndCheckRunQuery,
     GetCheckRunAnnotationsQuery,
     GetPullRequestCommentQuery,
+    GetPullRequestReviewThreadsQuery,
 } from "../../graphql/graphql";
 
 export type GetPullRequestChangedFileQueryRepository = Exclude<
@@ -98,5 +99,30 @@ export type GetPullRequestCommentQueryPullRequestCommentsNodes = Exclude<
 >;
 export type GetPullRequestCommentQueryPullRequestCommentsNode = Exclude<
     GetPullRequestCommentQueryPullRequestCommentsNodes[number],
+    null | undefined
+>;
+
+export type GetPullRequestReviewThreadsQueryRepository = Exclude<
+    GetPullRequestReviewThreadsQuery["repository"],
+    null | undefined
+>;
+export type GetPullRequestReviewThreadsQueryPullRequest = Exclude<
+    GetPullRequestReviewThreadsQueryRepository["pullRequest"],
+    null | undefined
+>;
+export type GetPullRequestReviewThreadsQueryPullRequestReviewThreads = Exclude<
+    GetPullRequestReviewThreadsQueryPullRequest["reviewThreads"],
+    null | undefined
+>;
+export type GetPullRequestReviewThreadsQueryPullRequestReviewThreadsPageInfo = Exclude<
+    GetPullRequestReviewThreadsQueryPullRequestReviewThreads["pageInfo"],
+    null | undefined
+>;
+export type GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNodes = Exclude<
+    GetPullRequestReviewThreadsQueryPullRequestReviewThreads["nodes"],
+    null | undefined
+>;
+export type GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNode = Exclude<
+    GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNodes[number],
     null | undefined
 >;

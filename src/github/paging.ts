@@ -7,6 +7,8 @@ import {
     GetCheckRunAnnotationsQueryVariables,
     GetPullRequestCommentQuery,
     GetPullRequestCommentQueryVariables,
+    GetPullRequestReviewThreadsQuery,
+    GetPullRequestReviewThreadsQueryVariables,
     Maybe,
 } from "../graphql";
 import { GitHubClient } from "./client";
@@ -23,6 +25,9 @@ import {
     GetPullRequestCommentQueryPullRequestCommentsPageInfo,
     GetPullRequestCommentQueryPullRequestCommentsNodes,
     GetPullRequestCommentQueryPullRequestCommentsNode,
+    GetPullRequestReviewThreadsQueryPullRequestReviewThreadsPageInfo,
+    GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNodes,
+    GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNode,
 } from "./types";
 
 // gurad for infinity loop
@@ -176,5 +181,23 @@ export async function getPullRequestCommentsWithPaging(
         (variables) => client.getPullRequestComments(variables),
         (response) => response.repository?.pullRequest?.comments.pageInfo,
         (response) => response.repository?.pullRequest?.comments.nodes
+    );
+}
+
+export async function getPullRequestReviewThreadsWithPaging(
+    client: GitHubClient,
+    variables: GetPullRequestReviewThreadsQueryVariables
+): Promise<GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNode[]> {
+    return getResponseWithPaging<
+        GetPullRequestReviewThreadsQueryVariables,
+        GetPullRequestReviewThreadsQuery,
+        GetPullRequestReviewThreadsQueryPullRequestReviewThreadsPageInfo,
+        GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNode,
+        GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNodes
+    >(
+        variables,
+        (variables) => client.getPullRequestReviewThreads(variables),
+        (response) => response.repository?.pullRequest?.reviewThreads.pageInfo,
+        (response) => response.repository?.pullRequest?.reviewThreads.nodes
     );
 }

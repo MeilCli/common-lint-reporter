@@ -29544,6 +29544,15 @@ export const AddComment = gql`
   }
 }
     `;
+export const AddPullRequestReviewThread = gql`
+    mutation AddPullRequestReviewThread($pullRequestId: ID!, $body: String!, $path: String!, $line: Int!, $startLine: Int) {
+  addPullRequestReviewThread(
+    input: {pullRequestId: $pullRequestId, body: $body, path: $path, line: $line, startLine: $startLine}
+  ) {
+    clientMutationId
+  }
+}
+    `;
 export const CreateCheckRun = gql`
     mutation CreateCheckRun($repositoryId: ID!, $headSha: GitObjectID!, $name: String!, $startedAt: DateTime, $completedAt: DateTime, $conclusion: CheckConclusionState, $status: RequestableCheckStatusState, $output: CheckRunOutput) {
   createCheckRun(
@@ -29558,6 +29567,13 @@ export const CreateCheckRun = gql`
 export const DeleteComment = gql`
     mutation DeleteComment($id: ID!) {
   deleteIssueComment(input: {id: $id}) {
+    clientMutationId
+  }
+}
+    `;
+export const DeletePullRequestReviewComment = gql`
+    mutation DeletePullRequestReviewComment($pullRequestReviewCommentId: ID!) {
+  deletePullRequestReviewComment(input: {id: $pullRequestReviewCommentId}) {
     clientMutationId
   }
 }
@@ -29671,6 +29687,40 @@ export const GetPullRequestComment = gql`
   }
 }
     `;
+export const GetPullRequestReviewThreads = gql`
+    query GetPullRequestReviewThreads($owner: String!, $name: String!, $number: Int!, $after: String) {
+  repository(owner: $owner, name: $name) {
+    pullRequest(number: $number) {
+      reviewThreads(first: 100, after: $after) {
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        nodes {
+          id
+          path
+          line
+          startLine
+          isOutdated
+          isResolved
+          comments(first: 1) {
+            pageInfo {
+              hasNextPage
+            }
+            nodes {
+              id
+              body
+              author {
+                login
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
 export const GetPullRequest = gql`
     query GetPullRequest($owner: String!, $name: String!, $number: Int!) {
   repository(owner: $owner, name: $name) {
@@ -29684,6 +29734,13 @@ export const GetRepositoryId = gql`
     query GetRepositoryId($owner: String!, $name: String!) {
   repository(owner: $owner, name: $name) {
     id
+  }
+}
+    `;
+export const ResolvePullRequestReviewThread = gql`
+    mutation ResolvePullRequestReviewThread($pullRequestThreadId: ID!) {
+  resolveReviewThread(input: {threadId: $pullRequestThreadId}) {
+    clientMutationId
   }
 }
     `;
@@ -29707,6 +29764,23 @@ export type AddCommentMutation = (
   & { addComment?: Maybe<(
     { __typename?: 'AddCommentPayload' }
     & Pick<AddCommentPayload, 'clientMutationId'>
+  )> }
+);
+
+export type AddPullRequestReviewThreadMutationVariables = Exact<{
+  pullRequestId: Scalars['ID'];
+  body: Scalars['String'];
+  path: Scalars['String'];
+  line: Scalars['Int'];
+  startLine?: Maybe<Scalars['Int']>;
+}>;
+
+
+export type AddPullRequestReviewThreadMutation = (
+  { __typename?: 'Mutation' }
+  & { addPullRequestReviewThread?: Maybe<(
+    { __typename?: 'AddPullRequestReviewThreadPayload' }
+    & Pick<AddPullRequestReviewThreadPayload, 'clientMutationId'>
   )> }
 );
 
@@ -29743,6 +29817,19 @@ export type DeleteCommentMutation = (
   & { deleteIssueComment?: Maybe<(
     { __typename?: 'DeleteIssueCommentPayload' }
     & Pick<DeleteIssueCommentPayload, 'clientMutationId'>
+  )> }
+);
+
+export type DeletePullRequestReviewCommentMutationVariables = Exact<{
+  pullRequestReviewCommentId: Scalars['ID'];
+}>;
+
+
+export type DeletePullRequestReviewCommentMutation = (
+  { __typename?: 'Mutation' }
+  & { deletePullRequestReviewComment?: Maybe<(
+    { __typename?: 'DeletePullRequestReviewCommentPayload' }
+    & Pick<DeletePullRequestReviewCommentPayload, 'clientMutationId'>
   )> }
 );
 
@@ -29898,6 +29985,60 @@ export type GetPullRequestCommentQuery = (
   )> }
 );
 
+export type GetPullRequestReviewThreadsQueryVariables = Exact<{
+  owner: Scalars['String'];
+  name: Scalars['String'];
+  number: Scalars['Int'];
+  after?: Maybe<Scalars['String']>;
+}>;
+
+
+export type GetPullRequestReviewThreadsQuery = (
+  { __typename?: 'Query' }
+  & { repository?: Maybe<(
+    { __typename?: 'Repository' }
+    & { pullRequest?: Maybe<(
+      { __typename?: 'PullRequest' }
+      & { reviewThreads: (
+        { __typename?: 'PullRequestReviewThreadConnection' }
+        & { pageInfo: (
+          { __typename?: 'PageInfo' }
+          & Pick<PageInfo, 'hasNextPage' | 'endCursor'>
+        ), nodes?: Maybe<Array<Maybe<(
+          { __typename?: 'PullRequestReviewThread' }
+          & Pick<PullRequestReviewThread, 'id' | 'path' | 'line' | 'startLine' | 'isOutdated' | 'isResolved'>
+          & { comments: (
+            { __typename?: 'PullRequestReviewCommentConnection' }
+            & { pageInfo: (
+              { __typename?: 'PageInfo' }
+              & Pick<PageInfo, 'hasNextPage'>
+            ), nodes?: Maybe<Array<Maybe<(
+              { __typename?: 'PullRequestReviewComment' }
+              & Pick<PullRequestReviewComment, 'id' | 'body'>
+              & { author?: Maybe<(
+                { __typename?: 'Bot' }
+                & Pick<Bot, 'login'>
+              ) | (
+                { __typename?: 'EnterpriseUserAccount' }
+                & Pick<EnterpriseUserAccount, 'login'>
+              ) | (
+                { __typename?: 'Mannequin' }
+                & Pick<Mannequin, 'login'>
+              ) | (
+                { __typename?: 'Organization' }
+                & Pick<Organization, 'login'>
+              ) | (
+                { __typename?: 'User' }
+                & Pick<User, 'login'>
+              )> }
+            )>>> }
+          ) }
+        )>>> }
+      ) }
+    )> }
+  )> }
+);
+
 export type GetPullRequestQueryVariables = Exact<{
   owner: Scalars['String'];
   name: Scalars['String'];
@@ -29927,6 +30068,19 @@ export type GetRepositoryIdQuery = (
   & { repository?: Maybe<(
     { __typename?: 'Repository' }
     & Pick<Repository, 'id'>
+  )> }
+);
+
+export type ResolvePullRequestReviewThreadMutationVariables = Exact<{
+  pullRequestThreadId: Scalars['ID'];
+}>;
+
+
+export type ResolvePullRequestReviewThreadMutation = (
+  { __typename?: 'Mutation' }
+  & { resolveReviewThread?: Maybe<(
+    { __typename?: 'ResolveReviewThreadPayload' }
+    & Pick<ResolveReviewThreadPayload, 'clientMutationId'>
   )> }
 );
 

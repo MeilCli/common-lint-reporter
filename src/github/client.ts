@@ -35,6 +35,18 @@ import {
     GetLoginUser,
     GetLoginUserQuery,
     GetLoginUserQueryVariables,
+    AddPullRequestReviewThread,
+    AddPullRequestReviewThreadMutation,
+    AddPullRequestReviewThreadMutationVariables,
+    DeletePullRequestReviewComment,
+    DeletePullRequestReviewCommentMutation,
+    DeletePullRequestReviewCommentMutationVariables,
+    ResolvePullRequestReviewThread,
+    ResolvePullRequestReviewThreadMutation,
+    ResolvePullRequestReviewThreadMutationVariables,
+    GetPullRequestReviewThreads,
+    GetPullRequestReviewThreadsQuery,
+    GetPullRequestReviewThreadsQueryVariables,
 } from "../../graphql/graphql";
 
 export function githubClient(option: Option): GitHubClient {
@@ -146,6 +158,46 @@ export class GitHubClient {
     async getLoginUser(variables: GetLoginUserQueryVariables): Promise<GetLoginUserQuery> {
         const result = await this.client.query<GetLoginUserQuery>({
             query: GetLoginUser,
+            variables: variables,
+        });
+        return result.data;
+    }
+
+    async addPullRequestReviewThread(
+        variables: AddPullRequestReviewThreadMutationVariables
+    ): Promise<AddPullRequestReviewThreadMutation | null | undefined> {
+        const result = await this.client.mutate<AddPullRequestReviewThreadMutation>({
+            mutation: AddPullRequestReviewThread,
+            variables: variables,
+        });
+        return result.data;
+    }
+
+    async deletePullRequestReviewComment(
+        variables: DeletePullRequestReviewCommentMutationVariables
+    ): Promise<DeletePullRequestReviewCommentMutation | null | undefined> {
+        const result = await this.client.mutate<DeletePullRequestReviewCommentMutation>({
+            mutation: DeletePullRequestReviewComment,
+            variables: variables,
+        });
+        return result.data;
+    }
+
+    async resolvePullRequestReviewThread(
+        variables: ResolvePullRequestReviewThreadMutationVariables
+    ): Promise<ResolvePullRequestReviewThreadMutation | null | undefined> {
+        const result = await this.client.mutate<ResolvePullRequestReviewThreadMutation>({
+            mutation: ResolvePullRequestReviewThread,
+            variables: variables,
+        });
+        return result.data;
+    }
+
+    async getPullRequestReviewThreads(
+        variables: GetPullRequestReviewThreadsQueryVariables
+    ): Promise<GetPullRequestReviewThreadsQuery> {
+        const result = await this.client.query<GetPullRequestReviewThreadsQuery>({
+            query: GetPullRequestReviewThreads,
             variables: variables,
         });
         return result.data;

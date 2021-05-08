@@ -1,0 +1,5 @@
+mutation ResolvePullRequestReviewThread($pullRequestThreadId: ID!) {
+    resolveReviewThread(input: { threadId: $pullRequestThreadId }) {
+        clientMutationId
+    }
+}
