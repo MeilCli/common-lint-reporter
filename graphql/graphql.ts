@@ -29545,11 +29545,22 @@ export const AddComment = gql`
 }
     `;
 export const AddPullRequestReviewThread = gql`
-    mutation AddPullRequestReviewThread($pullRequestId: ID!, $body: String!, $path: String!, $line: Int!, $startLine: Int) {
+    mutation AddPullRequestReviewThread($pullRequestId: ID!, $pullRequestReviewId: ID!, $body: String!, $path: String!, $line: Int!, $startLine: Int) {
   addPullRequestReviewThread(
-    input: {pullRequestId: $pullRequestId, body: $body, path: $path, line: $line, startLine: $startLine}
+    input: {pullRequestId: $pullRequestId, pullRequestReviewId: $pullRequestReviewId, body: $body, path: $path, line: $line, startLine: $startLine}
   ) {
     clientMutationId
+  }
+}
+    `;
+export const AddPullRequestReview = gql`
+    mutation AddPullRequestReview($pullRequestId: ID!, $commitSha: GitObjectID) {
+  addPullRequestReview(
+    input: {pullRequestId: $pullRequestId, commitOID: $commitSha, event: COMMENT}
+  ) {
+    pullRequestReview {
+      id
+    }
   }
 }
     `;
@@ -29769,6 +29780,7 @@ export type AddCommentMutation = (
 
 export type AddPullRequestReviewThreadMutationVariables = Exact<{
   pullRequestId: Scalars['ID'];
+  pullRequestReviewId: Scalars['ID'];
   body: Scalars['String'];
   path: Scalars['String'];
   line: Scalars['Int'];
@@ -29781,6 +29793,23 @@ export type AddPullRequestReviewThreadMutation = (
   & { addPullRequestReviewThread?: Maybe<(
     { __typename?: 'AddPullRequestReviewThreadPayload' }
     & Pick<AddPullRequestReviewThreadPayload, 'clientMutationId'>
+  )> }
+);
+
+export type AddPullRequestReviewMutationVariables = Exact<{
+  pullRequestId: Scalars['ID'];
+  commitSha?: Maybe<Scalars['GitObjectID']>;
+}>;
+
+
+export type AddPullRequestReviewMutation = (
+  { __typename?: 'Mutation' }
+  & { addPullRequestReview?: Maybe<(
+    { __typename?: 'AddPullRequestReviewPayload' }
+    & { pullRequestReview?: Maybe<(
+      { __typename?: 'PullRequestReview' }
+      & Pick<PullRequestReview, 'id'>
+    )> }
   )> }
 );
 

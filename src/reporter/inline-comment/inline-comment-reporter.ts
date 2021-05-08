@@ -46,6 +46,16 @@ export class InlineCommentReporter extends CommentReporter {
             (x) => pastReviewThreads.filter((y) => equalsInlineComment(y, x, option.reportName)).length == 0
         );
 
+        core.info("create pull request review");
+        const pullRequestReview = await client.addPullRequestReview({
+            pullRequestId: pullRequest.id,
+            commitSha: context.commitSha(),
+        });
+        const pullRequestReviewId = pullRequestReview?.addPullRequestReview?.pullRequestReview?.id;
+        if (pullRequestReviewId == null || pullRequestReviewId == undefined) {
+            return;
+        }
+
         for (const lintResult of newLintResults) {
             const line = lintResult.endLine != undefined ? lintResult.endLine : lintResult.startLine;
             const startLine = lintResult.endLine != undefined ? lintResult.startLine : undefined;
@@ -55,6 +65,7 @@ export class InlineCommentReporter extends CommentReporter {
             try {
                 await client.addPullRequestReviewThread({
                     pullRequestId: pullRequest.id,
+                    pullRequestReviewId: pullRequestReviewId,
                     body: createLintInlineComment(createInlineComment(lintResult), option.reportName),
                     path: lintResult.path,
                     line: line,

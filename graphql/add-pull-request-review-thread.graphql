@@ -1,6 +1,20 @@
-mutation AddPullRequestReviewThread($pullRequestId: ID!, $body: String!, $path: String!, $line: Int!, $startLine: Int) {
+mutation AddPullRequestReviewThread(
+    $pullRequestId: ID!
+    $pullRequestReviewId: ID!
+    $body: String!
+    $path: String!
+    $line: Int!
+    $startLine: Int
+) {
     addPullRequestReviewThread(
-        input: { pullRequestId: $pullRequestId, body: $body, path: $path, line: $line, startLine: $startLine }
+        input: {
+            pullRequestId: $pullRequestId
+            pullRequestReviewId: $pullRequestReviewId
+            body: $body
+            path: $path
+            line: $line
+            startLine: $startLine
+        }
     ) {
         clientMutationId
     }

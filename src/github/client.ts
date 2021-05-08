@@ -35,6 +35,9 @@ import {
     GetLoginUser,
     GetLoginUserQuery,
     GetLoginUserQueryVariables,
+    AddPullRequestReview,
+    AddPullRequestReviewMutation,
+    AddPullRequestReviewMutationVariables,
     AddPullRequestReviewThread,
     AddPullRequestReviewThreadMutation,
     AddPullRequestReviewThreadMutationVariables,
@@ -158,6 +161,16 @@ export class GitHubClient {
     async getLoginUser(variables: GetLoginUserQueryVariables): Promise<GetLoginUserQuery> {
         const result = await this.client.query<GetLoginUserQuery>({
             query: GetLoginUser,
+            variables: variables,
+        });
+        return result.data;
+    }
+
+    async addPullRequestReview(
+        variables: AddPullRequestReviewMutationVariables
+    ): Promise<AddPullRequestReviewMutation | null | undefined> {
+        const result = await this.client.mutate<AddPullRequestReviewMutation>({
+            mutation: AddPullRequestReview,
             variables: variables,
         });
         return result.data;
