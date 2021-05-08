@@ -31,20 +31,17 @@ export class InlineCommentReporter extends CommentReporter {
         loginUser: LoginUser,
         lintResults: LintResult[]
     ) {
-        core.info("before inline comment");
         const reviewThreads = await getPullRequestReviewThreadsWithPaging(client, {
             owner: context.owner(),
             name: context.repository(),
             number: pullRequest.number,
         });
-        core.info("fetched threads");
         const pastReviewThreads = await this.resolveOutdatedThreadsAndFiltered(
             client,
             option,
             loginUser,
             reviewThreads
         );
-        core.info("redoleved outdated");
         const newLintResults = lintResults.filter(
             (x) => pastReviewThreads.filter((y) => equalsInlineComment(y, x, option.reportName)).length == 0
         );
@@ -55,14 +52,18 @@ export class InlineCommentReporter extends CommentReporter {
             if (line == undefined) {
                 continue;
             }
-            core.info(`create thread: ${lintResult.path} ${lintResult.message}`);
-            await client.addPullRequestReviewThread({
-                pullRequestId: pullRequest.id,
-                body: createLintInlineComment(createInlineComment(lintResult), option.reportName),
-                path: lintResult.path,
-                line: line,
-                startLine: startLine,
-            });
+            try {
+                await client.addPullRequestReviewThread({
+                    pullRequestId: pullRequest.id,
+                    body: createLintInlineComment(createInlineComment(lintResult), option.reportName),
+                    path: lintResult.path,
+                    line: line,
+                    startLine: startLine,
+                });
+                core.info(`create thread: ${lintResult.path} ${lintResult.message}`);
+            } catch (error) {
+                core.info(`error thread: ${lintResult.path} ${lintResult.message}`);
+            }
         }
     }
 
