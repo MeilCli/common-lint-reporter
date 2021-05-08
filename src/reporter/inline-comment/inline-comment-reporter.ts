@@ -12,6 +12,7 @@ import {
     equalsInlineComment,
     createReviewComment,
 } from "./comment";
+import { trimPath } from "../path";
 import * as core from "@actions/core";
 
 export class InlineCommentReporter extends CommentReporter {
@@ -74,7 +75,7 @@ export class InlineCommentReporter extends CommentReporter {
                     pullRequestId: pullRequest.id,
                     pullRequestReviewId: pullRequestReviewId,
                     body: createLintInlineComment(createInlineComment(lintResult), option.reportName),
-                    path: lintResult.path,
+                    path: trimPath(context, lintResult.path),
                     line: line,
                     startLine: startLine,
                 });
