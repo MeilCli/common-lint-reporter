@@ -273,6 +273,22 @@ var GitHubClient = /** @class */ (function () {
             });
         });
     };
+    GitHubClient.prototype.deletePullRequestReview = function (variables) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.client.mutate({
+                            mutation: graphql_1.DeletePullRequestReview,
+                            variables: variables,
+                        })];
+                    case 1:
+                        result = _a.sent();
+                        return [2 /*return*/, result.data];
+                }
+            });
+        });
+    };
     GitHubClient.prototype.addPullRequestReviewThread = function (variables) {
         return __awaiter(this, void 0, void 0, function () {
             var result;
@@ -1683,8 +1699,8 @@ exports.calculateConclusion = calculateConclusion;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createReviewComment = exports.equalsInlineComment = exports.createInlineComment = exports.createLintInlineComment = exports.isLintInlineComment = void 0;
-var level_1 = __webpack_require__(4507);
+exports.equalsInlineComment = exports.createInlineComment = exports.createLintInlineComment = exports.isLintInlineComment = void 0;
+var path_1 = __webpack_require__(5565);
 function lintInlineCommentIdentifier(reportName) {
     return "<!-- common-lint-reporter: " + reportName + " -->";
 }
@@ -1700,7 +1716,7 @@ function createInlineComment(lintResult) {
     return "**Rule: " + lintResult.rule + "**\n\n" + lintResult.message;
 }
 exports.createInlineComment = createInlineComment;
-function equalsInlineComment(left, right, reportName) {
+function equalsInlineComment(left, right, context, reportName) {
     if (left.comments.nodes == null || left.comments.nodes == undefined) {
         return false;
     }
@@ -1710,7 +1726,7 @@ function equalsInlineComment(left, right, reportName) {
     if (left.comments.nodes[0] == null || left.comments.nodes[0] == undefined) {
         return false;
     }
-    if (left.path != right.path) {
+    if (left.path != path_1.trimPath(context, right.path)) {
         return false;
     }
     if (left.startLine) {
@@ -1732,35 +1748,6 @@ function equalsInlineComment(left, right, reportName) {
     return true;
 }
 exports.equalsInlineComment = equalsInlineComment;
-function createReviewComment(lintResults) {
-    var noticeCount = level_1.countLevel(lintResults, "notice");
-    var warningCount = level_1.countLevel(lintResults, "warning");
-    var failureCount = level_1.countLevel(lintResults, "failure");
-    var messages = [];
-    if (noticeCount == 1) {
-        messages.push("1 notice");
-    }
-    if (2 <= noticeCount) {
-        messages.push(noticeCount + " notices");
-    }
-    if (warningCount == 1) {
-        messages.push("1 warning");
-    }
-    if (2 <= warningCount) {
-        messages.push(warningCount + " warnings");
-    }
-    if (failureCount == 1) {
-        messages.push("1 failure");
-    }
-    if (2 <= failureCount) {
-        messages.push(failureCount + " failures");
-    }
-    if (messages.length == 0) {
-        return "lint message is empty";
-    }
-    return messages.join(" and ") + " found";
-}
-exports.createReviewComment = createReviewComment;
 
 
 /***/ }),
@@ -1784,25 +1771,6 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -1846,7 +1814,6 @@ var paging_1 = __webpack_require__(9639);
 var comment_reporter_1 = __webpack_require__(7390);
 var comment_1 = __webpack_require__(2676);
 var path_1 = __webpack_require__(5565);
-var core = __importStar(__webpack_require__(2225));
 var InlineCommentReporter = /** @class */ (function (_super) {
     __extends(InlineCommentReporter, _super);
     function InlineCommentReporter() {
@@ -1854,7 +1821,7 @@ var InlineCommentReporter = /** @class */ (function (_super) {
     }
     InlineCommentReporter.prototype.reportComment = function (client, context, option, pullRequest, loginUser, lintResults) {
         return __awaiter(this, void 0, void 0, function () {
-            var inlineLintResults, notInlineLintResults;
+            var inlineLintResults, notInlineLintResults, cannotReportedLintResults;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1862,7 +1829,8 @@ var InlineCommentReporter = /** @class */ (function (_super) {
                         notInlineLintResults = lintResults.filter(function (x) { return x.startLine == undefined; });
                         return [4 /*yield*/, this.reportInlineComment(client, context, option, pullRequest, loginUser, inlineLintResults)];
                     case 1:
-                        _a.sent();
+                        cannotReportedLintResults = _a.sent();
+                        notInlineLintResults.push.apply(notInlineLintResults, cannotReportedLintResults);
                         return [4 /*yield*/, _super.prototype.reportComment.call(this, client, context, option, pullRequest, loginUser, notInlineLintResults)];
                     case 2:
                         _a.sent();
@@ -1871,10 +1839,11 @@ var InlineCommentReporter = /** @class */ (function (_super) {
             });
         });
     };
+    // return cannot reported lint result
     InlineCommentReporter.prototype.reportInlineComment = function (client, context, option, pullRequest, loginUser, lintResults) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function () {
-            var reviewThreads, pastReviewThreads, newLintResults, pullRequestReview, pullRequestReviewId, reportedLintResults, _i, newLintResults_1, lintResult, line, startLine, error_1;
+            var reviewThreads, pastReviewThreads, newLintResults, pullRequestReview, pullRequestReviewId, reportedLintResults, cannotReportedLintResults, _i, newLintResults_1, lintResult, line, startLine, error_1;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0: return [4 /*yield*/, paging_1.getPullRequestReviewThreadsWithPaging(client, {
@@ -1887,8 +1856,7 @@ var InlineCommentReporter = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.resolveOutdatedThreadsAndFiltered(client, option, loginUser, reviewThreads)];
                     case 2:
                         pastReviewThreads = _c.sent();
-                        newLintResults = lintResults.filter(function (x) { return pastReviewThreads.filter(function (y) { return comment_1.equalsInlineComment(y, x, option.reportName); }).length == 0; });
-                        core.info("create pull request review");
+                        newLintResults = lintResults.filter(function (x) { return pastReviewThreads.filter(function (y) { return comment_1.equalsInlineComment(y, x, context, option.reportName); }).length == 0; });
                         return [4 /*yield*/, client.addPullRequestReviewDraft({
                                 pullRequestId: pullRequest.id,
                                 commitSha: context.commitSha(),
@@ -1897,13 +1865,14 @@ var InlineCommentReporter = /** @class */ (function (_super) {
                         pullRequestReview = _c.sent();
                         pullRequestReviewId = (_b = (_a = pullRequestReview === null || pullRequestReview === void 0 ? void 0 : pullRequestReview.addPullRequestReview) === null || _a === void 0 ? void 0 : _a.pullRequestReview) === null || _b === void 0 ? void 0 : _b.id;
                         if (pullRequestReviewId == null || pullRequestReviewId == undefined) {
-                            return [2 /*return*/];
+                            return [2 /*return*/, []];
                         }
                         reportedLintResults = [];
+                        cannotReportedLintResults = [];
                         _i = 0, newLintResults_1 = newLintResults;
                         _c.label = 4;
                     case 4:
-                        if (!(_i < newLintResults_1.length)) return [3 /*break*/, 10];
+                        if (!(_i < newLintResults_1.length)) return [3 /*break*/, 9];
                         lintResult = newLintResults_1[_i];
                         line = lintResult.endLine != undefined ? lintResult.endLine : lintResult.startLine;
                         startLine = 
@@ -1912,7 +1881,7 @@ var InlineCommentReporter = /** @class */ (function (_super) {
                             ? lintResult.startLine
                             : undefined;
                         if (line == undefined) {
-                            return [3 /*break*/, 9];
+                            return [3 /*break*/, 8];
                         }
                         _c.label = 5;
                     case 5:
@@ -1927,29 +1896,29 @@ var InlineCommentReporter = /** @class */ (function (_super) {
                             })];
                     case 6:
                         _c.sent();
-                        core.info("create thread: " + lintResult.path + " " + lintResult.message);
+                        reportedLintResults.push(lintResult);
                         return [3 /*break*/, 8];
                     case 7:
                         error_1 = _c.sent();
-                        core.error(error_1);
-                        core.info("error thread: " + lintResult.path + " " + lintResult.message);
+                        cannotReportedLintResults.push(lintResult);
                         return [3 /*break*/, 8];
                     case 8:
-                        reportedLintResults.push(lintResult);
-                        _c.label = 9;
-                    case 9:
                         _i++;
                         return [3 /*break*/, 4];
-                    case 10:
-                        core.info("submit");
+                    case 9:
+                        if (!(0 < reportedLintResults.length)) return [3 /*break*/, 11];
                         return [4 /*yield*/, client.submitPullRequestReview({
                                 pullRequestId: pullRequest.id,
                                 pullRequestReviewId: pullRequestReviewId,
-                                body: comment_1.createReviewComment(reportedLintResults),
                             })];
-                    case 11:
+                    case 10:
                         _c.sent();
-                        return [2 /*return*/];
+                        return [3 /*break*/, 13];
+                    case 11: return [4 /*yield*/, client.deletePullRequestReview({ pullRequestReviewId: pullRequestReviewId })];
+                    case 12:
+                        _c.sent();
+                        _c.label = 13;
+                    case 13: return [2 /*return*/, cannotReportedLintResults];
                 }
             });
         });
