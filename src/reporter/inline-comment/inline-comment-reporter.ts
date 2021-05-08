@@ -66,7 +66,11 @@ export class InlineCommentReporter extends CommentReporter {
         const reportedLintResults: LintResult[] = [];
         for (const lintResult of newLintResults) {
             const line = lintResult.endLine != undefined ? lintResult.endLine : lintResult.startLine;
-            const startLine = lintResult.endLine != undefined ? lintResult.startLine : undefined;
+            const startLine =
+                // cannot create thread if same line
+                lintResult.endLine != undefined && lintResult.endLine != lintResult.startLine
+                    ? lintResult.startLine
+                    : undefined;
             if (line == undefined) {
                 continue;
             }

@@ -1906,7 +1906,11 @@ var InlineCommentReporter = /** @class */ (function (_super) {
                         if (!(_i < newLintResults_1.length)) return [3 /*break*/, 10];
                         lintResult = newLintResults_1[_i];
                         line = lintResult.endLine != undefined ? lintResult.endLine : lintResult.startLine;
-                        startLine = lintResult.endLine != undefined ? lintResult.startLine : undefined;
+                        startLine = 
+                        // cannot create thread if same line
+                        lintResult.endLine != undefined && lintResult.endLine != lintResult.startLine
+                            ? lintResult.startLine
+                            : undefined;
                         if (line == undefined) {
                             return [3 /*break*/, 9];
                         }
