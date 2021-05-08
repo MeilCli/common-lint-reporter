@@ -5,7 +5,13 @@ import { GitHubContext } from "../../github/context";
 import { getPullRequestReviewThreadsWithPaging } from "../../github/paging";
 import { GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNode } from "../../github/types";
 import { CommentReporter, PullRequest, LoginUser } from "../comment/comment-reporter";
-import { isLintInlineComment, createLintInlineComment, createInlineComment, equalsInlineComment } from "./comment";
+import {
+    isLintInlineComment,
+    createLintInlineComment,
+    createInlineComment,
+    equalsInlineComment,
+    createReviewComment,
+} from "./comment";
 import * as core from "@actions/core";
 
 export class InlineCommentReporter extends CommentReporter {
@@ -50,6 +56,7 @@ export class InlineCommentReporter extends CommentReporter {
         const pullRequestReview = await client.addPullRequestReview({
             pullRequestId: pullRequest.id,
             commitSha: context.commitSha(),
+            body: createReviewComment(lintResults),
         });
         const pullRequestReviewId = pullRequestReview?.addPullRequestReview?.pullRequestReview?.id;
         if (pullRequestReviewId == null || pullRequestReviewId == undefined) {

@@ -29554,9 +29554,9 @@ export const AddPullRequestReviewThread = gql`
 }
     `;
 export const AddPullRequestReview = gql`
-    mutation AddPullRequestReview($pullRequestId: ID!, $commitSha: GitObjectID) {
+    mutation AddPullRequestReview($pullRequestId: ID!, $commitSha: GitObjectID, $body: String!) {
   addPullRequestReview(
-    input: {pullRequestId: $pullRequestId, commitOID: $commitSha, event: COMMENT}
+    input: {pullRequestId: $pullRequestId, commitOID: $commitSha, event: COMMENT, body: $body}
   ) {
     pullRequestReview {
       id
@@ -29799,6 +29799,7 @@ export type AddPullRequestReviewThreadMutation = (
 export type AddPullRequestReviewMutationVariables = Exact<{
   pullRequestId: Scalars['ID'];
   commitSha?: Maybe<Scalars['GitObjectID']>;
+  body: Scalars['String'];
 }>;
 
 
