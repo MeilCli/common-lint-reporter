@@ -1910,6 +1910,7 @@ var InlineCommentReporter = /** @class */ (function (_super) {
                         return [3 /*break*/, 8];
                     case 7:
                         error_1 = _c.sent();
+                        core.error(error_1);
                         core.info("error thread: " + lintResult.path + " " + lintResult.message);
                         return [3 /*break*/, 8];
                     case 8:
