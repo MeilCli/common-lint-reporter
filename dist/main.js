@@ -775,7 +775,7 @@ function run() {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 2, , 3]);
+                    _a.trys.push([0, 3, , 4]);
                     option = option_1.getOption();
                     return [4 /*yield*/, lint_result_1.readLintResults(option)];
                 case 1:
@@ -790,14 +790,16 @@ function run() {
                     else {
                         reporter = new check_run_reporter_1.CheckRunReporter();
                     }
-                    reporter.report(option, lintResults);
-                    a = "a";
-                    return [3 /*break*/, 3];
+                    return [4 /*yield*/, reporter.report(option, lintResults)];
                 case 2:
+                    _a.sent();
+                    a = "a";
+                    return [3 /*break*/, 4];
+                case 3:
                     error_1 = _a.sent();
                     core.setFailed(error_1.message);
-                    return [3 /*break*/, 3];
-                case 3: return [2 /*return*/];
+                    return [3 /*break*/, 4];
+                case 4: return [2 /*return*/];
             }
         });
     });
