@@ -1810,35 +1810,33 @@ var InlineCommentReporter = /** @class */ (function (_super) {
     };
     InlineCommentReporter.prototype.reportInlineComment = function (client, context, option, pullRequest, loginUser, lintResults) {
         return __awaiter(this, void 0, void 0, function () {
-            var reviewThreads, pastReviewThreads, newLintResults, _i, newLintResults_1, lintResult, line, startLine;
+            var reviewThreads, pastReviewThreads, newLintResults, _i, newLintResults_1, lintResult, line, startLine, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        core.info("before inline comment");
-                        return [4 /*yield*/, paging_1.getPullRequestReviewThreadsWithPaging(client, {
-                                owner: context.owner(),
-                                name: context.repository(),
-                                number: pullRequest.number,
-                            })];
+                    case 0: return [4 /*yield*/, paging_1.getPullRequestReviewThreadsWithPaging(client, {
+                            owner: context.owner(),
+                            name: context.repository(),
+                            number: pullRequest.number,
+                        })];
                     case 1:
                         reviewThreads = _a.sent();
-                        core.info("fetched threads");
                         return [4 /*yield*/, this.resolveOutdatedThreadsAndFiltered(client, option, loginUser, reviewThreads)];
                     case 2:
                         pastReviewThreads = _a.sent();
-                        core.info("redoleved outdated");
                         newLintResults = lintResults.filter(function (x) { return pastReviewThreads.filter(function (y) { return comment_1.equalsInlineComment(y, x, option.reportName); }).length == 0; });
                         _i = 0, newLintResults_1 = newLintResults;
                         _a.label = 3;
                     case 3:
-                        if (!(_i < newLintResults_1.length)) return [3 /*break*/, 6];
+                        if (!(_i < newLintResults_1.length)) return [3 /*break*/, 8];
                         lintResult = newLintResults_1[_i];
                         line = lintResult.endLine != undefined ? lintResult.endLine : lintResult.startLine;
                         startLine = lintResult.endLine != undefined ? lintResult.startLine : undefined;
                         if (line == undefined) {
-                            return [3 /*break*/, 5];
+                            return [3 /*break*/, 7];
                         }
-                        core.info("create thread: " + lintResult.path + " " + lintResult.message);
+                        _a.label = 4;
+                    case 4:
+                        _a.trys.push([4, 6, , 7]);
                         return [4 /*yield*/, client.addPullRequestReviewThread({
                                 pullRequestId: pullRequest.id,
                                 body: comment_1.createLintInlineComment(comment_1.createInlineComment(lintResult), option.reportName),
@@ -1846,13 +1844,18 @@ var InlineCommentReporter = /** @class */ (function (_super) {
                                 line: line,
                                 startLine: startLine,
                             })];
-                    case 4:
-                        _a.sent();
-                        _a.label = 5;
                     case 5:
+                        _a.sent();
+                        core.info("create thread: " + lintResult.path + " " + lintResult.message);
+                        return [3 /*break*/, 7];
+                    case 6:
+                        error_1 = _a.sent();
+                        core.info("error thread: " + lintResult.path + " " + lintResult.message);
+                        return [3 /*break*/, 7];
+                    case 7:
                         _i++;
                         return [3 /*break*/, 3];
-                    case 6: return [2 /*return*/];
+                    case 8: return [2 /*return*/];
                 }
             });
         });
