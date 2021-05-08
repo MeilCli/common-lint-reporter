@@ -1,5 +1,5 @@
 # common-lint-reporter
-
+test
 This is generalized lint reporter action
 
 ## Usage
