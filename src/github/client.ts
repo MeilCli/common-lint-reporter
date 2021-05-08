@@ -41,6 +41,9 @@ import {
     SubmitPullRequestReview,
     SubmitPullRequestReviewMutation,
     SubmitPullRequestReviewMutationVariables,
+    DeletePullRequestReview,
+    DeletePullRequestReviewMutation,
+    DeletePullRequestReviewMutationVariables,
     AddPullRequestReviewThread,
     AddPullRequestReviewThreadMutation,
     AddPullRequestReviewThreadMutationVariables,
@@ -184,6 +187,16 @@ export class GitHubClient {
     ): Promise<SubmitPullRequestReviewMutation | null | undefined> {
         const result = await this.client.mutate<SubmitPullRequestReviewMutation>({
             mutation: SubmitPullRequestReview,
+            variables: variables,
+        });
+        return result.data;
+    }
+
+    async deletePullRequestReview(
+        variables: DeletePullRequestReviewMutationVariables
+    ): Promise<DeletePullRequestReviewMutation | null | undefined> {
+        const result = await this.client.mutate<DeletePullRequestReviewMutation>({
+            mutation: DeletePullRequestReview,
             variables: variables,
         });
         return result.data;

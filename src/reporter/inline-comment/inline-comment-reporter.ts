@@ -5,15 +5,8 @@ import { GitHubContext } from "../../github/context";
 import { getPullRequestReviewThreadsWithPaging } from "../../github/paging";
 import { GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNode } from "../../github/types";
 import { CommentReporter, PullRequest, LoginUser } from "../comment/comment-reporter";
-import {
-    isLintInlineComment,
-    createLintInlineComment,
-    createInlineComment,
-    equalsInlineComment,
-    createReviewComment,
-} from "./comment";
+import { isLintInlineComment, createLintInlineComment, createInlineComment, equalsInlineComment } from "./comment";
 import { trimPath } from "../path";
-import * as core from "@actions/core";
 
 export class InlineCommentReporter extends CommentReporter {
     protected async reportComment(
@@ -26,10 +19,19 @@ export class InlineCommentReporter extends CommentReporter {
     ) {
         const inlineLintResults = lintResults.filter((x) => x.startLine != undefined);
         const notInlineLintResults = lintResults.filter((x) => x.startLine == undefined);
-        await this.reportInlineComment(client, context, option, pullRequest, loginUser, inlineLintResults);
+        const cannotReportedLintResults = await this.reportInlineComment(
+            client,
+            context,
+            option,
+            pullRequest,
+            loginUser,
+            inlineLintResults
+        );
+        notInlineLintResults.push(...cannotReportedLintResults);
         await super.reportComment(client, context, option, pullRequest, loginUser, notInlineLintResults);
     }
 
+    // return cannot reported lint result
     private async reportInlineComment(
         client: GitHubClient,
         context: GitHubContext,
@@ -37,7 +39,7 @@ export class InlineCommentReporter extends CommentReporter {
         pullRequest: PullRequest,
         loginUser: LoginUser,
         lintResults: LintResult[]
-    ) {
+    ): Promise<LintResult[]> {
         const reviewThreads = await getPullRequestReviewThreadsWithPaging(client, {
             owner: context.owner(),
             name: context.repository(),
@@ -53,17 +55,17 @@ export class InlineCommentReporter extends CommentReporter {
             (x) => pastReviewThreads.filter((y) => equalsInlineComment(y, x, context, option.reportName)).length == 0
         );
 
-        core.info("create pull request review");
         const pullRequestReview = await client.addPullRequestReviewDraft({
             pullRequestId: pullRequest.id,
             commitSha: context.commitSha(),
         });
         const pullRequestReviewId = pullRequestReview?.addPullRequestReview?.pullRequestReview?.id;
         if (pullRequestReviewId == null || pullRequestReviewId == undefined) {
-            return;
+            return [];
         }
 
         const reportedLintResults: LintResult[] = [];
+        const cannotReportedLintResults: LintResult[] = [];
         for (const lintResult of newLintResults) {
             const line = lintResult.endLine != undefined ? lintResult.endLine : lintResult.startLine;
             const startLine =
@@ -83,20 +85,22 @@ export class InlineCommentReporter extends CommentReporter {
                     line: line,
                     startLine: startLine,
                 });
-                core.info(`create thread: ${lintResult.path} ${lintResult.message}`);
+                reportedLintResults.push(lintResult);
             } catch (error) {
-                core.error(error);
-                core.info(`error thread: ${lintResult.path} ${lintResult.message}`);
+                cannotReportedLintResults.push(lintResult);
             }
-            reportedLintResults.push(lintResult);
         }
 
-        core.info("submit");
-        await client.submitPullRequestReview({
-            pullRequestId: pullRequest.id,
-            pullRequestReviewId: pullRequestReviewId,
-            body: createReviewComment(reportedLintResults),
-        });
+        if (0 < reportedLintResults.length) {
+            await client.submitPullRequestReview({
+                pullRequestId: pullRequest.id,
+                pullRequestReviewId: pullRequestReviewId,
+            });
+        } else {
+            await client.deletePullRequestReview({ pullRequestReviewId: pullRequestReviewId });
+        }
+
+        return cannotReportedLintResults;
     }
 
     private async resolveOutdatedThreadsAndFiltered(

@@ -16,6 +16,8 @@ mutation AddPullRequestReviewThread(
             startLine: $startLine
         }
     ) {
-        clientMutationId
+        thread {
+            id
+        }
     }
 }
