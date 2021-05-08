@@ -8,6 +8,14 @@ import { RequestableCheckStatusState } from "../../../graphql/graphql";
 import { calculateConclusion } from "../conclusion";
 import { isLintComment, createLintComment, createComment } from "./comment";
 
+export interface PullRequest {
+    number: number;
+    id: string;
+}
+export interface LoginUser {
+    login: string;
+}
+
 export class CommentReporter implements Reporter {
     async report(option: Option, lintResults: LintResult[]): Promise<void> {
         const client = githubClient(option);
@@ -52,7 +60,9 @@ export class CommentReporter implements Reporter {
             throw Error("cannot create check-run");
         }
 
-        await this.reportComment(client, context, option, lintResults);
+        const pullRequest = await this.getPullRequest(client, context);
+        const loginUser = await this.getLoginUser(client);
+        await this.reportComment(client, context, option, pullRequest, loginUser, lintResults);
 
         await client.updateCheckRun({
             repositoryId: repositoryId,
@@ -63,12 +73,7 @@ export class CommentReporter implements Reporter {
         });
     }
 
-    private async reportComment(
-        client: GitHubClient,
-        context: GitHubContext,
-        option: Option,
-        lintResults: LintResult[]
-    ) {
+    private async getPullRequest(client: GitHubClient, context: GitHubContext): Promise<PullRequest> {
         const pullRequestNumber = context.pullRequest();
         if (pullRequestNumber == null) {
             throw Error("pull_request number is not provided");
@@ -85,17 +90,36 @@ export class CommentReporter implements Reporter {
             throw Error("not found pull request id");
         }
 
+        return {
+            number: pullRequestNumber,
+            id: pullRequestId,
+        };
+    }
+
+    private async getLoginUser(client: GitHubClient): Promise<LoginUser> {
         // if bot account, including '[bot]'. but author.login will not include it
         const loginUser = (await client.getLoginUser({})).viewer.login.split("[")[0];
+        return {
+            login: loginUser,
+        };
+    }
 
+    protected async reportComment(
+        client: GitHubClient,
+        context: GitHubContext,
+        option: Option,
+        pullRequest: PullRequest,
+        loginUser: LoginUser,
+        lintResults: LintResult[]
+    ) {
         const comments = await getPullRequestCommentsWithPaging(client, {
             owner: context.owner(),
             name: context.repository(),
-            pull_request: pullRequestNumber,
+            pull_request: pullRequest.number,
         });
 
         for (const comment of comments) {
-            if (comment.author?.login != loginUser) {
+            if (comment.author?.login != loginUser.login) {
                 continue;
             }
             if (isLintComment(comment.body, option.reportName)) {
@@ -107,7 +131,7 @@ export class CommentReporter implements Reporter {
             return;
         }
         await client.addComment({
-            id: pullRequestId,
+            id: pullRequest.id,
             body: createLintComment(createComment(context, lintResults), option.reportName),
         });
     }

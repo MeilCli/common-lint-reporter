@@ -28,7 +28,7 @@ inputs:
     required: true
     default: 'Lint report'
   report_type:
-    description: 'report type, value is check_run or comment'
+    description: 'report type, value is check_run or comment or inline_comment'
     required: true
     default: 'check_run'
   conclusion_failure_threshold:
@@ -47,6 +47,9 @@ inputs:
     description: 'weight of reported notice by lint for conclusion'
     required: true
     default: '0'
+  outdated_resolver:
+    description: 'inline_comment only option, option of how resolve when found outdated thread'
+    default: 'delete_or_force_resolve_thread'
 runs:
   using: 'node12'
   main: 'dist/main.js'

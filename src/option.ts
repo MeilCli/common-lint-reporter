@@ -1,4 +1,5 @@
 import * as core from "@actions/core";
+import { report } from "process";
 
 export interface CommonOption {
     workspacePath: string | null;
@@ -26,19 +27,57 @@ export interface Option extends CommonOption {
     conclusionFailureWeight: number;
     conclusionWarningWeight: number;
     conclusionNoticeWeight: number;
+    /**
+     * inline-comment only
+     */
+    outdatedResolver: OutdatedResolver;
 }
 
 export enum ReportType {
     CheckRun,
     Comment,
+    InlineComment,
+}
+
+export enum OutdatedResolver {
+    ResolveThread,
+    ForceResolveThread,
+    DeleteThread,
+    DeleteOrForceResolveThread,
 }
 
 export function getOption(): Option {
     const reportTypeString = getInput("report_type");
     let reportType: ReportType = ReportType.CheckRun;
-    if (reportTypeString == "comment") {
-        reportType = ReportType.Comment;
+    switch (reportTypeString) {
+        case "comment":
+            reportType = ReportType.Comment;
+            break;
+        case "inline_comment":
+            reportType = ReportType.InlineComment;
+            break;
+        default:
+            reportType = ReportType.CheckRun;
+            break;
     }
+
+    const outdatedResolverString = getInput("outdated_resolver");
+    let outdatedResolver: OutdatedResolver = OutdatedResolver.DeleteOrForceResolveThread;
+    switch (outdatedResolverString) {
+        case "resolve_thread":
+            outdatedResolver = OutdatedResolver.ResolveThread;
+            break;
+        case "force_resolve_thread":
+            outdatedResolver = OutdatedResolver.ForceResolveThread;
+            break;
+        case "delete_thread":
+            outdatedResolver = OutdatedResolver.DeleteThread;
+            break;
+        default:
+            outdatedResolver = OutdatedResolver.DeleteOrForceResolveThread;
+            break;
+    }
+
     return {
         githubToken: getInput("github_token"),
         reportFiles: getInput("report_files"),
@@ -49,6 +88,7 @@ export function getOption(): Option {
         conclusionFailureWeight: parseInt(getInput("conclusion_failure_weight")),
         conclusionWarningWeight: parseInt(getInput("conclusion_warning_weight")),
         conclusionNoticeWeight: parseInt(getInput("conclusion_notice_weight")),
+        outdatedResolver: outdatedResolver,
         ...getCommonOption(),
     };
 }
