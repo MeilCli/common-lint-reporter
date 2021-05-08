@@ -9,6 +9,7 @@ import { InlineCommentReporter } from "./reporter/inline-comment/inline-comment-
 async function run() {
     try {
         const option = getOption();
+        const b: any = "b";
         const lintResults = await readLintResults(option);
         let reporter: Reporter;
         if (option.reportType == ReportType.Comment) {
