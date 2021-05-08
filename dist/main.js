@@ -1722,6 +1722,25 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -1764,6 +1783,7 @@ var option_1 = __webpack_require__(8089);
 var paging_1 = __webpack_require__(9639);
 var comment_reporter_1 = __webpack_require__(7390);
 var comment_1 = __webpack_require__(2676);
+var core = __importStar(__webpack_require__(2225));
 var InlineCommentReporter = /** @class */ (function (_super) {
     __extends(InlineCommentReporter, _super);
     function InlineCommentReporter() {
@@ -1793,16 +1813,20 @@ var InlineCommentReporter = /** @class */ (function (_super) {
             var reviewThreads, pastReviewThreads, newLintResults, _i, newLintResults_1, lintResult, line, startLine;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, paging_1.getPullRequestReviewThreadsWithPaging(client, {
-                            owner: context.owner(),
-                            name: context.repository(),
-                            number: pullRequest.number,
-                        })];
+                    case 0:
+                        core.info("before inline comment");
+                        return [4 /*yield*/, paging_1.getPullRequestReviewThreadsWithPaging(client, {
+                                owner: context.owner(),
+                                name: context.repository(),
+                                number: pullRequest.number,
+                            })];
                     case 1:
                         reviewThreads = _a.sent();
+                        core.info("fetched threads");
                         return [4 /*yield*/, this.resolveOutdatedThreadsAndFiltered(client, option, loginUser, reviewThreads)];
                     case 2:
                         pastReviewThreads = _a.sent();
+                        core.info("redoleved outdated");
                         newLintResults = lintResults.filter(function (x) { return pastReviewThreads.filter(function (y) { return comment_1.equalsInlineComment(y, x, option.reportName); }).length == 0; });
                         _i = 0, newLintResults_1 = newLintResults;
                         _a.label = 3;
@@ -1814,6 +1838,7 @@ var InlineCommentReporter = /** @class */ (function (_super) {
                         if (line == undefined) {
                             return [3 /*break*/, 5];
                         }
+                        core.info("create thread: " + lintResult.path + " " + lintResult.message);
                         return [4 /*yield*/, client.addPullRequestReviewThread({
                                 pullRequestId: pullRequest.id,
                                 body: comment_1.createLintInlineComment(comment_1.createInlineComment(lintResult), option.reportName),
