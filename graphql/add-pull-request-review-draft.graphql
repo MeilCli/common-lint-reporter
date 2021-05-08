@@ -1,0 +1,7 @@
+mutation AddPullRequestReviewDraft($pullRequestId: ID!, $commitSha: GitObjectID) {
+    addPullRequestReview(input: { pullRequestId: $pullRequestId, commitOID: $commitSha }) {
+        pullRequestReview {
+            id
+        }
+    }
+}

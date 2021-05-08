@@ -1,0 +1,9 @@
+mutation SubmitPullRequestReview($pullRequestId: ID!, $pullRequestReviewId: ID!, $body: String!) {
+    submitPullRequestReview(
+        input: { pullRequestId: $pullRequestId, pullRequestReviewId: $pullRequestReviewId, event: COMMENT, body: $body }
+    ) {
+        pullRequestReview {
+            id
+        }
+    }
+}

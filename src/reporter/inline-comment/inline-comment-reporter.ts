@@ -53,16 +53,16 @@ export class InlineCommentReporter extends CommentReporter {
         );
 
         core.info("create pull request review");
-        const pullRequestReview = await client.addPullRequestReview({
+        const pullRequestReview = await client.addPullRequestReviewDraft({
             pullRequestId: pullRequest.id,
             commitSha: context.commitSha(),
-            body: createReviewComment(lintResults),
         });
         const pullRequestReviewId = pullRequestReview?.addPullRequestReview?.pullRequestReview?.id;
         if (pullRequestReviewId == null || pullRequestReviewId == undefined) {
             return;
         }
 
+        const reportedLintResults: LintResult[] = [];
         for (const lintResult of newLintResults) {
             const line = lintResult.endLine != undefined ? lintResult.endLine : lintResult.startLine;
             const startLine = lintResult.endLine != undefined ? lintResult.startLine : undefined;
@@ -83,7 +83,15 @@ export class InlineCommentReporter extends CommentReporter {
                 core.error(error);
                 core.info(`error thread: ${lintResult.path} ${lintResult.message}`);
             }
+            reportedLintResults.push(lintResult);
         }
+
+        core.info("submit");
+        await client.submitPullRequestReview({
+            pullRequestId: pullRequest.id,
+            pullRequestReviewId: pullRequestReviewId,
+            body: createReviewComment(reportedLintResults),
+        });
     }
 
     private async resolveOutdatedThreadsAndFiltered(

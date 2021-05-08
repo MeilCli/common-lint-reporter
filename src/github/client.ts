@@ -35,9 +35,12 @@ import {
     GetLoginUser,
     GetLoginUserQuery,
     GetLoginUserQueryVariables,
-    AddPullRequestReview,
-    AddPullRequestReviewMutation,
-    AddPullRequestReviewMutationVariables,
+    AddPullRequestReviewDraft,
+    AddPullRequestReviewDraftMutation,
+    AddPullRequestReviewDraftMutationVariables,
+    SubmitPullRequestReview,
+    SubmitPullRequestReviewMutation,
+    SubmitPullRequestReviewMutationVariables,
     AddPullRequestReviewThread,
     AddPullRequestReviewThreadMutation,
     AddPullRequestReviewThreadMutationVariables,
@@ -166,11 +169,21 @@ export class GitHubClient {
         return result.data;
     }
 
-    async addPullRequestReview(
-        variables: AddPullRequestReviewMutationVariables
-    ): Promise<AddPullRequestReviewMutation | null | undefined> {
-        const result = await this.client.mutate<AddPullRequestReviewMutation>({
-            mutation: AddPullRequestReview,
+    async addPullRequestReviewDraft(
+        variables: AddPullRequestReviewDraftMutationVariables
+    ): Promise<AddPullRequestReviewDraftMutation | null | undefined> {
+        const result = await this.client.mutate<AddPullRequestReviewDraftMutation>({
+            mutation: AddPullRequestReviewDraft,
+            variables: variables,
+        });
+        return result.data;
+    }
+
+    async submitPullRequestReview(
+        variables: SubmitPullRequestReviewMutationVariables
+    ): Promise<SubmitPullRequestReviewMutation | null | undefined> {
+        const result = await this.client.mutate<SubmitPullRequestReviewMutation>({
+            mutation: SubmitPullRequestReview,
             variables: variables,
         });
         return result.data;

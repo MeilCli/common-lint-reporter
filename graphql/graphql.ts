@@ -29544,23 +29544,23 @@ export const AddComment = gql`
   }
 }
     `;
+export const AddPullRequestReviewDraft = gql`
+    mutation AddPullRequestReviewDraft($pullRequestId: ID!, $commitSha: GitObjectID) {
+  addPullRequestReview(
+    input: {pullRequestId: $pullRequestId, commitOID: $commitSha}
+  ) {
+    pullRequestReview {
+      id
+    }
+  }
+}
+    `;
 export const AddPullRequestReviewThread = gql`
     mutation AddPullRequestReviewThread($pullRequestId: ID!, $pullRequestReviewId: ID!, $body: String!, $path: String!, $line: Int!, $startLine: Int) {
   addPullRequestReviewThread(
     input: {pullRequestId: $pullRequestId, pullRequestReviewId: $pullRequestReviewId, body: $body, path: $path, line: $line, startLine: $startLine}
   ) {
     clientMutationId
-  }
-}
-    `;
-export const AddPullRequestReview = gql`
-    mutation AddPullRequestReview($pullRequestId: ID!, $commitSha: GitObjectID, $body: String!) {
-  addPullRequestReview(
-    input: {pullRequestId: $pullRequestId, commitOID: $commitSha, event: COMMENT, body: $body}
-  ) {
-    pullRequestReview {
-      id
-    }
   }
 }
     `;
@@ -29755,6 +29755,17 @@ export const ResolvePullRequestReviewThread = gql`
   }
 }
     `;
+export const SubmitPullRequestReview = gql`
+    mutation SubmitPullRequestReview($pullRequestId: ID!, $pullRequestReviewId: ID!, $body: String!) {
+  submitPullRequestReview(
+    input: {pullRequestId: $pullRequestId, pullRequestReviewId: $pullRequestReviewId, event: COMMENT, body: $body}
+  ) {
+    pullRequestReview {
+      id
+    }
+  }
+}
+    `;
 export const UpdateCheckRun = gql`
     mutation UpdateCheckRun($repositoryId: ID!, $checkRunId: ID!, $completedAt: DateTime, $conclusion: CheckConclusionState, $status: RequestableCheckStatusState, $output: CheckRunOutput) {
   updateCheckRun(
@@ -29778,6 +29789,23 @@ export type AddCommentMutation = (
   )> }
 );
 
+export type AddPullRequestReviewDraftMutationVariables = Exact<{
+  pullRequestId: Scalars['ID'];
+  commitSha?: Maybe<Scalars['GitObjectID']>;
+}>;
+
+
+export type AddPullRequestReviewDraftMutation = (
+  { __typename?: 'Mutation' }
+  & { addPullRequestReview?: Maybe<(
+    { __typename?: 'AddPullRequestReviewPayload' }
+    & { pullRequestReview?: Maybe<(
+      { __typename?: 'PullRequestReview' }
+      & Pick<PullRequestReview, 'id'>
+    )> }
+  )> }
+);
+
 export type AddPullRequestReviewThreadMutationVariables = Exact<{
   pullRequestId: Scalars['ID'];
   pullRequestReviewId: Scalars['ID'];
@@ -29793,24 +29821,6 @@ export type AddPullRequestReviewThreadMutation = (
   & { addPullRequestReviewThread?: Maybe<(
     { __typename?: 'AddPullRequestReviewThreadPayload' }
     & Pick<AddPullRequestReviewThreadPayload, 'clientMutationId'>
-  )> }
-);
-
-export type AddPullRequestReviewMutationVariables = Exact<{
-  pullRequestId: Scalars['ID'];
-  commitSha?: Maybe<Scalars['GitObjectID']>;
-  body: Scalars['String'];
-}>;
-
-
-export type AddPullRequestReviewMutation = (
-  { __typename?: 'Mutation' }
-  & { addPullRequestReview?: Maybe<(
-    { __typename?: 'AddPullRequestReviewPayload' }
-    & { pullRequestReview?: Maybe<(
-      { __typename?: 'PullRequestReview' }
-      & Pick<PullRequestReview, 'id'>
-    )> }
   )> }
 );
 
@@ -30111,6 +30121,24 @@ export type ResolvePullRequestReviewThreadMutation = (
   & { resolveReviewThread?: Maybe<(
     { __typename?: 'ResolveReviewThreadPayload' }
     & Pick<ResolveReviewThreadPayload, 'clientMutationId'>
+  )> }
+);
+
+export type SubmitPullRequestReviewMutationVariables = Exact<{
+  pullRequestId: Scalars['ID'];
+  pullRequestReviewId: Scalars['ID'];
+  body: Scalars['String'];
+}>;
+
+
+export type SubmitPullRequestReviewMutation = (
+  { __typename?: 'Mutation' }
+  & { submitPullRequestReview?: Maybe<(
+    { __typename?: 'SubmitPullRequestReviewPayload' }
+    & { pullRequestReview?: Maybe<(
+      { __typename?: 'PullRequestReview' }
+      & Pick<PullRequestReview, 'id'>
+    )> }
   )> }
 );
 
