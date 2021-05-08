@@ -1663,11 +1663,12 @@ exports.calculateConclusion = calculateConclusion;
 /***/ }),
 
 /***/ 2676:
-/***/ ((__unused_webpack_module, exports) => {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.equalsInlineComment = exports.createInlineComment = exports.createLintInlineComment = exports.isLintInlineComment = void 0;
+exports.createReviewComment = exports.equalsInlineComment = exports.createInlineComment = exports.createLintInlineComment = exports.isLintInlineComment = void 0;
+var level_1 = __webpack_require__(4507);
 function lintInlineCommentIdentifier(reportName) {
     return "<!-- common-lint-reporter: " + reportName + " -->";
 }
@@ -1715,6 +1716,35 @@ function equalsInlineComment(left, right, reportName) {
     return true;
 }
 exports.equalsInlineComment = equalsInlineComment;
+function createReviewComment(lintResults) {
+    var noticeCount = level_1.countLevel(lintResults, "notice");
+    var warningCount = level_1.countLevel(lintResults, "warning");
+    var failureCount = level_1.countLevel(lintResults, "failure");
+    var messages = [];
+    if (noticeCount == 1) {
+        messages.push("1 notice");
+    }
+    if (2 <= noticeCount) {
+        messages.push(noticeCount + " notices");
+    }
+    if (warningCount == 1) {
+        messages.push("1 warning");
+    }
+    if (2 <= warningCount) {
+        messages.push(warningCount + " warnings");
+    }
+    if (failureCount == 1) {
+        messages.push("1 failure");
+    }
+    if (2 <= failureCount) {
+        messages.push(failureCount + " failures");
+    }
+    if (messages.length == 0) {
+        return "lint message is empty";
+    }
+    return messages.join(" and ") + " found";
+}
+exports.createReviewComment = createReviewComment;
 
 
 /***/ }),
@@ -1845,6 +1875,7 @@ var InlineCommentReporter = /** @class */ (function (_super) {
                         return [4 /*yield*/, client.addPullRequestReview({
                                 pullRequestId: pullRequest.id,
                                 commitSha: context.commitSha(),
+                                body: comment_1.createReviewComment(lintResults),
                             })];
                     case 3:
                         pullRequestReview = _c.sent();
