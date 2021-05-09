@@ -2,6 +2,7 @@ import * as core from "@actions/core";
 import { report } from "process";
 
 export interface CommonOption {
+    githubToken: string;
     workspacePath: string | null;
     repository: string | null;
     pullRequest: number | null;
@@ -10,6 +11,7 @@ export interface CommonOption {
 
 export function getCommonOption(): CommonOption {
     return {
+        githubToken: getInput("github_token"),
         workspacePath: getInputOrNull("workspace_path"),
         repository: getInputOrNull("repository"),
         pullRequest: getInputNumberOrNull("pull_request"),
@@ -18,7 +20,6 @@ export function getCommonOption(): CommonOption {
 }
 
 export interface Option extends CommonOption {
-    githubToken: string;
     reportFiles: string;
     reportFilesFollowSymbolicLinks: boolean;
     reportName: string;
@@ -79,7 +80,6 @@ export function getOption(): Option {
     }
 
     return {
-        githubToken: getInput("github_token"),
         reportFiles: getInput("report_files"),
         reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
         reportName: getInput("report_name"),

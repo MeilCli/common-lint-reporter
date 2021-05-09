@@ -16,9 +16,9 @@ function expectResult(result: LintResult[]) {
     } as LintResult);
 }
 
-test("executeAsFunctionStyle", () => {
+test("executeAsFunctionStyle", async () => {
     const operator = new AddOperator();
-    const result = operator.execute(
+    const result = await operator.execute(
         [],
         createOption(`
             function run() { 
@@ -39,9 +39,9 @@ test("executeAsFunctionStyle", () => {
     expectResult(result);
 });
 
-test("executeAsNoNameFunctionStyle", () => {
+test("executeAsNoNameFunctionStyle", async () => {
     const operator = new AddOperator();
-    const result = operator.execute(
+    const result = await operator.execute(
         [],
         createOption(`
             function () { 
@@ -62,9 +62,9 @@ test("executeAsNoNameFunctionStyle", () => {
     expectResult(result);
 });
 
-test("executeAsArrowStyle", () => {
+test("executeAsArrowStyle", async () => {
     const operator = new AddOperator();
-    const result = operator.execute(
+    const result = await operator.execute(
         [],
         createOption(`() => add({
                     path: "test/file.txt",

@@ -8,6 +8,8 @@ query GetPullRequestChangedFile($owner: String!, $name: String!, $pull_request: 
                 }
                 nodes {
                     path
+                    additions
+                    deletions
                 }
             }
         }

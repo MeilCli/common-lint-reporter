@@ -65,28 +65,28 @@ function expectResult(result: LintResult[]) {
     } as LintResult);
 }
 
-test("executeAsFunctionStyle", () => {
+test("executeAsFunctionStyle", async () => {
     const operator = new FilterOperator();
     const source = createSource();
-    const result = operator.execute(source, createOption("function filter(x) { return x.level == 'failure' }"));
+    const result = await operator.execute(source, createOption("function filter(x) { return x.level == 'failure' }"));
 
     expectSource(source);
     expectResult(result);
 });
 
-test("executeAsNoNameFunctionStyle", () => {
+test("executeAsNoNameFunctionStyle", async () => {
     const operator = new FilterOperator();
     const source = createSource();
-    const result = operator.execute(source, createOption("function (x) { return x.level == 'failure' }"));
+    const result = await operator.execute(source, createOption("function (x) { return x.level == 'failure' }"));
 
     expectSource(source);
     expectResult(result);
 });
 
-test("executeAsArrowStyle", () => {
+test("executeAsArrowStyle", async () => {
     const operator = new FilterOperator();
     const source = createSource();
-    const result = operator.execute(source, createOption("x => x.level == 'failure'"));
+    const result = await operator.execute(source, createOption("x => x.level == 'failure'"));
 
     expectSource(source);
     expectResult(result);

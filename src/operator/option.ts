@@ -5,19 +5,27 @@ export interface OperatorOption extends CommonOption {
     reportFiles: string;
     reportFilesFollowSymbolicLinks: boolean;
     outputPath: string;
+    useApiContext: boolean;
 }
 
 export interface FunctionalOption extends OperatorOption {
     func: string;
 }
 
-export function getFunctionalOption(): FunctionalOption {
+export function getOperatorOption(): OperatorOption {
     return {
         reportFiles: getInput("report_files"),
         reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
-        func: getInput("function"),
         outputPath: getInput("output_path"),
+        useApiContext: getInputOrNull("use_api_context") == "true",
         ...getCommonOption(),
+    };
+}
+
+export function getFunctionalOption(): FunctionalOption {
+    return {
+        func: getInput("function"),
+        ...getOperatorOption(),
     };
 }
 

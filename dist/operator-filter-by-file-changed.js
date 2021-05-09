@@ -2,7 +2,7 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 8021:
+/***/ 6120:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -77,21 +77,35 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.FilterOperator = void 0;
+exports.FilterByFileChangedOperator = void 0;
 var core = __importStar(__webpack_require__(2225));
 var option_1 = __webpack_require__(644);
 var operator_1 = __webpack_require__(6670);
-var FilterOperator = /** @class */ (function (_super) {
-    __extends(FilterOperator, _super);
-    function FilterOperator() {
+var FilterByFileChangedOperator = /** @class */ (function (_super) {
+    __extends(FilterByFileChangedOperator, _super);
+    function FilterByFileChangedOperator() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    FilterOperator.prototype.createScript = function (method) {
-        return "for(const lintResult of source){ const predicate = (" + method + ")(Object.assign({}, lintResult)); if(predicate) result.push(lintResult); }";
+    FilterByFileChangedOperator.prototype.execute = function (lintResults, option) {
+        return __awaiter(this, void 0, void 0, function () {
+            var context, api;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.createContext(option, lintResults, true)];
+                    case 1:
+                        context = _a.sent();
+                        api = context.github.api;
+                        if (api == null) {
+                            return [2 /*return*/, []];
+                        }
+                        return [2 /*return*/, lintResults.filter(function (x) { return api.changedFiles.filter(function (y) { return y.path == x.path; }).length != 0; })];
+                }
+            });
+        });
     };
-    return FilterOperator;
-}(operator_1.FunctionalOperator));
-exports.FilterOperator = FilterOperator;
+    return FilterByFileChangedOperator;
+}(operator_1.Operator));
+exports.FilterByFileChangedOperator = FilterByFileChangedOperator;
 function run() {
     return __awaiter(this, void 0, void 0, function () {
         var option, operator, error_1;
@@ -99,8 +113,8 @@ function run() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    option = option_1.getFunctionalOption();
-                    operator = new FilterOperator();
+                    option = option_1.getOperatorOption();
+                    operator = new FilterByFileChangedOperator();
                     return [4 /*yield*/, operator.operate(option)];
                 case 1:
                     _a.sent();
@@ -576,7 +590,7 @@ module.exports = require("zlib");;
 /******/ 	__webpack_require__.x = () => {
 /******/ 		// Load entry module and return exports
 /******/ 		// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 		var __webpack_exports__ = __webpack_require__.O(undefined, [736,265,208], () => (__webpack_require__(8021)))
+/******/ 		var __webpack_exports__ = __webpack_require__.O(undefined, [736,265,208], () => (__webpack_require__(6120)))
 /******/ 		__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 		return __webpack_exports__;
 /******/ 	};
@@ -701,7 +715,7 @@ module.exports = require("zlib");;
 /******/ 	
 /******/ 	/* webpack/runtime/runtimeId */
 /******/ 	(() => {
-/******/ 		__webpack_require__.j = 334;
+/******/ 		__webpack_require__.j = 149;
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/require chunk loading */
@@ -711,7 +725,7 @@ module.exports = require("zlib");;
 /******/ 		// object to store loaded chunks
 /******/ 		// "1" means "loaded", otherwise not loaded yet
 /******/ 		var installedChunks = {
-/******/ 			334: 1
+/******/ 			149: 1
 /******/ 		};
 /******/ 		
 /******/ 		__webpack_require__.O.require = (chunkId) => (installedChunks[chunkId]);

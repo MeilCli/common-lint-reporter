@@ -5,6 +5,10 @@ branding:
   icon: layers
   color: orange
 inputs:
+  github_token:
+    description: 'github app token, using to read and write repository'
+    required: true
+    default: ${{ github.token }}
   workspace_path:
     description: 'workspace path, using to convert relative path from absolute path'
   repository:
@@ -19,6 +23,9 @@ inputs:
     default: 'common_lint.json'
   report_files_follow_symbolic_links:
     description: 'report file glob pattern option'
+  use_api_context:
+    description: 'if this option is enabled, set information to context using api'
+    default: 'false'
   function:
     description: 'the function of this action'
     required: true

@@ -8,6 +8,7 @@ module.exports = {
         "transformer-checkstyle": "./src/transformer/checkstyle.ts",
         "transformer-eslint": "./src/transformer/eslint.ts",
         "operator-filter": "./src/operator/filter.ts",
+        "operator-filter-by-file-changed": "./src/operator/filter-by-file-changed.ts",
         "operator-map": "./src/operator/map.ts",
         "operator-distinct": "./src/operator/distinct.ts",
         "operator-add": "./src/operator/add.ts",

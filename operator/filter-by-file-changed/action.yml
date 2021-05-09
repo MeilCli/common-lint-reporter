@@ -1,4 +1,4 @@
-name: 'filter operator of common lint reporter'
+name: 'filter by file changed operator of common lint reporter'
 description: 'operator of filter report file to common lint report'
 author: 'MeilCli'
 branding:
@@ -18,7 +18,7 @@ inputs:
   commit_sha:
     description: 'running commit sha'
   use_api_context:
-    description: 'if this option is enabled, set information to context using api'
+    description: 'this option is not using this action'
     default: 'false'
   report_files:
     description: 'report file glob pattern'
@@ -35,4 +35,4 @@ inputs:
     default: 'common_lint.json'
 runs:
   using: 'node12'
-  main: '../../dist/operator-filter.js'
+  main: '../../dist/operator-filter-by-file-changed.js'
