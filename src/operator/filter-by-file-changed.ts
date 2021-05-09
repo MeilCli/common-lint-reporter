@@ -8,7 +8,14 @@ export class FilterByFileChangedOperator extends Operator<OperatorOption> {
         const context = await this.createContext(option, lintResults, true);
         const api = context.github.api;
         if (api == null) {
+            core.info("api is null");
             return [];
+        }
+        for (const changedFile of api.changedFiles) {
+            core.info(`file: ${changedFile.path}`);
+        }
+        for (const lintResult of lintResults) {
+            core.info(`lint: ${context.github.trimPath(lintResult.path)}`);
         }
         return lintResults.filter(
             (x) => api.changedFiles.filter((y) => y.path == context.github.trimPath(x.path)).length != 0
