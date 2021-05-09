@@ -29679,6 +29679,8 @@ export const GetPullRequestChangedFile = gql`
         }
         nodes {
           path
+          additions
+          deletions
         }
       }
     }
@@ -29998,7 +30000,7 @@ export type GetPullRequestChangedFileQuery = (
           & Pick<PageInfo, 'hasNextPage' | 'endCursor'>
         ), nodes?: Maybe<Array<Maybe<(
           { __typename?: 'PullRequestChangedFile' }
-          & Pick<PullRequestChangedFile, 'path'>
+          & Pick<PullRequestChangedFile, 'path' | 'additions' | 'deletions'>
         )>>> }
       )> }
     )> }

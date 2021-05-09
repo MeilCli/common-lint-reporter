@@ -41,7 +41,14 @@ test("getPullRequestChangedFileWithPaging", async () => {
                                     hasNextPage: true,
                                     endCursor: "1",
                                 },
-                                nodes: [{ __typename: "PullRequestChangedFile", path: "README.md" }],
+                                nodes: [
+                                    {
+                                        __typename: "PullRequestChangedFile",
+                                        path: "README.md",
+                                        additions: 1,
+                                        deletions: 10,
+                                    },
+                                ],
                             },
                         },
                     },
@@ -72,7 +79,14 @@ test("getPullRequestChangedFileWithPaging", async () => {
                                     hasNextPage: false,
                                     endCursor: "2",
                                 },
-                                nodes: [{ __typename: "PullRequestChangedFile", path: "LICENSE.txt" }],
+                                nodes: [
+                                    {
+                                        __typename: "PullRequestChangedFile",
+                                        path: "LICENSE.txt",
+                                        additions: 10,
+                                        deletions: 1,
+                                    },
+                                ],
                             },
                         },
                     },
@@ -90,7 +104,11 @@ test("getPullRequestChangedFileWithPaging", async () => {
 
     expect(result.length).toBe(2);
     expect(result[0].path).toBe("README.md");
+    expect(result[0].additions).toBe(1);
+    expect(result[0].deletions).toBe(10);
     expect(result[1].path).toBe("LICENSE.txt");
+    expect(result[1].additions).toBe(10);
+    expect(result[1].deletions).toBe(1);
 });
 
 test("getPullRequestChangedFileWithPagingInfinityLoop", async () => {
