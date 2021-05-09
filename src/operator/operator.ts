@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import * as glob from "@actions/glob";
 import * as vm from "vm";
+import * as path from "path";
 import { OperatorOption, FunctionalOption } from "./option";
 import { LintResult } from "../lint-result";
 import { githubContext } from "../github/context";
@@ -15,6 +16,7 @@ interface Context {
 
 interface GitHubContext {
     workspacePath: string;
+    trimPath: (filePath: string) => string;
     owner: string;
     repository: string;
     pullRequest: number | null;
@@ -64,6 +66,7 @@ export abstract class Operator<TOption extends OperatorOption> {
         const github = githubContext(option);
         return {
             workspacePath: github.workspacePath(),
+            trimPath: (filePath: string) => filePath.replace(`${github.workspacePath()}${path.sep}`, ""),
             owner: github.owner(),
             repository: github.repository(),
             pullRequest: github.pullRequest(),
