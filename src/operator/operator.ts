@@ -39,12 +39,12 @@ export abstract class Operator<TOption extends OperatorOption> {
         const globber = await glob.create(option.reportFiles, {
             followSymbolicLinks: option.reportFilesFollowSymbolicLinks,
         });
-        const result: LintResult[] = [];
+        const source: LintResult[] = [];
         for await (const path of globber.globGenerator()) {
             const lintResults = JSON.parse(fs.readFileSync(path, "utf-8")) as LintResult[];
-            const executeResults = await this.execute(lintResults, option);
-            result.push(...executeResults);
+            source.push(...lintResults);
         }
+        const result = await this.execute(source, option);
         this.writeFile(option.outputPath, result);
     }
 
