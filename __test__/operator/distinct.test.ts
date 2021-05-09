@@ -65,28 +65,28 @@ function expectResult(result: LintResult[]) {
     } as LintResult);
 }
 
-test("executeAsFunctionStyle", () => {
+test("executeAsFunctionStyle", async () => {
     const operator = new DistinctOperator();
     const source = createSource();
-    const result = operator.execute(source, createOption("function distinct(x) { return x.path }"));
+    const result = await operator.execute(source, createOption("function distinct(x) { return x.path }"));
 
     expectSource(source);
     expectResult(result);
 });
 
-test("executeAsNoNameFunctionStyle", () => {
+test("executeAsNoNameFunctionStyle", async () => {
     const operator = new DistinctOperator();
     const source = createSource();
-    const result = operator.execute(source, createOption("function (x) { return x.path }"));
+    const result = await operator.execute(source, createOption("function (x) { return x.path }"));
 
     expectSource(source);
     expectResult(result);
 });
 
-test("executeAsArrowStyle", () => {
+test("executeAsArrowStyle", async () => {
     const operator = new DistinctOperator();
     const source = createSource();
-    const result = operator.execute(source, createOption("x => x.path"));
+    const result = await operator.execute(source, createOption("x => x.path"));
 
     expectSource(source);
     expectResult(result);

@@ -7,25 +7,28 @@ class TestFunctionalOperator extends FunctionalOperator {
     }
 }
 
-test("testGitHubContext-workspacePath", () => {
+test("testGitHubContext-workspacePath", async () => {
     const operator = new TestFunctionalOperator();
-    const result = operator.execute([], createOption("() => github.workspacePath == 'test/' ? 'workspacePath' : ''"));
+    const result = await operator.execute(
+        [],
+        createOption("() => github.workspacePath == 'test/' ? 'workspacePath' : ''")
+    );
 
     expect(result.length).toBe(1);
     expect(result[0].rule).toBe("workspacePath");
 });
 
-test("testGitHubContext-owner", () => {
+test("testGitHubContext-owner", async () => {
     const operator = new TestFunctionalOperator();
-    const result = operator.execute([], createOption("() => github.owner == 'MeilCli' ? 'owner' : ''"));
+    const result = await operator.execute([], createOption("() => github.owner == 'MeilCli' ? 'owner' : ''"));
 
     expect(result.length).toBe(1);
     expect(result[0].rule).toBe("owner");
 });
 
-test("testGitHubContext-repository", () => {
+test("testGitHubContext-repository", async () => {
     const operator = new TestFunctionalOperator();
-    const result = operator.execute(
+    const result = await operator.execute(
         [],
         createOption("() => github.repository == 'common-lint-reporter' ? 'repository' : ''")
     );
@@ -34,17 +37,17 @@ test("testGitHubContext-repository", () => {
     expect(result[0].rule).toBe("repository");
 });
 
-test("testGitHubContext-pullRequest", () => {
+test("testGitHubContext-pullRequest", async () => {
     const operator = new TestFunctionalOperator();
-    const result = operator.execute([], createOption("() => github.pullRequest == 1 ? 'pullRequest' : ''"));
+    const result = await operator.execute([], createOption("() => github.pullRequest == 1 ? 'pullRequest' : ''"));
 
     expect(result.length).toBe(1);
     expect(result[0].rule).toBe("pullRequest");
 });
 
-test("testGitHubContext-commitSha", () => {
+test("testGitHubContext-commitSha", async () => {
     const operator = new TestFunctionalOperator();
-    const result = operator.execute([], createOption("() => github.commitSha == 'test-hash' ? 'commitSha' : ''"));
+    const result = await operator.execute([], createOption("() => github.commitSha == 'test-hash' ? 'commitSha' : ''"));
 
     expect(result.length).toBe(1);
     expect(result[0].rule).toBe("commitSha");

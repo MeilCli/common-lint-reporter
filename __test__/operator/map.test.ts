@@ -75,10 +75,10 @@ function expectResult(result: LintResult[]) {
     } as LintResult);
 }
 
-test("executeAsFunctionStyle", () => {
+test("executeAsFunctionStyle", async () => {
     const operator = new MapOperator();
     const source = createSource();
-    const result = operator.execute(
+    const result = await operator.execute(
         source,
         createOption("function map(x) { return { ...x, message: `[${x.rule}] ${x.message}` } }")
     );
@@ -87,10 +87,10 @@ test("executeAsFunctionStyle", () => {
     expectResult(result);
 });
 
-test("executeAsNoNameFunctionStyle", () => {
+test("executeAsNoNameFunctionStyle", async () => {
     const operator = new MapOperator();
     const source = createSource();
-    const result = operator.execute(
+    const result = await operator.execute(
         source,
         createOption("function (x) { return { ...x, message: `[${x.rule}] ${x.message}` } }")
     );
@@ -99,10 +99,10 @@ test("executeAsNoNameFunctionStyle", () => {
     expectResult(result);
 });
 
-test("executeAsArrowStyle", () => {
+test("executeAsArrowStyle", async () => {
     const operator = new MapOperator();
     const source = createSource();
-    const result = operator.execute(
+    const result = await operator.execute(
         source,
         createOption("x => Object.assign(x, { message: `[${x.rule}] ${x.message}` })")
     );
