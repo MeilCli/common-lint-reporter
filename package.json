@@ -14,6 +14,9 @@
         "test:data:checkstyle": "npm run test:data:checkstyle:report -s || npm run test:data:checkstyle:replace",
         "test:data:checkstyle:report": "eslint --config .eslintrc.data.json --output-file data/checkstyle.xml --format checkstyle data/source.ts",
         "test:data:checkstyle:replace": "replace-in-files --regex '\\\"[a-zA-Z0-9]+:?((\\\\\\\\|\\\\|\\/)[a-zA-Z0-9_\\-\\.]+)+\\\"' --replacement '\\\"filepath.txt\\\"' data/checkstyle.xml",
+        "test:data:junit": "npm run test:data:junit:report -s || npm run test:data:junit:replace",
+        "test:data:junit:report": "eslint --config .eslintrc.data.json --output-file data/junit_eslint.xml --format junit data/source.ts",
+        "test:data:junit:replace": "replace-in-files --regex '\\\"[a-zA-Z0-9]+:?((\\\\\\\\|\\\\|\\/)[a-zA-Z0-9_\\-\\.]+)+\\\"' --replacement '\\\"filepath.txt\\\"' data/junit_eslint.xml",
         "lint": "eslint --ext .ts src/",
         "lint:report": "eslint --output-file eslint_report.json --format json --ext .ts src/",
         "codegen": "graphql-codegen --config codegen.yml"

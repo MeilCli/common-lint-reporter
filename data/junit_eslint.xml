@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+<testsuite package="org.eslint" time="0" tests="3" errors="3" name="filepath.txt">
+<testcase time="0" name="org.eslint.@typescript-eslint/no-unused-vars" classname="filepath.txt"><failure message="&apos;method&apos; is defined but never used."><![CDATA[line 1, col 10, Warning - &apos;method&apos; is defined but never used. (@typescript-eslint/no-unused-vars)]]></failure></testcase>
+<testcase time="0" name="org.eslint.prettier/prettier" classname="filepath.txt"><failure message="Insert `&#183;`"><![CDATA[line 1, col 18, Error - Insert `&#183;` (prettier/prettier)]]></failure></testcase>
+<testcase time="0" name="org.eslint.@typescript-eslint/no-unused-vars" classname="filepath.txt"><failure message="&apos;a&apos; is assigned a value but never used."><![CDATA[line 2, col 11, Warning - &apos;a&apos; is assigned a value but never used. (@typescript-eslint/no-unused-vars)]]></failure></testcase>
+</testsuite>
+</testsuites>
