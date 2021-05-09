@@ -5,6 +5,10 @@ branding:
   icon: layers
   color: orange
 inputs:
+  github_token:
+    description: 'github app token, using to read and write repository'
+    required: true
+    default: ${{ github.token }}
   workspace_path:
     description: 'workspace path, using to convert relative path from absolute path'
   repository:

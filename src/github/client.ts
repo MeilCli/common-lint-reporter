@@ -1,6 +1,6 @@
 import fetch from "cross-fetch";
 import { ApolloClient, HttpLink, InMemoryCache, NormalizedCacheObject } from "@apollo/client";
-import { Option } from "../option";
+import { CommonOption } from "../option";
 import {
     CreateCheckRun,
     CreateCheckRunMutation,
@@ -58,7 +58,7 @@ import {
     GetPullRequestReviewThreadsQueryVariables,
 } from "../../graphql/graphql";
 
-export function githubClient(option: Option): GitHubClient {
+export function githubClient(option: CommonOption): GitHubClient {
     return new GitHubClient(
         new ApolloClient({
             link: new HttpLink({
