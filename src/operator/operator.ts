@@ -68,7 +68,7 @@ export abstract class Operator<TOption extends OperatorOption> {
             repository: github.repository(),
             pullRequest: github.pullRequest(),
             commitSha: github.commitSha(),
-            api: option.setInformationToContext || forceAccessApi ? await this.createApiContext(option) : null,
+            api: option.useApiContext || forceAccessApi ? await this.createApiContext(option) : null,
         };
     }
 
