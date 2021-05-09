@@ -10,7 +10,9 @@ export class FilterByFileChangedOperator extends Operator<OperatorOption> {
         if (api == null) {
             return [];
         }
-        return lintResults.filter((x) => api.changedFiles.filter((y) => y.path == x.path).length != 0);
+        return lintResults.filter(
+            (x) => api.changedFiles.filter((y) => y.path == context.github.trimPath(x.path)).length != 0
+        );
     }
 }
 
