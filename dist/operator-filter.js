@@ -207,6 +207,7 @@ exports.FunctionalOperator = exports.Operator = void 0;
 var fs = __importStar(__webpack_require__(5747));
 var glob = __importStar(__webpack_require__(5826));
 var vm = __importStar(__webpack_require__(2184));
+var path = __importStar(__webpack_require__(5622));
 var context_1 = __webpack_require__(2754);
 var client_1 = __webpack_require__(9330);
 var paging_1 = __webpack_require__(9639);
@@ -216,7 +217,7 @@ var Operator = /** @class */ (function () {
     Operator.prototype.operate = function (option) {
         var e_1, _a;
         return __awaiter(this, void 0, void 0, function () {
-            var globber, result, _b, _c, path, lintResults, executeResults, e_1_1;
+            var globber, result, _b, _c, path_1, lintResults, executeResults, e_1_1;
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0: return [4 /*yield*/, glob.create(option.reportFiles, {
@@ -233,8 +234,8 @@ var Operator = /** @class */ (function () {
                     case 3: return [4 /*yield*/, _b.next()];
                     case 4:
                         if (!(_c = _d.sent(), !_c.done)) return [3 /*break*/, 7];
-                        path = _c.value;
-                        lintResults = JSON.parse(fs.readFileSync(path, "utf-8"));
+                        path_1 = _c.value;
+                        lintResults = JSON.parse(fs.readFileSync(path_1, "utf-8"));
                         return [4 /*yield*/, this.execute(lintResults, option)];
                     case 5:
                         executeResults = _d.sent();
@@ -293,6 +294,7 @@ var Operator = /** @class */ (function () {
                         github = context_1.githubContext(option);
                         _b = {
                             workspacePath: github.workspacePath(),
+                            trimPath: function (filePath) { return filePath.replace("" + github.workspacePath() + path.sep, ""); },
                             owner: github.owner(),
                             repository: github.repository(),
                             pullRequest: github.pullRequest(),
