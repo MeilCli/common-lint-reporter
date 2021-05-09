@@ -4,6 +4,8 @@ import * as vm from "vm";
 import { OperatorOption, FunctionalOption } from "./option";
 import { LintResult } from "../lint-result";
 import { githubContext } from "../github/context";
+import { githubClient } from "../github/client";
+import { getPullRequestChangedFileWithPaging } from "../github/paging";
 
 interface Context {
     source: LintResult[];
@@ -17,6 +19,17 @@ interface GitHubContext {
     repository: string;
     pullRequest: number | null;
     commitSha: string;
+    api: ApiContext | null;
+}
+
+interface ApiContext {
+    changedFiles: ChangedFile[];
+}
+
+interface ChangedFile {
+    path: string;
+    additions: number;
+    deletions: number;
 }
 
 export abstract class Operator<TOption extends OperatorOption> {
@@ -27,23 +40,27 @@ export abstract class Operator<TOption extends OperatorOption> {
         const result: LintResult[] = [];
         for await (const path of globber.globGenerator()) {
             const lintResults = JSON.parse(fs.readFileSync(path, "utf-8")) as LintResult[];
-            const executeResults = this.execute(lintResults, option);
+            const executeResults = await this.execute(lintResults, option);
             result.push(...executeResults);
         }
         this.writeFile(option.outputPath, result);
     }
 
-    public abstract execute(lintResults: LintResult[], option: TOption): LintResult[];
+    public abstract execute(lintResults: LintResult[], option: TOption): Promise<LintResult[]>;
 
-    protected createContext(option: TOption, lintResults: LintResult[]): Context {
+    protected async createContext(
+        option: TOption,
+        lintResults: LintResult[],
+        forceAccessApi = false
+    ): Promise<Context> {
         return {
             source: lintResults,
             result: [],
-            github: this.createGitHubContext(option),
+            github: await this.createGitHubContext(option, forceAccessApi),
         };
     }
 
-    private createGitHubContext(option: TOption): GitHubContext {
+    private async createGitHubContext(option: TOption, forceAccessApi: boolean): Promise<GitHubContext> {
         const github = githubContext(option);
         return {
             workspacePath: github.workspacePath(),
@@ -51,6 +68,36 @@ export abstract class Operator<TOption extends OperatorOption> {
             repository: github.repository(),
             pullRequest: github.pullRequest(),
             commitSha: github.commitSha(),
+            api: option.setInformationToContext || forceAccessApi ? await this.createApiContext(option) : null,
+        };
+    }
+
+    private async createApiContext(option: TOption): Promise<ApiContext> {
+        const github = githubContext(option);
+        const client = githubClient(option);
+        const pullRequestNumber = github.pullRequest();
+        if (pullRequestNumber == null) {
+            return {
+                changedFiles: [],
+            };
+        }
+
+        const changedFiles = await getPullRequestChangedFileWithPaging(client, {
+            owner: github.owner(),
+            name: github.repository(),
+            pull_request: pullRequestNumber,
+        });
+        const changedFilesResult: ChangedFile[] = [];
+        for (const changedFile of changedFiles) {
+            changedFilesResult.push({
+                path: changedFile.path,
+                additions: changedFile.additions,
+                deletions: changedFile.deletions,
+            });
+        }
+
+        return {
+            changedFiles: changedFilesResult,
         };
     }
 
@@ -60,8 +107,8 @@ export abstract class Operator<TOption extends OperatorOption> {
 }
 
 export abstract class FunctionalOperator extends Operator<FunctionalOption> {
-    execute(lintResults: LintResult[], option: FunctionalOption): LintResult[] {
-        const context = this.createContext(option, lintResults);
+    async execute(lintResults: LintResult[], option: FunctionalOption): Promise<LintResult[]> {
+        const context = await this.createContext(option, lintResults);
         const script = new vm.Script(this.createScript(option.func));
         script.runInNewContext(context);
         return context.result;

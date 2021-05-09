@@ -17,6 +17,9 @@ inputs:
     description: 'running pull request number'
   commit_sha:
     description: 'running commit sha'
+  use_api_context:
+    description: 'if this option is enabled, set information to context using api'
+    default: 'false'
   report_files:
     description: 'report file glob pattern'
     required: true
