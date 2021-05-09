@@ -217,7 +217,7 @@ var Operator = /** @class */ (function () {
     Operator.prototype.operate = function (option) {
         var e_1, _a;
         return __awaiter(this, void 0, void 0, function () {
-            var globber, result, _b, _c, path_1, lintResults, executeResults, e_1_1;
+            var globber, source, _b, _c, path_1, lintResults, e_1_1, result;
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0: return [4 /*yield*/, glob.create(option.reportFiles, {
@@ -225,41 +225,40 @@ var Operator = /** @class */ (function () {
                         })];
                     case 1:
                         globber = _d.sent();
-                        result = [];
+                        source = [];
                         _d.label = 2;
                     case 2:
-                        _d.trys.push([2, 8, 9, 14]);
+                        _d.trys.push([2, 7, 8, 13]);
                         _b = __asyncValues(globber.globGenerator());
                         _d.label = 3;
                     case 3: return [4 /*yield*/, _b.next()];
                     case 4:
-                        if (!(_c = _d.sent(), !_c.done)) return [3 /*break*/, 7];
+                        if (!(_c = _d.sent(), !_c.done)) return [3 /*break*/, 6];
                         path_1 = _c.value;
                         lintResults = JSON.parse(fs.readFileSync(path_1, "utf-8"));
-                        return [4 /*yield*/, this.execute(lintResults, option)];
-                    case 5:
-                        executeResults = _d.sent();
-                        result.push.apply(result, executeResults);
-                        _d.label = 6;
-                    case 6: return [3 /*break*/, 3];
-                    case 7: return [3 /*break*/, 14];
-                    case 8:
+                        source.push.apply(source, lintResults);
+                        _d.label = 5;
+                    case 5: return [3 /*break*/, 3];
+                    case 6: return [3 /*break*/, 13];
+                    case 7:
                         e_1_1 = _d.sent();
                         e_1 = { error: e_1_1 };
-                        return [3 /*break*/, 14];
-                    case 9:
-                        _d.trys.push([9, , 12, 13]);
-                        if (!(_c && !_c.done && (_a = _b.return))) return [3 /*break*/, 11];
+                        return [3 /*break*/, 13];
+                    case 8:
+                        _d.trys.push([8, , 11, 12]);
+                        if (!(_c && !_c.done && (_a = _b.return))) return [3 /*break*/, 10];
                         return [4 /*yield*/, _a.call(_b)];
-                    case 10:
+                    case 9:
                         _d.sent();
-                        _d.label = 11;
-                    case 11: return [3 /*break*/, 13];
-                    case 12:
+                        _d.label = 10;
+                    case 10: return [3 /*break*/, 12];
+                    case 11:
                         if (e_1) throw e_1.error;
                         return [7 /*endfinally*/];
-                    case 13: return [7 /*endfinally*/];
+                    case 12: return [7 /*endfinally*/];
+                    case 13: return [4 /*yield*/, this.execute(source, option)];
                     case 14:
+                        result = _d.sent();
                         this.writeFile(option.outputPath, result);
                         return [2 /*return*/];
                 }
