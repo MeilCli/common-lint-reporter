@@ -2,91 +2,6 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 2754:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.GitHubContext = exports.githubContext = void 0;
-var github = __importStar(__webpack_require__(8142));
-function githubContext(option) {
-    return new GitHubContext(option);
-}
-exports.githubContext = githubContext;
-var GitHubContext = /** @class */ (function () {
-    function GitHubContext(option) {
-        this.option = option;
-    }
-    GitHubContext.prototype.workspacePath = function () {
-        var _a, _b;
-        if (((_a = this.option) === null || _a === void 0 ? void 0 : _a.workspacePath) != null) {
-            return this.option.workspacePath;
-        }
-        return (_b = process.env.GITHUB_WORKSPACE) !== null && _b !== void 0 ? _b : "";
-    };
-    GitHubContext.prototype.owner = function () {
-        var _a;
-        if (((_a = this.option) === null || _a === void 0 ? void 0 : _a.repository) != null) {
-            return this.option.repository.split("/")[0];
-        }
-        return github.context.repo.owner;
-    };
-    GitHubContext.prototype.repository = function () {
-        var _a;
-        if (((_a = this.option) === null || _a === void 0 ? void 0 : _a.repository) != null) {
-            return this.option.repository.split("/")[1];
-        }
-        return github.context.repo.repo;
-    };
-    GitHubContext.prototype.pullRequest = function () {
-        var _a;
-        if (((_a = this.option) === null || _a === void 0 ? void 0 : _a.pullRequest) != null) {
-            return this.option.pullRequest;
-        }
-        if (github.context.payload.pull_request != undefined) {
-            return github.context.payload.pull_request.number;
-        }
-        return null;
-    };
-    GitHubContext.prototype.commitSha = function () {
-        var _a;
-        if (((_a = this.option) === null || _a === void 0 ? void 0 : _a.commitSha) != null) {
-            return this.option.commitSha;
-        }
-        if (github.context.payload.pull_request != undefined) {
-            return github.context.payload.pull_request.head.sha;
-        }
-        if (github.context.payload.workflow_run != undefined) {
-            return github.context.payload.workflow_run.head_sha;
-        }
-        return github.context.sha;
-    };
-    return GitHubContext;
-}());
-exports.GitHubContext = GitHubContext;
-
-
-/***/ }),
-
 /***/ 8783:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
@@ -293,6 +208,8 @@ var fs = __importStar(__webpack_require__(5747));
 var glob = __importStar(__webpack_require__(5826));
 var vm = __importStar(__webpack_require__(2184));
 var context_1 = __webpack_require__(2754);
+var client_1 = __webpack_require__(9330);
+var paging_1 = __webpack_require__(9639);
 var Operator = /** @class */ (function () {
     function Operator() {
     }
@@ -310,58 +227,127 @@ var Operator = /** @class */ (function () {
                         result = [];
                         _d.label = 2;
                     case 2:
-                        _d.trys.push([2, 7, 8, 13]);
+                        _d.trys.push([2, 8, 9, 14]);
                         _b = __asyncValues(globber.globGenerator());
                         _d.label = 3;
                     case 3: return [4 /*yield*/, _b.next()];
                     case 4:
-                        if (!(_c = _d.sent(), !_c.done)) return [3 /*break*/, 6];
+                        if (!(_c = _d.sent(), !_c.done)) return [3 /*break*/, 7];
                         path = _c.value;
                         lintResults = JSON.parse(fs.readFileSync(path, "utf-8"));
-                        executeResults = this.execute(lintResults, option);
+                        return [4 /*yield*/, this.execute(lintResults, option)];
+                    case 5:
+                        executeResults = _d.sent();
                         result.push.apply(result, executeResults);
-                        _d.label = 5;
-                    case 5: return [3 /*break*/, 3];
-                    case 6: return [3 /*break*/, 13];
-                    case 7:
+                        _d.label = 6;
+                    case 6: return [3 /*break*/, 3];
+                    case 7: return [3 /*break*/, 14];
+                    case 8:
                         e_1_1 = _d.sent();
                         e_1 = { error: e_1_1 };
-                        return [3 /*break*/, 13];
-                    case 8:
-                        _d.trys.push([8, , 11, 12]);
-                        if (!(_c && !_c.done && (_a = _b.return))) return [3 /*break*/, 10];
-                        return [4 /*yield*/, _a.call(_b)];
+                        return [3 /*break*/, 14];
                     case 9:
+                        _d.trys.push([9, , 12, 13]);
+                        if (!(_c && !_c.done && (_a = _b.return))) return [3 /*break*/, 11];
+                        return [4 /*yield*/, _a.call(_b)];
+                    case 10:
                         _d.sent();
-                        _d.label = 10;
-                    case 10: return [3 /*break*/, 12];
-                    case 11:
+                        _d.label = 11;
+                    case 11: return [3 /*break*/, 13];
+                    case 12:
                         if (e_1) throw e_1.error;
                         return [7 /*endfinally*/];
-                    case 12: return [7 /*endfinally*/];
-                    case 13:
+                    case 13: return [7 /*endfinally*/];
+                    case 14:
                         this.writeFile(option.outputPath, result);
                         return [2 /*return*/];
                 }
             });
         });
     };
-    Operator.prototype.createContext = function (option, lintResults) {
-        return {
-            source: lintResults,
-            result: [],
-            github: this.createGitHubContext(option),
-        };
+    Operator.prototype.createContext = function (option, lintResults, forceAccessApi) {
+        if (forceAccessApi === void 0) { forceAccessApi = false; }
+        return __awaiter(this, void 0, void 0, function () {
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _a = {
+                            source: lintResults,
+                            result: []
+                        };
+                        return [4 /*yield*/, this.createGitHubContext(option, forceAccessApi)];
+                    case 1: return [2 /*return*/, (_a.github = _b.sent(),
+                            _a)];
+                }
+            });
+        });
     };
-    Operator.prototype.createGitHubContext = function (option) {
-        var github = context_1.githubContext(option);
-        return {
-            workspacePath: github.workspacePath(),
-            owner: github.owner(),
-            repository: github.repository(),
-            pullRequest: github.pullRequest(),
-            commitSha: github.commitSha(),
-        };
+    Operator.prototype.createGitHubContext = function (option, forceAccessApi) {
+        return __awaiter(this, void 0, void 0, function () {
+            var github, _a;
+            var _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        github = context_1.githubContext(option);
+                        _b = {
+                            workspacePath: github.workspacePath(),
+                            owner: github.owner(),
+                            repository: github.repository(),
+                            pullRequest: github.pullRequest(),
+                            commitSha: github.commitSha()
+                        };
+                        if (!(option.useApiContext || forceAccessApi)) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.createApiContext(option)];
+                    case 1:
+                        _a = _c.sent();
+                        return [3 /*break*/, 3];
+                    case 2:
+                        _a = null;
+                        _c.label = 3;
+                    case 3: return [2 /*return*/, (_b.api = _a,
+                            _b)];
+                }
+            });
+        });
+    };
+    Operator.prototype.createApiContext = function (option) {
+        return __awaiter(this, void 0, void 0, function () {
+            var github, client, pullRequestNumber, changedFiles, changedFilesResult, _i, changedFiles_1, changedFile;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        github = context_1.githubContext(option);
+                        client = client_1.githubClient(option);
+                        pullRequestNumber = github.pullRequest();
+                        if (pullRequestNumber == null) {
+                            return [2 /*return*/, {
+                                    changedFiles: [],
+                                }];
+                        }
+                        return [4 /*yield*/, paging_1.getPullRequestChangedFileWithPaging(client, {
+                                owner: github.owner(),
+                                name: github.repository(),
+                                pull_request: pullRequestNumber,
+                            })];
+                    case 1:
+                        changedFiles = _a.sent();
+                        changedFilesResult = [];
+                        for (_i = 0, changedFiles_1 = changedFiles; _i < changedFiles_1.length; _i++) {
+                            changedFile = changedFiles_1[_i];
+                            changedFilesResult.push({
+                                path: changedFile.path,
+                                additions: changedFile.additions,
+                                deletions: changedFile.deletions,
+                            });
+                        }
+                        return [2 /*return*/, {
+                                changedFiles: changedFilesResult,
+                            }];
+                }
+            });
+        });
     };
     Operator.prototype.writeFile = function (path, lintResults) {
         fs.writeFileSync(path, JSON.stringify(lintResults));
@@ -375,10 +361,19 @@ var FunctionalOperator = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     FunctionalOperator.prototype.execute = function (lintResults, option) {
-        var context = this.createContext(option, lintResults);
-        var script = new vm.Script(this.createScript(option.func));
-        script.runInNewContext(context);
-        return context.result;
+        return __awaiter(this, void 0, void 0, function () {
+            var context, script;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.createContext(option, lintResults)];
+                    case 1:
+                        context = _a.sent();
+                        script = new vm.Script(this.createScript(option.func));
+                        script.runInNewContext(context);
+                        return [2 /*return*/, context.result];
+                }
+            });
+        });
     };
     return FunctionalOperator;
 }(Operator));
@@ -422,11 +417,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getFunctionalOption = void 0;
+exports.getFunctionalOption = exports.getOperatorOption = void 0;
 var core = __importStar(__webpack_require__(2225));
 var option_1 = __webpack_require__(8089);
+function getOperatorOption() {
+    return __assign({ reportFiles: getInput("report_files"), reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true", outputPath: getInput("output_path"), useApiContext: getInputOrNull("use_api_context") == "true" }, option_1.getCommonOption());
+}
+exports.getOperatorOption = getOperatorOption;
 function getFunctionalOption() {
-    return __assign({ reportFiles: getInput("report_files"), reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true", func: getInput("function"), outputPath: getInput("output_path") }, option_1.getCommonOption());
+    return __assign({ func: getInput("function") }, getOperatorOption());
 }
 exports.getFunctionalOption = getFunctionalOption;
 function getInput(key) {
@@ -438,119 +437,6 @@ function getInputOrNull(key) {
         return null;
     }
     return result;
-}
-
-
-/***/ }),
-
-/***/ 8089:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getOption = exports.OutdatedResolver = exports.ReportType = exports.getCommonOption = void 0;
-var core = __importStar(__webpack_require__(2225));
-function getCommonOption() {
-    return {
-        workspacePath: getInputOrNull("workspace_path"),
-        repository: getInputOrNull("repository"),
-        pullRequest: getInputNumberOrNull("pull_request"),
-        commitSha: getInputOrNull("commit_sha"),
-    };
-}
-exports.getCommonOption = getCommonOption;
-var ReportType;
-(function (ReportType) {
-    ReportType[ReportType["CheckRun"] = 0] = "CheckRun";
-    ReportType[ReportType["Comment"] = 1] = "Comment";
-    ReportType[ReportType["InlineComment"] = 2] = "InlineComment";
-})(ReportType = exports.ReportType || (exports.ReportType = {}));
-var OutdatedResolver;
-(function (OutdatedResolver) {
-    OutdatedResolver[OutdatedResolver["ResolveThread"] = 0] = "ResolveThread";
-    OutdatedResolver[OutdatedResolver["ForceResolveThread"] = 1] = "ForceResolveThread";
-    OutdatedResolver[OutdatedResolver["DeleteThread"] = 2] = "DeleteThread";
-    OutdatedResolver[OutdatedResolver["DeleteOrForceResolveThread"] = 3] = "DeleteOrForceResolveThread";
-})(OutdatedResolver = exports.OutdatedResolver || (exports.OutdatedResolver = {}));
-function getOption() {
-    var reportTypeString = getInput("report_type");
-    var reportType = ReportType.CheckRun;
-    switch (reportTypeString) {
-        case "comment":
-            reportType = ReportType.Comment;
-            break;
-        case "inline_comment":
-            reportType = ReportType.InlineComment;
-            break;
-        default:
-            reportType = ReportType.CheckRun;
-            break;
-    }
-    var outdatedResolverString = getInput("outdated_resolver");
-    var outdatedResolver = OutdatedResolver.DeleteOrForceResolveThread;
-    switch (outdatedResolverString) {
-        case "resolve_thread":
-            outdatedResolver = OutdatedResolver.ResolveThread;
-            break;
-        case "force_resolve_thread":
-            outdatedResolver = OutdatedResolver.ForceResolveThread;
-            break;
-        case "delete_thread":
-            outdatedResolver = OutdatedResolver.DeleteThread;
-            break;
-        default:
-            outdatedResolver = OutdatedResolver.DeleteOrForceResolveThread;
-            break;
-    }
-    return __assign({ githubToken: getInput("github_token"), reportFiles: getInput("report_files"), reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true", reportName: getInput("report_name"), reportType: reportType, conclusionFailureThreshold: parseInt(getInput("conclusion_failure_threshold")), conclusionFailureWeight: parseInt(getInput("conclusion_failure_weight")), conclusionWarningWeight: parseInt(getInput("conclusion_warning_weight")), conclusionNoticeWeight: parseInt(getInput("conclusion_notice_weight")), outdatedResolver: outdatedResolver }, getCommonOption());
-}
-exports.getOption = getOption;
-function getInput(key) {
-    return core.getInput(key, { required: true });
-}
-function getInputOrNull(key) {
-    var result = core.getInput(key, { required: false });
-    if (result.length == 0) {
-        return null;
-    }
-    return result;
-}
-function getInputNumberOrNull(key) {
-    var value = getInputOrNull(key);
-    if (value == null) {
-        return null;
-    }
-    return parseInt(value);
 }
 
 
@@ -690,7 +576,7 @@ module.exports = require("zlib");;
 /******/ 	__webpack_require__.x = () => {
 /******/ 		// Load entry module and return exports
 /******/ 		// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 		var __webpack_exports__ = __webpack_require__.O(undefined, [736], () => (__webpack_require__(8783)))
+/******/ 		var __webpack_exports__ = __webpack_require__.O(undefined, [736,265,208], () => (__webpack_require__(8783)))
 /******/ 		__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 		return __webpack_exports__;
 /******/ 	};
@@ -769,7 +655,7 @@ module.exports = require("zlib");;
 /******/ 		// This function allow to reference async chunks and sibling chunks for the entrypoint
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames based on template
-/******/ 			return "" + "vendor" + ".js";
+/******/ 			return "" + ({"265":"graphql","736":"vendor"}[chunkId] || chunkId) + ".js";
 /******/ 		};
 /******/ 	})();
 /******/ 	
@@ -865,6 +751,8 @@ module.exports = require("zlib");;
 /******/ 		var next = __webpack_require__.x;
 /******/ 		__webpack_require__.x = () => {
 /******/ 			__webpack_require__.e(736);
+/******/ 			__webpack_require__.e(265);
+/******/ 			__webpack_require__.e(208);
 /******/ 			return next();
 /******/ 		};
 /******/ 	})();
