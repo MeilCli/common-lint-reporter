@@ -88,15 +88,24 @@ var FilterByFileChangedOperator = /** @class */ (function (_super) {
     }
     FilterByFileChangedOperator.prototype.execute = function (lintResults, option) {
         return __awaiter(this, void 0, void 0, function () {
-            var context, api;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var context, api, _i, _a, changedFile, _b, lintResults_1, lintResult;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0: return [4 /*yield*/, this.createContext(option, lintResults, true)];
                     case 1:
-                        context = _a.sent();
+                        context = _c.sent();
                         api = context.github.api;
                         if (api == null) {
+                            core.info("api is null");
                             return [2 /*return*/, []];
+                        }
+                        for (_i = 0, _a = api.changedFiles; _i < _a.length; _i++) {
+                            changedFile = _a[_i];
+                            core.info("file: " + changedFile.path);
+                        }
+                        for (_b = 0, lintResults_1 = lintResults; _b < lintResults_1.length; _b++) {
+                            lintResult = lintResults_1[_b];
+                            core.info("lint: " + context.github.trimPath(lintResult.path));
                         }
                         return [2 /*return*/, lintResults.filter(function (x) { return api.changedFiles.filter(function (y) { return y.path == context.github.trimPath(x.path); }).length != 0; })];
                 }
