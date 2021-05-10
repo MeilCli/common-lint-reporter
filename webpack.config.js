@@ -9,6 +9,7 @@ module.exports = {
         "transformer-eslint": "./src/transformer/eslint.ts",
         "transformer-textlint": "./src/transformer/textlint.ts",
         "transformer-markdownlint": "./src/transformer/markdownlint.ts",
+        "transformer-stylelint": "./src/transformer/stylelint.ts",
         "transformer-junit": "./src/transformer/junit.ts",
         "operator-filter": "./src/operator/filter.ts",
         "operator-filter-by-file-changed": "./src/operator/filter-by-file-changed.ts",

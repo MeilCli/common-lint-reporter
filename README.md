@@ -11,6 +11,7 @@ Current supporting lint file format:
 - eslint(JSON)
 - textlint(JSON)
 - markdownlint
+- stylelint(JSON)
 - checkstyle
 - junit
   - compatibility: eslint, textlint, cpplint
@@ -65,6 +66,7 @@ jobs:
   - [eslint](documents/transformer/eslint.md)
   - [textlint](documents/transformer/textlint.md)
   - [markdownlint](documents/transformer/markdownlint.md)
+  - [stylelint](documents/transformer/stylelint.md)
   - [checkstyle](documents/transformer/checkstyle.md)
   - [junit](documents/transformer/junit.md)
 - Operator

@@ -1,0 +1,32 @@
+[
+    {
+        "source": "test/test.css",
+        "deprecations": [],
+        "invalidOptionWarnings": [],
+        "parseErrors": [],
+        "errored": true,
+        "warnings": [
+            {
+                "line": 1,
+                "column": 5,
+                "rule": "block-opening-brace-space-before",
+                "severity": "error",
+                "text": "Expected single space before \"{\" (block-opening-brace-space-before)"
+            },
+            {
+                "line": 3,
+                "column": 1,
+                "rule": "no-missing-end-of-source-newline",
+                "severity": "error",
+                "text": "Unexpected missing end-of-source newline (no-missing-end-of-source-newline)"
+            },
+            {
+                "line": 2,
+                "column": 5,
+                "rule": "indentation",
+                "severity": "error",
+                "text": "Expected indentation of 2 spaces (indentation)"
+            }
+        ]
+    }
+]
