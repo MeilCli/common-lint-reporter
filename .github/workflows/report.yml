@@ -20,7 +20,7 @@ jobs:
       - uses: MeilCli/common-lint-reporter/utils/import-context@v0
         id: lint_context
       - name: Transform report file
-        uses: ./transformer/eslint/
+        uses: MeilCli/common-lint-reporter/transformer/eslint@v0
         with:
           report_files: |
             eslint_report.json
