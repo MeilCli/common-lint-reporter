@@ -13,6 +13,7 @@ The compatibility is not needed because this action has standard resolver. But, 
 
 Now compatibility:
 - eslint
+- textlint
 
 ## Option
 ### Input

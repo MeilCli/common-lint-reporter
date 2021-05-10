@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites>
+<testsuite package="org.eslint" time="0" tests="2" errors="2" name="test/filepath.md">
+<testcase time="0" name="org.eslint.no-todo"><failure message="Found TODO: &#39;ToDo: test message&#39;"><![CDATA[line 2, col 3, Error - Found TODO: &#39;ToDo: test message&#39; (no-todo)]]></failure></testcase>
+<testcase time="0" name="org.eslint.no-todo"><failure message="Found TODO: &#39;ToDo: write&#39;"><![CDATA[line 5, col 3, Error - Found TODO: &#39;ToDo: write&#39; (no-todo)]]></failure></testcase>
+</testsuite>
+</testsuites>

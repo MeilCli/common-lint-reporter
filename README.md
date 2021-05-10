@@ -11,7 +11,7 @@ Current supporting lint file format:
 - eslint(JSON)
 - checkstyle
 - junit
-  - compatibility: eslint
+  - compatibility: eslint, textlint
 
 ### Feature request
 Now, this action is WIP. Features are not enough and should improve about transformer and operator. If you have nice idea, please send as issue:heart:

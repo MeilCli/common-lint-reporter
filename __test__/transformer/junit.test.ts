@@ -39,3 +39,31 @@ test("transformEslint", async () => {
         level: "warning",
     } as LintResult);
 });
+
+test("transformTextlint", async () => {
+    const text = fs.readFileSync("data/junit_textlint.xml", "utf-8");
+    const transformer = new JunitTransformer();
+    const result = transformer.parse(text);
+
+    expect(result.length).toBe(2);
+    expect(result[0]).toMatchObject({
+        path: "test/filepath.md",
+        rule: "no-todo",
+        message: "Found TODO: 'ToDo: test message'",
+        startLine: 2,
+        endLine: undefined,
+        startColumn: undefined,
+        endColumn: undefined,
+        level: "warning",
+    } as LintResult);
+    expect(result[1]).toMatchObject({
+        path: "test/filepath.md",
+        rule: "no-todo",
+        message: "Found TODO: 'ToDo: write'",
+        startLine: 5,
+        endLine: undefined,
+        startColumn: undefined,
+        endColumn: undefined,
+        level: "warning",
+    } as LintResult);
+});
