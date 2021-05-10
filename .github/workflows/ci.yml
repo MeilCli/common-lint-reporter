@@ -27,15 +27,13 @@ jobs:
       - run: npm run test
       - run: npm run lint:report
         continue-on-error: true
-      - uses: actions/upload-artifact@v2
-        with:
-          name: eslint
-          path: eslint_report.json
       - uses: MeilCli/common-lint-reporter/utils/export-context@v0
       - uses: actions/upload-artifact@v2
         with:
-          name: lint_context
-          path: common_lint_context.json
+          name: result
+          path: |
+            eslint_report.json
+            common_lint_context.json
       - run: npm run pack
         if: github.event_name != 'pull_request'
       - name: Create Pull Request

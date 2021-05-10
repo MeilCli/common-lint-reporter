@@ -16,13 +16,7 @@ jobs:
         with:
           workflow: ci.yml
           run_id: ${{ github.event.workflow_run.id }}
-          name: eslint
-      - name: Download artifact
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: ci.yml
-          run_id: ${{ github.event.workflow_run.id }}
-          name: lint_context
+          name: result
       - uses: MeilCli/common-lint-reporter/utils/import-context@v0
         id: lint_context
       - name: Transform report file
