@@ -14,7 +14,7 @@ Current supporting lint file format:
 - stylelint(JSON)
 - checkstyle
 - junit
-  - compatibility: eslint, textlint, cpplint
+  - compatibility: eslint, textlint, cpplint, RuboCop
 
 ### Feature request
 Now, this action is WIP. Features are not enough and should improve about transformer and operator. If you have nice idea, please send as issue:heart:

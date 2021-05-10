@@ -15,6 +15,7 @@ Now compatibility:
 - eslint
 - textlint
 - cpplint
+- RuboCop
 
 ## Option
 ### Input
