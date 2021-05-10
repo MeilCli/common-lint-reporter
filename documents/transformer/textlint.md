@@ -3,7 +3,7 @@
 - uses: MeilCli/common-lint-reporter/transformer/textlint@v0
   with:
     report_files: |
-      eslint_report.json
+      textlint_report.json
 ```
 
 ## Option
