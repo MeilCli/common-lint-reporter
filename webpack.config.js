@@ -7,6 +7,7 @@ module.exports = {
         main: "./src/main.ts",
         "transformer-checkstyle": "./src/transformer/checkstyle.ts",
         "transformer-eslint": "./src/transformer/eslint.ts",
+        "transformer-textlint": "./src/transformer/textlint.ts",
         "transformer-junit": "./src/transformer/junit.ts",
         "operator-filter": "./src/operator/filter.ts",
         "operator-filter-by-file-changed": "./src/operator/filter-by-file-changed.ts",

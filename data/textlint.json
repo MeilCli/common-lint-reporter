@@ -1,0 +1,25 @@
+[
+    {
+        "messages": [
+            {
+                "type": "lint",
+                "ruleId": "no-todo",
+                "message": "Found TODO: 'ToDo: test message'",
+                "index": 14,
+                "line": 2,
+                "column": 3,
+                "severity": 2
+            },
+            {
+                "type": "lint",
+                "ruleId": "no-todo",
+                "message": "Found TODO: 'ToDo: write'",
+                "index": 51,
+                "line": 5,
+                "column": 3,
+                "severity": 2
+            }
+        ],
+        "filePath": "test/filepath.md"
+    }
+]
