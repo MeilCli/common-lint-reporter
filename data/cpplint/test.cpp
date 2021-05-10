@@ -1,0 +1,3 @@
+void method(){
+    println("test");
+}

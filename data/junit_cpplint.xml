@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuite errors="0" failures="3" name="cpplint" tests="3"><testcase name="data/cpplint/test.cpp"><failure>0: No copyright message found.  You should have a line: "Copyright [year] &lt;Copyright Owner&gt;" [legal/copyright] [5]
+1: Missing space before { [whitespace/braces] [5]
+3: Could not find a newline character at the end of the file. [whitespace/ending_newline] [5]</failure></testcase></testsuite>

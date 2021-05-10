@@ -8,7 +8,7 @@ import { JunitTestSuite, JunitTestCase, JunitTestMessage } from "./junit/entity"
 import { convertJunitToLintResult } from "./junit/convert";
 
 interface JunitResult {
-    testsuites: TestSuites[];
+    testsuites: TestSuites[] | undefined;
 }
 
 interface TestSuites {
@@ -25,8 +25,8 @@ interface TestSuite {
 interface TestCase {
     name: string;
     classname: string;
-    error: TestMessage[] | undefined;
-    failure: TestMessage[] | undefined;
+    error: TestMessage[] | string | undefined;
+    failure: TestMessage[] | string | undefined;
 }
 
 interface TestMessage {
@@ -44,8 +44,16 @@ export class JunitTransformer extends Transformer {
             attrValueProcessor: (value, _) => he.decode(value),
         }) as JunitResult;
         const junitTestSuites: JunitTestSuite[] = [];
-        for (const testSuites of junitResult.testsuites) {
-            junitTestSuites.push(...this.parseTestSuites(testSuites.testsuite));
+        if (junitResult.testsuites != undefined) {
+            for (const testSuites of junitResult.testsuites) {
+                junitTestSuites.push(...this.parseTestSuites(testSuites.testsuite));
+            }
+        } else {
+            // for cpplint
+            const testSuites = (junitResult as unknown) as TestSuites;
+            if (testSuites.testsuite != undefined) {
+                junitTestSuites.push(...this.parseTestSuites(testSuites.testsuite));
+            }
         }
         return convertJunitToLintResult(junitTestSuites);
     }
@@ -82,9 +90,12 @@ export class JunitTransformer extends Transformer {
         return result;
     }
 
-    private parseTestMessages(testMessages: TestMessage[] | undefined): JunitTestMessage[] {
+    private parseTestMessages(testMessages: TestMessage[] | string | undefined): JunitTestMessage[] {
         if (testMessages == undefined) {
             return [];
+        }
+        if (typeof testMessages == "string") {
+            return [{ message: testMessages, body: testMessages }];
         }
         const result: JunitTestMessage[] = [];
         for (const testMessage of testMessages) {

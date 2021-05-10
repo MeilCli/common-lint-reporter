@@ -67,3 +67,41 @@ test("transformTextlint", async () => {
         level: "warning",
     } as LintResult);
 });
+
+test("transformCpplint", async () => {
+    const text = fs.readFileSync("data/junit_cpplint.xml", "utf-8");
+    const transformer = new JunitTransformer();
+    const result = transformer.parse(text);
+
+    expect(result.length).toBe(3);
+    expect(result[0]).toMatchObject({
+        path: "data/cpplint/test.cpp",
+        rule: "legal/copyright",
+        message: `No copyright message found.  You should have a line: "Copyright [year] <Copyright Owner>"`,
+        startLine: 1,
+        endLine: undefined,
+        startColumn: undefined,
+        endColumn: undefined,
+        level: "failure",
+    } as LintResult);
+    expect(result[1]).toMatchObject({
+        path: "data/cpplint/test.cpp",
+        rule: "whitespace/braces",
+        message: `Missing space before {`,
+        startLine: 1,
+        endLine: undefined,
+        startColumn: undefined,
+        endColumn: undefined,
+        level: "failure",
+    } as LintResult);
+    expect(result[2]).toMatchObject({
+        path: "data/cpplint/test.cpp",
+        rule: "whitespace/ending_newline",
+        message: `Could not find a newline character at the end of the file.`,
+        startLine: 3,
+        endLine: undefined,
+        startColumn: undefined,
+        endColumn: undefined,
+        level: "failure",
+    } as LintResult);
+});
