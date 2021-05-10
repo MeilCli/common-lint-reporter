@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.workflow_run.conclusion == 'success'
     steps:
-      # ToDo: remove and use published version
       - uses: actions/checkout@v2
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
@@ -24,7 +23,7 @@ jobs:
           workflow: ci.yml
           run_id: ${{ github.event.workflow_run.id }}
           name: lint_context
-      - uses: ./utils/import-context/
+      - uses: MeilCli/common-lint-reporter/utils/import-context@v0
         id: lint_context
       - name: Transform report file
         uses: ./transformer/eslint/
@@ -32,24 +31,24 @@ jobs:
           report_files: |
             eslint_report.json
       - name: Filter by file changed
-        uses: ./operator/filter-by-file-changed
+        uses: MeilCli/common-lint-reporter/operator/filter-by-file-changed@v0
         if: steps.lint_context.outputs.pull_request != 'null'
         with:
           pull_request: ${{ steps.lint_context.outputs.pull_request }}
       - name: Report lint result
-        uses: ./
+        uses: MeilCli/common-lint-reporter@v0
         with:
           report_type: 'check_run'
           report_name: 'Check Run Report'
       - name: Report lint result
-        uses: ./
+        uses: MeilCli/common-lint-reporter@v0
         if: steps.lint_context.outputs.pull_request != 'null'
         with:
           report_type: 'comment'
           report_name: 'Comment Report'
           pull_request: ${{ steps.lint_context.outputs.pull_request }}
       - name: Report lint result
-        uses: ./
+        uses: MeilCli/common-lint-reporter@v0
         if: steps.lint_context.outputs.pull_request != 'null'
         with:
           report_type: 'inline_comment'
