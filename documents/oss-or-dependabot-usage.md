@@ -88,17 +88,14 @@ jobs:
       - run: npm run build
       - run: npm run lint:report
         continue-on-error: true
-      - uses: actions/upload-artifact@v2
-        with:
-          name: eslint
-          # your output path
-          path: eslint_report.json
-      # export and updload context
       - uses: MeilCli/common-lint-reporter/utils/export-context@v0
       - uses: actions/upload-artifact@v2
         with:
-          name: lint_context
-          path: common_lint_context.json
+          name: result
+          # your output path, and exported path
+          path: |
+            eslint_report.json
+            common_lint_context.json
 ```
 ```yml
 # report.yml
@@ -115,20 +112,13 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.workflow_run.conclusion == 'success'
     steps:
-      - uses: actions/checkout@v2
+      # download reported file and context and import context
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: ci.yml
           run_id: ${{ github.event.workflow_run.id }}
-          name: eslint
-      # download and import context
-      - name: Download artifact
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: ci.yml
-          run_id: ${{ github.event.workflow_run.id }}
-          name: lint_context
+          name: result
       - uses: MeilCli/common-lint-reporter/utils/import-context@v0
         id: lint_context
       - uses: MeilCli/common-lint-reporter/transformer/eslint@v0
