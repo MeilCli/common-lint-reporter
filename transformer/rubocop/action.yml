@@ -1,0 +1,19 @@
+name: 'rubocop transformer of common lint reporter'
+description: 'transformer of rubocop report file to common lint report'
+author: 'MeilCli'
+branding:
+  icon: layers
+  color: orange
+inputs:
+  report_files:
+    description: 'report file glob pattern'
+    required: true
+  report_files_follow_symbolic_links:
+    description: 'report file glob pattern option'
+  output_path:
+    description: 'output path'
+    required: true
+    default: 'common_lint.json'
+runs:
+  using: 'node12'
+  main: '../../dist/transformer-rubocop.js'

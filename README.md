@@ -13,6 +13,7 @@ Current supporting lint file format:
 - markdownlint
 - stylelint(JSON)
 - checkstyle
+- RuboCop(JSON)
 - junit
   - compatibility: eslint, textlint, cpplint, RuboCop
 
@@ -68,6 +69,7 @@ jobs:
   - [markdownlint](documents/transformer/markdownlint.md)
   - [stylelint](documents/transformer/stylelint.md)
   - [checkstyle](documents/transformer/checkstyle.md)
+  - [RuboCop](documents/transformer/rubocop.md)
   - [junit](documents/transformer/junit.md)
 - Operator
   - [add](documents/operator/add.md)

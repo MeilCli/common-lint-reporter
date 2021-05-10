@@ -10,6 +10,7 @@ module.exports = {
         "transformer-textlint": "./src/transformer/textlint.ts",
         "transformer-markdownlint": "./src/transformer/markdownlint.ts",
         "transformer-stylelint": "./src/transformer/stylelint.ts",
+        "transformer-rubocop": "./src/transformer/rubocop.ts",
         "transformer-junit": "./src/transformer/junit.ts",
         "operator-filter": "./src/operator/filter.ts",
         "operator-filter-by-file-changed": "./src/operator/filter-by-file-changed.ts",
