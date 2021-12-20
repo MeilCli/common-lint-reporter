@@ -21,7 +21,9 @@ async function run() {
         await reporter.report(option, lintResults);
         const a: any = "a";
     } catch (error) {
-        core.setFailed(error.message);
+        if (error instanceof Error) {
+            core.setFailed(error.message);
+        }
     }
 }
 

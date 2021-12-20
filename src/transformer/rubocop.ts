@@ -86,7 +86,9 @@ async function run() {
         const transformer = new RubocopTransformer();
         await transformer.transform(option);
     } catch (error) {
-        core.setFailed(error.message);
+        if (error instanceof Error) {
+            core.setFailed(error.message);
+        }
     }
 }
 

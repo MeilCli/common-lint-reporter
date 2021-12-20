@@ -12,7 +12,9 @@ async function run() {
         const context = JSON.parse(fs.readFileSync(inputPath, "utf-8")) as Context;
         core.setOutput("pull_request", context.pullRequest ?? "null");
     } catch (error) {
-        core.setFailed(error.message);
+        if (error instanceof Error) {
+            core.setFailed(error.message);
+        }
     }
 }
 

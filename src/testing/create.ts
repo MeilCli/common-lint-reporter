@@ -71,7 +71,9 @@ async function run() {
         const data = option.dataJson != null ? (JSON.parse(option.dataJson) as LintResult[]) : createDefaultData();
         writeFile(option.outputPath, data);
     } catch (error) {
-        core.setFailed(error.message);
+        if (error instanceof Error) {
+            core.setFailed(error.message);
+        }
     }
 }
 

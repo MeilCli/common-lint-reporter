@@ -50,7 +50,7 @@ export class JunitTransformer extends Transformer {
             }
         } else {
             // for cpplint
-            const testSuites = (junitResult as unknown) as TestSuites;
+            const testSuites = junitResult as unknown as TestSuites;
             if (testSuites.testsuite != undefined) {
                 junitTestSuites.push(...this.parseTestSuites(testSuites.testsuite));
             }
@@ -114,7 +114,9 @@ async function run() {
         const transformer = new JunitTransformer();
         await transformer.transform(option);
     } catch (error) {
-        core.setFailed(error.message);
+        if (error instanceof Error) {
+            core.setFailed(error.message);
+        }
     }
 }
 

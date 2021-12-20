@@ -14,7 +14,9 @@ async function run() {
         const operator = new FilterOperator();
         await operator.operate(option);
     } catch (error) {
-        core.setFailed(error.message);
+        if (error instanceof Error) {
+            core.setFailed(error.message);
+        }
     }
 }
 

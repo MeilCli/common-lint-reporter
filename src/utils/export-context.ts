@@ -15,7 +15,9 @@ async function run() {
         const outputPath = getInput("output_path");
         fs.writeFileSync(outputPath, JSON.stringify(context));
     } catch (error) {
-        core.setFailed(error.message);
+        if (error instanceof Error) {
+            core.setFailed(error.message);
+        }
     }
 }
 
