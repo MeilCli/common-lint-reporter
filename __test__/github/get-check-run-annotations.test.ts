@@ -46,6 +46,16 @@ test("getPullRequestChangedFileWithPaging", async () => {
                                     message: "test message1",
                                     title: "test title1",
                                     annotationLevel: CheckAnnotationLevel.Notice,
+                                    location: {
+                                        start: {
+                                            line: 1,
+                                            column: 1,
+                                        },
+                                        end: {
+                                            line: 1,
+                                            column: 10,
+                                        },
+                                    },
                                 },
                             ],
                         },
@@ -112,6 +122,16 @@ test("getPullRequestChangedFileWithPaging", async () => {
         message: "test message1",
         title: "test title1",
         annotationLevel: CheckAnnotationLevel.Notice,
+        location: {
+            start: {
+                line: 1,
+                column: 1,
+            },
+            end: {
+                line: 1,
+                column: 10,
+            },
+        },
     });
     expect(result[1]).toMatchObject({
         __typename: "CheckAnnotation",
@@ -162,6 +182,16 @@ test("getPullRequestChangedFileWithPagingInfinityLoop", async () => {
                                     message: "test message1",
                                     title: "test title1",
                                     annotationLevel: CheckAnnotationLevel.Notice,
+                                    location: {
+                                        start: {
+                                            line: 1,
+                                            column: 1,
+                                        },
+                                        end: {
+                                            line: 1,
+                                            column: 10,
+                                        },
+                                    },
                                 },
                             ],
                         },

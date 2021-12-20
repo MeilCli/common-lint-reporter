@@ -47,6 +47,7 @@ test("getPullRequestCommentsWithPagingWithPaging", async () => {
                                         id: "thread1",
                                         path: "test/file1.txt",
                                         line: 1,
+                                        startLine: 5,
                                         isOutdated: false,
                                         isResolved: false,
                                         comments: {
@@ -147,7 +148,7 @@ test("getPullRequestCommentsWithPagingWithPaging", async () => {
     expect(result[0].id).toBe("thread1");
     expect(result[0].path).toBe("test/file1.txt");
     expect(result[0].line).toBe(1);
-    expect(result[0].startLine).toBe(undefined);
+    expect(result[0].startLine).toBe(5);
     expect(result[0].isOutdated).toBe(false);
     expect(result[0].isResolved).toBe(false);
     expect(result[0].comments?.pageInfo?.hasNextPage).toBe(false);
@@ -204,6 +205,7 @@ test("getPullRequestCommentsWithPagingWithPagingInfinityLoop", async () => {
                                         id: "thread1",
                                         path: "test/file1.txt",
                                         line: 1,
+                                        startLine: 5,
                                         isOutdated: false,
                                         isResolved: false,
                                         comments: {

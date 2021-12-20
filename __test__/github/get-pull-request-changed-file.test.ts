@@ -137,7 +137,14 @@ test("getPullRequestChangedFileWithPagingInfinityLoop", async () => {
                                     hasNextPage: true,
                                     endCursor: "1",
                                 },
-                                nodes: [{ __typename: "PullRequestChangedFile", path: "README.md" }],
+                                nodes: [
+                                    {
+                                        __typename: "PullRequestChangedFile",
+                                        path: "README.md",
+                                        additions: 10,
+                                        deletions: 1,
+                                    },
+                                ],
                             },
                         },
                     },
@@ -168,7 +175,14 @@ test("getPullRequestChangedFileWithPagingInfinityLoop", async () => {
                                     hasNextPage: true,
                                     endCursor: "1",
                                 },
-                                nodes: [{ __typename: "PullRequestChangedFile", path: "LICENSE.txt" }],
+                                nodes: [
+                                    {
+                                        __typename: "PullRequestChangedFile",
+                                        path: "LICENSE.txt",
+                                        additions: 10,
+                                        deletions: 1,
+                                    },
+                                ],
                             },
                         },
                     },

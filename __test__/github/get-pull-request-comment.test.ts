@@ -34,6 +34,7 @@ test("getPullRequestCommentsWithPagingWithPaging", async () => {
                         __typename: "Repository",
                         pullRequest: {
                             __typename: "PullRequest",
+                            id: "id1",
                             comments: {
                                 pageInfo: {
                                     __typename: "PageInfo",
@@ -72,6 +73,7 @@ test("getPullRequestCommentsWithPagingWithPaging", async () => {
                         __typename: "Repository",
                         pullRequest: {
                             __typename: "PullRequest",
+                            id: "id1",
                             comments: {
                                 pageInfo: {
                                     __typename: "PageInfo",
@@ -130,6 +132,7 @@ test("getPullRequestCommentsWithPagingInfinityLoop", async () => {
                         __typename: "Repository",
                         pullRequest: {
                             __typename: "PullRequest",
+                            id: "id1",
                             comments: {
                                 pageInfo: {
                                     __typename: "PageInfo",
@@ -168,6 +171,7 @@ test("getPullRequestCommentsWithPagingInfinityLoop", async () => {
                         __typename: "Repository",
                         pullRequest: {
                             __typename: "PullRequest",
+                            id: "id1",
                             comments: {
                                 pageInfo: {
                                     __typename: "PageInfo",
