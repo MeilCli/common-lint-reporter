@@ -87,7 +87,7 @@ var AddOperator = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     AddOperator.prototype.createScript = function (method) {
-        return "\nconst add = (x) => {\n    if(x.path !== undefined && x.rule !== undefined && x.message !== undefined) {\n        if(x.level === \"notice\" || x.level == \"warning\" || x.level == \"failure\") {\n            result.push(x);\n        }\n    }\n};\nresult.push(...source);\n(" + method + ")()";
+        return "\nconst add = (x) => {\n    if(x.path !== undefined && x.rule !== undefined && x.message !== undefined) {\n        if(x.level === \"notice\" || x.level == \"warning\" || x.level == \"failure\") {\n            result.push(x);\n        }\n    }\n};\nresult.push(...source);\n(".concat(method, ")()");
     };
     return AddOperator;
 }(operator_1.FunctionalOperator));
@@ -99,7 +99,7 @@ function run() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    option = option_1.getFunctionalOption();
+                    option = (0, option_1.getFunctionalOption)();
                     operator = new AddOperator();
                     return [4 /*yield*/, operator.operate(option)];
                 case 1:
@@ -107,7 +107,9 @@ function run() {
                     return [3 /*break*/, 3];
                 case 2:
                     error_1 = _a.sent();
-                    core.setFailed(error_1.message);
+                    if (error_1 instanceof Error) {
+                        core.setFailed(error_1.message);
+                    }
                     return [3 /*break*/, 3];
                 case 3: return [2 /*return*/];
             }
@@ -204,10 +206,10 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.FunctionalOperator = exports.Operator = void 0;
-var fs = __importStar(__webpack_require__(5747));
+var fs = __importStar(__webpack_require__(7147));
 var glob = __importStar(__webpack_require__(5826));
-var vm = __importStar(__webpack_require__(2184));
-var path = __importStar(__webpack_require__(5622));
+var vm = __importStar(__webpack_require__(6144));
+var path = __importStar(__webpack_require__(1017));
 var context_1 = __webpack_require__(2754);
 var client_1 = __webpack_require__(9330);
 var paging_1 = __webpack_require__(9639);
@@ -290,10 +292,10 @@ var Operator = /** @class */ (function () {
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
-                        github = context_1.githubContext(option);
+                        github = (0, context_1.githubContext)(option);
                         _b = {
                             workspacePath: github.workspacePath(),
-                            trimPath: function (filePath) { return filePath.replace("" + github.workspacePath() + path.sep, ""); },
+                            trimPath: function (filePath) { return filePath.replace("".concat(github.workspacePath()).concat(path.sep), ""); },
                             owner: github.owner(),
                             repository: github.repository(),
                             pullRequest: github.pullRequest(),
@@ -319,15 +321,15 @@ var Operator = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        github = context_1.githubContext(option);
-                        client = client_1.githubClient(option);
+                        github = (0, context_1.githubContext)(option);
+                        client = (0, client_1.githubClient)(option);
                         pullRequestNumber = github.pullRequest();
                         if (pullRequestNumber == null) {
                             return [2 /*return*/, {
                                     changedFiles: [],
                                 }];
                         }
-                        return [4 /*yield*/, paging_1.getPullRequestChangedFileWithPaging(client, {
+                        return [4 /*yield*/, (0, paging_1.getPullRequestChangedFileWithPaging)(client, {
                                 owner: github.owner(),
                                 name: github.repository(),
                                 pull_request: pullRequestNumber,
@@ -422,7 +424,7 @@ exports.getFunctionalOption = exports.getOperatorOption = void 0;
 var core = __importStar(__webpack_require__(2225));
 var option_1 = __webpack_require__(8089);
 function getOperatorOption() {
-    return __assign({ reportFiles: getInput("report_files"), reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true", outputPath: getInput("output_path"), useApiContext: getInputOrNull("use_api_context") == "true" }, option_1.getCommonOption());
+    return __assign({ reportFiles: getInput("report_files"), reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true", outputPath: getInput("output_path"), useApiContext: getInputOrNull("use_api_context") == "true" }, (0, option_1.getCommonOption)());
 }
 exports.getOperatorOption = getOperatorOption;
 function getFunctionalOption() {
@@ -443,101 +445,101 @@ function getInputOrNull(key) {
 
 /***/ }),
 
-/***/ 2357:
+/***/ 9491:
 /***/ ((module) => {
 
-module.exports = require("assert");;
+module.exports = require("assert");
 
 /***/ }),
 
-/***/ 8614:
+/***/ 2361:
 /***/ ((module) => {
 
-module.exports = require("events");;
+module.exports = require("events");
 
 /***/ }),
 
-/***/ 5747:
+/***/ 7147:
 /***/ ((module) => {
 
-module.exports = require("fs");;
+module.exports = require("fs");
 
 /***/ }),
 
-/***/ 8605:
+/***/ 3685:
 /***/ ((module) => {
 
-module.exports = require("http");;
+module.exports = require("http");
 
 /***/ }),
 
-/***/ 7211:
+/***/ 5687:
 /***/ ((module) => {
 
-module.exports = require("https");;
+module.exports = require("https");
 
 /***/ }),
 
-/***/ 1631:
+/***/ 1808:
 /***/ ((module) => {
 
-module.exports = require("net");;
+module.exports = require("net");
 
 /***/ }),
 
-/***/ 2087:
+/***/ 2037:
 /***/ ((module) => {
 
-module.exports = require("os");;
+module.exports = require("os");
 
 /***/ }),
 
-/***/ 5622:
+/***/ 1017:
 /***/ ((module) => {
 
-module.exports = require("path");;
+module.exports = require("path");
 
 /***/ }),
 
-/***/ 2413:
+/***/ 2781:
 /***/ ((module) => {
 
-module.exports = require("stream");;
+module.exports = require("stream");
 
 /***/ }),
 
-/***/ 4016:
+/***/ 4404:
 /***/ ((module) => {
 
-module.exports = require("tls");;
+module.exports = require("tls");
 
 /***/ }),
 
-/***/ 8835:
+/***/ 7310:
 /***/ ((module) => {
 
-module.exports = require("url");;
+module.exports = require("url");
 
 /***/ }),
 
-/***/ 1669:
+/***/ 3837:
 /***/ ((module) => {
 
-module.exports = require("util");;
+module.exports = require("util");
 
 /***/ }),
 
-/***/ 2184:
+/***/ 6144:
 /***/ ((module) => {
 
-module.exports = require("vm");;
+module.exports = require("vm");
 
 /***/ }),
 
-/***/ 8761:
+/***/ 9796:
 /***/ ((module) => {
 
-module.exports = require("zlib");;
+module.exports = require("zlib");
 
 /***/ })
 
@@ -607,7 +609,8 @@ module.exports = require("zlib");;
 /******/ 				}
 /******/ 				if(fulfilled) {
 /******/ 					deferred.splice(i--, 1)
-/******/ 					result = fn();
+/******/ 					var r = fn();
+/******/ 					if (r !== undefined) result = r;
 /******/ 				}
 /******/ 			}
 /******/ 			return result;
@@ -657,21 +660,6 @@ module.exports = require("zlib");;
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames based on template
 /******/ 			return "" + ({"265":"graphql","736":"vendor"}[chunkId] || chunkId) + ".js";
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/harmony module decorator */
-/******/ 	(() => {
-/******/ 		__webpack_require__.hmd = (module) => {
-/******/ 			module = Object.create(module);
-/******/ 			if (!module.children) module.children = [];
-/******/ 			Object.defineProperty(module, 'exports', {
-/******/ 				enumerable: true,
-/******/ 				set: () => {
-/******/ 					throw new Error('ES Modules may not assign module.exports or exports.*, Use ESM export syntax, instead: ' + module.id);
-/******/ 				}
-/******/ 			});
-/******/ 			return module;
 /******/ 		};
 /******/ 	})();
 /******/ 	

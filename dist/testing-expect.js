@@ -69,7 +69,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
     function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-var fs = __importStar(__webpack_require__(5747));
+var fs = __importStar(__webpack_require__(7147));
 var core = __importStar(__webpack_require__(2225));
 var glob = __importStar(__webpack_require__(5826));
 function getOption() {
@@ -137,49 +137,51 @@ function run() {
                 case 13:
                     expect_1 = JSON.parse(option.expectDataJson);
                     if (expect_1.length != source.length) {
-                        core.setFailed("source length(" + source.length + ") is not match expect length(" + expect_1.length + ")");
+                        core.setFailed("source length(".concat(source.length, ") is not match expect length(").concat(expect_1.length, ")"));
                         return [2 /*return*/];
                     }
                     for (i = 0; i < expect_1.length; i++) {
                         s = source[i];
                         e = expect_1[i];
                         if (s.path !== e.path) {
-                            core.setFailed("source path(" + s.path + ") is not match expect path(" + e.path + ") at index " + i);
+                            core.setFailed("source path(".concat(s.path, ") is not match expect path(").concat(e.path, ") at index ").concat(i));
                             return [2 /*return*/];
                         }
                         if (s.rule !== e.rule) {
-                            core.setFailed("source rule(" + s.rule + ") is not match expect rule(" + e.rule + ") at index " + i);
+                            core.setFailed("source rule(".concat(s.rule, ") is not match expect rule(").concat(e.rule, ") at index ").concat(i));
                             return [2 /*return*/];
                         }
                         if (s.message !== e.message) {
-                            core.setFailed("source message(" + s.message + ") is not match expect message(" + e.message + ") at index " + i);
+                            core.setFailed("source message(".concat(s.message, ") is not match expect message(").concat(e.message, ") at index ").concat(i));
                             return [2 /*return*/];
                         }
                         if (s.level !== e.level) {
-                            core.setFailed("source level(" + s.level + ") is not match expect level(" + e.level + ") at index " + i);
+                            core.setFailed("source level(".concat(s.level, ") is not match expect level(").concat(e.level, ") at index ").concat(i));
                             return [2 /*return*/];
                         }
                         if (s.startLine !== e.startLine) {
-                            core.setFailed("source startLine(" + s.startLine + ") is not match expect startLine(" + e.startLine + ") at index " + i);
+                            core.setFailed("source startLine(".concat(s.startLine, ") is not match expect startLine(").concat(e.startLine, ") at index ").concat(i));
                             return [2 /*return*/];
                         }
                         if (s.endLine !== e.endLine) {
-                            core.setFailed("source endLine(" + s.endLine + ") is not match expect endLine(" + e.endLine + ") at index " + i);
+                            core.setFailed("source endLine(".concat(s.endLine, ") is not match expect endLine(").concat(e.endLine, ") at index ").concat(i));
                             return [2 /*return*/];
                         }
                         if (s.startColumn !== e.startColumn) {
-                            core.setFailed("source startColumn(" + s.startColumn + ") is not match expect startColumn(" + e.startColumn + ") at index " + i);
+                            core.setFailed("source startColumn(".concat(s.startColumn, ") is not match expect startColumn(").concat(e.startColumn, ") at index ").concat(i));
                             return [2 /*return*/];
                         }
                         if (s.endColumn !== e.endColumn) {
-                            core.setFailed("source endColumn(" + s.endColumn + ") is not match expect endColumn(" + e.endColumn + ") at index " + i);
+                            core.setFailed("source endColumn(".concat(s.endColumn, ") is not match expect endColumn(").concat(e.endColumn, ") at index ").concat(i));
                             return [2 /*return*/];
                         }
                     }
                     return [3 /*break*/, 15];
                 case 14:
                     error_1 = _d.sent();
-                    core.setFailed(error_1.message);
+                    if (error_1 instanceof Error) {
+                        core.setFailed(error_1.message);
+                    }
                     return [3 /*break*/, 15];
                 case 15: return [2 /*return*/];
             }
@@ -191,31 +193,73 @@ run();
 
 /***/ }),
 
-/***/ 2357:
+/***/ 9491:
 /***/ ((module) => {
 
-module.exports = require("assert");;
+module.exports = require("assert");
 
 /***/ }),
 
-/***/ 5747:
+/***/ 2361:
 /***/ ((module) => {
 
-module.exports = require("fs");;
+module.exports = require("events");
 
 /***/ }),
 
-/***/ 2087:
+/***/ 7147:
 /***/ ((module) => {
 
-module.exports = require("os");;
+module.exports = require("fs");
 
 /***/ }),
 
-/***/ 5622:
+/***/ 3685:
 /***/ ((module) => {
 
-module.exports = require("path");;
+module.exports = require("http");
+
+/***/ }),
+
+/***/ 5687:
+/***/ ((module) => {
+
+module.exports = require("https");
+
+/***/ }),
+
+/***/ 1808:
+/***/ ((module) => {
+
+module.exports = require("net");
+
+/***/ }),
+
+/***/ 2037:
+/***/ ((module) => {
+
+module.exports = require("os");
+
+/***/ }),
+
+/***/ 1017:
+/***/ ((module) => {
+
+module.exports = require("path");
+
+/***/ }),
+
+/***/ 4404:
+/***/ ((module) => {
+
+module.exports = require("tls");
+
+/***/ }),
+
+/***/ 3837:
+/***/ ((module) => {
+
+module.exports = require("util");
 
 /***/ })
 
@@ -285,7 +329,8 @@ module.exports = require("path");;
 /******/ 				}
 /******/ 				if(fulfilled) {
 /******/ 					deferred.splice(i--, 1)
-/******/ 					result = fn();
+/******/ 					var r = fn();
+/******/ 					if (r !== undefined) result = r;
 /******/ 				}
 /******/ 			}
 /******/ 			return result;
@@ -335,21 +380,6 @@ module.exports = require("path");;
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames based on template
 /******/ 			return "" + "vendor" + ".js";
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/harmony module decorator */
-/******/ 	(() => {
-/******/ 		__webpack_require__.hmd = (module) => {
-/******/ 			module = Object.create(module);
-/******/ 			if (!module.children) module.children = [];
-/******/ 			Object.defineProperty(module, 'exports', {
-/******/ 				enumerable: true,
-/******/ 				set: () => {
-/******/ 					throw new Error('ES Modules may not assign module.exports or exports.*, Use ESM export syntax, instead: ' + module.id);
-/******/ 				}
-/******/ 			});
-/******/ 			return module;
 /******/ 		};
 /******/ 	})();
 /******/ 	

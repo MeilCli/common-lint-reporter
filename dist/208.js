@@ -1,3 +1,4 @@
+"use strict";
 exports.id = 208;
 exports.ids = [208];
 exports.modules = {
@@ -5,7 +6,6 @@ exports.modules = {
 /***/ 9330:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -49,13 +49,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.GitHubClient = exports.githubClient = void 0;
 var cross_fetch_1 = __importDefault(__webpack_require__(4165));
-var client_1 = __webpack_require__(6829);
+var client_1 = __webpack_require__(5864);
 var graphql_1 = __webpack_require__(1973);
 function githubClient(option) {
     return new GitHubClient(new client_1.ApolloClient({
         link: new client_1.HttpLink({
             uri: "https://api.github.com/graphql",
-            headers: { authorization: "token " + option.githubToken },
+            headers: { authorization: "token ".concat(option.githubToken) },
             fetch: cross_fetch_1.default,
         }),
         cache: new client_1.InMemoryCache(),
@@ -364,7 +364,6 @@ exports.GitHubClient = GitHubClient;
 /***/ 2754:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -450,7 +449,6 @@ exports.GitHubContext = GitHubContext;
 /***/ 9639:
 /***/ (function(__unused_webpack_module, exports) {
 
-"use strict";
 
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
@@ -629,7 +627,6 @@ exports.getPullRequestReviewThreadsWithPaging = getPullRequestReviewThreadsWithP
 /***/ 8089:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {

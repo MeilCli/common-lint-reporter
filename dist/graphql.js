@@ -1,3 +1,4 @@
+"use strict";
 exports.id = 265;
 exports.ids = [265];
 exports.modules = {
@@ -5,7 +6,6 @@ exports.modules = {
 /***/ 1973:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-"use strict";
 
 var __makeTemplateObject = (this && this.__makeTemplateObject) || function (cooked, raw) {
     if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
@@ -15,11 +15,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.OauthApplicationCreateAuditEntryState = exports.NotificationRestrictionSettingValue = exports.MilestoneState = exports.MilestoneOrderField = exports.MergeableState = exports.LockReason = exports.LanguageOrderField = exports.LabelOrderField = exports.IssueTimelineItemsItemType = exports.IssueState = exports.IssueOrderField = exports.IssueCommentOrderField = exports.IpAllowListEntryOrderField = exports.IpAllowListEnabledSettingValue = exports.IdentityProviderConfigurationState = exports.GitSignatureState = exports.GistPrivacy = exports.GistOrderField = exports.FundingPlatform = exports.FileViewedState = exports.EnterpriseUserDeployment = exports.EnterpriseUserAccountMembershipRole = exports.EnterpriseServerUserAccountsUploadSyncState = exports.EnterpriseServerUserAccountsUploadOrderField = exports.EnterpriseServerUserAccountOrderField = exports.EnterpriseServerUserAccountEmailOrderField = exports.EnterpriseServerInstallationOrderField = exports.EnterpriseMembersCanMakePurchasesSettingValue = exports.EnterpriseMembersCanCreateRepositoriesSettingValue = exports.EnterpriseMemberOrderField = exports.EnterpriseEnabledSettingValue = exports.EnterpriseEnabledDisabledSettingValue = exports.EnterpriseDefaultRepositoryPermissionSettingValue = exports.EnterpriseAdministratorRole = exports.EnterpriseAdministratorInvitationOrderField = exports.DiffSide = exports.DeploymentStatusState = exports.DeploymentState = exports.DeploymentOrderField = exports.DefaultRepositoryPermissionField = exports.ContributionLevel = exports.CommitContributionOrderField = exports.CommentCannotUpdateReason = exports.CommentAuthorAssociation = exports.CollaboratorAffiliation = exports.CheckStatusState = exports.CheckRunType = exports.CheckConclusionState = exports.CheckAnnotationLevel = exports.AuditLogOrderField = void 0;
-exports.RepositoryAffiliation = exports.ReportedContentClassifiers = exports.RepoRemoveMemberAuditEntryVisibility = exports.RepoDestroyAuditEntryVisibility = exports.RepoCreateAuditEntryVisibility = exports.RepoChangeMergeSettingAuditEntryMergeType = exports.RepoArchivedAuditEntryVisibility = exports.RepoAddMemberAuditEntryVisibility = exports.RepoAccessAuditEntryVisibility = exports.ReleaseOrderField = exports.RefOrderField = exports.ReactionOrderField = exports.ReactionContent = exports.PullRequestUpdateState = exports.PullRequestTimelineItemsItemType = exports.PullRequestState = exports.PullRequestReviewState = exports.PullRequestReviewEvent = exports.PullRequestReviewDecision = exports.PullRequestReviewCommentState = exports.PullRequestOrderField = exports.PullRequestMergeMethod = exports.ProjectTemplate = exports.ProjectState = exports.ProjectOrderField = exports.ProjectColumnPurpose = exports.ProjectCardState = exports.ProjectCardArchivedState = exports.PinnableItemType = exports.PackageVersionOrderField = exports.PackageType = exports.PackageOrderField = exports.PackageFileOrderField = exports.OrganizationOrderField = exports.OrganizationMembersCanCreateRepositoriesSettingValue = exports.OrganizationMemberRole = exports.OrganizationInvitationType = exports.OrganizationInvitationRole = exports.OrgUpdateMemberRepositoryCreationPermissionAuditEntryVisibility = exports.OrgUpdateMemberAuditEntryPermission = exports.OrgUpdateDefaultRepositoryPermissionAuditEntryPermission = exports.OrgRemoveOutsideCollaboratorAuditEntryReason = exports.OrgRemoveOutsideCollaboratorAuditEntryMembershipType = exports.OrgRemoveMemberAuditEntryReason = exports.OrgRemoveMemberAuditEntryMembershipType = exports.OrgRemoveBillingManagerAuditEntryReason = exports.OrgCreateAuditEntryBillingPlan = exports.OrgAddMemberAuditEntryPermission = exports.OrderDirection = exports.OperationType = void 0;
-exports.GetCommitStatusAndCheckRun = exports.GetCheckRunAnnotations = exports.DeletePullRequestReview = exports.DeletePullRequestReviewComment = exports.DeleteComment = exports.CreateCheckRun = exports.AddPullRequestReviewThread = exports.AddPullRequestReviewDraft = exports.AddComment = exports.VerifiableDomainOrderField = exports.UserStatusOrderField = exports.UserBlockDuration = exports.TopicSuggestionDeclineReason = exports.TeamRole = exports.TeamRepositoryOrderField = exports.TeamPrivacy = exports.TeamOrderField = exports.TeamMembershipType = exports.TeamMemberRole = exports.TeamMemberOrderField = exports.TeamDiscussionOrderField = exports.TeamDiscussionCommentOrderField = exports.SubscriptionState = exports.StatusState = exports.StarOrderField = exports.SponsorshipPrivacy = exports.SponsorshipOrderField = exports.SponsorsTierOrderField = exports.SponsorsGoalKind = exports.SponsorableOrderField = exports.SecurityVulnerabilityOrderField = exports.SecurityAdvisorySeverity = exports.SecurityAdvisoryOrderField = exports.SecurityAdvisoryIdentifierType = exports.SecurityAdvisoryEcosystem = exports.SearchType = exports.SavedReplyOrderField = exports.SamlSignatureAlgorithm = exports.SamlDigestAlgorithm = exports.RequestableCheckStatusState = exports.RepositoryVisibility = exports.RepositoryPrivacy = exports.RepositoryPermission = exports.RepositoryOrderField = exports.RepositoryLockReason = exports.RepositoryInvitationOrderField = exports.RepositoryInteractionLimitOrigin = exports.RepositoryInteractionLimitExpiry = exports.RepositoryInteractionLimit = exports.RepositoryContributionType = void 0;
-exports.UpdateCheckRun = exports.SubmitPullRequestReview = exports.ResolvePullRequestReviewThread = exports.GetRepositoryId = exports.GetPullRequest = exports.GetPullRequestReviewThreads = exports.GetPullRequestComment = exports.GetPullRequestChangedFile = exports.GetLoginUser = void 0;
-var graphql_tag_1 = __importDefault(__webpack_require__(351));
+exports.MergeableState = exports.LockReason = exports.LanguageOrderField = exports.LabelOrderField = exports.IssueTimelineItemsItemType = exports.IssueState = exports.IssueOrderField = exports.IssueCommentOrderField = exports.IpAllowListForInstalledAppsEnabledSettingValue = exports.IpAllowListEntryOrderField = exports.IpAllowListEnabledSettingValue = exports.IdentityProviderConfigurationState = exports.GitSignatureState = exports.GistPrivacy = exports.GistOrderField = exports.FundingPlatform = exports.FileViewedState = exports.EnterpriseUserDeployment = exports.EnterpriseUserAccountMembershipRole = exports.EnterpriseServerUserAccountsUploadSyncState = exports.EnterpriseServerUserAccountsUploadOrderField = exports.EnterpriseServerUserAccountOrderField = exports.EnterpriseServerUserAccountEmailOrderField = exports.EnterpriseServerInstallationOrderField = exports.EnterpriseMembersCanMakePurchasesSettingValue = exports.EnterpriseMembersCanCreateRepositoriesSettingValue = exports.EnterpriseMemberOrderField = exports.EnterpriseEnabledSettingValue = exports.EnterpriseEnabledDisabledSettingValue = exports.EnterpriseDefaultRepositoryPermissionSettingValue = exports.EnterpriseAdministratorRole = exports.EnterpriseAdministratorInvitationOrderField = exports.DiscussionOrderField = exports.DiffSide = exports.DeploymentStatusState = exports.DeploymentState = exports.DeploymentReviewState = exports.DeploymentProtectionRuleType = exports.DeploymentOrderField = exports.DefaultRepositoryPermissionField = exports.ContributionLevel = exports.CommitContributionOrderField = exports.CommentCannotUpdateReason = exports.CommentAuthorAssociation = exports.CollaboratorAffiliation = exports.CheckStatusState = exports.CheckRunType = exports.CheckConclusionState = exports.CheckAnnotationLevel = exports.AuditLogOrderField = void 0;
+exports.RepoArchivedAuditEntryVisibility = exports.RepoAddMemberAuditEntryVisibility = exports.RepoAccessAuditEntryVisibility = exports.ReleaseOrderField = exports.RefOrderField = exports.ReactionOrderField = exports.ReactionContent = exports.PullRequestUpdateState = exports.PullRequestTimelineItemsItemType = exports.PullRequestState = exports.PullRequestReviewState = exports.PullRequestReviewEvent = exports.PullRequestReviewDecision = exports.PullRequestReviewCommentState = exports.PullRequestOrderField = exports.PullRequestMergeMethod = exports.ProjectTemplate = exports.ProjectState = exports.ProjectOrderField = exports.ProjectColumnPurpose = exports.ProjectCardState = exports.ProjectCardArchivedState = exports.PinnedDiscussionPattern = exports.PinnedDiscussionGradient = exports.PinnableItemType = exports.PackageVersionOrderField = exports.PackageType = exports.PackageOrderField = exports.PackageFileOrderField = exports.OrganizationOrderField = exports.OrganizationMembersCanCreateRepositoriesSettingValue = exports.OrganizationMemberRole = exports.OrganizationInvitationType = exports.OrganizationInvitationRole = exports.OrgUpdateMemberRepositoryCreationPermissionAuditEntryVisibility = exports.OrgUpdateMemberAuditEntryPermission = exports.OrgUpdateDefaultRepositoryPermissionAuditEntryPermission = exports.OrgRemoveOutsideCollaboratorAuditEntryReason = exports.OrgRemoveOutsideCollaboratorAuditEntryMembershipType = exports.OrgRemoveMemberAuditEntryReason = exports.OrgRemoveMemberAuditEntryMembershipType = exports.OrgRemoveBillingManagerAuditEntryReason = exports.OrgCreateAuditEntryBillingPlan = exports.OrgAddMemberAuditEntryPermission = exports.OrderDirection = exports.OperationType = exports.OauthApplicationCreateAuditEntryState = exports.NotificationRestrictionSettingValue = exports.MilestoneState = exports.MilestoneOrderField = void 0;
+exports.UserBlockDuration = exports.TopicSuggestionDeclineReason = exports.TeamRole = exports.TeamRepositoryOrderField = exports.TeamPrivacy = exports.TeamOrderField = exports.TeamMembershipType = exports.TeamMemberRole = exports.TeamMemberOrderField = exports.TeamDiscussionOrderField = exports.TeamDiscussionCommentOrderField = exports.SubscriptionState = exports.StatusState = exports.StarOrderField = exports.SponsorshipPrivacy = exports.SponsorshipOrderField = exports.SponsorshipNewsletterOrderField = exports.SponsorsTierOrderField = exports.SponsorsGoalKind = exports.SponsorsActivityPeriod = exports.SponsorsActivityOrderField = exports.SponsorsActivityAction = exports.SponsorableOrderField = exports.SponsorOrderField = exports.SecurityVulnerabilityOrderField = exports.SecurityAdvisorySeverity = exports.SecurityAdvisoryOrderField = exports.SecurityAdvisoryIdentifierType = exports.SecurityAdvisoryEcosystem = exports.SearchType = exports.SavedReplyOrderField = exports.SamlSignatureAlgorithm = exports.SamlDigestAlgorithm = exports.RequestableCheckStatusState = exports.RepositoryVisibility = exports.RepositoryPrivacy = exports.RepositoryPermission = exports.RepositoryOrderField = exports.RepositoryLockReason = exports.RepositoryInvitationOrderField = exports.RepositoryInteractionLimitOrigin = exports.RepositoryInteractionLimitExpiry = exports.RepositoryInteractionLimit = exports.RepositoryContributionType = exports.RepositoryAffiliation = exports.ReportedContentClassifiers = exports.RepoRemoveMemberAuditEntryVisibility = exports.RepoDestroyAuditEntryVisibility = exports.RepoCreateAuditEntryVisibility = exports.RepoChangeMergeSettingAuditEntryMergeType = void 0;
+exports.UpdateCheckRun = exports.SubmitPullRequestReview = exports.ResolvePullRequestReviewThread = exports.GetRepositoryId = exports.GetPullRequest = exports.GetPullRequestReviewThreads = exports.GetPullRequestComment = exports.GetPullRequestChangedFile = exports.GetLoginUser = exports.GetCommitStatusAndCheckRun = exports.GetCheckRunAnnotations = exports.DeletePullRequestReview = exports.DeletePullRequestReviewComment = exports.DeleteComment = exports.CreateCheckRun = exports.AddPullRequestReviewThread = exports.AddPullRequestReviewDraft = exports.AddComment = exports.VerifiableDomainOrderField = exports.UserStatusOrderField = void 0;
+var graphql_tag_1 = __importDefault(__webpack_require__(5584));
 /** Properties by which Audit Log connections can be ordered. */
 var AuditLogOrderField;
 (function (AuditLogOrderField) {
@@ -77,6 +77,8 @@ var CheckStatusState;
     CheckStatusState["Completed"] = "COMPLETED";
     /** The check suite or run is in waiting state. */
     CheckStatusState["Waiting"] = "WAITING";
+    /** The check suite or run is in pending state. */
+    CheckStatusState["Pending"] = "PENDING";
     /** The check suite or run has been requested. */
     CheckStatusState["Requested"] = "REQUESTED";
 })(CheckStatusState = exports.CheckStatusState || (exports.CheckStatusState = {}));
@@ -150,7 +152,7 @@ var ContributionLevel;
     /** Highest 25% of days of contributions. More contributions than the third quartile. */
     ContributionLevel["FourthQuartile"] = "FOURTH_QUARTILE";
 })(ContributionLevel = exports.ContributionLevel || (exports.ContributionLevel = {}));
-/** The possible default permissions for repositories. */
+/** The possible base permissions for repositories. */
 var DefaultRepositoryPermissionField;
 (function (DefaultRepositoryPermissionField) {
     /** No access */
@@ -168,6 +170,22 @@ var DeploymentOrderField;
     /** Order collection by creation time */
     DeploymentOrderField["CreatedAt"] = "CREATED_AT";
 })(DeploymentOrderField = exports.DeploymentOrderField || (exports.DeploymentOrderField = {}));
+/** The possible protection rule types. */
+var DeploymentProtectionRuleType;
+(function (DeploymentProtectionRuleType) {
+    /** Required reviewers */
+    DeploymentProtectionRuleType["RequiredReviewers"] = "REQUIRED_REVIEWERS";
+    /** Wait timer */
+    DeploymentProtectionRuleType["WaitTimer"] = "WAIT_TIMER";
+})(DeploymentProtectionRuleType = exports.DeploymentProtectionRuleType || (exports.DeploymentProtectionRuleType = {}));
+/** The possible states for a deployment review. */
+var DeploymentReviewState;
+(function (DeploymentReviewState) {
+    /** The deployment was approved. */
+    DeploymentReviewState["Approved"] = "APPROVED";
+    /** The deployment was rejected. */
+    DeploymentReviewState["Rejected"] = "REJECTED";
+})(DeploymentReviewState = exports.DeploymentReviewState || (exports.DeploymentReviewState = {}));
 /** The possible states in which a deployment can be. */
 var DeploymentState;
 (function (DeploymentState) {
@@ -220,6 +238,14 @@ var DiffSide;
     /** The right side of the diff. */
     DiffSide["Right"] = "RIGHT";
 })(DiffSide = exports.DiffSide || (exports.DiffSide = {}));
+/** Properties by which discussion connections can be ordered. */
+var DiscussionOrderField;
+(function (DiscussionOrderField) {
+    /** Order discussions by creation time. */
+    DiscussionOrderField["CreatedAt"] = "CREATED_AT";
+    /** Order discussions by most recent modification time. */
+    DiscussionOrderField["UpdatedAt"] = "UPDATED_AT";
+})(DiscussionOrderField = exports.DiscussionOrderField || (exports.DiscussionOrderField = {}));
 /** Properties by which enterprise administrator invitation connections can be ordered. */
 var EnterpriseAdministratorInvitationOrderField;
 (function (EnterpriseAdministratorInvitationOrderField) {
@@ -234,10 +260,10 @@ var EnterpriseAdministratorRole;
     /** Represents a billing manager of the enterprise account. */
     EnterpriseAdministratorRole["BillingManager"] = "BILLING_MANAGER";
 })(EnterpriseAdministratorRole = exports.EnterpriseAdministratorRole || (exports.EnterpriseAdministratorRole = {}));
-/** The possible values for the enterprise default repository permission setting. */
+/** The possible values for the enterprise base repository permission setting. */
 var EnterpriseDefaultRepositoryPermissionSettingValue;
 (function (EnterpriseDefaultRepositoryPermissionSettingValue) {
-    /** Organizations in the enterprise choose default repository permissions for their members. */
+    /** Organizations in the enterprise choose base repository permissions for their members. */
     EnterpriseDefaultRepositoryPermissionSettingValue["NoPolicy"] = "NO_POLICY";
     /** Organization members will be able to clone, pull, push, and add new collaborators to all organization repositories. */
     EnterpriseDefaultRepositoryPermissionSettingValue["Admin"] = "ADMIN";
@@ -470,6 +496,14 @@ var IpAllowListEntryOrderField;
     /** Order IP allow list entries by the allow list value. */
     IpAllowListEntryOrderField["AllowListValue"] = "ALLOW_LIST_VALUE";
 })(IpAllowListEntryOrderField = exports.IpAllowListEntryOrderField || (exports.IpAllowListEntryOrderField = {}));
+/** The possible values for the IP allow list configuration for installed GitHub Apps setting. */
+var IpAllowListForInstalledAppsEnabledSettingValue;
+(function (IpAllowListForInstalledAppsEnabledSettingValue) {
+    /** The setting is enabled for the owner. */
+    IpAllowListForInstalledAppsEnabledSettingValue["Enabled"] = "ENABLED";
+    /** The setting is disabled for the owner. */
+    IpAllowListForInstalledAppsEnabledSettingValue["Disabled"] = "DISABLED";
+})(IpAllowListForInstalledAppsEnabledSettingValue = exports.IpAllowListForInstalledAppsEnabledSettingValue || (exports.IpAllowListForInstalledAppsEnabledSettingValue = {}));
 /** Properties by which issue comment connections can be ordered. */
 var IssueCommentOrderField;
 (function (IssueCommentOrderField) {
@@ -811,6 +845,8 @@ var OrganizationMembersCanCreateRepositoriesSettingValue;
     OrganizationMembersCanCreateRepositoriesSettingValue["All"] = "ALL";
     /** Members will be able to create only private repositories. */
     OrganizationMembersCanCreateRepositoriesSettingValue["Private"] = "PRIVATE";
+    /** Members will be able to create only internal repositories. */
+    OrganizationMembersCanCreateRepositoriesSettingValue["Internal"] = "INTERNAL";
     /** Members will not be able to create public or private repositories. */
     OrganizationMembersCanCreateRepositoriesSettingValue["Disabled"] = "DISABLED";
 })(OrganizationMembersCanCreateRepositoriesSettingValue = exports.OrganizationMembersCanCreateRepositoriesSettingValue || (exports.OrganizationMembersCanCreateRepositoriesSettingValue = {}));
@@ -878,6 +914,36 @@ var PinnableItemType;
     /** A team. */
     PinnableItemType["Team"] = "TEAM";
 })(PinnableItemType = exports.PinnableItemType || (exports.PinnableItemType = {}));
+/** Preconfigured gradients that may be used to style discussions pinned within a repository. */
+var PinnedDiscussionGradient;
+(function (PinnedDiscussionGradient) {
+    /** A gradient of red to orange */
+    PinnedDiscussionGradient["RedOrange"] = "RED_ORANGE";
+    /** A gradient of blue to mint */
+    PinnedDiscussionGradient["BlueMint"] = "BLUE_MINT";
+    /** A gradient of blue to purple */
+    PinnedDiscussionGradient["BluePurple"] = "BLUE_PURPLE";
+    /** A gradient of pink to blue */
+    PinnedDiscussionGradient["PinkBlue"] = "PINK_BLUE";
+    /** A gradient of purple to coral */
+    PinnedDiscussionGradient["PurpleCoral"] = "PURPLE_CORAL";
+})(PinnedDiscussionGradient = exports.PinnedDiscussionGradient || (exports.PinnedDiscussionGradient = {}));
+/** Preconfigured background patterns that may be used to style discussions pinned within a repository. */
+var PinnedDiscussionPattern;
+(function (PinnedDiscussionPattern) {
+    /** A solid dot pattern */
+    PinnedDiscussionPattern["DotFill"] = "DOT_FILL";
+    /** A plus sign pattern */
+    PinnedDiscussionPattern["Plus"] = "PLUS";
+    /** A lightning bolt pattern */
+    PinnedDiscussionPattern["Zap"] = "ZAP";
+    /** An upward-facing chevron pattern */
+    PinnedDiscussionPattern["ChevronUp"] = "CHEVRON_UP";
+    /** A hollow dot pattern */
+    PinnedDiscussionPattern["Dot"] = "DOT";
+    /** A heart pattern */
+    PinnedDiscussionPattern["HeartFill"] = "HEART_FILL";
+})(PinnedDiscussionPattern = exports.PinnedDiscussionPattern || (exports.PinnedDiscussionPattern = {}));
 /** The possible archived states of a project card. */
 var ProjectCardArchivedState;
 (function (ProjectCardArchivedState) {
@@ -1395,6 +1461,8 @@ var RequestableCheckStatusState;
     RequestableCheckStatusState["Completed"] = "COMPLETED";
     /** The check suite or run is in waiting state. */
     RequestableCheckStatusState["Waiting"] = "WAITING";
+    /** The check suite or run is in pending state. */
+    RequestableCheckStatusState["Pending"] = "PENDING";
 })(RequestableCheckStatusState = exports.RequestableCheckStatusState || (exports.RequestableCheckStatusState = {}));
 /** The possible digest algorithms used to sign SAML requests for an identity provider. */
 var SamlDigestAlgorithm;
@@ -1435,22 +1503,28 @@ var SearchType;
     SearchType["Repository"] = "REPOSITORY";
     /** Returns results matching users and organizations on GitHub. */
     SearchType["User"] = "USER";
+    /** Returns matching discussions in repositories. */
+    SearchType["Discussion"] = "DISCUSSION";
 })(SearchType = exports.SearchType || (exports.SearchType = {}));
 /** The possible ecosystems of a security vulnerability's package. */
 var SecurityAdvisoryEcosystem;
 (function (SecurityAdvisoryEcosystem) {
-    /** Ruby gems hosted at RubyGems.org */
-    SecurityAdvisoryEcosystem["Rubygems"] = "RUBYGEMS";
-    /** JavaScript packages hosted at npmjs.com */
-    SecurityAdvisoryEcosystem["Npm"] = "NPM";
-    /** Python packages hosted at PyPI.org */
-    SecurityAdvisoryEcosystem["Pip"] = "PIP";
-    /** Java artifacts hosted at the Maven central repository */
-    SecurityAdvisoryEcosystem["Maven"] = "MAVEN";
-    /** .NET packages hosted at the NuGet Gallery */
-    SecurityAdvisoryEcosystem["Nuget"] = "NUGET";
     /** PHP packages hosted at packagist.org */
     SecurityAdvisoryEcosystem["Composer"] = "COMPOSER";
+    /** Go modules */
+    SecurityAdvisoryEcosystem["Go"] = "GO";
+    /** Java artifacts hosted at the Maven central repository */
+    SecurityAdvisoryEcosystem["Maven"] = "MAVEN";
+    /** JavaScript packages hosted at npmjs.com */
+    SecurityAdvisoryEcosystem["Npm"] = "NPM";
+    /** .NET packages hosted at the NuGet Gallery */
+    SecurityAdvisoryEcosystem["Nuget"] = "NUGET";
+    /** Python packages hosted at PyPI.org */
+    SecurityAdvisoryEcosystem["Pip"] = "PIP";
+    /** Ruby gems hosted at RubyGems.org */
+    SecurityAdvisoryEcosystem["Rubygems"] = "RUBYGEMS";
+    /** Rust crates */
+    SecurityAdvisoryEcosystem["Rust"] = "RUST";
 })(SecurityAdvisoryEcosystem = exports.SecurityAdvisoryEcosystem || (exports.SecurityAdvisoryEcosystem = {}));
 /** Identifier formats available for advisories. */
 var SecurityAdvisoryIdentifierType;
@@ -1486,18 +1560,60 @@ var SecurityVulnerabilityOrderField;
     /** Order vulnerability by update time */
     SecurityVulnerabilityOrderField["UpdatedAt"] = "UPDATED_AT";
 })(SecurityVulnerabilityOrderField = exports.SecurityVulnerabilityOrderField || (exports.SecurityVulnerabilityOrderField = {}));
+/** Properties by which sponsor connections can be ordered. */
+var SponsorOrderField;
+(function (SponsorOrderField) {
+    /** Order sponsorable entities by login (username). */
+    SponsorOrderField["Login"] = "LOGIN";
+    /** Order sponsors by their relevance to the viewer. */
+    SponsorOrderField["Relevance"] = "RELEVANCE";
+})(SponsorOrderField = exports.SponsorOrderField || (exports.SponsorOrderField = {}));
 /** Properties by which sponsorable connections can be ordered. */
 var SponsorableOrderField;
 (function (SponsorableOrderField) {
     /** Order sponsorable entities by login (username). */
     SponsorableOrderField["Login"] = "LOGIN";
 })(SponsorableOrderField = exports.SponsorableOrderField || (exports.SponsorableOrderField = {}));
+/** The possible actions that GitHub Sponsors activities can represent. */
+var SponsorsActivityAction;
+(function (SponsorsActivityAction) {
+    /** The activity was starting a sponsorship. */
+    SponsorsActivityAction["NewSponsorship"] = "NEW_SPONSORSHIP";
+    /** The activity was cancelling a sponsorship. */
+    SponsorsActivityAction["CancelledSponsorship"] = "CANCELLED_SPONSORSHIP";
+    /** The activity was changing the sponsorship tier, either directly by the sponsor or by a scheduled/pending change. */
+    SponsorsActivityAction["TierChange"] = "TIER_CHANGE";
+    /** The activity was funds being refunded to the sponsor or GitHub. */
+    SponsorsActivityAction["Refund"] = "REFUND";
+    /** The activity was scheduling a downgrade or cancellation. */
+    SponsorsActivityAction["PendingChange"] = "PENDING_CHANGE";
+    /** The activity was disabling matching for a previously matched sponsorship. */
+    SponsorsActivityAction["SponsorMatchDisabled"] = "SPONSOR_MATCH_DISABLED";
+})(SponsorsActivityAction = exports.SponsorsActivityAction || (exports.SponsorsActivityAction = {}));
+/** Properties by which GitHub Sponsors activity connections can be ordered. */
+var SponsorsActivityOrderField;
+(function (SponsorsActivityOrderField) {
+    /** Order activities by when they happened. */
+    SponsorsActivityOrderField["Timestamp"] = "TIMESTAMP";
+})(SponsorsActivityOrderField = exports.SponsorsActivityOrderField || (exports.SponsorsActivityOrderField = {}));
+/** The possible time periods for which Sponsors activities can be requested. */
+var SponsorsActivityPeriod;
+(function (SponsorsActivityPeriod) {
+    /** The previous calendar day. */
+    SponsorsActivityPeriod["Day"] = "DAY";
+    /** The previous seven days. */
+    SponsorsActivityPeriod["Week"] = "WEEK";
+    /** The previous thirty days. */
+    SponsorsActivityPeriod["Month"] = "MONTH";
+    /** Don't restrict the activity to any date range, include all activity. */
+    SponsorsActivityPeriod["All"] = "ALL";
+})(SponsorsActivityPeriod = exports.SponsorsActivityPeriod || (exports.SponsorsActivityPeriod = {}));
 /** The different kinds of goals a GitHub Sponsors member can have. */
 var SponsorsGoalKind;
 (function (SponsorsGoalKind) {
     /** The goal is about reaching a certain number of sponsors. */
     SponsorsGoalKind["TotalSponsorsCount"] = "TOTAL_SPONSORS_COUNT";
-    /** The goal is about getting a certain dollar amount from sponsorships each month. */
+    /** The goal is about getting a certain amount in USD from sponsorships each month. */
     SponsorsGoalKind["MonthlySponsorshipAmount"] = "MONTHLY_SPONSORSHIP_AMOUNT";
 })(SponsorsGoalKind = exports.SponsorsGoalKind || (exports.SponsorsGoalKind = {}));
 /** Properties by which Sponsors tiers connections can be ordered. */
@@ -1508,6 +1624,12 @@ var SponsorsTierOrderField;
     /** Order tiers by their monthly price in cents */
     SponsorsTierOrderField["MonthlyPriceInCents"] = "MONTHLY_PRICE_IN_CENTS";
 })(SponsorsTierOrderField = exports.SponsorsTierOrderField || (exports.SponsorsTierOrderField = {}));
+/** Properties by which sponsorship update connections can be ordered. */
+var SponsorshipNewsletterOrderField;
+(function (SponsorshipNewsletterOrderField) {
+    /** Order sponsorship newsletters by when they were created. */
+    SponsorshipNewsletterOrderField["CreatedAt"] = "CREATED_AT";
+})(SponsorshipNewsletterOrderField = exports.SponsorshipNewsletterOrderField || (exports.SponsorshipNewsletterOrderField = {}));
 /** Properties by which sponsorship connections can be ordered. */
 var SponsorshipOrderField;
 (function (SponsorshipOrderField) {
@@ -1668,24 +1790,24 @@ var VerifiableDomainOrderField;
     /** Order verifiable domains by their creation date. */
     VerifiableDomainOrderField["CreatedAt"] = "CREATED_AT";
 })(VerifiableDomainOrderField = exports.VerifiableDomainOrderField || (exports.VerifiableDomainOrderField = {}));
-exports.AddComment = graphql_tag_1.default(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    mutation AddComment($id: ID!, $body: String!) {\n  addComment(input: {subjectId: $id, body: $body}) {\n    clientMutationId\n  }\n}\n    "], ["\n    mutation AddComment($id: ID!, $body: String!) {\n  addComment(input: {subjectId: $id, body: $body}) {\n    clientMutationId\n  }\n}\n    "])));
-exports.AddPullRequestReviewDraft = graphql_tag_1.default(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n    mutation AddPullRequestReviewDraft($pullRequestId: ID!, $commitSha: GitObjectID) {\n  addPullRequestReview(\n    input: {pullRequestId: $pullRequestId, commitOID: $commitSha}\n  ) {\n    pullRequestReview {\n      id\n    }\n  }\n}\n    "], ["\n    mutation AddPullRequestReviewDraft($pullRequestId: ID!, $commitSha: GitObjectID) {\n  addPullRequestReview(\n    input: {pullRequestId: $pullRequestId, commitOID: $commitSha}\n  ) {\n    pullRequestReview {\n      id\n    }\n  }\n}\n    "])));
-exports.AddPullRequestReviewThread = graphql_tag_1.default(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n    mutation AddPullRequestReviewThread($pullRequestId: ID!, $pullRequestReviewId: ID!, $body: String!, $path: String!, $line: Int!, $startLine: Int) {\n  addPullRequestReviewThread(\n    input: {pullRequestId: $pullRequestId, pullRequestReviewId: $pullRequestReviewId, body: $body, path: $path, line: $line, startLine: $startLine}\n  ) {\n    thread {\n      id\n    }\n  }\n}\n    "], ["\n    mutation AddPullRequestReviewThread($pullRequestId: ID!, $pullRequestReviewId: ID!, $body: String!, $path: String!, $line: Int!, $startLine: Int) {\n  addPullRequestReviewThread(\n    input: {pullRequestId: $pullRequestId, pullRequestReviewId: $pullRequestReviewId, body: $body, path: $path, line: $line, startLine: $startLine}\n  ) {\n    thread {\n      id\n    }\n  }\n}\n    "])));
-exports.CreateCheckRun = graphql_tag_1.default(templateObject_4 || (templateObject_4 = __makeTemplateObject(["\n    mutation CreateCheckRun($repositoryId: ID!, $headSha: GitObjectID!, $name: String!, $startedAt: DateTime, $completedAt: DateTime, $conclusion: CheckConclusionState, $status: RequestableCheckStatusState, $output: CheckRunOutput) {\n  createCheckRun(\n    input: {repositoryId: $repositoryId, headSha: $headSha, name: $name, startedAt: $startedAt, completedAt: $completedAt, conclusion: $conclusion, status: $status, output: $output}\n  ) {\n    checkRun {\n      id\n    }\n  }\n}\n    "], ["\n    mutation CreateCheckRun($repositoryId: ID!, $headSha: GitObjectID!, $name: String!, $startedAt: DateTime, $completedAt: DateTime, $conclusion: CheckConclusionState, $status: RequestableCheckStatusState, $output: CheckRunOutput) {\n  createCheckRun(\n    input: {repositoryId: $repositoryId, headSha: $headSha, name: $name, startedAt: $startedAt, completedAt: $completedAt, conclusion: $conclusion, status: $status, output: $output}\n  ) {\n    checkRun {\n      id\n    }\n  }\n}\n    "])));
-exports.DeleteComment = graphql_tag_1.default(templateObject_5 || (templateObject_5 = __makeTemplateObject(["\n    mutation DeleteComment($id: ID!) {\n  deleteIssueComment(input: {id: $id}) {\n    clientMutationId\n  }\n}\n    "], ["\n    mutation DeleteComment($id: ID!) {\n  deleteIssueComment(input: {id: $id}) {\n    clientMutationId\n  }\n}\n    "])));
-exports.DeletePullRequestReviewComment = graphql_tag_1.default(templateObject_6 || (templateObject_6 = __makeTemplateObject(["\n    mutation DeletePullRequestReviewComment($pullRequestReviewCommentId: ID!) {\n  deletePullRequestReviewComment(input: {id: $pullRequestReviewCommentId}) {\n    clientMutationId\n  }\n}\n    "], ["\n    mutation DeletePullRequestReviewComment($pullRequestReviewCommentId: ID!) {\n  deletePullRequestReviewComment(input: {id: $pullRequestReviewCommentId}) {\n    clientMutationId\n  }\n}\n    "])));
-exports.DeletePullRequestReview = graphql_tag_1.default(templateObject_7 || (templateObject_7 = __makeTemplateObject(["\n    mutation DeletePullRequestReview($pullRequestReviewId: ID!) {\n  deletePullRequestReview(input: {pullRequestReviewId: $pullRequestReviewId}) {\n    clientMutationId\n  }\n}\n    "], ["\n    mutation DeletePullRequestReview($pullRequestReviewId: ID!) {\n  deletePullRequestReview(input: {pullRequestReviewId: $pullRequestReviewId}) {\n    clientMutationId\n  }\n}\n    "])));
-exports.GetCheckRunAnnotations = graphql_tag_1.default(templateObject_8 || (templateObject_8 = __makeTemplateObject(["\n    query GetCheckRunAnnotations($checkRunId: ID!, $after: String) {\n  node(id: $checkRunId) {\n    __typename\n    ... on CheckRun {\n      id\n      annotations(first: 100, after: $after) {\n        pageInfo {\n          hasNextPage\n          endCursor\n        }\n        nodes {\n          path\n          message\n          title\n          annotationLevel\n          location {\n            start {\n              line\n              column\n            }\n            end {\n              line\n              column\n            }\n          }\n        }\n      }\n    }\n  }\n}\n    "], ["\n    query GetCheckRunAnnotations($checkRunId: ID!, $after: String) {\n  node(id: $checkRunId) {\n    __typename\n    ... on CheckRun {\n      id\n      annotations(first: 100, after: $after) {\n        pageInfo {\n          hasNextPage\n          endCursor\n        }\n        nodes {\n          path\n          message\n          title\n          annotationLevel\n          location {\n            start {\n              line\n              column\n            }\n            end {\n              line\n              column\n            }\n          }\n        }\n      }\n    }\n  }\n}\n    "])));
-exports.GetCommitStatusAndCheckRun = graphql_tag_1.default(templateObject_9 || (templateObject_9 = __makeTemplateObject(["\n    query GetCommitStatusAndCheckRun($owner: String!, $name: String!, $commitSha: GitObjectID!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    object(oid: $commitSha) {\n      ... on Commit {\n        statusCheckRollup {\n          contexts(first: 100, after: $after) {\n            pageInfo {\n              hasNextPage\n              endCursor\n            }\n            nodes {\n              __typename\n              ... on StatusContext {\n                id\n                state\n                context\n              }\n              ... on CheckRun {\n                id\n                name\n                status\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n    "], ["\n    query GetCommitStatusAndCheckRun($owner: String!, $name: String!, $commitSha: GitObjectID!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    object(oid: $commitSha) {\n      ... on Commit {\n        statusCheckRollup {\n          contexts(first: 100, after: $after) {\n            pageInfo {\n              hasNextPage\n              endCursor\n            }\n            nodes {\n              __typename\n              ... on StatusContext {\n                id\n                state\n                context\n              }\n              ... on CheckRun {\n                id\n                name\n                status\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n    "])));
-exports.GetLoginUser = graphql_tag_1.default(templateObject_10 || (templateObject_10 = __makeTemplateObject(["\n    query GetLoginUser {\n  viewer {\n    login\n  }\n}\n    "], ["\n    query GetLoginUser {\n  viewer {\n    login\n  }\n}\n    "])));
-exports.GetPullRequestChangedFile = graphql_tag_1.default(templateObject_11 || (templateObject_11 = __makeTemplateObject(["\n    query GetPullRequestChangedFile($owner: String!, $name: String!, $pull_request: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $pull_request) {\n      files(first: 100, after: $after) {\n        pageInfo {\n          hasNextPage\n          endCursor\n        }\n        nodes {\n          path\n          additions\n          deletions\n        }\n      }\n    }\n  }\n}\n    "], ["\n    query GetPullRequestChangedFile($owner: String!, $name: String!, $pull_request: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $pull_request) {\n      files(first: 100, after: $after) {\n        pageInfo {\n          hasNextPage\n          endCursor\n        }\n        nodes {\n          path\n          additions\n          deletions\n        }\n      }\n    }\n  }\n}\n    "])));
-exports.GetPullRequestComment = graphql_tag_1.default(templateObject_12 || (templateObject_12 = __makeTemplateObject(["\n    query GetPullRequestComment($owner: String!, $name: String!, $pull_request: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $pull_request) {\n      id\n      comments(first: 100, after: $after) {\n        pageInfo {\n          hasNextPage\n          endCursor\n        }\n        nodes {\n          author {\n            login\n          }\n          id\n          body\n        }\n      }\n    }\n  }\n}\n    "], ["\n    query GetPullRequestComment($owner: String!, $name: String!, $pull_request: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $pull_request) {\n      id\n      comments(first: 100, after: $after) {\n        pageInfo {\n          hasNextPage\n          endCursor\n        }\n        nodes {\n          author {\n            login\n          }\n          id\n          body\n        }\n      }\n    }\n  }\n}\n    "])));
-exports.GetPullRequestReviewThreads = graphql_tag_1.default(templateObject_13 || (templateObject_13 = __makeTemplateObject(["\n    query GetPullRequestReviewThreads($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $number) {\n      reviewThreads(first: 100, after: $after) {\n        pageInfo {\n          hasNextPage\n          endCursor\n        }\n        nodes {\n          id\n          path\n          line\n          startLine\n          isOutdated\n          isResolved\n          comments(first: 1) {\n            pageInfo {\n              hasNextPage\n            }\n            nodes {\n              id\n              body\n              author {\n                login\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n    "], ["\n    query GetPullRequestReviewThreads($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $number) {\n      reviewThreads(first: 100, after: $after) {\n        pageInfo {\n          hasNextPage\n          endCursor\n        }\n        nodes {\n          id\n          path\n          line\n          startLine\n          isOutdated\n          isResolved\n          comments(first: 1) {\n            pageInfo {\n              hasNextPage\n            }\n            nodes {\n              id\n              body\n              author {\n                login\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n    "])));
-exports.GetPullRequest = graphql_tag_1.default(templateObject_14 || (templateObject_14 = __makeTemplateObject(["\n    query GetPullRequest($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $number) {\n      id\n    }\n  }\n}\n    "], ["\n    query GetPullRequest($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $number) {\n      id\n    }\n  }\n}\n    "])));
-exports.GetRepositoryId = graphql_tag_1.default(templateObject_15 || (templateObject_15 = __makeTemplateObject(["\n    query GetRepositoryId($owner: String!, $name: String!) {\n  repository(owner: $owner, name: $name) {\n    id\n  }\n}\n    "], ["\n    query GetRepositoryId($owner: String!, $name: String!) {\n  repository(owner: $owner, name: $name) {\n    id\n  }\n}\n    "])));
-exports.ResolvePullRequestReviewThread = graphql_tag_1.default(templateObject_16 || (templateObject_16 = __makeTemplateObject(["\n    mutation ResolvePullRequestReviewThread($pullRequestThreadId: ID!) {\n  resolveReviewThread(input: {threadId: $pullRequestThreadId}) {\n    clientMutationId\n  }\n}\n    "], ["\n    mutation ResolvePullRequestReviewThread($pullRequestThreadId: ID!) {\n  resolveReviewThread(input: {threadId: $pullRequestThreadId}) {\n    clientMutationId\n  }\n}\n    "])));
-exports.SubmitPullRequestReview = graphql_tag_1.default(templateObject_17 || (templateObject_17 = __makeTemplateObject(["\n    mutation SubmitPullRequestReview($pullRequestId: ID!, $pullRequestReviewId: ID!) {\n  submitPullRequestReview(\n    input: {pullRequestId: $pullRequestId, pullRequestReviewId: $pullRequestReviewId, event: COMMENT}\n  ) {\n    pullRequestReview {\n      id\n    }\n  }\n}\n    "], ["\n    mutation SubmitPullRequestReview($pullRequestId: ID!, $pullRequestReviewId: ID!) {\n  submitPullRequestReview(\n    input: {pullRequestId: $pullRequestId, pullRequestReviewId: $pullRequestReviewId, event: COMMENT}\n  ) {\n    pullRequestReview {\n      id\n    }\n  }\n}\n    "])));
-exports.UpdateCheckRun = graphql_tag_1.default(templateObject_18 || (templateObject_18 = __makeTemplateObject(["\n    mutation UpdateCheckRun($repositoryId: ID!, $checkRunId: ID!, $completedAt: DateTime, $conclusion: CheckConclusionState, $status: RequestableCheckStatusState, $output: CheckRunOutput) {\n  updateCheckRun(\n    input: {repositoryId: $repositoryId, checkRunId: $checkRunId, completedAt: $completedAt, conclusion: $conclusion, status: $status, output: $output}\n  ) {\n    clientMutationId\n  }\n}\n    "], ["\n    mutation UpdateCheckRun($repositoryId: ID!, $checkRunId: ID!, $completedAt: DateTime, $conclusion: CheckConclusionState, $status: RequestableCheckStatusState, $output: CheckRunOutput) {\n  updateCheckRun(\n    input: {repositoryId: $repositoryId, checkRunId: $checkRunId, completedAt: $completedAt, conclusion: $conclusion, status: $status, output: $output}\n  ) {\n    clientMutationId\n  }\n}\n    "])));
+exports.AddComment = (0, graphql_tag_1.default)(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n    mutation AddComment($id: ID!, $body: String!) {\n  addComment(input: {subjectId: $id, body: $body}) {\n    clientMutationId\n  }\n}\n    "], ["\n    mutation AddComment($id: ID!, $body: String!) {\n  addComment(input: {subjectId: $id, body: $body}) {\n    clientMutationId\n  }\n}\n    "])));
+exports.AddPullRequestReviewDraft = (0, graphql_tag_1.default)(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n    mutation AddPullRequestReviewDraft($pullRequestId: ID!, $commitSha: GitObjectID) {\n  addPullRequestReview(\n    input: {pullRequestId: $pullRequestId, commitOID: $commitSha}\n  ) {\n    pullRequestReview {\n      id\n    }\n  }\n}\n    "], ["\n    mutation AddPullRequestReviewDraft($pullRequestId: ID!, $commitSha: GitObjectID) {\n  addPullRequestReview(\n    input: {pullRequestId: $pullRequestId, commitOID: $commitSha}\n  ) {\n    pullRequestReview {\n      id\n    }\n  }\n}\n    "])));
+exports.AddPullRequestReviewThread = (0, graphql_tag_1.default)(templateObject_3 || (templateObject_3 = __makeTemplateObject(["\n    mutation AddPullRequestReviewThread($pullRequestId: ID!, $pullRequestReviewId: ID!, $body: String!, $path: String!, $line: Int!, $startLine: Int) {\n  addPullRequestReviewThread(\n    input: {pullRequestId: $pullRequestId, pullRequestReviewId: $pullRequestReviewId, body: $body, path: $path, line: $line, startLine: $startLine}\n  ) {\n    thread {\n      id\n    }\n  }\n}\n    "], ["\n    mutation AddPullRequestReviewThread($pullRequestId: ID!, $pullRequestReviewId: ID!, $body: String!, $path: String!, $line: Int!, $startLine: Int) {\n  addPullRequestReviewThread(\n    input: {pullRequestId: $pullRequestId, pullRequestReviewId: $pullRequestReviewId, body: $body, path: $path, line: $line, startLine: $startLine}\n  ) {\n    thread {\n      id\n    }\n  }\n}\n    "])));
+exports.CreateCheckRun = (0, graphql_tag_1.default)(templateObject_4 || (templateObject_4 = __makeTemplateObject(["\n    mutation CreateCheckRun($repositoryId: ID!, $headSha: GitObjectID!, $name: String!, $startedAt: DateTime, $completedAt: DateTime, $conclusion: CheckConclusionState, $status: RequestableCheckStatusState, $output: CheckRunOutput) {\n  createCheckRun(\n    input: {repositoryId: $repositoryId, headSha: $headSha, name: $name, startedAt: $startedAt, completedAt: $completedAt, conclusion: $conclusion, status: $status, output: $output}\n  ) {\n    checkRun {\n      id\n    }\n  }\n}\n    "], ["\n    mutation CreateCheckRun($repositoryId: ID!, $headSha: GitObjectID!, $name: String!, $startedAt: DateTime, $completedAt: DateTime, $conclusion: CheckConclusionState, $status: RequestableCheckStatusState, $output: CheckRunOutput) {\n  createCheckRun(\n    input: {repositoryId: $repositoryId, headSha: $headSha, name: $name, startedAt: $startedAt, completedAt: $completedAt, conclusion: $conclusion, status: $status, output: $output}\n  ) {\n    checkRun {\n      id\n    }\n  }\n}\n    "])));
+exports.DeleteComment = (0, graphql_tag_1.default)(templateObject_5 || (templateObject_5 = __makeTemplateObject(["\n    mutation DeleteComment($id: ID!) {\n  deleteIssueComment(input: {id: $id}) {\n    clientMutationId\n  }\n}\n    "], ["\n    mutation DeleteComment($id: ID!) {\n  deleteIssueComment(input: {id: $id}) {\n    clientMutationId\n  }\n}\n    "])));
+exports.DeletePullRequestReviewComment = (0, graphql_tag_1.default)(templateObject_6 || (templateObject_6 = __makeTemplateObject(["\n    mutation DeletePullRequestReviewComment($pullRequestReviewCommentId: ID!) {\n  deletePullRequestReviewComment(input: {id: $pullRequestReviewCommentId}) {\n    clientMutationId\n  }\n}\n    "], ["\n    mutation DeletePullRequestReviewComment($pullRequestReviewCommentId: ID!) {\n  deletePullRequestReviewComment(input: {id: $pullRequestReviewCommentId}) {\n    clientMutationId\n  }\n}\n    "])));
+exports.DeletePullRequestReview = (0, graphql_tag_1.default)(templateObject_7 || (templateObject_7 = __makeTemplateObject(["\n    mutation DeletePullRequestReview($pullRequestReviewId: ID!) {\n  deletePullRequestReview(input: {pullRequestReviewId: $pullRequestReviewId}) {\n    clientMutationId\n  }\n}\n    "], ["\n    mutation DeletePullRequestReview($pullRequestReviewId: ID!) {\n  deletePullRequestReview(input: {pullRequestReviewId: $pullRequestReviewId}) {\n    clientMutationId\n  }\n}\n    "])));
+exports.GetCheckRunAnnotations = (0, graphql_tag_1.default)(templateObject_8 || (templateObject_8 = __makeTemplateObject(["\n    query GetCheckRunAnnotations($checkRunId: ID!, $after: String) {\n  node(id: $checkRunId) {\n    __typename\n    ... on CheckRun {\n      id\n      annotations(first: 100, after: $after) {\n        pageInfo {\n          hasNextPage\n          endCursor\n        }\n        nodes {\n          path\n          message\n          title\n          annotationLevel\n          location {\n            start {\n              line\n              column\n            }\n            end {\n              line\n              column\n            }\n          }\n        }\n      }\n    }\n  }\n}\n    "], ["\n    query GetCheckRunAnnotations($checkRunId: ID!, $after: String) {\n  node(id: $checkRunId) {\n    __typename\n    ... on CheckRun {\n      id\n      annotations(first: 100, after: $after) {\n        pageInfo {\n          hasNextPage\n          endCursor\n        }\n        nodes {\n          path\n          message\n          title\n          annotationLevel\n          location {\n            start {\n              line\n              column\n            }\n            end {\n              line\n              column\n            }\n          }\n        }\n      }\n    }\n  }\n}\n    "])));
+exports.GetCommitStatusAndCheckRun = (0, graphql_tag_1.default)(templateObject_9 || (templateObject_9 = __makeTemplateObject(["\n    query GetCommitStatusAndCheckRun($owner: String!, $name: String!, $commitSha: GitObjectID!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    object(oid: $commitSha) {\n      ... on Commit {\n        statusCheckRollup {\n          contexts(first: 100, after: $after) {\n            pageInfo {\n              hasNextPage\n              endCursor\n            }\n            nodes {\n              __typename\n              ... on StatusContext {\n                id\n                state\n                context\n              }\n              ... on CheckRun {\n                id\n                name\n                status\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n    "], ["\n    query GetCommitStatusAndCheckRun($owner: String!, $name: String!, $commitSha: GitObjectID!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    object(oid: $commitSha) {\n      ... on Commit {\n        statusCheckRollup {\n          contexts(first: 100, after: $after) {\n            pageInfo {\n              hasNextPage\n              endCursor\n            }\n            nodes {\n              __typename\n              ... on StatusContext {\n                id\n                state\n                context\n              }\n              ... on CheckRun {\n                id\n                name\n                status\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n    "])));
+exports.GetLoginUser = (0, graphql_tag_1.default)(templateObject_10 || (templateObject_10 = __makeTemplateObject(["\n    query GetLoginUser {\n  viewer {\n    login\n  }\n}\n    "], ["\n    query GetLoginUser {\n  viewer {\n    login\n  }\n}\n    "])));
+exports.GetPullRequestChangedFile = (0, graphql_tag_1.default)(templateObject_11 || (templateObject_11 = __makeTemplateObject(["\n    query GetPullRequestChangedFile($owner: String!, $name: String!, $pull_request: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $pull_request) {\n      files(first: 100, after: $after) {\n        pageInfo {\n          hasNextPage\n          endCursor\n        }\n        nodes {\n          path\n          additions\n          deletions\n        }\n      }\n    }\n  }\n}\n    "], ["\n    query GetPullRequestChangedFile($owner: String!, $name: String!, $pull_request: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $pull_request) {\n      files(first: 100, after: $after) {\n        pageInfo {\n          hasNextPage\n          endCursor\n        }\n        nodes {\n          path\n          additions\n          deletions\n        }\n      }\n    }\n  }\n}\n    "])));
+exports.GetPullRequestComment = (0, graphql_tag_1.default)(templateObject_12 || (templateObject_12 = __makeTemplateObject(["\n    query GetPullRequestComment($owner: String!, $name: String!, $pull_request: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $pull_request) {\n      id\n      comments(first: 100, after: $after) {\n        pageInfo {\n          hasNextPage\n          endCursor\n        }\n        nodes {\n          author {\n            login\n          }\n          id\n          body\n        }\n      }\n    }\n  }\n}\n    "], ["\n    query GetPullRequestComment($owner: String!, $name: String!, $pull_request: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $pull_request) {\n      id\n      comments(first: 100, after: $after) {\n        pageInfo {\n          hasNextPage\n          endCursor\n        }\n        nodes {\n          author {\n            login\n          }\n          id\n          body\n        }\n      }\n    }\n  }\n}\n    "])));
+exports.GetPullRequestReviewThreads = (0, graphql_tag_1.default)(templateObject_13 || (templateObject_13 = __makeTemplateObject(["\n    query GetPullRequestReviewThreads($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $number) {\n      reviewThreads(first: 100, after: $after) {\n        pageInfo {\n          hasNextPage\n          endCursor\n        }\n        nodes {\n          id\n          path\n          line\n          startLine\n          isOutdated\n          isResolved\n          comments(first: 1) {\n            pageInfo {\n              hasNextPage\n            }\n            nodes {\n              id\n              body\n              author {\n                login\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n    "], ["\n    query GetPullRequestReviewThreads($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $number) {\n      reviewThreads(first: 100, after: $after) {\n        pageInfo {\n          hasNextPage\n          endCursor\n        }\n        nodes {\n          id\n          path\n          line\n          startLine\n          isOutdated\n          isResolved\n          comments(first: 1) {\n            pageInfo {\n              hasNextPage\n            }\n            nodes {\n              id\n              body\n              author {\n                login\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}\n    "])));
+exports.GetPullRequest = (0, graphql_tag_1.default)(templateObject_14 || (templateObject_14 = __makeTemplateObject(["\n    query GetPullRequest($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $number) {\n      id\n    }\n  }\n}\n    "], ["\n    query GetPullRequest($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $number) {\n      id\n    }\n  }\n}\n    "])));
+exports.GetRepositoryId = (0, graphql_tag_1.default)(templateObject_15 || (templateObject_15 = __makeTemplateObject(["\n    query GetRepositoryId($owner: String!, $name: String!) {\n  repository(owner: $owner, name: $name) {\n    id\n  }\n}\n    "], ["\n    query GetRepositoryId($owner: String!, $name: String!) {\n  repository(owner: $owner, name: $name) {\n    id\n  }\n}\n    "])));
+exports.ResolvePullRequestReviewThread = (0, graphql_tag_1.default)(templateObject_16 || (templateObject_16 = __makeTemplateObject(["\n    mutation ResolvePullRequestReviewThread($pullRequestThreadId: ID!) {\n  resolveReviewThread(input: {threadId: $pullRequestThreadId}) {\n    clientMutationId\n  }\n}\n    "], ["\n    mutation ResolvePullRequestReviewThread($pullRequestThreadId: ID!) {\n  resolveReviewThread(input: {threadId: $pullRequestThreadId}) {\n    clientMutationId\n  }\n}\n    "])));
+exports.SubmitPullRequestReview = (0, graphql_tag_1.default)(templateObject_17 || (templateObject_17 = __makeTemplateObject(["\n    mutation SubmitPullRequestReview($pullRequestId: ID!, $pullRequestReviewId: ID!) {\n  submitPullRequestReview(\n    input: {pullRequestId: $pullRequestId, pullRequestReviewId: $pullRequestReviewId, event: COMMENT}\n  ) {\n    pullRequestReview {\n      id\n    }\n  }\n}\n    "], ["\n    mutation SubmitPullRequestReview($pullRequestId: ID!, $pullRequestReviewId: ID!) {\n  submitPullRequestReview(\n    input: {pullRequestId: $pullRequestId, pullRequestReviewId: $pullRequestReviewId, event: COMMENT}\n  ) {\n    pullRequestReview {\n      id\n    }\n  }\n}\n    "])));
+exports.UpdateCheckRun = (0, graphql_tag_1.default)(templateObject_18 || (templateObject_18 = __makeTemplateObject(["\n    mutation UpdateCheckRun($repositoryId: ID!, $checkRunId: ID!, $completedAt: DateTime, $conclusion: CheckConclusionState, $status: RequestableCheckStatusState, $output: CheckRunOutput) {\n  updateCheckRun(\n    input: {repositoryId: $repositoryId, checkRunId: $checkRunId, completedAt: $completedAt, conclusion: $conclusion, status: $status, output: $output}\n  ) {\n    clientMutationId\n  }\n}\n    "], ["\n    mutation UpdateCheckRun($repositoryId: ID!, $checkRunId: ID!, $completedAt: DateTime, $conclusion: CheckConclusionState, $status: RequestableCheckStatusState, $output: CheckRunOutput) {\n  updateCheckRun(\n    input: {repositoryId: $repositoryId, checkRunId: $checkRunId, completedAt: $completedAt, conclusion: $conclusion, status: $status, output: $output}\n  ) {\n    clientMutationId\n  }\n}\n    "])));
 var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6, templateObject_7, templateObject_8, templateObject_9, templateObject_10, templateObject_11, templateObject_12, templateObject_13, templateObject_14, templateObject_15, templateObject_16, templateObject_17, templateObject_18;
 
 
