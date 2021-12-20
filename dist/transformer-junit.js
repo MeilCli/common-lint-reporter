@@ -786,6 +786,13 @@ module.exports = require("assert");
 
 /***/ }),
 
+/***/ 6113:
+/***/ ((module) => {
+
+module.exports = require("crypto");
+
+/***/ }),
+
 /***/ 2361:
 /***/ ((module) => {
 
@@ -832,6 +839,13 @@ module.exports = require("os");
 /***/ ((module) => {
 
 module.exports = require("path");
+
+/***/ }),
+
+/***/ 2781:
+/***/ ((module) => {
+
+module.exports = require("stream");
 
 /***/ }),
 
