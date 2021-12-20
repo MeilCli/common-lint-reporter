@@ -148,7 +148,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 var core = __importStar(__webpack_require__(2225));
-var fs = __importStar(__webpack_require__(5747));
+var fs = __importStar(__webpack_require__(7147));
 var context_1 = __webpack_require__(2754);
 function getInput(key) {
     return core.getInput(key, { required: true });
@@ -159,13 +159,15 @@ function run() {
         return __generator(this, function (_a) {
             try {
                 context = {
-                    pullRequest: context_1.githubContext(null).pullRequest(),
+                    pullRequest: (0, context_1.githubContext)(null).pullRequest(),
                 };
                 outputPath = getInput("output_path");
                 fs.writeFileSync(outputPath, JSON.stringify(context));
             }
             catch (error) {
-                core.setFailed(error.message);
+                if (error instanceof Error) {
+                    core.setFailed(error.message);
+                }
             }
             return [2 /*return*/];
         });
@@ -176,94 +178,94 @@ run();
 
 /***/ }),
 
-/***/ 2357:
+/***/ 9491:
 /***/ ((module) => {
 
-module.exports = require("assert");;
+module.exports = require("assert");
 
 /***/ }),
 
-/***/ 8614:
+/***/ 2361:
 /***/ ((module) => {
 
-module.exports = require("events");;
+module.exports = require("events");
 
 /***/ }),
 
-/***/ 5747:
+/***/ 7147:
 /***/ ((module) => {
 
-module.exports = require("fs");;
+module.exports = require("fs");
 
 /***/ }),
 
-/***/ 8605:
+/***/ 3685:
 /***/ ((module) => {
 
-module.exports = require("http");;
+module.exports = require("http");
 
 /***/ }),
 
-/***/ 7211:
+/***/ 5687:
 /***/ ((module) => {
 
-module.exports = require("https");;
+module.exports = require("https");
 
 /***/ }),
 
-/***/ 1631:
+/***/ 1808:
 /***/ ((module) => {
 
-module.exports = require("net");;
+module.exports = require("net");
 
 /***/ }),
 
-/***/ 2087:
+/***/ 2037:
 /***/ ((module) => {
 
-module.exports = require("os");;
+module.exports = require("os");
 
 /***/ }),
 
-/***/ 5622:
+/***/ 1017:
 /***/ ((module) => {
 
-module.exports = require("path");;
+module.exports = require("path");
 
 /***/ }),
 
-/***/ 2413:
+/***/ 2781:
 /***/ ((module) => {
 
-module.exports = require("stream");;
+module.exports = require("stream");
 
 /***/ }),
 
-/***/ 4016:
+/***/ 4404:
 /***/ ((module) => {
 
-module.exports = require("tls");;
+module.exports = require("tls");
 
 /***/ }),
 
-/***/ 8835:
+/***/ 7310:
 /***/ ((module) => {
 
-module.exports = require("url");;
+module.exports = require("url");
 
 /***/ }),
 
-/***/ 1669:
+/***/ 3837:
 /***/ ((module) => {
 
-module.exports = require("util");;
+module.exports = require("util");
 
 /***/ }),
 
-/***/ 8761:
+/***/ 9796:
 /***/ ((module) => {
 
-module.exports = require("zlib");;
+module.exports = require("zlib");
 
 /***/ })
 
@@ -333,7 +335,8 @@ module.exports = require("zlib");;
 /******/ 				}
 /******/ 				if(fulfilled) {
 /******/ 					deferred.splice(i--, 1)
-/******/ 					result = fn();
+/******/ 					var r = fn();
+/******/ 					if (r !== undefined) result = r;
 /******/ 				}
 /******/ 			}
 /******/ 			return result;
@@ -383,21 +386,6 @@ module.exports = require("zlib");;
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames based on template
 /******/ 			return "" + "vendor" + ".js";
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/harmony module decorator */
-/******/ 	(() => {
-/******/ 		__webpack_require__.hmd = (module) => {
-/******/ 			module = Object.create(module);
-/******/ 			if (!module.children) module.children = [];
-/******/ 			Object.defineProperty(module, 'exports', {
-/******/ 				enumerable: true,
-/******/ 				set: () => {
-/******/ 					throw new Error('ES Modules may not assign module.exports or exports.*, Use ESM export syntax, instead: ' + module.id);
-/******/ 				}
-/******/ 			});
-/******/ 			return module;
 /******/ 		};
 /******/ 	})();
 /******/ 	

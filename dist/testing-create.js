@@ -62,7 +62,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-var fs = __importStar(__webpack_require__(5747));
+var fs = __importStar(__webpack_require__(7147));
 var core = __importStar(__webpack_require__(2225));
 function getInput(key) {
     return core.getInput(key, { required: true });
@@ -127,7 +127,9 @@ function run() {
                 writeFile(option.outputPath, data);
             }
             catch (error) {
-                core.setFailed(error.message);
+                if (error instanceof Error) {
+                    core.setFailed(error.message);
+                }
             }
             return [2 /*return*/];
         });
@@ -138,24 +140,73 @@ run();
 
 /***/ }),
 
-/***/ 5747:
+/***/ 9491:
 /***/ ((module) => {
 
-module.exports = require("fs");;
+module.exports = require("assert");
 
 /***/ }),
 
-/***/ 2087:
+/***/ 2361:
 /***/ ((module) => {
 
-module.exports = require("os");;
+module.exports = require("events");
 
 /***/ }),
 
-/***/ 5622:
+/***/ 7147:
 /***/ ((module) => {
 
-module.exports = require("path");;
+module.exports = require("fs");
+
+/***/ }),
+
+/***/ 3685:
+/***/ ((module) => {
+
+module.exports = require("http");
+
+/***/ }),
+
+/***/ 5687:
+/***/ ((module) => {
+
+module.exports = require("https");
+
+/***/ }),
+
+/***/ 1808:
+/***/ ((module) => {
+
+module.exports = require("net");
+
+/***/ }),
+
+/***/ 2037:
+/***/ ((module) => {
+
+module.exports = require("os");
+
+/***/ }),
+
+/***/ 1017:
+/***/ ((module) => {
+
+module.exports = require("path");
+
+/***/ }),
+
+/***/ 4404:
+/***/ ((module) => {
+
+module.exports = require("tls");
+
+/***/ }),
+
+/***/ 3837:
+/***/ ((module) => {
+
+module.exports = require("util");
 
 /***/ })
 
@@ -225,7 +276,8 @@ module.exports = require("path");;
 /******/ 				}
 /******/ 				if(fulfilled) {
 /******/ 					deferred.splice(i--, 1)
-/******/ 					result = fn();
+/******/ 					var r = fn();
+/******/ 					if (r !== undefined) result = r;
 /******/ 				}
 /******/ 			}
 /******/ 			return result;
@@ -275,21 +327,6 @@ module.exports = require("path");;
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames based on template
 /******/ 			return "" + "vendor" + ".js";
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/harmony module decorator */
-/******/ 	(() => {
-/******/ 		__webpack_require__.hmd = (module) => {
-/******/ 			module = Object.create(module);
-/******/ 			if (!module.children) module.children = [];
-/******/ 			Object.defineProperty(module, 'exports', {
-/******/ 				enumerable: true,
-/******/ 				set: () => {
-/******/ 					throw new Error('ES Modules may not assign module.exports or exports.*, Use ESM export syntax, instead: ' + module.id);
-/******/ 				}
-/******/ 			});
-/******/ 			return module;
 /******/ 		};
 /******/ 	})();
 /******/ 	

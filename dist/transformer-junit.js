@@ -111,7 +111,7 @@ var JunitTransformer = /** @class */ (function (_super) {
                 junitTestSuites.push.apply(junitTestSuites, this.parseTestSuites(testSuites.testsuite));
             }
         }
-        return convert_1.convertJunitToLintResult(junitTestSuites);
+        return (0, convert_1.convertJunitToLintResult)(junitTestSuites);
     };
     JunitTransformer.prototype.parseTestSuites = function (testSuites) {
         if (testSuites == undefined) {
@@ -172,7 +172,7 @@ function run() {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    option = option_1.getOption();
+                    option = (0, option_1.getOption)();
                     transformer = new JunitTransformer();
                     return [4 /*yield*/, transformer.transform(option)];
                 case 1:
@@ -180,7 +180,9 @@ function run() {
                     return [3 /*break*/, 3];
                 case 2:
                     error_1 = _a.sent();
-                    core.setFailed(error_1.message);
+                    if (error_1 instanceof Error) {
+                        core.setFailed(error_1.message);
+                    }
                     return [3 /*break*/, 3];
                 case 3: return [2 /*return*/];
             }
@@ -574,7 +576,7 @@ var RubocopJunitHandler = /** @class */ (function () {
         }
     };
     RubocopJunitHandler.prototype.findMessage = function (testCase, message) {
-        var searchTarget = testCase.name + ": ";
+        var searchTarget = "".concat(testCase.name, ": ");
         var ruleIndex = message.message.indexOf(searchTarget);
         if (ruleIndex < 0) {
             return "";
@@ -713,7 +715,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Transformer = void 0;
-var fs = __importStar(__webpack_require__(5747));
+var fs = __importStar(__webpack_require__(7147));
 var glob = __importStar(__webpack_require__(5826));
 var Transformer = /** @class */ (function () {
     function Transformer() {
@@ -777,31 +779,73 @@ exports.Transformer = Transformer;
 
 /***/ }),
 
-/***/ 2357:
+/***/ 9491:
 /***/ ((module) => {
 
-module.exports = require("assert");;
+module.exports = require("assert");
 
 /***/ }),
 
-/***/ 5747:
+/***/ 2361:
 /***/ ((module) => {
 
-module.exports = require("fs");;
+module.exports = require("events");
 
 /***/ }),
 
-/***/ 2087:
+/***/ 7147:
 /***/ ((module) => {
 
-module.exports = require("os");;
+module.exports = require("fs");
 
 /***/ }),
 
-/***/ 5622:
+/***/ 3685:
 /***/ ((module) => {
 
-module.exports = require("path");;
+module.exports = require("http");
+
+/***/ }),
+
+/***/ 5687:
+/***/ ((module) => {
+
+module.exports = require("https");
+
+/***/ }),
+
+/***/ 1808:
+/***/ ((module) => {
+
+module.exports = require("net");
+
+/***/ }),
+
+/***/ 2037:
+/***/ ((module) => {
+
+module.exports = require("os");
+
+/***/ }),
+
+/***/ 1017:
+/***/ ((module) => {
+
+module.exports = require("path");
+
+/***/ }),
+
+/***/ 4404:
+/***/ ((module) => {
+
+module.exports = require("tls");
+
+/***/ }),
+
+/***/ 3837:
+/***/ ((module) => {
+
+module.exports = require("util");
 
 /***/ })
 
@@ -871,7 +915,8 @@ module.exports = require("path");;
 /******/ 				}
 /******/ 				if(fulfilled) {
 /******/ 					deferred.splice(i--, 1)
-/******/ 					result = fn();
+/******/ 					var r = fn();
+/******/ 					if (r !== undefined) result = r;
 /******/ 				}
 /******/ 			}
 /******/ 			return result;
@@ -921,21 +966,6 @@ module.exports = require("path");;
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames based on template
 /******/ 			return "" + "vendor" + ".js";
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/harmony module decorator */
-/******/ 	(() => {
-/******/ 		__webpack_require__.hmd = (module) => {
-/******/ 			module = Object.create(module);
-/******/ 			if (!module.children) module.children = [];
-/******/ 			Object.defineProperty(module, 'exports', {
-/******/ 				enumerable: true,
-/******/ 				set: () => {
-/******/ 					throw new Error('ES Modules may not assign module.exports or exports.*, Use ESM export syntax, instead: ' + module.id);
-/******/ 				}
-/******/ 			});
-/******/ 			return module;
 /******/ 		};
 /******/ 	})();
 /******/ 	
