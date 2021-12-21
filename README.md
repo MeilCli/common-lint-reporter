@@ -11,14 +11,14 @@ Current supporting lint file format:
 
 |report format|file format|tool compatibility|
 |:--|:--|:--|
-|androidlint|xml||
-|checkstyle|xml||
-|eslint|json||
+|androidlint|xml|androidlint|
+|checkstyle|xml|eslint|
+|eslint|json|eslint|
 |junit|xml|eslint, textlint, cpplint, RuboCop|
-|markdownlint|txt||
-|RuboCop|json||
-|stylelint|json||
-|textlint|json||
+|markdownlint|txt|markdownlint|
+|RuboCop|json|RuboCop|
+|stylelint|json|stylelint|
+|textlint|json|textlint|
 
 ### Feature request
 Now, this action is WIP. Features are not enough and should improve about transformer and operator. If you have nice idea, please send as issue:heart:
