@@ -5,6 +5,7 @@ module.exports = {
     target: "node",
     entry: {
         main: "./src/main.ts",
+        "transformer-androidlint": "./src/transformer/androidlint.ts",
         "transformer-checkstyle": "./src/transformer/checkstyle.ts",
         "transformer-eslint": "./src/transformer/eslint.ts",
         "transformer-textlint": "./src/transformer/textlint.ts",

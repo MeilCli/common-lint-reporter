@@ -8,14 +8,17 @@ Focuses on:
 
 ### Specification
 Current supporting lint file format:
-- eslint(JSON)
-- textlint(JSON)
-- markdownlint
-- stylelint(JSON)
-- checkstyle
-- RuboCop(JSON)
-- junit
-  - compatibility: eslint, textlint, cpplint, RuboCop
+
+|report format|file format|tool compatibility|
+|:--|:--|:--|
+|androidlint|xml||
+|checkstyle|xml||
+|eslint|json||
+|junit|xml|eslint, textlint, cpplint, RuboCop|
+|markdownlint|txt||
+|RuboCop|json||
+|stylelint|json||
+|textlint|json||
 
 ### Feature request
 Now, this action is WIP. Features are not enough and should improve about transformer and operator. If you have nice idea, please send as issue:heart:
@@ -64,13 +67,14 @@ jobs:
   - [Usage of oss or using dependabot repository](documents/oss-or-dependabot-usage.md)
   - [Report lint result](documents/report-lint-result.md)
 - Transformer
-  - [eslint](documents/transformer/eslint.md)
-  - [textlint](documents/transformer/textlint.md)
-  - [markdownlint](documents/transformer/markdownlint.md)
-  - [stylelint](documents/transformer/stylelint.md)
+  - [androidlint](documents/transformer/androidlint.md)
   - [checkstyle](documents/transformer/checkstyle.md)
-  - [RuboCop](documents/transformer/rubocop.md)
+  - [eslint](documents/transformer/eslint.md)
   - [junit](documents/transformer/junit.md)
+  - [markdownlint](documents/transformer/markdownlint.md)
+  - [RuboCop](documents/transformer/rubocop.md)
+  - [stylelint](documents/transformer/stylelint.md)
+  - [textlint](documents/transformer/textlint.md)
 - Operator
   - [add](documents/operator/add.md)
   - [distinct](documents/operator/distinct.md)
