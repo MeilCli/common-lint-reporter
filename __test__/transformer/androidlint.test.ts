@@ -12,7 +12,7 @@ test("transform", async () => {
         path: "filepath.xml",
         rule: "Performance.Overdraw",
         message:
-            "Possible overdraw: Root element paints background `?attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@android:style/Theme.Holo`)",
+            "Overdraw: Painting regions more than once\n\nPossible overdraw: Root element paints background `?attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@android:style/Theme.Holo`)",
         startLine: 6,
         endLine: undefined,
         startColumn: 5,
@@ -23,7 +23,7 @@ test("transform", async () => {
         path: "filepath.xml",
         rule: "Performance.Overdraw",
         message:
-            "Possible overdraw: Root element paints background `?attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@android:style/Theme.Holo`)",
+            "Overdraw: Painting regions more than once\n\nPossible overdraw: Root element paints background `?attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@android:style/Theme.Holo`)",
         startLine: 6,
         endLine: undefined,
         startColumn: 5,
@@ -34,7 +34,7 @@ test("transform", async () => {
         path: "filepath.xml",
         rule: "Performance.Overdraw",
         message:
-            "Possible overdraw: Root element paints background `?attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@android:style/Theme.Holo`)",
+            "Overdraw: Painting regions more than once\n\nPossible overdraw: Root element paints background `?attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@android:style/Theme.Holo`)",
         startLine: 6,
         endLine: undefined,
         startColumn: 5,

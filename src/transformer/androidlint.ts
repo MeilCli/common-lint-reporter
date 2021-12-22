@@ -18,6 +18,7 @@ interface AndroidLintIssue {
     category: string;
     severity: string;
     message: string;
+    summary: string;
     location: AndroidLintLocation[];
 }
 
@@ -44,7 +45,7 @@ export class AndroidLintTransformer extends Transformer {
                 lintResults.push({
                     path: location.file,
                     rule: `${issue.category}.${issue.id}`,
-                    message: issue.message,
+                    message: `${issue.summary}\n\n${issue.message}`,
                     startLine: location.line,
                     endLine: undefined,
                     startColumn: location.column,
