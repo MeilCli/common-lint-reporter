@@ -42,3 +42,11 @@ test("transform", async () => {
         level: "warning",
     } as LintResult);
 });
+
+test("transformEmpty", async () => {
+    const text = fs.readFileSync("data/androidlint_empty.xml", "utf-8");
+    const transformer = new AndroidLintTransformer();
+    const result = transformer.parse(text);
+
+    expect(result.length).toBe(0);
+});

@@ -10,7 +10,7 @@ interface AndroidLint {
 }
 
 interface AndroidLintIssues {
-    issue: AndroidLintIssue[];
+    issue: AndroidLintIssue[] | undefined;
 }
 
 interface AndroidLintIssue {
@@ -38,7 +38,7 @@ export class AndroidLintTransformer extends Transformer {
             attrValueProcessor: (value, _) => he.decode(value),
         }) as AndroidLint;
         for (const issues of androidLint.issues) {
-            for (const issue of issues.issue) {
+            for (const issue of issues.issue ?? []) {
                 const level = issue.severity == "Warning" ? "warning" : "failure";
                 const location = issue.location[0];
                 lintResults.push({
