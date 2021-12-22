@@ -39,3 +39,11 @@ test("transform", async () => {
         level: "warning",
     } as LintResult);
 });
+
+test("transformEmpty", async () => {
+    const text = fs.readFileSync("data/checkstyle_empty.xml", "utf-8");
+    const transformer = new CheckstyleTransformer();
+    const result = transformer.parse(text);
+
+    expect(result.length).toBe(0);
+});

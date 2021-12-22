@@ -10,7 +10,7 @@ interface Checkstyle {
 }
 
 interface CheckstyleReport {
-    file: CheckstyleReportFile[];
+    file: CheckstyleReportFile[] | undefined;
 }
 
 interface CheckstyleReportFile {
@@ -37,7 +37,7 @@ export class CheckstyleTransformer extends Transformer {
             attrValueProcessor: (value, _) => he.decode(value),
         }) as Checkstyle;
         for (const checkstyle of checkstyles.checkstyle) {
-            for (const checkstyleFile of checkstyle.file) {
+            for (const checkstyleFile of checkstyle.file ?? []) {
                 for (const error of checkstyleFile.error) {
                     const level =
                         error.severity == "warning" ? "warning" : error.severity == "error" ? "failure" : "notice";
