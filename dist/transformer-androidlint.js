@@ -89,6 +89,7 @@ var AndroidLintTransformer = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     AndroidLintTransformer.prototype.parse = function (body) {
+        var _a;
         var lintResults = [];
         var androidLint = xml.parse(body, {
             arrayMode: true,
@@ -97,16 +98,16 @@ var AndroidLintTransformer = /** @class */ (function (_super) {
             parseAttributeValue: true,
             attrValueProcessor: function (value, _) { return he.decode(value); },
         });
-        for (var _i = 0, _a = androidLint.issues; _i < _a.length; _i++) {
-            var issues = _a[_i];
-            for (var _b = 0, _c = issues.issue; _b < _c.length; _b++) {
-                var issue = _c[_b];
+        for (var _i = 0, _b = androidLint.issues; _i < _b.length; _i++) {
+            var issues = _b[_i];
+            for (var _c = 0, _d = (_a = issues.issue) !== null && _a !== void 0 ? _a : []; _c < _d.length; _c++) {
+                var issue = _d[_c];
                 var level = issue.severity == "Warning" ? "warning" : "failure";
                 var location_1 = issue.location[0];
                 lintResults.push({
                     path: location_1.file,
                     rule: "".concat(issue.category, ".").concat(issue.id),
-                    message: issue.message,
+                    message: "".concat(issue.summary, "\n\n").concat(issue.message),
                     startLine: location_1.line,
                     endLine: undefined,
                     startColumn: location_1.column,
