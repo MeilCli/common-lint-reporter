@@ -2,6 +2,14 @@ import { JunitTransformer } from "../../src/transformer/junit";
 import { LintResult } from "../../src/lint-result";
 import * as fs from "fs";
 
+test("transformEmpty", async () => {
+    const text = fs.readFileSync("data/junit_empty.xml", "utf-8");
+    const transformer = new JunitTransformer();
+    const result = transformer.parse(text);
+
+    expect(result.length).toBe(0);
+});
+
 test("transformEslint", async () => {
     const text = fs.readFileSync("data/junit_eslint.xml", "utf-8");
     const transformer = new JunitTransformer();
