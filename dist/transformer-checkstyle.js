@@ -89,6 +89,7 @@ var CheckstyleTransformer = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     CheckstyleTransformer.prototype.parse = function (body) {
+        var _a;
         var lintResults = [];
         var checkstyles = xml.parse(body, {
             arrayMode: true,
@@ -97,12 +98,12 @@ var CheckstyleTransformer = /** @class */ (function (_super) {
             parseAttributeValue: true,
             attrValueProcessor: function (value, _) { return he.decode(value); },
         });
-        for (var _i = 0, _a = checkstyles.checkstyle; _i < _a.length; _i++) {
-            var checkstyle = _a[_i];
-            for (var _b = 0, _c = checkstyle.file; _b < _c.length; _b++) {
-                var checkstyleFile = _c[_b];
-                for (var _d = 0, _e = checkstyleFile.error; _d < _e.length; _d++) {
-                    var error = _e[_d];
+        for (var _i = 0, _b = checkstyles.checkstyle; _i < _b.length; _i++) {
+            var checkstyle = _b[_i];
+            for (var _c = 0, _d = (_a = checkstyle.file) !== null && _a !== void 0 ? _a : []; _c < _d.length; _c++) {
+                var checkstyleFile = _d[_c];
+                for (var _e = 0, _f = checkstyleFile.error; _e < _f.length; _e++) {
+                    var error = _f[_e];
                     var level = error.severity == "warning" ? "warning" : error.severity == "error" ? "failure" : "notice";
                     lintResults.push({
                         path: checkstyleFile.name,
