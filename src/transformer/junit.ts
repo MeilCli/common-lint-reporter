@@ -36,13 +36,13 @@ interface TestMessage {
 
 export class JunitTransformer extends Transformer {
     parse(body: string): LintResult[] {
-        const junitResult = xml.parse(body, {
-            arrayMode: true,
+        const junitResult = new xml.XMLParser({
+            isArray: (tagName, jPath, isLeafNode, isAttribute) => isAttribute != true,
             ignoreAttributes: false,
             attributeNamePrefix: "",
             parseAttributeValue: true,
-            attrValueProcessor: (value, _) => he.decode(value),
-        }) as JunitResult;
+            attributeValueProcessor: (_, value) => he.decode(value),
+        }).parse(body) as JunitResult;
         const junitTestSuites: JunitTestSuite[] = [];
         if (junitResult.testsuites != undefined) {
             for (const testSuites of junitResult.testsuites) {
@@ -99,9 +99,19 @@ export class JunitTransformer extends Transformer {
         }
         const result: JunitTestMessage[] = [];
         for (const testMessage of testMessages) {
+            if (typeof testMessage == "string") {
+                result.push({
+                    message: testMessage,
+                    body: testMessage,
+                });
+                continue;
+            }
+            if (testMessage["#text"] == undefined) {
+                continue;
+            }
             result.push({
                 message: testMessage.message,
-                body: he.decode(testMessage["#text"]),
+                body: he.decode(testMessage["#text"].toString()),
             });
         }
         return result;

@@ -31,13 +31,13 @@ interface AndroidLintLocation {
 export class AndroidLintTransformer extends Transformer {
     parse(body: string): LintResult[] {
         const lintResults: LintResult[] = [];
-        const androidLint = xml.parse(body, {
-            arrayMode: true,
+        const androidLint = new xml.XMLParser({
+            isArray: (tagName, jPath, isLeafNode, isAttribute) => isAttribute != true,
             ignoreAttributes: false,
             attributeNamePrefix: "",
             parseAttributeValue: true,
-            attrValueProcessor: (value, _) => he.decode(value),
-        }) as AndroidLint;
+            attributeValueProcessor: (_, value) => he.decode(value),
+        }).parse(body) as AndroidLint;
         for (const issues of androidLint.issues) {
             for (const issue of issues.issue ?? []) {
                 const level = issue.severity == "Warning" ? "warning" : "failure";

@@ -29,13 +29,13 @@ interface CheckstyleReportError {
 export class CheckstyleTransformer extends Transformer {
     parse(body: string): LintResult[] {
         const lintResults: LintResult[] = [];
-        const checkstyles = xml.parse(body, {
-            arrayMode: true,
+        const checkstyles = new xml.XMLParser({
+            isArray: (tagName, jPath, isLeafNode, isAttribute) => isAttribute != true,
             ignoreAttributes: false,
             attributeNamePrefix: "",
             parseAttributeValue: true,
-            attrValueProcessor: (value, _) => he.decode(value),
-        }) as Checkstyle;
+            attributeValueProcessor: (_, value) => he.decode(value),
+        }).parse(body) as Checkstyle;
         for (const checkstyle of checkstyles.checkstyle) {
             for (const checkstyleFile of checkstyle.file ?? []) {
                 for (const error of checkstyleFile.error) {
