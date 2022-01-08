@@ -79,7 +79,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.JunitTransformer = void 0;
 var core = __importStar(__webpack_require__(2225));
-var xml = __importStar(__webpack_require__(6965));
+var xml = __importStar(__webpack_require__(6932));
 var he = __importStar(__webpack_require__(6492));
 var option_1 = __webpack_require__(9146);
 var transformer_1 = __webpack_require__(6226);
@@ -90,13 +90,13 @@ var JunitTransformer = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     JunitTransformer.prototype.parse = function (body) {
-        var junitResult = xml.parse(body, {
-            arrayMode: true,
+        var junitResult = new xml.XMLParser({
+            isArray: function (tagName, jPath, isLeafNode, isAttribute) { return isAttribute != true; },
             ignoreAttributes: false,
             attributeNamePrefix: "",
             parseAttributeValue: true,
-            attrValueProcessor: function (value, _) { return he.decode(value); },
-        });
+            attributeValueProcessor: function (_, value) { return he.decode(value); },
+        }).parse(body);
         var junitTestSuites = [];
         if (junitResult.testsuites != undefined) {
             for (var _i = 0, _a = junitResult.testsuites; _i < _a.length; _i++) {
@@ -155,9 +155,19 @@ var JunitTransformer = /** @class */ (function (_super) {
         var result = [];
         for (var _i = 0, testMessages_1 = testMessages; _i < testMessages_1.length; _i++) {
             var testMessage = testMessages_1[_i];
+            if (typeof testMessage == "string") {
+                result.push({
+                    message: testMessage,
+                    body: testMessage,
+                });
+                continue;
+            }
+            if (testMessage["#text"] == undefined) {
+                continue;
+            }
             result.push({
                 message: testMessage.message,
-                body: he.decode(testMessage["#text"]),
+                body: he.decode(testMessage["#text"].toString()),
             });
         }
         return result;

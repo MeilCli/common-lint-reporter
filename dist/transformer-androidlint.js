@@ -79,7 +79,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AndroidLintTransformer = void 0;
 var core = __importStar(__webpack_require__(2225));
-var xml = __importStar(__webpack_require__(6965));
+var xml = __importStar(__webpack_require__(6932));
 var he = __importStar(__webpack_require__(6492));
 var option_1 = __webpack_require__(9146);
 var transformer_1 = __webpack_require__(6226);
@@ -91,13 +91,13 @@ var AndroidLintTransformer = /** @class */ (function (_super) {
     AndroidLintTransformer.prototype.parse = function (body) {
         var _a;
         var lintResults = [];
-        var androidLint = xml.parse(body, {
-            arrayMode: true,
+        var androidLint = new xml.XMLParser({
+            isArray: function (tagName, jPath, isLeafNode, isAttribute) { return isAttribute != true; },
             ignoreAttributes: false,
             attributeNamePrefix: "",
             parseAttributeValue: true,
-            attrValueProcessor: function (value, _) { return he.decode(value); },
-        });
+            attributeValueProcessor: function (_, value) { return he.decode(value); },
+        }).parse(body);
         for (var _i = 0, _b = androidLint.issues; _i < _b.length; _i++) {
             var issues = _b[_i];
             for (var _c = 0, _d = (_a = issues.issue) !== null && _a !== void 0 ? _a : []; _c < _d.length; _c++) {
