@@ -1,0 +1,44 @@
+[
+    {
+        "DocumentId": {
+            "ProjectId": {
+                "Id": "49d6c81e-e6e0-43f1-9053-fcee99ac2b6f"
+            },
+            "Id": "0d662e61-b052-465b-b839-67c64d2680ce"
+        },
+        "FileName": "Program.cs",
+        "FilePath": "Project/Program.cs",
+        "FileChanges": [
+            {
+                "LineNumber": 3,
+                "CharNumber": 12,
+                "DiagnosticId": "WHITESPACE",
+                "FormatDescription": "\u7A7A\u767D\u306E\u66F8\u5F0F\u8A2D\u5B9A\u3092\u4FEE\u6B63\u3057\u307E\u3059\u3002 Insert \u0027\\s\u0027."
+            },
+            {
+                "LineNumber": 3,
+                "CharNumber": 13,
+                "DiagnosticId": "WHITESPACE",
+                "FormatDescription": "\u7A7A\u767D\u306E\u66F8\u5F0F\u8A2D\u5B9A\u3092\u4FEE\u6B63\u3057\u307E\u3059\u3002 Insert \u0027\\s\u0027."
+            }
+        ]
+    },
+    {
+        "DocumentId": {
+            "ProjectId": {
+                "Id": "49d6c81e-e6e0-43f1-9053-fcee99ac2b6f"
+            },
+            "Id": "0d662e61-b052-465b-b839-67c64d2680ce"
+        },
+        "FileName": "Program.cs",
+        "FilePath": "Project/Program.cs",
+        "FileChanges": [
+            {
+                "LineNumber": 3,
+                "CharNumber": 8,
+                "DiagnosticId": "CS0219",
+                "FormatDescription": "warning CS0219: \u5909\u6570 \u0027text\u0027 \u306F\u5272\u308A\u5F53\u3066\u3089\u308C\u3066\u3044\u307E\u3059\u304C\u3001\u305D\u306E\u5024\u306F\u4F7F\u7528\u3055\u308C\u3066\u3044\u307E\u305B\u3093"
+            }
+        ]
+    }
+]

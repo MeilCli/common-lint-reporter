@@ -13,6 +13,7 @@ Current supporting lint file format:
 |:--|:--|:--|
 |androidlint|xml|androidlint|
 |checkstyle|xml|eslint|
+|dotnet format|json|dotnet format|
 |eslint|json|eslint|
 |junit|xml|eslint, textlint, cpplint, RuboCop|
 |markdownlint|txt|markdownlint|

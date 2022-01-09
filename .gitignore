@@ -2,3 +2,5 @@ node_modules
 lib
 eslint_report.json
 common_lint_context.json
+data/dotnetformat/bin/*
+data/dotnetformat/obj/*

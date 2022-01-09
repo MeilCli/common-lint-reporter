@@ -7,6 +7,7 @@ module.exports = {
         main: "./src/main.ts",
         "transformer-androidlint": "./src/transformer/androidlint.ts",
         "transformer-checkstyle": "./src/transformer/checkstyle.ts",
+        "transformer-dotnetformat": "./src/transformer/dotnetformat.ts",
         "transformer-eslint": "./src/transformer/eslint.ts",
         "transformer-textlint": "./src/transformer/textlint.ts",
         "transformer-markdownlint": "./src/transformer/markdownlint.ts",
