@@ -70,6 +70,7 @@ jobs:
 - Transformer
   - [androidlint](documents/transformer/androidlint.md)
   - [checkstyle](documents/transformer/checkstyle.md)
+  - [dotnet format](documents/transformer/dotnetformat.md)
   - [eslint](documents/transformer/eslint.md)
   - [junit](documents/transformer/junit.md)
   - [markdownlint](documents/transformer/markdownlint.md)
