@@ -15967,7 +15967,7 @@ var execute = __webpack_require__(7037);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/compact.js
 var compact = __webpack_require__(3712);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.5.6';
+var version = '3.5.7';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
@@ -19868,6 +19868,9 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7294);
 /* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2152);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(5614);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _context_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5317);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
@@ -19890,13 +19893,15 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 
 
+
 function useQuery(query, options) {
     var _a;
     var context = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)((0,_context_index_js__WEBPACK_IMPORTED_MODULE_2__/* .getApolloContext */ .K)());
     var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .x)(options === null || options === void 0 ? void 0 : options.client);
+    var defaultWatchQueryOptions = client.defaultOptions.watchQuery;
     (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_4__/* .verifyDocumentType */ .Vp)(query, _parser_index_js__WEBPACK_IMPORTED_MODULE_4__/* .DocumentType.Query */ .n_.Query);
     var _b = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(function () {
-        var watchQueryOptions = createWatchQueryOptions(query, options);
+        var watchQueryOptions = createWatchQueryOptions(query, options, defaultWatchQueryOptions);
         var obsQuery = null;
         if (context.renderPromises) {
             obsQuery = context.renderPromises.getSSRObservable(watchQueryOptions);
@@ -19912,7 +19917,7 @@ function useQuery(query, options) {
             !(options === null || options === void 0 ? void 0 : options.skip) &&
             obsQuery.getCurrentResult().loading) {
             context.renderPromises.addQueryPromise({
-                getOptions: function () { return createWatchQueryOptions(query, options); },
+                getOptions: function () { return createWatchQueryOptions(query, options, defaultWatchQueryOptions); },
                 fetchData: function () { return new Promise(function (resolve) {
                     var sub = obsQuery.subscribe({
                         next: function (result) {
@@ -19953,11 +19958,11 @@ function useQuery(query, options) {
         options: options,
         result: result,
         previousData: void 0,
-        watchQueryOptions: createWatchQueryOptions(query, options),
+        watchQueryOptions: createWatchQueryOptions(query, options, defaultWatchQueryOptions),
     });
     (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
         var _a, _b;
-        var watchQueryOptions = createWatchQueryOptions(query, options);
+        var watchQueryOptions = createWatchQueryOptions(query, options, defaultWatchQueryOptions);
         var nextResult;
         if (ref.current.client !== client || !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(ref.current.query, query)) {
             var obsQuery_1 = client.watchQuery(watchQueryOptions);
@@ -19976,13 +19981,11 @@ function useQuery(query, options) {
             }
             setResult(ref.current.result = nextResult);
             if (!nextResult.loading && options) {
-                if (!result.loading) {
-                    if (result.error) {
-                        (_a = options.onError) === null || _a === void 0 ? void 0 : _a.call(options, result.error);
-                    }
-                    else if (result.data) {
-                        (_b = options.onCompleted) === null || _b === void 0 ? void 0 : _b.call(options, result.data);
-                    }
+                if (nextResult.error) {
+                    (_a = options.onError) === null || _a === void 0 ? void 0 : _a.call(options, nextResult.error);
+                }
+                else if (nextResult.data) {
+                    (_b = options.onCompleted) === null || _b === void 0 ? void 0 : _b.call(options, nextResult.data);
                 }
             }
         }
@@ -20054,7 +20057,7 @@ function useQuery(query, options) {
             (options === null || options === void 0 ? void 0 : options.ssr) !== false &&
             !(options === null || options === void 0 ? void 0 : options.skip) &&
             result.loading) {
-            obsQuery.setOptions(createWatchQueryOptions(query, options)).catch(function () { });
+            obsQuery.setOptions(createWatchQueryOptions(query, options, defaultWatchQueryOptions)).catch(function () { });
         }
         Object.assign(ref.current, { options: options });
     }
@@ -20086,12 +20089,16 @@ function useQuery(query, options) {
         stopPolling: obsQuery.stopPolling.bind(obsQuery),
         subscribeToMore: obsQuery.subscribeToMore.bind(obsQuery),
     }); }, [obsQuery]);
-    return (0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)({}, obsQueryFields), { variables: createWatchQueryOptions(query, options).variables, client: client, called: true, previousData: ref.current.previousData }), result);
+    return (0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)({}, obsQueryFields), { variables: createWatchQueryOptions(query, options, defaultWatchQueryOptions).variables, client: client, called: true, previousData: ref.current.previousData }), result);
 }
-function createWatchQueryOptions(query, options) {
+function createWatchQueryOptions(query, options, defaultOptions) {
     var _a;
     if (options === void 0) { options = {}; }
-    var skip = options.skip, ssr = options.ssr, onCompleted = options.onCompleted, onError = options.onError, displayName = options.displayName, watchQueryOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__rest */ ._T)(options, ["skip", "ssr", "onCompleted", "onError", "displayName"]);
+    var skip = options.skip, ssr = options.ssr, onCompleted = options.onCompleted, onError = options.onError, displayName = options.displayName, otherOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__rest */ ._T)(options, ["skip", "ssr", "onCompleted", "onError", "displayName"]);
+    var watchQueryOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)({ query: query }, otherOptions);
+    if (defaultOptions) {
+        watchQueryOptions = (0,_core_index_js__WEBPACK_IMPORTED_MODULE_8__/* .mergeOptions */ .J)(defaultOptions, watchQueryOptions);
+    }
     if (skip) {
         watchQueryOptions.fetchPolicy = 'standby';
     }
@@ -20106,7 +20113,7 @@ function createWatchQueryOptions(query, options) {
     if (!watchQueryOptions.variables) {
         watchQueryOptions.variables = {};
     }
-    return (0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)({ query: query }, watchQueryOptions);
+    return watchQueryOptions;
 }
 //# sourceMappingURL=useQuery.js.map
 
