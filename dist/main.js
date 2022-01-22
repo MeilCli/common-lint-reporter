@@ -1407,6 +1407,13 @@ module.exports = require("path");
 
 /***/ }),
 
+/***/ 5477:
+/***/ ((module) => {
+
+module.exports = require("punycode");
+
+/***/ }),
+
 /***/ 2781:
 /***/ ((module) => {
 
