@@ -18129,7 +18129,7 @@ var execute = __webpack_require__(7037);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/compact.js
 var compact = __webpack_require__(3712);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.5.7';
+var version = '3.5.8';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
@@ -20161,7 +20161,7 @@ var ObservableQuery = (function (_super) {
             pollInterval: 0,
         };
         var fetchPolicy = this.options.fetchPolicy;
-        if (fetchPolicy === 'standby' || fetchPolicy === 'cache-and-network') {
+        if (fetchPolicy === 'cache-and-network') {
             reobserveOptions.fetchPolicy = fetchPolicy;
         }
         else if (fetchPolicy === 'no-cache') {
@@ -21811,8 +21811,8 @@ function useApolloClient(override) {
     var context = (0,react__WEBPACK_IMPORTED_MODULE_1__.useContext)((0,_context_index_js__WEBPACK_IMPORTED_MODULE_2__/* .getApolloContext */ .K)());
     var client = override || context.client;
     __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!!client, 'Could not find "client" in the context or passed in as an option. ' +
-        'Wrap the root component in an <ApolloProvider>, or pass an ApolloClient' +
-        'ApolloClient instance in via options.') : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!!client, 29);
+        'Wrap the root component in an <ApolloProvider>, or pass an ApolloClient ' +
+        'instance in via options.') : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!!client, 29);
     return client;
 }
 //# sourceMappingURL=useApolloClient.js.map
@@ -21827,11 +21827,11 @@ function useApolloClient(override) {
 /* harmony export */   "t": () => (/* binding */ useLazyQuery)
 /* harmony export */ });
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(655);
+	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(655);
 }
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7294);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useQuery_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1641);
+	/* harmony import */ var _useQuery_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1641);
 }
 
 
@@ -21846,41 +21846,21 @@ var EAGER_METHODS = (/* runtime-dependent pure expression or super */ /^(33[45]|
 function useLazyQuery(query, options) {
     var _a = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
         called: false,
-        resolves: [],
     }), execution = _a[0], setExecution = _a[1];
-    var execute = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (executeOptions) {
-        var resolve;
-        var promise = new Promise(function (resolve1) { return (resolve = resolve1); });
-        setExecution(function (execution) {
-            if (execution.called) {
-                result && result.refetch(executeOptions === null || executeOptions === void 0 ? void 0 : executeOptions.variables);
-            }
-            return {
-                called: true,
-                resolves: (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__spreadArray */ .ev)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__spreadArray */ .ev)([], execution.resolves, true), [resolve], false),
-                options: executeOptions,
-            };
-        });
-        return promise;
-    }, []);
-    var result = (0,_useQuery_js__WEBPACK_IMPORTED_MODULE_2__/* .useQuery */ .a)(query, (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)({}, options), execution.options), { fetchPolicy: execution.called ? options === null || options === void 0 ? void 0 : options.fetchPolicy : 'standby', skip: undefined }));
-    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-        var resolves = execution.resolves;
-        if (!result.loading && resolves.length) {
-            setExecution(function (execution) { return ((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)({}, execution), { resolves: [] })); });
-            resolves.forEach(function (resolve) { return resolve(result); });
-        }
-    }, [result, execution]);
+    var result = (0,_useQuery_js__WEBPACK_IMPORTED_MODULE_1__/* .useQuery */ .a)(query, (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, options), execution.options), { fetchPolicy: execution.called ? options === null || options === void 0 ? void 0 : options.fetchPolicy : 'standby', skip: undefined }));
     if (!execution.called) {
-        result = (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)({}, result), { loading: false, data: void 0, error: void 0, called: false });
+        result = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, result), { loading: false, data: void 0, error: void 0, called: false });
+    }
+    var eagerMethods = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
+        var eagerMethods = {};
         var _loop_1 = function (key) {
             var method = result[key];
-            result[key] = function () {
+            eagerMethods[key] = function () {
                 var args = [];
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i] = arguments[_i];
                 }
-                setExecution(function (execution) { return ((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)({}, execution), { called: true })); });
+                setExecution(function (execution) { return ((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, execution), { called: true })); });
                 return method.apply(void 0, args);
             };
         };
@@ -21888,7 +21868,18 @@ function useLazyQuery(query, options) {
             var key = EAGER_METHODS_1[_i];
             _loop_1(key);
         }
-    }
+        return eagerMethods;
+    }, []);
+    result.error = result.error || void 0;
+    Object.assign(result, eagerMethods);
+    var execute = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (executeOptions) {
+        setExecution({ called: true, options: executeOptions });
+        return result.refetch(executeOptions === null || executeOptions === void 0 ? void 0 : executeOptions.variables).then(function (result1) {
+            var result2 = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, result), { data: result1.data, error: result1.error, called: true, loading: false });
+            Object.assign(result2, eagerMethods);
+            return result2;
+        });
+    }, []);
     return [execute, result];
 }
 //# sourceMappingURL=useLazyQuery.js.map
