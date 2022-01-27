@@ -8963,18 +8963,18 @@ __webpack_require__.d(__webpack_exports__, {
 var tslib_es6 = __webpack_require__(655);
 // EXTERNAL MODULE: ./node_modules/graphql/error/syntaxError.mjs
 var syntaxError = __webpack_require__(5219);
-// EXTERNAL MODULE: ./node_modules/graphql/language/kinds.mjs
-var kinds = __webpack_require__(7359);
 // EXTERNAL MODULE: ./node_modules/graphql/language/ast.mjs
 var ast = __webpack_require__(2380);
-// EXTERNAL MODULE: ./node_modules/graphql/language/tokenKind.mjs
-var tokenKind = __webpack_require__(4635);
-// EXTERNAL MODULE: ./node_modules/graphql/language/source.mjs
-var language_source = __webpack_require__(7926);
 // EXTERNAL MODULE: ./node_modules/graphql/language/directiveLocation.mjs
 var directiveLocation = __webpack_require__(9878);
+// EXTERNAL MODULE: ./node_modules/graphql/language/kinds.mjs
+var kinds = __webpack_require__(7359);
 // EXTERNAL MODULE: ./node_modules/graphql/language/lexer.mjs
 var lexer = __webpack_require__(2105);
+// EXTERNAL MODULE: ./node_modules/graphql/language/source.mjs
+var language_source = __webpack_require__(7926);
+// EXTERNAL MODULE: ./node_modules/graphql/language/tokenKind.mjs
+var tokenKind = __webpack_require__(4635);
 ;// CONCATENATED MODULE: ./node_modules/graphql/language/parser.mjs
 
 
@@ -23797,22 +23797,30 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 
 
-/**
- * Custom extensions
- *
- * @remarks
- * Use a unique identifier name for your extension, for example the name of
- * your library or project. Do not use a shortened identifier as this increases
- * the risk of conflicts. We recommend you add at most one extension field,
- * an object which can contain all the values you need.
- */
 
+function toNormalizedArgs(args) {
+  const firstArg = args[0];
+
+  if (firstArg == null || 'kind' in firstArg || 'length' in firstArg) {
+    return {
+      nodes: firstArg,
+      source: args[1],
+      positions: args[2],
+      path: args[3],
+      originalError: args[4],
+      extensions: args[5],
+    };
+  }
+
+  return firstArg;
+}
 /**
  * A GraphQLError describes an Error found during the parse, validate, or
  * execute phases of performing a GraphQL operation. In addition to a message
  * and stack trace, it also includes information about the locations in a
  * GraphQL document and/or execution result that correspond to the Error.
  */
+
 class GraphQLError extends Error {
   /**
    * An array of `{ line, column }` locations within the source GraphQL document
@@ -23855,17 +23863,15 @@ class GraphQLError extends Error {
   /**
    * Extension fields to add to the formatted error.
    */
-  constructor(
-    message,
-    nodes,
-    source,
-    positions,
-    path,
-    originalError,
-    extensions,
-  ) {
+
+  /**
+   * @deprecated Please use the `GraphQLErrorArgs` constructor overload instead.
+   */
+  constructor(message, ...rawArgs) {
     var _this$nodes, _nodeLocations$, _ref;
 
+    const { nodes, source, positions, path, originalError, extensions } =
+      toNormalizedArgs(rawArgs);
     super(message);
     this.name = 'GraphQLError';
     this.path = path !== null && path !== void 0 ? path : undefined;
@@ -24893,13 +24899,13 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _ast_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2380);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4635);
-}
-if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _blockString_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7392);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _characterClasses_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8297);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4635);
 }
 
 
@@ -25863,10 +25869,10 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _location_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7867);
 }
 
+
 /**
  * Render a helpful description of the location in the GraphQL Source document.
  */
-
 function printLocation(location) {
   return printSourceLocation(
     location.source,
@@ -25942,8 +25948,6 @@ __webpack_require__.d(__webpack_exports__, {
   "S": () => (/* binding */ print)
 });
 
-// EXTERNAL MODULE: ./node_modules/graphql/language/visitor.mjs
-var visitor = __webpack_require__(7304);
 // EXTERNAL MODULE: ./node_modules/graphql/language/blockString.mjs
 var blockString = __webpack_require__(7392);
 ;// CONCATENATED MODULE: ./node_modules/graphql/language/printString.mjs
@@ -26124,6 +26128,8 @@ const escapeSequences = [
   '\\u009F',
 ];
 
+// EXTERNAL MODULE: ./node_modules/graphql/language/visitor.mjs
+var visitor = __webpack_require__(7304);
 ;// CONCATENATED MODULE: ./node_modules/graphql/language/printer.mjs
 
 
@@ -26477,10 +26483,10 @@ function hasMultilineItems(maybeArray) {
 /* harmony export */   "T": () => (/* binding */ isSource)
 /* harmony export */ });
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _jsutils_inspect_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5821);
+	/* harmony import */ var _jsutils_devAssert_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7826);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _jsutils_devAssert_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7826);
+	/* harmony import */ var _jsutils_inspect_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5821);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _jsutils_instanceOf_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8306);
@@ -26595,10 +26601,10 @@ let TokenKind;
 /* harmony export */ });
 /* unused harmony exports visitInParallel, getEnterLeaveForKind, getVisitFn */
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _jsutils_inspect_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5821);
+	/* harmony import */ var _jsutils_devAssert_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7826);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _jsutils_devAssert_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7826);
+	/* harmony import */ var _jsutils_inspect_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5821);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _ast_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2380);
@@ -26708,12 +26714,11 @@ function visit(root, visitor, visitorKeys = _ast_mjs__WEBPACK_IMPORTED_MODULE_0_
   let keys = [root];
   let index = -1;
   let edits = [];
-  let node = undefined;
+  let node = root;
   let key = undefined;
   let parent = undefined;
   const path = [];
   const ancestors = [];
-  let newRoot = root;
   /* eslint-enable no-undef-init */
 
   do {
@@ -26758,17 +26763,15 @@ function visit(root, visitor, visitorKeys = _ast_mjs__WEBPACK_IMPORTED_MODULE_0_
       edits = stack.edits;
       inArray = stack.inArray;
       stack = stack.prev;
-    } else {
-      key = parent ? (inArray ? index : keys[index]) : undefined;
-      node = parent ? parent[key] : newRoot;
+    } else if (parent) {
+      key = inArray ? index : keys[index];
+      node = parent[key];
 
       if (node === null || node === undefined) {
         continue;
       }
 
-      if (parent) {
-        path.push(key);
-      }
+      path.push(key);
     }
 
     let result;
@@ -26849,10 +26852,11 @@ function visit(root, visitor, visitorKeys = _ast_mjs__WEBPACK_IMPORTED_MODULE_0_
   } while (stack !== undefined);
 
   if (edits.length !== 0) {
-    newRoot = edits[edits.length - 1][1];
+    // New root
+    return edits[edits.length - 1][1];
   }
 
-  return newRoot;
+  return root;
 }
 /**
  * Creates a new visitor instance which delegates to many visitors to run in
