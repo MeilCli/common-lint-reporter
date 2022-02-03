@@ -6,7 +6,7 @@ export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K]
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
+export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -24136,7 +24136,7 @@ export type AcceptTopicSuggestionPayloadResolvers<ContextType = any, ParentType 
 
 export type ActorResolvers<ContextType = any, ParentType extends ResolversParentTypes['Actor'] = ResolversParentTypes['Actor']> = {
   __resolveType: TypeResolveFn<'Bot' | 'EnterpriseUserAccount' | 'Mannequin' | 'Organization' | 'User', ParentType, ContextType>;
-  avatarUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType, RequireFields<ActorAvatarUrlArgs, never>>;
+  avatarUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType, Partial<ActorAvatarUrlArgs>>;
   login?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
@@ -24257,7 +24257,7 @@ export type AppResolvers<ContextType = any, ParentType extends ResolversParentTy
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   ipAllowListEntries?: Resolver<ResolversTypes['IpAllowListEntryConnection'], ParentType, ContextType, RequireFields<AppIpAllowListEntriesArgs, 'orderBy'>>;
   logoBackgroundColor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  logoUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType, RequireFields<AppLogoUrlArgs, never>>;
+  logoUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType, Partial<AppLogoUrlArgs>>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
@@ -24285,7 +24285,7 @@ export type ArchiveRepositoryPayloadResolvers<ContextType = any, ParentType exte
 
 export type AssignableResolvers<ContextType = any, ParentType extends ResolversParentTypes['Assignable'] = ResolversParentTypes['Assignable']> = {
   __resolveType: TypeResolveFn<'Issue' | 'PullRequest', ParentType, ContextType>;
-  assignees?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, RequireFields<AssignableAssigneesArgs, never>>;
+  assignees?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, Partial<AssignableAssigneesArgs>>;
 };
 
 export type AssignedEventResolvers<ContextType = any, ParentType extends ResolversParentTypes['AssignedEvent'] = ResolversParentTypes['AssignedEvent']> = {
@@ -24455,7 +24455,7 @@ export type BlobResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type BotResolvers<ContextType = any, ParentType extends ResolversParentTypes['Bot'] = ResolversParentTypes['Bot']> = {
-  avatarUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType, RequireFields<BotAvatarUrlArgs, never>>;
+  avatarUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType, Partial<BotAvatarUrlArgs>>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -24469,15 +24469,15 @@ export type BotResolvers<ContextType = any, ParentType extends ResolversParentTy
 export type BranchProtectionRuleResolvers<ContextType = any, ParentType extends ResolversParentTypes['BranchProtectionRule'] = ResolversParentTypes['BranchProtectionRule']> = {
   allowsDeletions?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   allowsForcePushes?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  branchProtectionRuleConflicts?: Resolver<ResolversTypes['BranchProtectionRuleConflictConnection'], ParentType, ContextType, RequireFields<BranchProtectionRuleBranchProtectionRuleConflictsArgs, never>>;
+  branchProtectionRuleConflicts?: Resolver<ResolversTypes['BranchProtectionRuleConflictConnection'], ParentType, ContextType, Partial<BranchProtectionRuleBranchProtectionRuleConflictsArgs>>;
   creator?: Resolver<Maybe<ResolversTypes['Actor']>, ParentType, ContextType>;
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   dismissesStaleReviews?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   isAdminEnforced?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  matchingRefs?: Resolver<ResolversTypes['RefConnection'], ParentType, ContextType, RequireFields<BranchProtectionRuleMatchingRefsArgs, never>>;
+  matchingRefs?: Resolver<ResolversTypes['RefConnection'], ParentType, ContextType, Partial<BranchProtectionRuleMatchingRefsArgs>>;
   pattern?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  pushAllowances?: Resolver<ResolversTypes['PushAllowanceConnection'], ParentType, ContextType, RequireFields<BranchProtectionRulePushAllowancesArgs, never>>;
+  pushAllowances?: Resolver<ResolversTypes['PushAllowanceConnection'], ParentType, ContextType, Partial<BranchProtectionRulePushAllowancesArgs>>;
   repository?: Resolver<Maybe<ResolversTypes['Repository']>, ParentType, ContextType>;
   requiredApprovingReviewCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   requiredStatusCheckContexts?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
@@ -24490,7 +24490,7 @@ export type BranchProtectionRuleResolvers<ContextType = any, ParentType extends 
   requiresStrictStatusChecks?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   restrictsPushes?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   restrictsReviewDismissals?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  reviewDismissalAllowances?: Resolver<ResolversTypes['ReviewDismissalAllowanceConnection'], ParentType, ContextType, RequireFields<BranchProtectionRuleReviewDismissalAllowancesArgs, never>>;
+  reviewDismissalAllowances?: Resolver<ResolversTypes['ReviewDismissalAllowanceConnection'], ParentType, ContextType, Partial<BranchProtectionRuleReviewDismissalAllowancesArgs>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -24615,7 +24615,7 @@ export type CheckAnnotationSpanResolvers<ContextType = any, ParentType extends R
 };
 
 export type CheckRunResolvers<ContextType = any, ParentType extends ResolversParentTypes['CheckRun'] = ResolversParentTypes['CheckRun']> = {
-  annotations?: Resolver<Maybe<ResolversTypes['CheckAnnotationConnection']>, ParentType, ContextType, RequireFields<CheckRunAnnotationsArgs, never>>;
+  annotations?: Resolver<Maybe<ResolversTypes['CheckAnnotationConnection']>, ParentType, ContextType, Partial<CheckRunAnnotationsArgs>>;
   checkSuite?: Resolver<ResolversTypes['CheckSuite'], ParentType, ContextType>;
   completedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   conclusion?: Resolver<Maybe<ResolversTypes['CheckConclusionState']>, ParentType, ContextType>;
@@ -24624,7 +24624,7 @@ export type CheckRunResolvers<ContextType = any, ParentType extends ResolversPar
   detailsUrl?: Resolver<Maybe<ResolversTypes['URI']>, ParentType, ContextType>;
   externalId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  isRequired?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<CheckRunIsRequiredArgs, never>>;
+  isRequired?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, Partial<CheckRunIsRequiredArgs>>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   pendingDeploymentRequest?: Resolver<Maybe<ResolversTypes['DeploymentRequest']>, ParentType, ContextType>;
   permalink?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
@@ -24632,7 +24632,7 @@ export type CheckRunResolvers<ContextType = any, ParentType extends ResolversPar
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   startedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   status?: Resolver<ResolversTypes['CheckStatusState'], ParentType, ContextType>;
-  steps?: Resolver<Maybe<ResolversTypes['CheckStepConnection']>, ParentType, ContextType, RequireFields<CheckRunStepsArgs, never>>;
+  steps?: Resolver<Maybe<ResolversTypes['CheckStepConnection']>, ParentType, ContextType, Partial<CheckRunStepsArgs>>;
   summary?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   text?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -24683,14 +24683,14 @@ export type CheckStepEdgeResolvers<ContextType = any, ParentType extends Resolve
 export type CheckSuiteResolvers<ContextType = any, ParentType extends ResolversParentTypes['CheckSuite'] = ResolversParentTypes['CheckSuite']> = {
   app?: Resolver<Maybe<ResolversTypes['App']>, ParentType, ContextType>;
   branch?: Resolver<Maybe<ResolversTypes['Ref']>, ParentType, ContextType>;
-  checkRuns?: Resolver<Maybe<ResolversTypes['CheckRunConnection']>, ParentType, ContextType, RequireFields<CheckSuiteCheckRunsArgs, never>>;
+  checkRuns?: Resolver<Maybe<ResolversTypes['CheckRunConnection']>, ParentType, ContextType, Partial<CheckSuiteCheckRunsArgs>>;
   commit?: Resolver<ResolversTypes['Commit'], ParentType, ContextType>;
   conclusion?: Resolver<Maybe<ResolversTypes['CheckConclusionState']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   creator?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  matchingPullRequests?: Resolver<Maybe<ResolversTypes['PullRequestConnection']>, ParentType, ContextType, RequireFields<CheckSuiteMatchingPullRequestsArgs, never>>;
+  matchingPullRequests?: Resolver<Maybe<ResolversTypes['PullRequestConnection']>, ParentType, ContextType, Partial<CheckSuiteMatchingPullRequestsArgs>>;
   push?: Resolver<Maybe<ResolversTypes['Push']>, ParentType, ContextType>;
   repository?: Resolver<ResolversTypes['Repository'], ParentType, ContextType>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
@@ -24792,7 +24792,7 @@ export type CommentResolvers<ContextType = any, ParentType extends ResolversPare
   lastEditedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   publishedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, RequireFields<CommentUserContentEditsArgs, never>>;
+  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, Partial<CommentUserContentEditsArgs>>;
   viewerDidAuthor?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
 };
 
@@ -24812,11 +24812,11 @@ export type CommitResolvers<ContextType = any, ParentType extends ResolversParen
   author?: Resolver<Maybe<ResolversTypes['GitActor']>, ParentType, ContextType>;
   authoredByCommitter?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   authoredDate?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  authors?: Resolver<ResolversTypes['GitActorConnection'], ParentType, ContextType, RequireFields<CommitAuthorsArgs, never>>;
+  authors?: Resolver<ResolversTypes['GitActorConnection'], ParentType, ContextType, Partial<CommitAuthorsArgs>>;
   blame?: Resolver<ResolversTypes['Blame'], ParentType, ContextType, RequireFields<CommitBlameArgs, 'path'>>;
   changedFiles?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  checkSuites?: Resolver<Maybe<ResolversTypes['CheckSuiteConnection']>, ParentType, ContextType, RequireFields<CommitCheckSuitesArgs, never>>;
-  comments?: Resolver<ResolversTypes['CommitCommentConnection'], ParentType, ContextType, RequireFields<CommitCommentsArgs, never>>;
+  checkSuites?: Resolver<Maybe<ResolversTypes['CheckSuiteConnection']>, ParentType, ContextType, Partial<CommitCheckSuitesArgs>>;
+  comments?: Resolver<ResolversTypes['CommitCommentConnection'], ParentType, ContextType, Partial<CommitCommentsArgs>>;
   commitResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   commitUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   committedDate?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
@@ -24825,7 +24825,7 @@ export type CommitResolvers<ContextType = any, ParentType extends ResolversParen
   deletions?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   deployments?: Resolver<Maybe<ResolversTypes['DeploymentConnection']>, ParentType, ContextType, RequireFields<CommitDeploymentsArgs, 'orderBy'>>;
   file?: Resolver<Maybe<ResolversTypes['TreeEntry']>, ParentType, ContextType, RequireFields<CommitFileArgs, 'path'>>;
-  history?: Resolver<ResolversTypes['CommitHistoryConnection'], ParentType, ContextType, RequireFields<CommitHistoryArgs, never>>;
+  history?: Resolver<ResolversTypes['CommitHistoryConnection'], ParentType, ContextType, Partial<CommitHistoryArgs>>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   messageBody?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -24834,14 +24834,14 @@ export type CommitResolvers<ContextType = any, ParentType extends ResolversParen
   messageHeadlineHTML?: Resolver<ResolversTypes['HTML'], ParentType, ContextType>;
   oid?: Resolver<ResolversTypes['GitObjectID'], ParentType, ContextType>;
   onBehalfOf?: Resolver<Maybe<ResolversTypes['Organization']>, ParentType, ContextType>;
-  parents?: Resolver<ResolversTypes['CommitConnection'], ParentType, ContextType, RequireFields<CommitParentsArgs, never>>;
+  parents?: Resolver<ResolversTypes['CommitConnection'], ParentType, ContextType, Partial<CommitParentsArgs>>;
   pushedDate?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   repository?: Resolver<ResolversTypes['Repository'], ParentType, ContextType>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   signature?: Resolver<Maybe<ResolversTypes['GitSignature']>, ParentType, ContextType>;
   status?: Resolver<Maybe<ResolversTypes['Status']>, ParentType, ContextType>;
   statusCheckRollup?: Resolver<Maybe<ResolversTypes['StatusCheckRollup']>, ParentType, ContextType>;
-  submodules?: Resolver<ResolversTypes['SubmoduleConnection'], ParentType, ContextType, RequireFields<CommitSubmodulesArgs, never>>;
+  submodules?: Resolver<ResolversTypes['SubmoduleConnection'], ParentType, ContextType, Partial<CommitSubmodulesArgs>>;
   tarballUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   tree?: Resolver<ResolversTypes['Tree'], ParentType, ContextType>;
   treeResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
@@ -24873,12 +24873,12 @@ export type CommitCommentResolvers<ContextType = any, ParentType extends Resolve
   position?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   publishedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   reactionGroups?: Resolver<Maybe<Array<ResolversTypes['ReactionGroup']>>, ParentType, ContextType>;
-  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, RequireFields<CommitCommentReactionsArgs, never>>;
+  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, Partial<CommitCommentReactionsArgs>>;
   repository?: Resolver<ResolversTypes['Repository'], ParentType, ContextType>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
-  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, RequireFields<CommitCommentUserContentEditsArgs, never>>;
+  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, Partial<CommitCommentUserContentEditsArgs>>;
   viewerCanDelete?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanMinimize?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanReact?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -24903,7 +24903,7 @@ export type CommitCommentEdgeResolvers<ContextType = any, ParentType extends Res
 };
 
 export type CommitCommentThreadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CommitCommentThread'] = ResolversParentTypes['CommitCommentThread']> = {
-  comments?: Resolver<ResolversTypes['CommitCommentConnection'], ParentType, ContextType, RequireFields<CommitCommentThreadCommentsArgs, never>>;
+  comments?: Resolver<ResolversTypes['CommitCommentConnection'], ParentType, ContextType, Partial<CommitCommentThreadCommentsArgs>>;
   commit?: Resolver<Maybe<ResolversTypes['Commit']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   path?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -25488,7 +25488,7 @@ export type DeploymentResolvers<ContextType = any, ParentType extends ResolversP
   ref?: Resolver<Maybe<ResolversTypes['Ref']>, ParentType, ContextType>;
   repository?: Resolver<ResolversTypes['Repository'], ParentType, ContextType>;
   state?: Resolver<Maybe<ResolversTypes['DeploymentState']>, ParentType, ContextType>;
-  statuses?: Resolver<Maybe<ResolversTypes['DeploymentStatusConnection']>, ParentType, ContextType, RequireFields<DeploymentStatusesArgs, never>>;
+  statuses?: Resolver<Maybe<ResolversTypes['DeploymentStatusConnection']>, ParentType, ContextType, Partial<DeploymentStatusesArgs>>;
   task?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -25519,7 +25519,7 @@ export type DeploymentEnvironmentChangedEventResolvers<ContextType = any, Parent
 
 export type DeploymentProtectionRuleResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeploymentProtectionRule'] = ResolversParentTypes['DeploymentProtectionRule']> = {
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  reviewers?: Resolver<ResolversTypes['DeploymentReviewerConnection'], ParentType, ContextType, RequireFields<DeploymentProtectionRuleReviewersArgs, never>>;
+  reviewers?: Resolver<ResolversTypes['DeploymentReviewerConnection'], ParentType, ContextType, Partial<DeploymentProtectionRuleReviewersArgs>>;
   timeout?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   type?: Resolver<ResolversTypes['DeploymentProtectionRuleType'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -25542,7 +25542,7 @@ export type DeploymentProtectionRuleEdgeResolvers<ContextType = any, ParentType 
 export type DeploymentRequestResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeploymentRequest'] = ResolversParentTypes['DeploymentRequest']> = {
   currentUserCanApprove?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   environment?: Resolver<ResolversTypes['Environment'], ParentType, ContextType>;
-  reviewers?: Resolver<ResolversTypes['DeploymentReviewerConnection'], ParentType, ContextType, RequireFields<DeploymentRequestReviewersArgs, never>>;
+  reviewers?: Resolver<ResolversTypes['DeploymentReviewerConnection'], ParentType, ContextType, Partial<DeploymentRequestReviewersArgs>>;
   waitTimer?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   waitTimerStartedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -25565,7 +25565,7 @@ export type DeploymentRequestEdgeResolvers<ContextType = any, ParentType extends
 export type DeploymentReviewResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeploymentReview'] = ResolversParentTypes['DeploymentReview']> = {
   comment?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  environments?: Resolver<ResolversTypes['EnvironmentConnection'], ParentType, ContextType, RequireFields<DeploymentReviewEnvironmentsArgs, never>>;
+  environments?: Resolver<ResolversTypes['EnvironmentConnection'], ParentType, ContextType, Partial<DeploymentReviewEnvironmentsArgs>>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   state?: Resolver<ResolversTypes['DeploymentReviewState'], ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
@@ -25659,7 +25659,7 @@ export type DiscussionResolvers<ContextType = any, ParentType extends ResolversP
   bodyHTML?: Resolver<ResolversTypes['HTML'], ParentType, ContextType>;
   bodyText?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   category?: Resolver<ResolversTypes['DiscussionCategory'], ParentType, ContextType>;
-  comments?: Resolver<ResolversTypes['DiscussionCommentConnection'], ParentType, ContextType, RequireFields<DiscussionCommentsArgs, never>>;
+  comments?: Resolver<ResolversTypes['DiscussionCommentConnection'], ParentType, ContextType, Partial<DiscussionCommentsArgs>>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   createdViaEmail?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -25672,14 +25672,14 @@ export type DiscussionResolvers<ContextType = any, ParentType extends ResolversP
   number?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   publishedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   reactionGroups?: Resolver<Maybe<Array<ResolversTypes['ReactionGroup']>>, ParentType, ContextType>;
-  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, RequireFields<DiscussionReactionsArgs, never>>;
+  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, Partial<DiscussionReactionsArgs>>;
   repository?: Resolver<ResolversTypes['Repository'], ParentType, ContextType>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   upvoteCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
-  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, RequireFields<DiscussionUserContentEditsArgs, never>>;
+  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, Partial<DiscussionUserContentEditsArgs>>;
   viewerCanDelete?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanReact?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanSubscribe?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -25738,14 +25738,14 @@ export type DiscussionCommentResolvers<ContextType = any, ParentType extends Res
   minimizedReason?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   publishedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   reactionGroups?: Resolver<Maybe<Array<ResolversTypes['ReactionGroup']>>, ParentType, ContextType>;
-  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, RequireFields<DiscussionCommentReactionsArgs, never>>;
-  replies?: Resolver<ResolversTypes['DiscussionCommentConnection'], ParentType, ContextType, RequireFields<DiscussionCommentRepliesArgs, never>>;
+  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, Partial<DiscussionCommentReactionsArgs>>;
+  replies?: Resolver<ResolversTypes['DiscussionCommentConnection'], ParentType, ContextType, Partial<DiscussionCommentRepliesArgs>>;
   replyTo?: Resolver<Maybe<ResolversTypes['DiscussionComment']>, ParentType, ContextType>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   upvoteCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
-  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, RequireFields<DiscussionCommentUserContentEditsArgs, never>>;
+  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, Partial<DiscussionCommentUserContentEditsArgs>>;
   viewerCanDelete?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanMarkAsAnswer?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanMinimize?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -25801,7 +25801,7 @@ export type EnablePullRequestAutoMergePayloadResolvers<ContextType = any, Parent
 };
 
 export type EnterpriseResolvers<ContextType = any, ParentType extends ResolversParentTypes['Enterprise'] = ResolversParentTypes['Enterprise']> = {
-  avatarUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType, RequireFields<EnterpriseAvatarUrlArgs, never>>;
+  avatarUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType, Partial<EnterpriseAvatarUrlArgs>>;
   billingInfo?: Resolver<Maybe<ResolversTypes['EnterpriseBillingInfo']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -25816,7 +25816,7 @@ export type EnterpriseResolvers<ContextType = any, ParentType extends ResolversP
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
-  userAccounts?: Resolver<ResolversTypes['EnterpriseUserAccountConnection'], ParentType, ContextType, RequireFields<EnterpriseUserAccountsArgs, never>>;
+  userAccounts?: Resolver<ResolversTypes['EnterpriseUserAccountConnection'], ParentType, ContextType, Partial<EnterpriseUserAccountsArgs>>;
   viewerIsAdmin?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   websiteUrl?: Resolver<Maybe<ResolversTypes['URI']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -25888,7 +25888,7 @@ export type EnterpriseBillingInfoResolvers<ContextType = any, ParentType extends
 export type EnterpriseIdentityProviderResolvers<ContextType = any, ParentType extends ResolversParentTypes['EnterpriseIdentityProvider'] = ResolversParentTypes['EnterpriseIdentityProvider']> = {
   digestMethod?: Resolver<Maybe<ResolversTypes['SamlDigestAlgorithm']>, ParentType, ContextType>;
   enterprise?: Resolver<Maybe<ResolversTypes['Enterprise']>, ParentType, ContextType>;
-  externalIdentities?: Resolver<ResolversTypes['ExternalIdentityConnection'], ParentType, ContextType, RequireFields<EnterpriseIdentityProviderExternalIdentitiesArgs, never>>;
+  externalIdentities?: Resolver<ResolversTypes['ExternalIdentityConnection'], ParentType, ContextType, Partial<EnterpriseIdentityProviderExternalIdentitiesArgs>>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   idpCertificate?: Resolver<Maybe<ResolversTypes['X509Certificate']>, ParentType, ContextType>;
   issuer?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -25950,7 +25950,7 @@ export type EnterpriseOutsideCollaboratorEdgeResolvers<ContextType = any, Parent
 
 export type EnterpriseOwnerInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['EnterpriseOwnerInfo'] = ResolversParentTypes['EnterpriseOwnerInfo']> = {
   admins?: Resolver<ResolversTypes['EnterpriseAdministratorConnection'], ParentType, ContextType, RequireFields<EnterpriseOwnerInfoAdminsArgs, 'orderBy'>>;
-  affiliatedUsersWithTwoFactorDisabled?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, RequireFields<EnterpriseOwnerInfoAffiliatedUsersWithTwoFactorDisabledArgs, never>>;
+  affiliatedUsersWithTwoFactorDisabled?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, Partial<EnterpriseOwnerInfoAffiliatedUsersWithTwoFactorDisabledArgs>>;
   affiliatedUsersWithTwoFactorDisabledExist?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   allowPrivateRepositoryForkingSetting?: Resolver<ResolversTypes['EnterpriseEnabledDisabledSettingValue'], ParentType, ContextType>;
   allowPrivateRepositoryForkingSettingOrganizations?: Resolver<ResolversTypes['OrganizationConnection'], ParentType, ContextType, RequireFields<EnterpriseOwnerInfoAllowPrivateRepositoryForkingSettingOrganizationsArgs, 'orderBy' | 'value'>>;
@@ -25988,7 +25988,7 @@ export type EnterpriseOwnerInfoResolvers<ContextType = any, ParentType extends R
   pendingAdminInvitations?: Resolver<ResolversTypes['EnterpriseAdministratorInvitationConnection'], ParentType, ContextType, RequireFields<EnterpriseOwnerInfoPendingAdminInvitationsArgs, 'orderBy'>>;
   pendingCollaboratorInvitations?: Resolver<ResolversTypes['RepositoryInvitationConnection'], ParentType, ContextType, RequireFields<EnterpriseOwnerInfoPendingCollaboratorInvitationsArgs, 'orderBy'>>;
   pendingCollaborators?: Resolver<ResolversTypes['EnterprisePendingCollaboratorConnection'], ParentType, ContextType, RequireFields<EnterpriseOwnerInfoPendingCollaboratorsArgs, 'orderBy'>>;
-  pendingMemberInvitations?: Resolver<ResolversTypes['EnterprisePendingMemberInvitationConnection'], ParentType, ContextType, RequireFields<EnterpriseOwnerInfoPendingMemberInvitationsArgs, never>>;
+  pendingMemberInvitations?: Resolver<ResolversTypes['EnterprisePendingMemberInvitationConnection'], ParentType, ContextType, Partial<EnterpriseOwnerInfoPendingMemberInvitationsArgs>>;
   repositoryProjectsSetting?: Resolver<ResolversTypes['EnterpriseEnabledDisabledSettingValue'], ParentType, ContextType>;
   repositoryProjectsSettingOrganizations?: Resolver<ResolversTypes['OrganizationConnection'], ParentType, ContextType, RequireFields<EnterpriseOwnerInfoRepositoryProjectsSettingOrganizationsArgs, 'orderBy' | 'value'>>;
   samlIdentityProvider?: Resolver<Maybe<ResolversTypes['EnterpriseIdentityProvider']>, ParentType, ContextType>;
@@ -26159,7 +26159,7 @@ export type EnterpriseServerUserAccountsUploadEdgeResolvers<ContextType = any, P
 };
 
 export type EnterpriseUserAccountResolvers<ContextType = any, ParentType extends ResolversParentTypes['EnterpriseUserAccount'] = ResolversParentTypes['EnterpriseUserAccount']> = {
-  avatarUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType, RequireFields<EnterpriseUserAccountAvatarUrlArgs, never>>;
+  avatarUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType, Partial<EnterpriseUserAccountAvatarUrlArgs>>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   enterprise?: Resolver<ResolversTypes['Enterprise'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -26191,7 +26191,7 @@ export type EnvironmentResolvers<ContextType = any, ParentType extends Resolvers
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  protectionRules?: Resolver<ResolversTypes['DeploymentProtectionRuleConnection'], ParentType, ContextType, RequireFields<EnvironmentProtectionRulesArgs, never>>;
+  protectionRules?: Resolver<ResolversTypes['DeploymentProtectionRuleConnection'], ParentType, ContextType, Partial<EnvironmentProtectionRulesArgs>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -26287,11 +26287,11 @@ export type GenericHovercardContextResolvers<ContextType = any, ParentType exten
 };
 
 export type GistResolvers<ContextType = any, ParentType extends ResolversParentTypes['Gist'] = ResolversParentTypes['Gist']> = {
-  comments?: Resolver<ResolversTypes['GistCommentConnection'], ParentType, ContextType, RequireFields<GistCommentsArgs, never>>;
+  comments?: Resolver<ResolversTypes['GistCommentConnection'], ParentType, ContextType, Partial<GistCommentsArgs>>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   files?: Resolver<Maybe<Array<Maybe<ResolversTypes['GistFile']>>>, ParentType, ContextType, RequireFields<GistFilesArgs, 'limit'>>;
-  forks?: Resolver<ResolversTypes['GistConnection'], ParentType, ContextType, RequireFields<GistForksArgs, never>>;
+  forks?: Resolver<ResolversTypes['GistConnection'], ParentType, ContextType, Partial<GistForksArgs>>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   isFork?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   isPublic?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -26300,7 +26300,7 @@ export type GistResolvers<ContextType = any, ParentType extends ResolversParentT
   pushedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   stargazerCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  stargazers?: Resolver<ResolversTypes['StargazerConnection'], ParentType, ContextType, RequireFields<GistStargazersArgs, never>>;
+  stargazers?: Resolver<ResolversTypes['StargazerConnection'], ParentType, ContextType, Partial<GistStargazersArgs>>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   viewerHasStarred?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -26325,7 +26325,7 @@ export type GistCommentResolvers<ContextType = any, ParentType extends Resolvers
   minimizedReason?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   publishedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, RequireFields<GistCommentUserContentEditsArgs, never>>;
+  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, Partial<GistCommentUserContentEditsArgs>>;
   viewerCanDelete?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanMinimize?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanUpdate?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -26371,12 +26371,12 @@ export type GistFileResolvers<ContextType = any, ParentType extends ResolversPar
   language?: Resolver<Maybe<ResolversTypes['Language']>, ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   size?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  text?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<GistFileTextArgs, never>>;
+  text?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, Partial<GistFileTextArgs>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type GitActorResolvers<ContextType = any, ParentType extends ResolversParentTypes['GitActor'] = ResolversParentTypes['GitActor']> = {
-  avatarUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType, RequireFields<GitActorAvatarUrlArgs, never>>;
+  avatarUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType, Partial<GitActorAvatarUrlArgs>>;
   date?: Resolver<Maybe<ResolversTypes['GitTimestamp']>, ParentType, ContextType>;
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -26534,7 +26534,7 @@ export type IpAllowListOwnerResolvers<ContextType = any, ParentType extends Reso
 
 export type IssueResolvers<ContextType = any, ParentType extends ResolversParentTypes['Issue'] = ResolversParentTypes['Issue']> = {
   activeLockReason?: Resolver<Maybe<ResolversTypes['LockReason']>, ParentType, ContextType>;
-  assignees?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, RequireFields<IssueAssigneesArgs, never>>;
+  assignees?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, Partial<IssueAssigneesArgs>>;
   author?: Resolver<Maybe<ResolversTypes['Actor']>, ParentType, ContextType>;
   authorAssociation?: Resolver<ResolversTypes['CommentAuthorAssociation'], ParentType, ContextType>;
   body?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -26544,7 +26544,7 @@ export type IssueResolvers<ContextType = any, ParentType extends ResolversParent
   bodyUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   closed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   closedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  comments?: Resolver<ResolversTypes['IssueCommentConnection'], ParentType, ContextType, RequireFields<IssueCommentsArgs, never>>;
+  comments?: Resolver<ResolversTypes['IssueCommentConnection'], ParentType, ContextType, Partial<IssueCommentsArgs>>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   createdViaEmail?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -26559,21 +26559,21 @@ export type IssueResolvers<ContextType = any, ParentType extends ResolversParent
   locked?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   milestone?: Resolver<Maybe<ResolversTypes['Milestone']>, ParentType, ContextType>;
   number?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  participants?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, RequireFields<IssueParticipantsArgs, never>>;
+  participants?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, Partial<IssueParticipantsArgs>>;
   projectCards?: Resolver<ResolversTypes['ProjectCardConnection'], ParentType, ContextType, RequireFields<IssueProjectCardsArgs, 'archivedStates'>>;
   publishedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   reactionGroups?: Resolver<Maybe<Array<ResolversTypes['ReactionGroup']>>, ParentType, ContextType>;
-  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, RequireFields<IssueReactionsArgs, never>>;
+  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, Partial<IssueReactionsArgs>>;
   repository?: Resolver<ResolversTypes['Repository'], ParentType, ContextType>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   state?: Resolver<ResolversTypes['IssueState'], ParentType, ContextType>;
-  timeline?: Resolver<ResolversTypes['IssueTimelineConnection'], ParentType, ContextType, RequireFields<IssueTimelineArgs, never>>;
-  timelineItems?: Resolver<ResolversTypes['IssueTimelineItemsConnection'], ParentType, ContextType, RequireFields<IssueTimelineItemsArgs, never>>;
+  timeline?: Resolver<ResolversTypes['IssueTimelineConnection'], ParentType, ContextType, Partial<IssueTimelineArgs>>;
+  timelineItems?: Resolver<ResolversTypes['IssueTimelineItemsConnection'], ParentType, ContextType, Partial<IssueTimelineItemsArgs>>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   titleHTML?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
-  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, RequireFields<IssueUserContentEditsArgs, never>>;
+  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, Partial<IssueUserContentEditsArgs>>;
   viewerCanReact?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanSubscribe?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanUpdate?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -26602,12 +26602,12 @@ export type IssueCommentResolvers<ContextType = any, ParentType extends Resolver
   publishedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   pullRequest?: Resolver<Maybe<ResolversTypes['PullRequest']>, ParentType, ContextType>;
   reactionGroups?: Resolver<Maybe<Array<ResolversTypes['ReactionGroup']>>, ParentType, ContextType>;
-  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, RequireFields<IssueCommentReactionsArgs, never>>;
+  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, Partial<IssueCommentReactionsArgs>>;
   repository?: Resolver<ResolversTypes['Repository'], ParentType, ContextType>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
-  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, RequireFields<IssueCommentUserContentEditsArgs, never>>;
+  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, Partial<IssueCommentUserContentEditsArgs>>;
   viewerCanDelete?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanMinimize?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanReact?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -26717,9 +26717,9 @@ export type LabelResolvers<ContextType = any, ParentType extends ResolversParent
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   isDefault?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  issues?: Resolver<ResolversTypes['IssueConnection'], ParentType, ContextType, RequireFields<LabelIssuesArgs, never>>;
+  issues?: Resolver<ResolversTypes['IssueConnection'], ParentType, ContextType, Partial<LabelIssuesArgs>>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  pullRequests?: Resolver<ResolversTypes['PullRequestConnection'], ParentType, ContextType, RequireFields<LabelPullRequestsArgs, never>>;
+  pullRequests?: Resolver<ResolversTypes['PullRequestConnection'], ParentType, ContextType, Partial<LabelPullRequestsArgs>>;
   repository?: Resolver<ResolversTypes['Repository'], ParentType, ContextType>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
@@ -26834,7 +26834,7 @@ export type LockedEventResolvers<ContextType = any, ParentType extends Resolvers
 };
 
 export type MannequinResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mannequin'] = ResolversParentTypes['Mannequin']> = {
-  avatarUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType, RequireFields<MannequinAvatarUrlArgs, never>>;
+  avatarUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType, Partial<MannequinAvatarUrlArgs>>;
   claimant?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -27084,10 +27084,10 @@ export type MilestoneResolvers<ContextType = any, ParentType extends ResolversPa
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   dueOn?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  issues?: Resolver<ResolversTypes['IssueConnection'], ParentType, ContextType, RequireFields<MilestoneIssuesArgs, never>>;
+  issues?: Resolver<ResolversTypes['IssueConnection'], ParentType, ContextType, Partial<MilestoneIssuesArgs>>;
   number?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   progressPercentage?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-  pullRequests?: Resolver<ResolversTypes['PullRequestConnection'], ParentType, ContextType, RequireFields<MilestonePullRequestsArgs, never>>;
+  pullRequests?: Resolver<ResolversTypes['PullRequestConnection'], ParentType, ContextType, Partial<MilestonePullRequestsArgs>>;
   repository?: Resolver<ResolversTypes['Repository'], ParentType, ContextType>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   state?: Resolver<ResolversTypes['MilestoneState'], ParentType, ContextType>;
@@ -28009,9 +28009,9 @@ export type OrgUpdateMemberRepositoryInvitationPermissionAuditEntryResolvers<Con
 };
 
 export type OrganizationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Organization'] = ResolversParentTypes['Organization']> = {
-  anyPinnableItems?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<OrganizationAnyPinnableItemsArgs, never>>;
+  anyPinnableItems?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, Partial<OrganizationAnyPinnableItemsArgs>>;
   auditLog?: Resolver<ResolversTypes['OrganizationAuditEntryConnection'], ParentType, ContextType, RequireFields<OrganizationAuditLogArgs, 'orderBy'>>;
-  avatarUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType, RequireFields<OrganizationAvatarUrlArgs, never>>;
+  avatarUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType, Partial<OrganizationAvatarUrlArgs>>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -28032,7 +28032,7 @@ export type OrganizationResolvers<ContextType = any, ParentType extends Resolver
   location?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   login?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   memberStatuses?: Resolver<ResolversTypes['UserStatusConnection'], ParentType, ContextType, RequireFields<OrganizationMemberStatusesArgs, 'orderBy'>>;
-  membersWithRole?: Resolver<ResolversTypes['OrganizationMemberConnection'], ParentType, ContextType, RequireFields<OrganizationMembersWithRoleArgs, never>>;
+  membersWithRole?: Resolver<ResolversTypes['OrganizationMemberConnection'], ParentType, ContextType, Partial<OrganizationMembersWithRoleArgs>>;
   monthlyEstimatedSponsorsIncomeInCents?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   newTeamResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
@@ -28040,12 +28040,12 @@ export type OrganizationResolvers<ContextType = any, ParentType extends Resolver
   notificationDeliveryRestrictionEnabledSetting?: Resolver<ResolversTypes['NotificationRestrictionSettingValue'], ParentType, ContextType>;
   organizationBillingEmail?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   packages?: Resolver<ResolversTypes['PackageConnection'], ParentType, ContextType, RequireFields<OrganizationPackagesArgs, 'orderBy'>>;
-  pendingMembers?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, RequireFields<OrganizationPendingMembersArgs, never>>;
-  pinnableItems?: Resolver<ResolversTypes['PinnableItemConnection'], ParentType, ContextType, RequireFields<OrganizationPinnableItemsArgs, never>>;
-  pinnedItems?: Resolver<ResolversTypes['PinnableItemConnection'], ParentType, ContextType, RequireFields<OrganizationPinnedItemsArgs, never>>;
+  pendingMembers?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, Partial<OrganizationPendingMembersArgs>>;
+  pinnableItems?: Resolver<ResolversTypes['PinnableItemConnection'], ParentType, ContextType, Partial<OrganizationPinnableItemsArgs>>;
+  pinnedItems?: Resolver<ResolversTypes['PinnableItemConnection'], ParentType, ContextType, Partial<OrganizationPinnedItemsArgs>>;
   pinnedItemsRemaining?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   project?: Resolver<Maybe<ResolversTypes['Project']>, ParentType, ContextType, RequireFields<OrganizationProjectArgs, 'number'>>;
-  projects?: Resolver<ResolversTypes['ProjectConnection'], ParentType, ContextType, RequireFields<OrganizationProjectsArgs, never>>;
+  projects?: Resolver<ResolversTypes['ProjectConnection'], ParentType, ContextType, Partial<OrganizationProjectsArgs>>;
   projectsResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   projectsUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   repositories?: Resolver<ResolversTypes['RepositoryConnection'], ParentType, ContextType, RequireFields<OrganizationRepositoriesArgs, 'ownerAffiliations'>>;
@@ -28063,7 +28063,7 @@ export type OrganizationResolvers<ContextType = any, ParentType extends Resolver
   sponsorshipForViewerAsSponsorable?: Resolver<Maybe<ResolversTypes['Sponsorship']>, ParentType, ContextType>;
   sponsorshipNewsletters?: Resolver<ResolversTypes['SponsorshipNewsletterConnection'], ParentType, ContextType, RequireFields<OrganizationSponsorshipNewslettersArgs, 'orderBy'>>;
   sponsorshipsAsMaintainer?: Resolver<ResolversTypes['SponsorshipConnection'], ParentType, ContextType, RequireFields<OrganizationSponsorshipsAsMaintainerArgs, 'includePrivate'>>;
-  sponsorshipsAsSponsor?: Resolver<ResolversTypes['SponsorshipConnection'], ParentType, ContextType, RequireFields<OrganizationSponsorshipsAsSponsorArgs, never>>;
+  sponsorshipsAsSponsor?: Resolver<ResolversTypes['SponsorshipConnection'], ParentType, ContextType, Partial<OrganizationSponsorshipsAsSponsorArgs>>;
   team?: Resolver<Maybe<ResolversTypes['Team']>, ParentType, ContextType, RequireFields<OrganizationTeamArgs, 'slug'>>;
   teams?: Resolver<ResolversTypes['TeamConnection'], ParentType, ContextType, RequireFields<OrganizationTeamsArgs, 'rootTeamsOnly'>>;
   teamsResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
@@ -28125,7 +28125,7 @@ export type OrganizationEdgeResolvers<ContextType = any, ParentType extends Reso
 
 export type OrganizationIdentityProviderResolvers<ContextType = any, ParentType extends ResolversParentTypes['OrganizationIdentityProvider'] = ResolversParentTypes['OrganizationIdentityProvider']> = {
   digestMethod?: Resolver<Maybe<ResolversTypes['URI']>, ParentType, ContextType>;
-  externalIdentities?: Resolver<ResolversTypes['ExternalIdentityConnection'], ParentType, ContextType, RequireFields<OrganizationIdentityProviderExternalIdentitiesArgs, never>>;
+  externalIdentities?: Resolver<ResolversTypes['ExternalIdentityConnection'], ParentType, ContextType, Partial<OrganizationIdentityProviderExternalIdentitiesArgs>>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   idpCertificate?: Resolver<Maybe<ResolversTypes['X509Certificate']>, ParentType, ContextType>;
   issuer?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -28180,7 +28180,7 @@ export type OrganizationMemberEdgeResolvers<ContextType = any, ParentType extend
 export type OrganizationTeamsHovercardContextResolvers<ContextType = any, ParentType extends ResolversParentTypes['OrganizationTeamsHovercardContext'] = ResolversParentTypes['OrganizationTeamsHovercardContext']> = {
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   octicon?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  relevantTeams?: Resolver<ResolversTypes['TeamConnection'], ParentType, ContextType, RequireFields<OrganizationTeamsHovercardContextRelevantTeamsArgs, never>>;
+  relevantTeams?: Resolver<ResolversTypes['TeamConnection'], ParentType, ContextType, Partial<OrganizationTeamsHovercardContextRelevantTeamsArgs>>;
   teamsResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   teamsUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   totalTeamCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -28190,7 +28190,7 @@ export type OrganizationTeamsHovercardContextResolvers<ContextType = any, Parent
 export type OrganizationsHovercardContextResolvers<ContextType = any, ParentType extends ResolversParentTypes['OrganizationsHovercardContext'] = ResolversParentTypes['OrganizationsHovercardContext']> = {
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   octicon?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  relevantOrganizations?: Resolver<ResolversTypes['OrganizationConnection'], ParentType, ContextType, RequireFields<OrganizationsHovercardContextRelevantOrganizationsArgs, never>>;
+  relevantOrganizations?: Resolver<ResolversTypes['OrganizationConnection'], ParentType, ContextType, Partial<OrganizationsHovercardContextRelevantOrganizationsArgs>>;
   totalOrganizationCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -28465,21 +28465,21 @@ export type PrivateRepositoryForkingEnableAuditEntryResolvers<ContextType = any,
 
 export type ProfileItemShowcaseResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProfileItemShowcase'] = ResolversParentTypes['ProfileItemShowcase']> = {
   hasPinnedItems?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  items?: Resolver<ResolversTypes['PinnableItemConnection'], ParentType, ContextType, RequireFields<ProfileItemShowcaseItemsArgs, never>>;
+  items?: Resolver<ResolversTypes['PinnableItemConnection'], ParentType, ContextType, Partial<ProfileItemShowcaseItemsArgs>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type ProfileOwnerResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProfileOwner'] = ResolversParentTypes['ProfileOwner']> = {
   __resolveType: TypeResolveFn<'Organization' | 'User', ParentType, ContextType>;
-  anyPinnableItems?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<ProfileOwnerAnyPinnableItemsArgs, never>>;
+  anyPinnableItems?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, Partial<ProfileOwnerAnyPinnableItemsArgs>>;
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   itemShowcase?: Resolver<ResolversTypes['ProfileItemShowcase'], ParentType, ContextType>;
   location?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   login?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  pinnableItems?: Resolver<ResolversTypes['PinnableItemConnection'], ParentType, ContextType, RequireFields<ProfileOwnerPinnableItemsArgs, never>>;
-  pinnedItems?: Resolver<ResolversTypes['PinnableItemConnection'], ParentType, ContextType, RequireFields<ProfileOwnerPinnedItemsArgs, never>>;
+  pinnableItems?: Resolver<ResolversTypes['PinnableItemConnection'], ParentType, ContextType, Partial<ProfileOwnerPinnableItemsArgs>>;
+  pinnedItems?: Resolver<ResolversTypes['PinnableItemConnection'], ParentType, ContextType, Partial<ProfileOwnerPinnedItemsArgs>>;
   pinnedItemsRemaining?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   viewerCanChangePinnedItems?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   websiteUrl?: Resolver<Maybe<ResolversTypes['URI']>, ParentType, ContextType>;
@@ -28490,7 +28490,7 @@ export type ProjectResolvers<ContextType = any, ParentType extends ResolversPare
   bodyHTML?: Resolver<ResolversTypes['HTML'], ParentType, ContextType>;
   closed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   closedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  columns?: Resolver<ResolversTypes['ProjectColumnConnection'], ParentType, ContextType, RequireFields<ProjectColumnsArgs, never>>;
+  columns?: Resolver<ResolversTypes['ProjectColumnConnection'], ParentType, ContextType, Partial<ProjectColumnsArgs>>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   creator?: Resolver<Maybe<ResolversTypes['Actor']>, ParentType, ContextType>;
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -28589,7 +28589,7 @@ export type ProjectOwnerResolvers<ContextType = any, ParentType extends Resolver
   __resolveType: TypeResolveFn<'Organization' | 'Repository' | 'User', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   project?: Resolver<Maybe<ResolversTypes['Project']>, ParentType, ContextType, RequireFields<ProjectOwnerProjectArgs, 'number'>>;
-  projects?: Resolver<ResolversTypes['ProjectConnection'], ParentType, ContextType, RequireFields<ProjectOwnerProjectsArgs, never>>;
+  projects?: Resolver<ResolversTypes['ProjectConnection'], ParentType, ContextType, Partial<ProjectOwnerProjectsArgs>>;
   projectsResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   projectsUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   viewerCanCreateProjects?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -28634,7 +28634,7 @@ export type PublicKeyEdgeResolvers<ContextType = any, ParentType extends Resolve
 export type PullRequestResolvers<ContextType = any, ParentType extends ResolversParentTypes['PullRequest'] = ResolversParentTypes['PullRequest']> = {
   activeLockReason?: Resolver<Maybe<ResolversTypes['LockReason']>, ParentType, ContextType>;
   additions?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  assignees?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, RequireFields<PullRequestAssigneesArgs, never>>;
+  assignees?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, Partial<PullRequestAssigneesArgs>>;
   author?: Resolver<Maybe<ResolversTypes['Actor']>, ParentType, ContextType>;
   authorAssociation?: Resolver<ResolversTypes['CommentAuthorAssociation'], ParentType, ContextType>;
   autoMergeRequest?: Resolver<Maybe<ResolversTypes['AutoMergeRequest']>, ParentType, ContextType>;
@@ -28650,15 +28650,15 @@ export type PullRequestResolvers<ContextType = any, ParentType extends Resolvers
   checksUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   closed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   closedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  closingIssuesReferences?: Resolver<Maybe<ResolversTypes['IssueConnection']>, ParentType, ContextType, RequireFields<PullRequestClosingIssuesReferencesArgs, never>>;
-  comments?: Resolver<ResolversTypes['IssueCommentConnection'], ParentType, ContextType, RequireFields<PullRequestCommentsArgs, never>>;
-  commits?: Resolver<ResolversTypes['PullRequestCommitConnection'], ParentType, ContextType, RequireFields<PullRequestCommitsArgs, never>>;
+  closingIssuesReferences?: Resolver<Maybe<ResolversTypes['IssueConnection']>, ParentType, ContextType, Partial<PullRequestClosingIssuesReferencesArgs>>;
+  comments?: Resolver<ResolversTypes['IssueCommentConnection'], ParentType, ContextType, Partial<PullRequestCommentsArgs>>;
+  commits?: Resolver<ResolversTypes['PullRequestCommitConnection'], ParentType, ContextType, Partial<PullRequestCommitsArgs>>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   createdViaEmail?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   deletions?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   editor?: Resolver<Maybe<ResolversTypes['Actor']>, ParentType, ContextType>;
-  files?: Resolver<Maybe<ResolversTypes['PullRequestChangedFileConnection']>, ParentType, ContextType, RequireFields<PullRequestFilesArgs, never>>;
+  files?: Resolver<Maybe<ResolversTypes['PullRequestChangedFileConnection']>, ParentType, ContextType, Partial<PullRequestFilesArgs>>;
   headRef?: Resolver<Maybe<ResolversTypes['Ref']>, ParentType, ContextType>;
   headRefName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   headRefOid?: Resolver<ResolversTypes['GitObjectID'], ParentType, ContextType>;
@@ -28673,7 +28673,7 @@ export type PullRequestResolvers<ContextType = any, ParentType extends Resolvers
   labels?: Resolver<Maybe<ResolversTypes['LabelConnection']>, ParentType, ContextType, RequireFields<PullRequestLabelsArgs, 'orderBy'>>;
   lastEditedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   latestOpinionatedReviews?: Resolver<Maybe<ResolversTypes['PullRequestReviewConnection']>, ParentType, ContextType, RequireFields<PullRequestLatestOpinionatedReviewsArgs, 'writersOnly'>>;
-  latestReviews?: Resolver<Maybe<ResolversTypes['PullRequestReviewConnection']>, ParentType, ContextType, RequireFields<PullRequestLatestReviewsArgs, never>>;
+  latestReviews?: Resolver<Maybe<ResolversTypes['PullRequestReviewConnection']>, ParentType, ContextType, Partial<PullRequestLatestReviewsArgs>>;
   locked?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   maintainerCanModify?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   mergeCommit?: Resolver<Maybe<ResolversTypes['Commit']>, ParentType, ContextType>;
@@ -28683,30 +28683,30 @@ export type PullRequestResolvers<ContextType = any, ParentType extends Resolvers
   mergedBy?: Resolver<Maybe<ResolversTypes['Actor']>, ParentType, ContextType>;
   milestone?: Resolver<Maybe<ResolversTypes['Milestone']>, ParentType, ContextType>;
   number?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  participants?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, RequireFields<PullRequestParticipantsArgs, never>>;
+  participants?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, Partial<PullRequestParticipantsArgs>>;
   permalink?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   potentialMergeCommit?: Resolver<Maybe<ResolversTypes['Commit']>, ParentType, ContextType>;
   projectCards?: Resolver<ResolversTypes['ProjectCardConnection'], ParentType, ContextType, RequireFields<PullRequestProjectCardsArgs, 'archivedStates'>>;
   publishedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   reactionGroups?: Resolver<Maybe<Array<ResolversTypes['ReactionGroup']>>, ParentType, ContextType>;
-  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, RequireFields<PullRequestReactionsArgs, never>>;
+  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, Partial<PullRequestReactionsArgs>>;
   repository?: Resolver<ResolversTypes['Repository'], ParentType, ContextType>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   revertResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   revertUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   reviewDecision?: Resolver<Maybe<ResolversTypes['PullRequestReviewDecision']>, ParentType, ContextType>;
-  reviewRequests?: Resolver<Maybe<ResolversTypes['ReviewRequestConnection']>, ParentType, ContextType, RequireFields<PullRequestReviewRequestsArgs, never>>;
-  reviewThreads?: Resolver<ResolversTypes['PullRequestReviewThreadConnection'], ParentType, ContextType, RequireFields<PullRequestReviewThreadsArgs, never>>;
-  reviews?: Resolver<Maybe<ResolversTypes['PullRequestReviewConnection']>, ParentType, ContextType, RequireFields<PullRequestReviewsArgs, never>>;
+  reviewRequests?: Resolver<Maybe<ResolversTypes['ReviewRequestConnection']>, ParentType, ContextType, Partial<PullRequestReviewRequestsArgs>>;
+  reviewThreads?: Resolver<ResolversTypes['PullRequestReviewThreadConnection'], ParentType, ContextType, Partial<PullRequestReviewThreadsArgs>>;
+  reviews?: Resolver<Maybe<ResolversTypes['PullRequestReviewConnection']>, ParentType, ContextType, Partial<PullRequestReviewsArgs>>;
   state?: Resolver<ResolversTypes['PullRequestState'], ParentType, ContextType>;
   suggestedReviewers?: Resolver<Array<Maybe<ResolversTypes['SuggestedReviewer']>>, ParentType, ContextType>;
-  timeline?: Resolver<ResolversTypes['PullRequestTimelineConnection'], ParentType, ContextType, RequireFields<PullRequestTimelineArgs, never>>;
-  timelineItems?: Resolver<ResolversTypes['PullRequestTimelineItemsConnection'], ParentType, ContextType, RequireFields<PullRequestTimelineItemsArgs, never>>;
+  timeline?: Resolver<ResolversTypes['PullRequestTimelineConnection'], ParentType, ContextType, Partial<PullRequestTimelineArgs>>;
+  timelineItems?: Resolver<ResolversTypes['PullRequestTimelineItemsConnection'], ParentType, ContextType, Partial<PullRequestTimelineItemsArgs>>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   titleHTML?: Resolver<ResolversTypes['HTML'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
-  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, RequireFields<PullRequestUserContentEditsArgs, never>>;
+  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, Partial<PullRequestUserContentEditsArgs>>;
   viewerCanApplySuggestion?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanDeleteHeadRef?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanDisableAutoMerge?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -28718,8 +28718,8 @@ export type PullRequestResolvers<ContextType = any, ParentType extends Resolvers
   viewerDidAuthor?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerLatestReview?: Resolver<Maybe<ResolversTypes['PullRequestReview']>, ParentType, ContextType>;
   viewerLatestReviewRequest?: Resolver<Maybe<ResolversTypes['ReviewRequest']>, ParentType, ContextType>;
-  viewerMergeBodyText?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<PullRequestViewerMergeBodyTextArgs, never>>;
-  viewerMergeHeadlineText?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<PullRequestViewerMergeHeadlineTextArgs, never>>;
+  viewerMergeBodyText?: Resolver<ResolversTypes['String'], ParentType, ContextType, Partial<PullRequestViewerMergeBodyTextArgs>>;
+  viewerMergeHeadlineText?: Resolver<ResolversTypes['String'], ParentType, ContextType, Partial<PullRequestViewerMergeHeadlineTextArgs>>;
   viewerSubscription?: Resolver<Maybe<ResolversTypes['SubscriptionState']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -28756,7 +28756,7 @@ export type PullRequestCommitResolvers<ContextType = any, ParentType extends Res
 };
 
 export type PullRequestCommitCommentThreadResolvers<ContextType = any, ParentType extends ResolversParentTypes['PullRequestCommitCommentThread'] = ResolversParentTypes['PullRequestCommitCommentThread']> = {
-  comments?: Resolver<ResolversTypes['CommitCommentConnection'], ParentType, ContextType, RequireFields<PullRequestCommitCommentThreadCommentsArgs, never>>;
+  comments?: Resolver<ResolversTypes['CommitCommentConnection'], ParentType, ContextType, Partial<PullRequestCommitCommentThreadCommentsArgs>>;
   commit?: Resolver<ResolversTypes['Commit'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   path?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -28807,7 +28807,7 @@ export type PullRequestReviewResolvers<ContextType = any, ParentType extends Res
   body?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   bodyHTML?: Resolver<ResolversTypes['HTML'], ParentType, ContextType>;
   bodyText?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  comments?: Resolver<ResolversTypes['PullRequestReviewCommentConnection'], ParentType, ContextType, RequireFields<PullRequestReviewCommentsArgs, never>>;
+  comments?: Resolver<ResolversTypes['PullRequestReviewCommentConnection'], ParentType, ContextType, Partial<PullRequestReviewCommentsArgs>>;
   commit?: Resolver<Maybe<ResolversTypes['Commit']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   createdViaEmail?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -28816,18 +28816,18 @@ export type PullRequestReviewResolvers<ContextType = any, ParentType extends Res
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   includesCreatedEdit?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   lastEditedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  onBehalfOf?: Resolver<ResolversTypes['TeamConnection'], ParentType, ContextType, RequireFields<PullRequestReviewOnBehalfOfArgs, never>>;
+  onBehalfOf?: Resolver<ResolversTypes['TeamConnection'], ParentType, ContextType, Partial<PullRequestReviewOnBehalfOfArgs>>;
   publishedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   pullRequest?: Resolver<ResolversTypes['PullRequest'], ParentType, ContextType>;
   reactionGroups?: Resolver<Maybe<Array<ResolversTypes['ReactionGroup']>>, ParentType, ContextType>;
-  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, RequireFields<PullRequestReviewReactionsArgs, never>>;
+  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, Partial<PullRequestReviewReactionsArgs>>;
   repository?: Resolver<ResolversTypes['Repository'], ParentType, ContextType>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   state?: Resolver<ResolversTypes['PullRequestReviewState'], ParentType, ContextType>;
   submittedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
-  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, RequireFields<PullRequestReviewUserContentEditsArgs, never>>;
+  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, Partial<PullRequestReviewUserContentEditsArgs>>;
   viewerCanDelete?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanReact?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanUpdate?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -28863,14 +28863,14 @@ export type PullRequestReviewCommentResolvers<ContextType = any, ParentType exte
   pullRequest?: Resolver<ResolversTypes['PullRequest'], ParentType, ContextType>;
   pullRequestReview?: Resolver<Maybe<ResolversTypes['PullRequestReview']>, ParentType, ContextType>;
   reactionGroups?: Resolver<Maybe<Array<ResolversTypes['ReactionGroup']>>, ParentType, ContextType>;
-  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, RequireFields<PullRequestReviewCommentReactionsArgs, never>>;
+  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, Partial<PullRequestReviewCommentReactionsArgs>>;
   replyTo?: Resolver<Maybe<ResolversTypes['PullRequestReviewComment']>, ParentType, ContextType>;
   repository?: Resolver<ResolversTypes['Repository'], ParentType, ContextType>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   state?: Resolver<ResolversTypes['PullRequestReviewCommentState'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
-  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, RequireFields<PullRequestReviewCommentUserContentEditsArgs, never>>;
+  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, Partial<PullRequestReviewCommentUserContentEditsArgs>>;
   viewerCanDelete?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanMinimize?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanReact?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -28915,7 +28915,7 @@ export type PullRequestReviewEdgeResolvers<ContextType = any, ParentType extends
 };
 
 export type PullRequestReviewThreadResolvers<ContextType = any, ParentType extends ResolversParentTypes['PullRequestReviewThread'] = ResolversParentTypes['PullRequestReviewThread']> = {
-  comments?: Resolver<ResolversTypes['PullRequestReviewCommentConnection'], ParentType, ContextType, RequireFields<PullRequestReviewThreadCommentsArgs, never>>;
+  comments?: Resolver<ResolversTypes['PullRequestReviewCommentConnection'], ParentType, ContextType, Partial<PullRequestReviewThreadCommentsArgs>>;
   diffSide?: Resolver<ResolversTypes['DiffSide'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   isCollapsed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -29046,7 +29046,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   enterpriseAdministratorInvitationByToken?: Resolver<Maybe<ResolversTypes['EnterpriseAdministratorInvitation']>, ParentType, ContextType, RequireFields<QueryEnterpriseAdministratorInvitationByTokenArgs, 'invitationToken'>>;
   license?: Resolver<Maybe<ResolversTypes['License']>, ParentType, ContextType, RequireFields<QueryLicenseArgs, 'key'>>;
   licenses?: Resolver<Array<Maybe<ResolversTypes['License']>>, ParentType, ContextType>;
-  marketplaceCategories?: Resolver<Array<ResolversTypes['MarketplaceCategory']>, ParentType, ContextType, RequireFields<QueryMarketplaceCategoriesArgs, never>>;
+  marketplaceCategories?: Resolver<Array<ResolversTypes['MarketplaceCategory']>, ParentType, ContextType, Partial<QueryMarketplaceCategoriesArgs>>;
   marketplaceCategory?: Resolver<Maybe<ResolversTypes['MarketplaceCategory']>, ParentType, ContextType, RequireFields<QueryMarketplaceCategoryArgs, 'slug'>>;
   marketplaceListing?: Resolver<Maybe<ResolversTypes['MarketplaceListing']>, ParentType, ContextType, RequireFields<QueryMarketplaceListingArgs, 'slug'>>;
   marketplaceListings?: Resolver<ResolversTypes['MarketplaceListingConnection'], ParentType, ContextType, RequireFields<QueryMarketplaceListingsArgs, 'primaryCategoryOnly' | 'withFreeTrialsOnly'>>;
@@ -29084,7 +29084,7 @@ export type ReactableResolvers<ContextType = any, ParentType extends ResolversPa
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   reactionGroups?: Resolver<Maybe<Array<ResolversTypes['ReactionGroup']>>, ParentType, ContextType>;
-  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, RequireFields<ReactableReactionsArgs, never>>;
+  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, Partial<ReactableReactionsArgs>>;
   viewerCanReact?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
 };
 
@@ -29131,9 +29131,9 @@ export type ReactionEdgeResolvers<ContextType = any, ParentType extends Resolver
 export type ReactionGroupResolvers<ContextType = any, ParentType extends ResolversParentTypes['ReactionGroup'] = ResolversParentTypes['ReactionGroup']> = {
   content?: Resolver<ResolversTypes['ReactionContent'], ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  reactors?: Resolver<ResolversTypes['ReactorConnection'], ParentType, ContextType, RequireFields<ReactionGroupReactorsArgs, never>>;
+  reactors?: Resolver<ResolversTypes['ReactorConnection'], ParentType, ContextType, Partial<ReactionGroupReactorsArgs>>;
   subject?: Resolver<ResolversTypes['Reactable'], ParentType, ContextType>;
-  users?: Resolver<ResolversTypes['ReactingUserConnection'], ParentType, ContextType, RequireFields<ReactionGroupUsersArgs, never>>;
+  users?: Resolver<ResolversTypes['ReactingUserConnection'], ParentType, ContextType, Partial<ReactionGroupUsersArgs>>;
   viewerHasReacted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -29168,7 +29168,7 @@ export type ReadyForReviewEventResolvers<ContextType = any, ParentType extends R
 };
 
 export type RefResolvers<ContextType = any, ParentType extends ResolversParentTypes['Ref'] = ResolversParentTypes['Ref']> = {
-  associatedPullRequests?: Resolver<ResolversTypes['PullRequestConnection'], ParentType, ContextType, RequireFields<RefAssociatedPullRequestsArgs, never>>;
+  associatedPullRequests?: Resolver<ResolversTypes['PullRequestConnection'], ParentType, ContextType, Partial<RefAssociatedPullRequestsArgs>>;
   branchProtectionRule?: Resolver<Maybe<ResolversTypes['BranchProtectionRule']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -29252,12 +29252,12 @@ export type ReleaseResolvers<ContextType = any, ParentType extends ResolversPare
   isDraft?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   isLatest?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   isPrerelease?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  mentions?: Resolver<Maybe<ResolversTypes['UserConnection']>, ParentType, ContextType, RequireFields<ReleaseMentionsArgs, never>>;
+  mentions?: Resolver<Maybe<ResolversTypes['UserConnection']>, ParentType, ContextType, Partial<ReleaseMentionsArgs>>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   publishedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   reactionGroups?: Resolver<Maybe<Array<ResolversTypes['ReactionGroup']>>, ParentType, ContextType>;
-  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, RequireFields<ReleaseReactionsArgs, never>>;
-  releaseAssets?: Resolver<ResolversTypes['ReleaseAssetConnection'], ParentType, ContextType, RequireFields<ReleaseReleaseAssetsArgs, never>>;
+  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, Partial<ReleaseReactionsArgs>>;
+  releaseAssets?: Resolver<ResolversTypes['ReleaseAssetConnection'], ParentType, ContextType, Partial<ReleaseReleaseAssetsArgs>>;
   repository?: Resolver<ResolversTypes['Repository'], ParentType, ContextType>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   shortDescriptionHTML?: Resolver<Maybe<ResolversTypes['HTML']>, ParentType, ContextType, RequireFields<ReleaseShortDescriptionHtmlArgs, 'limit'>>;
@@ -29930,27 +29930,27 @@ export type RepoRemoveTopicAuditEntryResolvers<ContextType = any, ParentType ext
 };
 
 export type RepositoryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Repository'] = ResolversParentTypes['Repository']> = {
-  assignableUsers?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, RequireFields<RepositoryAssignableUsersArgs, never>>;
+  assignableUsers?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, Partial<RepositoryAssignableUsersArgs>>;
   autoMergeAllowed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  branchProtectionRules?: Resolver<ResolversTypes['BranchProtectionRuleConnection'], ParentType, ContextType, RequireFields<RepositoryBranchProtectionRulesArgs, never>>;
+  branchProtectionRules?: Resolver<ResolversTypes['BranchProtectionRuleConnection'], ParentType, ContextType, Partial<RepositoryBranchProtectionRulesArgs>>;
   codeOfConduct?: Resolver<Maybe<ResolversTypes['CodeOfConduct']>, ParentType, ContextType>;
-  collaborators?: Resolver<Maybe<ResolversTypes['RepositoryCollaboratorConnection']>, ParentType, ContextType, RequireFields<RepositoryCollaboratorsArgs, never>>;
-  commitComments?: Resolver<ResolversTypes['CommitCommentConnection'], ParentType, ContextType, RequireFields<RepositoryCommitCommentsArgs, never>>;
+  collaborators?: Resolver<Maybe<ResolversTypes['RepositoryCollaboratorConnection']>, ParentType, ContextType, Partial<RepositoryCollaboratorsArgs>>;
+  commitComments?: Resolver<ResolversTypes['CommitCommentConnection'], ParentType, ContextType, Partial<RepositoryCommitCommentsArgs>>;
   contactLinks?: Resolver<Maybe<Array<ResolversTypes['RepositoryContactLink']>>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   defaultBranchRef?: Resolver<Maybe<ResolversTypes['Ref']>, ParentType, ContextType>;
   deleteBranchOnMerge?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  deployKeys?: Resolver<ResolversTypes['DeployKeyConnection'], ParentType, ContextType, RequireFields<RepositoryDeployKeysArgs, never>>;
+  deployKeys?: Resolver<ResolversTypes['DeployKeyConnection'], ParentType, ContextType, Partial<RepositoryDeployKeysArgs>>;
   deployments?: Resolver<ResolversTypes['DeploymentConnection'], ParentType, ContextType, RequireFields<RepositoryDeploymentsArgs, 'orderBy'>>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   descriptionHTML?: Resolver<ResolversTypes['HTML'], ParentType, ContextType>;
   discussion?: Resolver<Maybe<ResolversTypes['Discussion']>, ParentType, ContextType, RequireFields<RepositoryDiscussionArgs, 'number'>>;
-  discussionCategories?: Resolver<ResolversTypes['DiscussionCategoryConnection'], ParentType, ContextType, RequireFields<RepositoryDiscussionCategoriesArgs, never>>;
+  discussionCategories?: Resolver<ResolversTypes['DiscussionCategoryConnection'], ParentType, ContextType, Partial<RepositoryDiscussionCategoriesArgs>>;
   discussions?: Resolver<ResolversTypes['DiscussionConnection'], ParentType, ContextType, RequireFields<RepositoryDiscussionsArgs, 'categoryId' | 'orderBy'>>;
   diskUsage?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   environment?: Resolver<Maybe<ResolversTypes['Environment']>, ParentType, ContextType, RequireFields<RepositoryEnvironmentArgs, 'name'>>;
-  environments?: Resolver<ResolversTypes['EnvironmentConnection'], ParentType, ContextType, RequireFields<RepositoryEnvironmentsArgs, never>>;
+  environments?: Resolver<ResolversTypes['EnvironmentConnection'], ParentType, ContextType, Partial<RepositoryEnvironmentsArgs>>;
   forkCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   forkingAllowed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   forks?: Resolver<ResolversTypes['RepositoryConnection'], ParentType, ContextType, RequireFields<RepositoryForksArgs, 'ownerAffiliations'>>;
@@ -29976,50 +29976,50 @@ export type RepositoryResolvers<ContextType = any, ParentType extends ResolversP
   issue?: Resolver<Maybe<ResolversTypes['Issue']>, ParentType, ContextType, RequireFields<RepositoryIssueArgs, 'number'>>;
   issueOrPullRequest?: Resolver<Maybe<ResolversTypes['IssueOrPullRequest']>, ParentType, ContextType, RequireFields<RepositoryIssueOrPullRequestArgs, 'number'>>;
   issueTemplates?: Resolver<Maybe<Array<ResolversTypes['IssueTemplate']>>, ParentType, ContextType>;
-  issues?: Resolver<ResolversTypes['IssueConnection'], ParentType, ContextType, RequireFields<RepositoryIssuesArgs, never>>;
+  issues?: Resolver<ResolversTypes['IssueConnection'], ParentType, ContextType, Partial<RepositoryIssuesArgs>>;
   label?: Resolver<Maybe<ResolversTypes['Label']>, ParentType, ContextType, RequireFields<RepositoryLabelArgs, 'name'>>;
   labels?: Resolver<Maybe<ResolversTypes['LabelConnection']>, ParentType, ContextType, RequireFields<RepositoryLabelsArgs, 'orderBy'>>;
-  languages?: Resolver<Maybe<ResolversTypes['LanguageConnection']>, ParentType, ContextType, RequireFields<RepositoryLanguagesArgs, never>>;
+  languages?: Resolver<Maybe<ResolversTypes['LanguageConnection']>, ParentType, ContextType, Partial<RepositoryLanguagesArgs>>;
   latestRelease?: Resolver<Maybe<ResolversTypes['Release']>, ParentType, ContextType>;
   licenseInfo?: Resolver<Maybe<ResolversTypes['License']>, ParentType, ContextType>;
   lockReason?: Resolver<Maybe<ResolversTypes['RepositoryLockReason']>, ParentType, ContextType>;
-  mentionableUsers?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, RequireFields<RepositoryMentionableUsersArgs, never>>;
+  mentionableUsers?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, Partial<RepositoryMentionableUsersArgs>>;
   mergeCommitAllowed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   milestone?: Resolver<Maybe<ResolversTypes['Milestone']>, ParentType, ContextType, RequireFields<RepositoryMilestoneArgs, 'number'>>;
-  milestones?: Resolver<Maybe<ResolversTypes['MilestoneConnection']>, ParentType, ContextType, RequireFields<RepositoryMilestonesArgs, never>>;
+  milestones?: Resolver<Maybe<ResolversTypes['MilestoneConnection']>, ParentType, ContextType, Partial<RepositoryMilestonesArgs>>;
   mirrorUrl?: Resolver<Maybe<ResolversTypes['URI']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   nameWithOwner?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  object?: Resolver<Maybe<ResolversTypes['GitObject']>, ParentType, ContextType, RequireFields<RepositoryObjectArgs, never>>;
+  object?: Resolver<Maybe<ResolversTypes['GitObject']>, ParentType, ContextType, Partial<RepositoryObjectArgs>>;
   openGraphImageUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   owner?: Resolver<ResolversTypes['RepositoryOwner'], ParentType, ContextType>;
   packages?: Resolver<ResolversTypes['PackageConnection'], ParentType, ContextType, RequireFields<RepositoryPackagesArgs, 'orderBy'>>;
   parent?: Resolver<Maybe<ResolversTypes['Repository']>, ParentType, ContextType>;
-  pinnedDiscussions?: Resolver<ResolversTypes['PinnedDiscussionConnection'], ParentType, ContextType, RequireFields<RepositoryPinnedDiscussionsArgs, never>>;
-  pinnedIssues?: Resolver<Maybe<ResolversTypes['PinnedIssueConnection']>, ParentType, ContextType, RequireFields<RepositoryPinnedIssuesArgs, never>>;
+  pinnedDiscussions?: Resolver<ResolversTypes['PinnedDiscussionConnection'], ParentType, ContextType, Partial<RepositoryPinnedDiscussionsArgs>>;
+  pinnedIssues?: Resolver<Maybe<ResolversTypes['PinnedIssueConnection']>, ParentType, ContextType, Partial<RepositoryPinnedIssuesArgs>>;
   primaryLanguage?: Resolver<Maybe<ResolversTypes['Language']>, ParentType, ContextType>;
   project?: Resolver<Maybe<ResolversTypes['Project']>, ParentType, ContextType, RequireFields<RepositoryProjectArgs, 'number'>>;
-  projects?: Resolver<ResolversTypes['ProjectConnection'], ParentType, ContextType, RequireFields<RepositoryProjectsArgs, never>>;
+  projects?: Resolver<ResolversTypes['ProjectConnection'], ParentType, ContextType, Partial<RepositoryProjectsArgs>>;
   projectsResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   projectsUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   pullRequest?: Resolver<Maybe<ResolversTypes['PullRequest']>, ParentType, ContextType, RequireFields<RepositoryPullRequestArgs, 'number'>>;
   pullRequestTemplates?: Resolver<Maybe<Array<ResolversTypes['PullRequestTemplate']>>, ParentType, ContextType>;
-  pullRequests?: Resolver<ResolversTypes['PullRequestConnection'], ParentType, ContextType, RequireFields<RepositoryPullRequestsArgs, never>>;
+  pullRequests?: Resolver<ResolversTypes['PullRequestConnection'], ParentType, ContextType, Partial<RepositoryPullRequestsArgs>>;
   pushedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   rebaseMergeAllowed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   ref?: Resolver<Maybe<ResolversTypes['Ref']>, ParentType, ContextType, RequireFields<RepositoryRefArgs, 'qualifiedName'>>;
   refs?: Resolver<Maybe<ResolversTypes['RefConnection']>, ParentType, ContextType, RequireFields<RepositoryRefsArgs, 'refPrefix'>>;
   release?: Resolver<Maybe<ResolversTypes['Release']>, ParentType, ContextType, RequireFields<RepositoryReleaseArgs, 'tagName'>>;
-  releases?: Resolver<ResolversTypes['ReleaseConnection'], ParentType, ContextType, RequireFields<RepositoryReleasesArgs, never>>;
-  repositoryTopics?: Resolver<ResolversTypes['RepositoryTopicConnection'], ParentType, ContextType, RequireFields<RepositoryRepositoryTopicsArgs, never>>;
+  releases?: Resolver<ResolversTypes['ReleaseConnection'], ParentType, ContextType, Partial<RepositoryReleasesArgs>>;
+  repositoryTopics?: Resolver<ResolversTypes['RepositoryTopicConnection'], ParentType, ContextType, Partial<RepositoryRepositoryTopicsArgs>>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   securityPolicyUrl?: Resolver<Maybe<ResolversTypes['URI']>, ParentType, ContextType>;
   shortDescriptionHTML?: Resolver<ResolversTypes['HTML'], ParentType, ContextType, RequireFields<RepositoryShortDescriptionHtmlArgs, 'limit'>>;
   squashMergeAllowed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   sshUrl?: Resolver<ResolversTypes['GitSSHRemote'], ParentType, ContextType>;
   stargazerCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  stargazers?: Resolver<ResolversTypes['StargazerConnection'], ParentType, ContextType, RequireFields<RepositoryStargazersArgs, never>>;
-  submodules?: Resolver<ResolversTypes['SubmoduleConnection'], ParentType, ContextType, RequireFields<RepositorySubmodulesArgs, never>>;
+  stargazers?: Resolver<ResolversTypes['StargazerConnection'], ParentType, ContextType, Partial<RepositoryStargazersArgs>>;
+  submodules?: Resolver<ResolversTypes['SubmoduleConnection'], ParentType, ContextType, Partial<RepositorySubmodulesArgs>>;
   tempCloneToken?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   templateRepository?: Resolver<Maybe<ResolversTypes['Repository']>, ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
@@ -30036,8 +30036,8 @@ export type RepositoryResolvers<ContextType = any, ParentType extends ResolversP
   viewerPossibleCommitEmails?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   viewerSubscription?: Resolver<Maybe<ResolversTypes['SubscriptionState']>, ParentType, ContextType>;
   visibility?: Resolver<ResolversTypes['RepositoryVisibility'], ParentType, ContextType>;
-  vulnerabilityAlerts?: Resolver<Maybe<ResolversTypes['RepositoryVulnerabilityAlertConnection']>, ParentType, ContextType, RequireFields<RepositoryVulnerabilityAlertsArgs, never>>;
-  watchers?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, RequireFields<RepositoryWatchersArgs, never>>;
+  vulnerabilityAlerts?: Resolver<Maybe<ResolversTypes['RepositoryVulnerabilityAlertConnection']>, ParentType, ContextType, Partial<RepositoryVulnerabilityAlertsArgs>>;
+  watchers?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, Partial<RepositoryWatchersArgs>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -30169,7 +30169,7 @@ export type RepositoryNodeResolvers<ContextType = any, ParentType extends Resolv
 
 export type RepositoryOwnerResolvers<ContextType = any, ParentType extends ResolversParentTypes['RepositoryOwner'] = ResolversParentTypes['RepositoryOwner']> = {
   __resolveType: TypeResolveFn<'Organization' | 'User', ParentType, ContextType>;
-  avatarUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType, RequireFields<RepositoryOwnerAvatarUrlArgs, never>>;
+  avatarUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType, Partial<RepositoryOwnerAvatarUrlArgs>>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   login?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   repositories?: Resolver<ResolversTypes['RepositoryConnection'], ParentType, ContextType, RequireFields<RepositoryOwnerRepositoriesArgs, 'ownerAffiliations'>>;
@@ -30293,7 +30293,7 @@ export type RequestedReviewerResolvers<ContextType = any, ParentType extends Res
 
 export type RequirableByPullRequestResolvers<ContextType = any, ParentType extends ResolversParentTypes['RequirableByPullRequest'] = ResolversParentTypes['RequirableByPullRequest']> = {
   __resolveType: TypeResolveFn<'CheckRun' | 'StatusContext', ParentType, ContextType>;
-  isRequired?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<RequirableByPullRequestIsRequiredArgs, never>>;
+  isRequired?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, Partial<RequirableByPullRequestIsRequiredArgs>>;
 };
 
 export type RerequestCheckSuitePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['RerequestCheckSuitePayload'] = ResolversParentTypes['RerequestCheckSuitePayload']> = {
@@ -30456,7 +30456,7 @@ export type SearchResultItemEdgeResolvers<ContextType = any, ParentType extends 
 
 export type SecurityAdvisoryResolvers<ContextType = any, ParentType extends ResolversParentTypes['SecurityAdvisory'] = ResolversParentTypes['SecurityAdvisory']> = {
   cvss?: Resolver<ResolversTypes['CVSS'], ParentType, ContextType>;
-  cwes?: Resolver<ResolversTypes['CWEConnection'], ParentType, ContextType, RequireFields<SecurityAdvisoryCwesArgs, never>>;
+  cwes?: Resolver<ResolversTypes['CWEConnection'], ParentType, ContextType, Partial<SecurityAdvisoryCwesArgs>>;
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   ghsaId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -30603,7 +30603,7 @@ export type SponsorableResolvers<ContextType = any, ParentType extends Resolvers
   sponsorshipForViewerAsSponsorable?: Resolver<Maybe<ResolversTypes['Sponsorship']>, ParentType, ContextType>;
   sponsorshipNewsletters?: Resolver<ResolversTypes['SponsorshipNewsletterConnection'], ParentType, ContextType, RequireFields<SponsorableSponsorshipNewslettersArgs, 'orderBy'>>;
   sponsorshipsAsMaintainer?: Resolver<ResolversTypes['SponsorshipConnection'], ParentType, ContextType, RequireFields<SponsorableSponsorshipsAsMaintainerArgs, 'includePrivate'>>;
-  sponsorshipsAsSponsor?: Resolver<ResolversTypes['SponsorshipConnection'], ParentType, ContextType, RequireFields<SponsorableSponsorshipsAsSponsorArgs, never>>;
+  sponsorshipsAsSponsor?: Resolver<ResolversTypes['SponsorshipConnection'], ParentType, ContextType, Partial<SponsorableSponsorshipsAsSponsorArgs>>;
   viewerCanSponsor?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerIsSponsoring?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
 };
@@ -30787,7 +30787,7 @@ export type StarrableResolvers<ContextType = any, ParentType extends ResolversPa
   __resolveType: TypeResolveFn<'Gist' | 'Repository' | 'Topic', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   stargazerCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  stargazers?: Resolver<ResolversTypes['StargazerConnection'], ParentType, ContextType, RequireFields<StarrableStargazersArgs, never>>;
+  stargazers?: Resolver<ResolversTypes['StargazerConnection'], ParentType, ContextType, Partial<StarrableStargazersArgs>>;
   viewerHasStarred?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
 };
 
@@ -30808,7 +30808,7 @@ export type StarredRepositoryEdgeResolvers<ContextType = any, ParentType extends
 };
 
 export type StatusResolvers<ContextType = any, ParentType extends ResolversParentTypes['Status'] = ResolversParentTypes['Status']> = {
-  combinedContexts?: Resolver<ResolversTypes['StatusCheckRollupContextConnection'], ParentType, ContextType, RequireFields<StatusCombinedContextsArgs, never>>;
+  combinedContexts?: Resolver<ResolversTypes['StatusCheckRollupContextConnection'], ParentType, ContextType, Partial<StatusCombinedContextsArgs>>;
   commit?: Resolver<Maybe<ResolversTypes['Commit']>, ParentType, ContextType>;
   context?: Resolver<Maybe<ResolversTypes['StatusContext']>, ParentType, ContextType, RequireFields<StatusContextArgs, 'name'>>;
   contexts?: Resolver<Array<ResolversTypes['StatusContext']>, ParentType, ContextType>;
@@ -30819,7 +30819,7 @@ export type StatusResolvers<ContextType = any, ParentType extends ResolversParen
 
 export type StatusCheckRollupResolvers<ContextType = any, ParentType extends ResolversParentTypes['StatusCheckRollup'] = ResolversParentTypes['StatusCheckRollup']> = {
   commit?: Resolver<Maybe<ResolversTypes['Commit']>, ParentType, ContextType>;
-  contexts?: Resolver<ResolversTypes['StatusCheckRollupContextConnection'], ParentType, ContextType, RequireFields<StatusCheckRollupContextsArgs, never>>;
+  contexts?: Resolver<ResolversTypes['StatusCheckRollupContextConnection'], ParentType, ContextType, Partial<StatusCheckRollupContextsArgs>>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   state?: Resolver<ResolversTypes['StatusState'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -30851,7 +30851,7 @@ export type StatusContextResolvers<ContextType = any, ParentType extends Resolve
   creator?: Resolver<Maybe<ResolversTypes['Actor']>, ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  isRequired?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<StatusContextIsRequiredArgs, never>>;
+  isRequired?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, Partial<StatusContextIsRequiredArgs>>;
   state?: Resolver<ResolversTypes['StatusState'], ParentType, ContextType>;
   targetUrl?: Resolver<Maybe<ResolversTypes['URI']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -30923,7 +30923,7 @@ export type TagResolvers<ContextType = any, ParentType extends ResolversParentTy
 };
 
 export type TeamResolvers<ContextType = any, ParentType extends ResolversParentTypes['Team'] = ResolversParentTypes['Team']> = {
-  ancestors?: Resolver<ResolversTypes['TeamConnection'], ParentType, ContextType, RequireFields<TeamAncestorsArgs, never>>;
+  ancestors?: Resolver<ResolversTypes['TeamConnection'], ParentType, ContextType, Partial<TeamAncestorsArgs>>;
   avatarUrl?: Resolver<Maybe<ResolversTypes['URI']>, ParentType, ContextType, RequireFields<TeamAvatarUrlArgs, 'size'>>;
   childTeams?: Resolver<ResolversTypes['TeamConnection'], ParentType, ContextType, RequireFields<TeamChildTeamsArgs, 'immediateOnly'>>;
   combinedSlug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -30931,13 +30931,13 @@ export type TeamResolvers<ContextType = any, ParentType extends ResolversParentT
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   discussion?: Resolver<Maybe<ResolversTypes['TeamDiscussion']>, ParentType, ContextType, RequireFields<TeamDiscussionArgs, 'number'>>;
-  discussions?: Resolver<ResolversTypes['TeamDiscussionConnection'], ParentType, ContextType, RequireFields<TeamDiscussionsArgs, never>>;
+  discussions?: Resolver<ResolversTypes['TeamDiscussionConnection'], ParentType, ContextType, Partial<TeamDiscussionsArgs>>;
   discussionsResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   discussionsUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   editTeamResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   editTeamUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  invitations?: Resolver<Maybe<ResolversTypes['OrganizationInvitationConnection']>, ParentType, ContextType, RequireFields<TeamInvitationsArgs, never>>;
+  invitations?: Resolver<Maybe<ResolversTypes['OrganizationInvitationConnection']>, ParentType, ContextType, Partial<TeamInvitationsArgs>>;
   memberStatuses?: Resolver<ResolversTypes['UserStatusConnection'], ParentType, ContextType, RequireFields<TeamMemberStatusesArgs, 'orderBy'>>;
   members?: Resolver<ResolversTypes['TeamMemberConnection'], ParentType, ContextType, RequireFields<TeamMembersArgs, 'membership'>>;
   membersResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
@@ -30948,7 +30948,7 @@ export type TeamResolvers<ContextType = any, ParentType extends ResolversParentT
   organization?: Resolver<ResolversTypes['Organization'], ParentType, ContextType>;
   parentTeam?: Resolver<Maybe<ResolversTypes['Team']>, ParentType, ContextType>;
   privacy?: Resolver<ResolversTypes['TeamPrivacy'], ParentType, ContextType>;
-  repositories?: Resolver<ResolversTypes['TeamRepositoryConnection'], ParentType, ContextType, RequireFields<TeamRepositoriesArgs, never>>;
+  repositories?: Resolver<ResolversTypes['TeamRepositoryConnection'], ParentType, ContextType, Partial<TeamRepositoriesArgs>>;
   repositoriesResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   repositoriesUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
@@ -31079,7 +31079,7 @@ export type TeamDiscussionResolvers<ContextType = any, ParentType extends Resolv
   bodyHTML?: Resolver<ResolversTypes['HTML'], ParentType, ContextType>;
   bodyText?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   bodyVersion?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  comments?: Resolver<ResolversTypes['TeamDiscussionCommentConnection'], ParentType, ContextType, RequireFields<TeamDiscussionCommentsArgs, never>>;
+  comments?: Resolver<ResolversTypes['TeamDiscussionCommentConnection'], ParentType, ContextType, Partial<TeamDiscussionCommentsArgs>>;
   commentsResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   commentsUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
@@ -31094,13 +31094,13 @@ export type TeamDiscussionResolvers<ContextType = any, ParentType extends Resolv
   number?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   publishedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   reactionGroups?: Resolver<Maybe<Array<ResolversTypes['ReactionGroup']>>, ParentType, ContextType>;
-  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, RequireFields<TeamDiscussionReactionsArgs, never>>;
+  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, Partial<TeamDiscussionReactionsArgs>>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   team?: Resolver<ResolversTypes['Team'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
-  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, RequireFields<TeamDiscussionUserContentEditsArgs, never>>;
+  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, Partial<TeamDiscussionUserContentEditsArgs>>;
   viewerCanDelete?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanPin?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanReact?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -31130,11 +31130,11 @@ export type TeamDiscussionCommentResolvers<ContextType = any, ParentType extends
   number?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   publishedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   reactionGroups?: Resolver<Maybe<Array<ResolversTypes['ReactionGroup']>>, ParentType, ContextType>;
-  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, RequireFields<TeamDiscussionCommentReactionsArgs, never>>;
+  reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, Partial<TeamDiscussionCommentReactionsArgs>>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
-  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, RequireFields<TeamDiscussionCommentUserContentEditsArgs, never>>;
+  userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, Partial<TeamDiscussionCommentUserContentEditsArgs>>;
   viewerCanDelete?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanReact?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanUpdate?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -31287,7 +31287,7 @@ export type TopicResolvers<ContextType = any, ParentType extends ResolversParent
   relatedTopics?: Resolver<Array<ResolversTypes['Topic']>, ParentType, ContextType, RequireFields<TopicRelatedTopicsArgs, 'first'>>;
   repositories?: Resolver<ResolversTypes['RepositoryConnection'], ParentType, ContextType, RequireFields<TopicRepositoriesArgs, 'ownerAffiliations' | 'sponsorableOnly'>>;
   stargazerCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  stargazers?: Resolver<ResolversTypes['StargazerConnection'], ParentType, ContextType, RequireFields<TopicStargazersArgs, never>>;
+  stargazers?: Resolver<ResolversTypes['StargazerConnection'], ParentType, ContextType, Partial<TopicStargazersArgs>>;
   viewerHasStarred?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -31748,26 +31748,26 @@ export type UpdateTopicsPayloadResolvers<ContextType = any, ParentType extends R
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
-  anyPinnableItems?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<UserAnyPinnableItemsArgs, never>>;
-  avatarUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType, RequireFields<UserAvatarUrlArgs, never>>;
+  anyPinnableItems?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, Partial<UserAnyPinnableItemsArgs>>;
+  avatarUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType, Partial<UserAvatarUrlArgs>>;
   bio?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   bioHTML?: Resolver<ResolversTypes['HTML'], ParentType, ContextType>;
   canReceiveOrganizationEmailsWhenNotificationsRestricted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<UserCanReceiveOrganizationEmailsWhenNotificationsRestrictedArgs, 'login'>>;
-  commitComments?: Resolver<ResolversTypes['CommitCommentConnection'], ParentType, ContextType, RequireFields<UserCommitCommentsArgs, never>>;
+  commitComments?: Resolver<ResolversTypes['CommitCommentConnection'], ParentType, ContextType, Partial<UserCommitCommentsArgs>>;
   company?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   companyHTML?: Resolver<ResolversTypes['HTML'], ParentType, ContextType>;
-  contributionsCollection?: Resolver<ResolversTypes['ContributionsCollection'], ParentType, ContextType, RequireFields<UserContributionsCollectionArgs, never>>;
+  contributionsCollection?: Resolver<ResolversTypes['ContributionsCollection'], ParentType, ContextType, Partial<UserContributionsCollectionArgs>>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   estimatedNextSponsorsPayoutInCents?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  followers?: Resolver<ResolversTypes['FollowerConnection'], ParentType, ContextType, RequireFields<UserFollowersArgs, never>>;
-  following?: Resolver<ResolversTypes['FollowingConnection'], ParentType, ContextType, RequireFields<UserFollowingArgs, never>>;
+  followers?: Resolver<ResolversTypes['FollowerConnection'], ParentType, ContextType, Partial<UserFollowersArgs>>;
+  following?: Resolver<ResolversTypes['FollowingConnection'], ParentType, ContextType, Partial<UserFollowingArgs>>;
   gist?: Resolver<Maybe<ResolversTypes['Gist']>, ParentType, ContextType, RequireFields<UserGistArgs, 'name'>>;
-  gistComments?: Resolver<ResolversTypes['GistCommentConnection'], ParentType, ContextType, RequireFields<UserGistCommentsArgs, never>>;
-  gists?: Resolver<ResolversTypes['GistConnection'], ParentType, ContextType, RequireFields<UserGistsArgs, never>>;
+  gistComments?: Resolver<ResolversTypes['GistCommentConnection'], ParentType, ContextType, Partial<UserGistCommentsArgs>>;
+  gists?: Resolver<ResolversTypes['GistConnection'], ParentType, ContextType, Partial<UserGistsArgs>>;
   hasSponsorsListing?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  hovercard?: Resolver<ResolversTypes['Hovercard'], ParentType, ContextType, RequireFields<UserHovercardArgs, never>>;
+  hovercard?: Resolver<ResolversTypes['Hovercard'], ParentType, ContextType, Partial<UserHovercardArgs>>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   interactionAbility?: Resolver<Maybe<ResolversTypes['RepositoryInteractionAbility']>, ParentType, ContextType>;
   isBountyHunter?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -31781,8 +31781,8 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   isSponsoredBy?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<UserIsSponsoredByArgs, 'accountLogin'>>;
   isSponsoringViewer?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   isViewer?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  issueComments?: Resolver<ResolversTypes['IssueCommentConnection'], ParentType, ContextType, RequireFields<UserIssueCommentsArgs, never>>;
-  issues?: Resolver<ResolversTypes['IssueConnection'], ParentType, ContextType, RequireFields<UserIssuesArgs, never>>;
+  issueComments?: Resolver<ResolversTypes['IssueCommentConnection'], ParentType, ContextType, Partial<UserIssueCommentsArgs>>;
+  issues?: Resolver<ResolversTypes['IssueConnection'], ParentType, ContextType, Partial<UserIssuesArgs>>;
   itemShowcase?: Resolver<ResolversTypes['ProfileItemShowcase'], ParentType, ContextType>;
   location?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   login?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -31790,19 +31790,19 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   organization?: Resolver<Maybe<ResolversTypes['Organization']>, ParentType, ContextType, RequireFields<UserOrganizationArgs, 'login'>>;
   organizationVerifiedDomainEmails?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType, RequireFields<UserOrganizationVerifiedDomainEmailsArgs, 'login'>>;
-  organizations?: Resolver<ResolversTypes['OrganizationConnection'], ParentType, ContextType, RequireFields<UserOrganizationsArgs, never>>;
+  organizations?: Resolver<ResolversTypes['OrganizationConnection'], ParentType, ContextType, Partial<UserOrganizationsArgs>>;
   packages?: Resolver<ResolversTypes['PackageConnection'], ParentType, ContextType, RequireFields<UserPackagesArgs, 'orderBy'>>;
-  pinnableItems?: Resolver<ResolversTypes['PinnableItemConnection'], ParentType, ContextType, RequireFields<UserPinnableItemsArgs, never>>;
-  pinnedItems?: Resolver<ResolversTypes['PinnableItemConnection'], ParentType, ContextType, RequireFields<UserPinnedItemsArgs, never>>;
+  pinnableItems?: Resolver<ResolversTypes['PinnableItemConnection'], ParentType, ContextType, Partial<UserPinnableItemsArgs>>;
+  pinnedItems?: Resolver<ResolversTypes['PinnableItemConnection'], ParentType, ContextType, Partial<UserPinnedItemsArgs>>;
   pinnedItemsRemaining?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   project?: Resolver<Maybe<ResolversTypes['Project']>, ParentType, ContextType, RequireFields<UserProjectArgs, 'number'>>;
-  projects?: Resolver<ResolversTypes['ProjectConnection'], ParentType, ContextType, RequireFields<UserProjectsArgs, never>>;
+  projects?: Resolver<ResolversTypes['ProjectConnection'], ParentType, ContextType, Partial<UserProjectsArgs>>;
   projectsResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   projectsUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
-  publicKeys?: Resolver<ResolversTypes['PublicKeyConnection'], ParentType, ContextType, RequireFields<UserPublicKeysArgs, never>>;
-  pullRequests?: Resolver<ResolversTypes['PullRequestConnection'], ParentType, ContextType, RequireFields<UserPullRequestsArgs, never>>;
+  publicKeys?: Resolver<ResolversTypes['PublicKeyConnection'], ParentType, ContextType, Partial<UserPublicKeysArgs>>;
+  pullRequests?: Resolver<ResolversTypes['PullRequestConnection'], ParentType, ContextType, Partial<UserPullRequestsArgs>>;
   repositories?: Resolver<ResolversTypes['RepositoryConnection'], ParentType, ContextType, RequireFields<UserRepositoriesArgs, 'ownerAffiliations'>>;
-  repositoriesContributedTo?: Resolver<ResolversTypes['RepositoryConnection'], ParentType, ContextType, RequireFields<UserRepositoriesContributedToArgs, never>>;
+  repositoriesContributedTo?: Resolver<ResolversTypes['RepositoryConnection'], ParentType, ContextType, Partial<UserRepositoriesContributedToArgs>>;
   repository?: Resolver<Maybe<ResolversTypes['Repository']>, ParentType, ContextType, RequireFields<UserRepositoryArgs, 'name'>>;
   repositoryDiscussionComments?: Resolver<ResolversTypes['DiscussionCommentConnection'], ParentType, ContextType, RequireFields<UserRepositoryDiscussionCommentsArgs, 'onlyAnswers'>>;
   repositoryDiscussions?: Resolver<ResolversTypes['DiscussionConnection'], ParentType, ContextType, RequireFields<UserRepositoryDiscussionsArgs, 'answered' | 'orderBy'>>;
@@ -31816,8 +31816,8 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   sponsorshipForViewerAsSponsorable?: Resolver<Maybe<ResolversTypes['Sponsorship']>, ParentType, ContextType>;
   sponsorshipNewsletters?: Resolver<ResolversTypes['SponsorshipNewsletterConnection'], ParentType, ContextType, RequireFields<UserSponsorshipNewslettersArgs, 'orderBy'>>;
   sponsorshipsAsMaintainer?: Resolver<ResolversTypes['SponsorshipConnection'], ParentType, ContextType, RequireFields<UserSponsorshipsAsMaintainerArgs, 'includePrivate'>>;
-  sponsorshipsAsSponsor?: Resolver<ResolversTypes['SponsorshipConnection'], ParentType, ContextType, RequireFields<UserSponsorshipsAsSponsorArgs, never>>;
-  starredRepositories?: Resolver<ResolversTypes['StarredRepositoryConnection'], ParentType, ContextType, RequireFields<UserStarredRepositoriesArgs, never>>;
+  sponsorshipsAsSponsor?: Resolver<ResolversTypes['SponsorshipConnection'], ParentType, ContextType, Partial<UserSponsorshipsAsSponsorArgs>>;
+  starredRepositories?: Resolver<ResolversTypes['StarredRepositoryConnection'], ParentType, ContextType, Partial<UserStarredRepositoriesArgs>>;
   status?: Resolver<Maybe<ResolversTypes['UserStatus']>, ParentType, ContextType>;
   topRepositories?: Resolver<ResolversTypes['RepositoryConnection'], ParentType, ContextType, RequireFields<UserTopRepositoriesArgs, 'orderBy'>>;
   twitterUsername?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -31988,9 +31988,9 @@ export type WorkflowRunResolvers<ContextType = any, ParentType extends Resolvers
   checkSuite?: Resolver<ResolversTypes['CheckSuite'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
-  deploymentReviews?: Resolver<ResolversTypes['DeploymentReviewConnection'], ParentType, ContextType, RequireFields<WorkflowRunDeploymentReviewsArgs, never>>;
+  deploymentReviews?: Resolver<ResolversTypes['DeploymentReviewConnection'], ParentType, ContextType, Partial<WorkflowRunDeploymentReviewsArgs>>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  pendingDeploymentRequests?: Resolver<ResolversTypes['DeploymentRequestConnection'], ParentType, ContextType, RequireFields<WorkflowRunPendingDeploymentRequestsArgs, never>>;
+  pendingDeploymentRequests?: Resolver<ResolversTypes['DeploymentRequestConnection'], ParentType, ContextType, Partial<WorkflowRunPendingDeploymentRequestsArgs>>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   runNumber?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
