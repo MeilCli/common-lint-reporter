@@ -7741,6 +7741,7 @@ const defaultOptions = {
   format: false,
   indentBy: '  ',
   suppressEmptyNode: false,
+  suppressUnpairedNode: true,
   suppressBooleanAttributes: true,
   tagValueProcessor: function(key, a) {
     return a;
@@ -7751,12 +7752,13 @@ const defaultOptions = {
   preserveOrder: false,
   commentPropName: false,
   unpairedTags: [],
-  entities: {
-    ">" : { regex: new RegExp(">", "g"), val: "&gt;" },
-    "<" : { regex: new RegExp("<", "g"), val: "&lt;" },
-    "sQuot" : { regex: new RegExp("\'", "g"), val: "&apos;" },
-    "dQuot" : { regex: new RegExp("\"", "g"), val: "&quot;" }
-  },
+  entities: [
+    { regex: new RegExp("&", "g"), val: "&amp;" },//it must be on top
+    { regex: new RegExp(">", "g"), val: "&gt;" },
+    { regex: new RegExp("<", "g"), val: "&lt;" },
+    { regex: new RegExp("\'", "g"), val: "&apos;" },
+    { regex: new RegExp("\"", "g"), val: "&quot;" }
+  ],
   processEntities: true,
   stopNodes: []
 };
@@ -7922,19 +7924,26 @@ function buildEmptyObjNode(val, key, attrStr, level) {
 }
 
 function buildTextValNode(val, key, attrStr, level) {
-  let textValue = this.options.tagValueProcessor(key, val);
-  textValue = this.replaceEntitiesValue(textValue);
-  
-  return (
-    this.indentate(level) + '<' + key + attrStr + '>' +
-     textValue +
-    '</' + key + this.tagEndChar  );
+  const textValue = this.replaceEntitiesValue(val);
+
+  if( textValue === '' && this.options.unpairedTags.indexOf(key) !== -1){ //unpaired
+    if(this.options.suppressUnpairedNode){
+      return this.indentate(level) + '<' + key + this.tagEndChar;
+    }else{
+      return this.indentate(level) + '<' + key + "/" + this.tagEndChar;
+    }
+  }else{
+    return (
+      this.indentate(level) + '<' + key + attrStr + '>' +
+       textValue +
+      '</' + key + this.tagEndChar  );
+  }
 }
 
 function replaceEntitiesValue(textValue){
   if(textValue && textValue.length > 0 && this.options.processEntities){
-    for (const entityName in this.options.entities) {
-      const entity = this.options.entities[entityName];
+    for (let i=0; i<this.options.entities.length; i++) {
+      const entity = this.options.entities[i];
       textValue = textValue.replace(entity.regex, entity.val);
     }
   }
@@ -7942,13 +7951,17 @@ function replaceEntitiesValue(textValue){
 }
 
 function buildEmptyTextNode(val, key, attrStr, level) {
-  if( val === '' && this.options.unpairedTags.indexOf(key) !== -1){
-    return this.indentate(level) + '<' + key + attrStr + this.tagEndChar;
-  }else if (val !== '') {
+  if( val === '' && this.options.unpairedTags.indexOf(key) !== -1){ //unpaired
+    if(this.options.suppressUnpairedNode){
+      return this.indentate(level) + '<' + key + this.tagEndChar;
+    }else{
+      return this.indentate(level) + '<' + key + "/" + this.tagEndChar;
+    }
+  }else if (val !== '') { //empty
     return this.buildTextValNode(val, key, attrStr, level);
   } else {
-    if(key[0] === "?") return  this.indentate(level) + '<' + key + attrStr+ '?' + this.tagEndChar;
-    else return  this.indentate(level) + '<' + key + attrStr + '/' + this.tagEndChar;
+    if(key[0] === "?") return  this.indentate(level) + '<' + key + attrStr+ '?' + this.tagEndChar; //PI tag
+    else return  this.indentate(level) + '<' + key + attrStr + '/' + this.tagEndChar; //normal
   }
 }
 
@@ -8022,7 +8035,8 @@ function arrToStr(arr, options, jPath, level){
         let tagStart =  indentation + `<${tagName}${attStr}`;
         let tagValue = arrToStr(tagObj[tagName], options, newJPath, level + 1);
         if(options.unpairedTags.indexOf(tagName) !== -1){
-            xmlStr += tagStart + ">"; 
+            if(options.suppressUnpairedNode)  xmlStr += tagStart + ">"; 
+            else xmlStr += tagStart + "/>"; 
         }else if( (!tagValue || tagValue.length === 0) && options.suppressEmptyNode){ 
             xmlStr += tagStart + "/>"; 
         }else{ 
@@ -8069,8 +8083,8 @@ function isStopNode(jPath, options){
 
 function replaceEntitiesValue(textValue, options){
     if(textValue && textValue.length > 0 && options.processEntities){
-      for (const entityName in options.entities) {
-        const entity = options.entities[entityName];
+      for (let i=0; i< options.entities.length; i++) {
+        const entity = options.entities[i];
         textValue = textValue.replace(entity.regex, entity.val);
       }
     }
@@ -8212,6 +8226,8 @@ const defaultOptions = {
     unpairedTags: [],
     processEntities: true,
     htmlEntities: false,
+    ignoreDeclaration: false,
+    ignorePiTags: false
 };
    
 const buildOptions = function(options) {
@@ -8432,21 +8448,29 @@ const parseXml = function(xmlData) {
         textData = "";
         i = closeIndex;
       } else if( xmlData[i+1] === '?') {
+
         let tagData = readTagExp(xmlData,i, false, "?>");
         if(!tagData) throw new Error("Pi Tag is not closed.");
-        textData = this.saveTextToParentTag(textData, currentNode, jPath);
 
-        const childNode = new xmlNode(tagData.tagName);
-        childNode.add(this.options.textNodeName, "");
-        
-        if(tagData.tagName !== tagData.tagExp && tagData.attrExpPresent){
-          childNode[":@"] = this.buildAttributesMap(tagData.tagExp, jPath);
+        textData = this.saveTextToParentTag(textData, currentNode, jPath);
+        if( (this.options.ignoreDeclaration && tagData.tagName === "?xml") || this.options.ignorePiTags){
+
+        }else{
+  
+          const childNode = new xmlNode(tagData.tagName);
+          childNode.add(this.options.textNodeName, "");
+          
+          if(tagData.tagName !== tagData.tagExp && tagData.attrExpPresent){
+            childNode[":@"] = this.buildAttributesMap(tagData.tagExp, jPath);
+          }
+          currentNode.addChild(childNode);
+
         }
-        currentNode.addChild(childNode);
+
 
         i = tagData.closeIndex + 1;
       } else if(xmlData.substr(i + 1, 3) === '!--') {
-        const endIndex = findClosingIndex(xmlData, "-->", i, "Comment is not closed.")
+        const endIndex = findClosingIndex(xmlData, "-->", i+4, "Comment is not closed.")
         if(this.options.commentPropName){
           const comment = xmlData.substring(i + 4, endIndex - 2);
 
