@@ -8059,7 +8059,7 @@ function propName(obj){
 function attr_to_str(attrMap, options){
     let attrStr = "";
     if(attrMap && !options.ignoreAttributes){
-        for( attr in attrMap){
+        for (let attr in attrMap){
             let attrVal = options.attributeValueProcessor(attr, attrMap[attr]);
             attrVal = replaceEntitiesValue(attrVal, options);
             if(attrVal === true && options.suppressBooleanAttributes){
@@ -15740,7 +15740,8 @@ var MissingFieldError = (function () {
 /* harmony export */   "E_": () => (/* binding */ fieldNameFromStoreName),
 /* harmony export */   "RC": () => (/* binding */ selectionSetMatchesResult),
 /* harmony export */   "j": () => (/* binding */ storeValueIsStoreObject),
-/* harmony export */   "ig": () => (/* binding */ makeProcessedFieldsMerger)
+/* harmony export */   "ig": () => (/* binding */ makeProcessedFieldsMerger),
+/* harmony export */   "kJ": () => (/* binding */ isArray)
 /* harmony export */ });
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3712);
@@ -15801,7 +15802,7 @@ function fieldNameFromStoreName(storeFieldName) {
 }
 function selectionSetMatchesResult(selectionSet, result, variables) {
     if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .isNonNullObject */ .s)(result)) {
-        return Array.isArray(result)
+        return isArray(result)
             ? result.every(function (item) { return selectionSetMatchesResult(selectionSet, item, variables); })
             : selectionSet.selections.every(function (field) {
                 if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .isField */ .My)(field) && (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .shouldInclude */ .LZ)(field, variables)) {
@@ -15818,11 +15819,12 @@ function selectionSetMatchesResult(selectionSet, result, variables) {
 function storeValueIsStoreObject(value) {
     return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .isNonNullObject */ .s)(value) &&
         !(0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .isReference */ .Yk)(value) &&
-        !Array.isArray(value);
+        !isArray(value);
 }
 function makeProcessedFieldsMerger() {
     return new _utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .DeepMerger */ .w0;
 }
+var isArray = function (a) { return Array.isArray(a); };
 //# sourceMappingURL=helpers.js.map
 
 /***/ }),
@@ -16537,7 +16539,7 @@ var StoreReader = (function () {
                             _a));
                     }
                 }
-                else if (Array.isArray(fieldValue)) {
+                else if ((0,helpers/* isArray */.kJ)(fieldValue)) {
                     fieldValue = handleMissing(_this.executeSubSelectedArray({
                         field: selection,
                         array: fieldValue,
@@ -16596,7 +16598,7 @@ var StoreReader = (function () {
             if (item === null) {
                 return null;
             }
-            if (Array.isArray(item)) {
+            if ((0,helpers/* isArray */.kJ)(item)) {
                 return handleMissing(_this.executeSubSelectedArray({
                     field: field,
                     array: item,
@@ -16749,13 +16751,13 @@ function getSpecifierPaths(spec) {
         var paths_1 = info.paths = [];
         var currentPath_1 = [];
         spec.forEach(function (s, i) {
-            if (Array.isArray(s)) {
+            if ((0,helpers/* isArray */.kJ)(s)) {
                 getSpecifierPaths(s).forEach(function (p) { return paths_1.push(currentPath_1.concat(p)); });
                 currentPath_1.length = 0;
             }
             else {
                 currentPath_1.push(s);
-                if (!Array.isArray(spec[i + 1])) {
+                if (!(0,helpers/* isArray */.kJ)(spec[i + 1])) {
                     paths_1.push(currentPath_1.slice(0));
                     currentPath_1.length = 0;
                 }
@@ -16770,14 +16772,14 @@ function extractKey(object, key) {
 function extractKeyPath(object, path, extract) {
     extract = extract || extractKey;
     return normalize(path.reduce(function reducer(obj, key) {
-        return Array.isArray(obj)
+        return (0,helpers/* isArray */.kJ)(obj)
             ? obj.map(function (child) { return reducer(child, key); })
             : obj && extract(obj, key);
     }, object));
 }
 function normalize(value) {
     if ((0,objects/* isNonNullObject */.s)(value)) {
-        if (Array.isArray(value)) {
+        if ((0,helpers/* isArray */.kJ)(value)) {
             return value.map(normalize);
         }
         return collectSpecifierPaths(Object.keys(value).sort(), function (path) { return extractKeyPath(value, path); });
@@ -16848,7 +16850,7 @@ var Policies = (function () {
         var keyFn = policy && policy.keyFn || this.config.dataIdFromObject;
         while (keyFn) {
             var specifierOrId = keyFn(object, context);
-            if (Array.isArray(specifierOrId)) {
+            if ((0,helpers/* isArray */.kJ)(specifierOrId)) {
                 keyFn = keyFieldsFnFromSpecifier(specifierOrId);
             }
             else {
@@ -16891,7 +16893,7 @@ var Policies = (function () {
         setMerge(existing, incoming.merge);
         existing.keyFn =
             keyFields === false ? nullKeyFieldsFn :
-                Array.isArray(keyFields) ? keyFieldsFnFromSpecifier(keyFields) :
+                (0,helpers/* isArray */.kJ)(keyFields) ? keyFieldsFnFromSpecifier(keyFields) :
                     typeof keyFields === "function" ? keyFields :
                         existing.keyFn;
         if (fields) {
@@ -16905,7 +16907,7 @@ var Policies = (function () {
                     var keyArgs = incoming.keyArgs, read = incoming.read, merge = incoming.merge;
                     existing.keyFn =
                         keyArgs === false ? simpleKeyArgsFn :
-                            Array.isArray(keyArgs) ? keyArgsFnFromSpecifier(keyArgs) :
+                            (0,helpers/* isArray */.kJ)(keyArgs) ? keyArgsFnFromSpecifier(keyArgs) :
                                 typeof keyArgs === "function" ? keyArgs :
                                     existing.keyFn;
                     if (typeof read === "function") {
@@ -17050,7 +17052,7 @@ var Policies = (function () {
             var args = argsFromFieldSpecifier(fieldSpec);
             while (keyFn) {
                 var specifierOrString = keyFn(args, context);
-                if (Array.isArray(specifierOrString)) {
+                if ((0,helpers/* isArray */.kJ)(specifierOrString)) {
                     keyFn = keyArgsFnFromSpecifier(specifierOrString);
                 }
                 else {
@@ -17172,7 +17174,7 @@ function normalizeReadFieldOptions(readFieldArgs, objectOrReference, variables) 
 }
 function makeMergeObjectsFunction(store) {
     return function mergeObjects(existing, incoming) {
-        if (Array.isArray(existing) || Array.isArray(incoming)) {
+        if ((0,helpers/* isArray */.kJ)(existing) || (0,helpers/* isArray */.kJ)(incoming)) {
             throw __DEV__ ? new globals/* InvariantError */.ej("Cannot automatically merge arrays") : new globals/* InvariantError */.ej(4);
         }
         if ((0,objects/* isNonNullObject */.s)(existing) &&
@@ -17411,7 +17413,7 @@ var StoreWriter = (function () {
         if (!field.selectionSet || value === null) {
             return __DEV__ ? (0,cloneDeep/* cloneDeep */.X)(value) : value;
         }
-        if (Array.isArray(value)) {
+        if ((0,helpers/* isArray */.kJ)(value)) {
             return value.map(function (item, i) {
                 var value = _this.processFieldValue(item, field, context, getChildMergeTree(mergeTree, i));
                 maybeRecycleChildMergeTree(mergeTree, i);
@@ -17476,7 +17478,7 @@ var StoreWriter = (function () {
         var _a;
         var _this = this;
         if (mergeTree.map.size && !(0,storeUtils/* isReference */.Yk)(incoming)) {
-            var e_1 = (!Array.isArray(incoming) &&
+            var e_1 = (!(0,helpers/* isArray */.kJ)(incoming) &&
                 ((0,storeUtils/* isReference */.Yk)(existing) || (0,helpers/* storeValueIsStoreObject */.j)(existing))) ? existing : void 0;
             var i_1 = incoming;
             if (e_1 && !getStorageArgs) {
@@ -17484,7 +17486,7 @@ var StoreWriter = (function () {
             }
             var changedFields_1;
             var getValue_1 = function (from, name) {
-                return Array.isArray(from)
+                return (0,helpers/* isArray */.kJ)(from)
                     ? (typeof name === "number" ? from[name] : void 0)
                     : context.store.getFieldValue(from, String(name));
             };
@@ -17506,7 +17508,7 @@ var StoreWriter = (function () {
                 }
             });
             if (changedFields_1) {
-                incoming = (Array.isArray(i_1) ? i_1.slice(0) : (0,tslib_es6/* __assign */.pi)({}, i_1));
+                incoming = ((0,helpers/* isArray */.kJ)(i_1) ? i_1.slice(0) : (0,tslib_es6/* __assign */.pi)({}, i_1));
                 changedFields_1.forEach(function (value, name) {
                     incoming[name] = value;
                 });
@@ -17588,8 +17590,8 @@ function warnAboutDataLoss(existingRef, incomingObj, storeFieldName, store) {
         return;
     warnings.add(typeDotName);
     var childTypenames = [];
-    if (!Array.isArray(existing) &&
-        !Array.isArray(incoming)) {
+    if (!(0,helpers/* isArray */.kJ)(existing) &&
+        !(0,helpers/* isArray */.kJ)(incoming)) {
         [existing, incoming].forEach(function (child) {
             var typename = store.getFieldValue(child, "__typename");
             if (typeof typename === "string" &&
@@ -17924,27 +17926,29 @@ var InMemoryCache = (function (_super) {
 /* harmony export */   "h": () => (/* binding */ ObjectCanon),
 /* harmony export */   "B": () => (/* binding */ canonicalStringify)
 /* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(655);
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(655);
 /* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9137);
 /* harmony import */ var _wry_trie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(657);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3154);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(320);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(320);
+/* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9641);
+
 
 
 
 
 function shallowCopy(value) {
     if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .isNonNullObject */ .s)(value)) {
-        return Array.isArray(value)
+        return (0,_helpers_js__WEBPACK_IMPORTED_MODULE_3__/* .isArray */ .kJ)(value)
             ? value.slice(0)
-            : (0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({ __proto__: Object.getPrototypeOf(value) }, value);
+            : (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)({ __proto__: Object.getPrototypeOf(value) }, value);
     }
     return value;
 }
 var ObjectCanon = (function () {
     function ObjectCanon() {
-        this.known = new (_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .canUseWeakSet */ .sy ? WeakSet : Set)();
-        this.pool = new _wry_trie__WEBPACK_IMPORTED_MODULE_1__/* .Trie */ .B(_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .canUseWeakMap */ .mr);
+        this.known = new (_utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .canUseWeakSet */ .sy ? WeakSet : Set)();
+        this.pool = new _wry_trie__WEBPACK_IMPORTED_MODULE_1__/* .Trie */ .B(_utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .canUseWeakMap */ .mr);
         this.passes = new WeakMap();
         this.keysByJSON = new Map();
         this.empty = this.admit({});
@@ -18045,7 +18049,7 @@ var stringifyCanon;
 var stringifyCache;
 function resetCanonicalStringify() {
     stringifyCanon = new ObjectCanon;
-    stringifyCache = new (_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .canUseWeakMap */ .mr ? WeakMap : Map)();
+    stringifyCache = new (_utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .canUseWeakMap */ .mr ? WeakMap : Map)();
 }
 //# sourceMappingURL=object-canon.js.map
 
@@ -18153,7 +18157,7 @@ var execute = __webpack_require__(7037);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/compact.js
 var compact = __webpack_require__(3712);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.5.8';
+var version = '3.5.9';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
@@ -20426,8 +20430,11 @@ var ObservableQuery = (function (_super) {
         this.reportResult(this.getCurrentResult(false), this.variables);
     };
     ObservableQuery.prototype.reportResult = function (result, variables) {
-        if (this.getLastError() || this.isDifferentFromLastResult(result)) {
-            this.updateLastResult(result, variables);
+        var lastError = this.getLastError();
+        if (lastError || this.isDifferentFromLastResult(result)) {
+            if (lastError || !result.partial || this.options.returnPartialData) {
+                this.updateLastResult(result, variables);
+            }
             (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_8__/* .iterateObserversSafely */ .p)(this.observers, 'next', result);
         }
     };
@@ -21898,11 +21905,13 @@ function useLazyQuery(query, options) {
     Object.assign(result, eagerMethods);
     var execute = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (executeOptions) {
         setExecution({ called: true, options: executeOptions });
-        return result.refetch(executeOptions === null || executeOptions === void 0 ? void 0 : executeOptions.variables).then(function (result1) {
+        var promise = result.refetch(executeOptions === null || executeOptions === void 0 ? void 0 : executeOptions.variables).then(function (result1) {
             var result2 = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, result), { data: result1.data, error: result1.error, called: true, loading: false });
             Object.assign(result2, eagerMethods);
             return result2;
         });
+        promise.catch(function () { });
+        return promise;
     }, []);
     return [execute, result];
 }
@@ -22371,14 +22380,16 @@ function useSubscription(subscription, options) {
         if (typeof shouldResubscribe === 'function') {
             shouldResubscribe = !!shouldResubscribe(options);
         }
-        if ((options === null || options === void 0 ? void 0 : options.skip) && !(options === null || options === void 0 ? void 0 : options.skip) !== !((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.skip)) {
-            setResult({
-                loading: false,
-                data: void 0,
-                error: void 0,
-                variables: options === null || options === void 0 ? void 0 : options.variables,
-            });
-            setObservable(null);
+        if (options === null || options === void 0 ? void 0 : options.skip) {
+            if (!(options === null || options === void 0 ? void 0 : options.skip) !== !((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.skip)) {
+                setResult({
+                    loading: false,
+                    data: void 0,
+                    error: void 0,
+                    variables: options === null || options === void 0 ? void 0 : options.variables,
+                });
+                setObservable(null);
+            }
         }
         else if (shouldResubscribe !== false && (client !== ref.current.client ||
             subscription !== ref.current.subscription ||
