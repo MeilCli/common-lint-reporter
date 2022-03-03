@@ -18157,7 +18157,7 @@ var execute = __webpack_require__(7037);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/compact.js
 var compact = __webpack_require__(3712);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.5.9';
+var version = '3.5.10';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
