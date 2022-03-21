@@ -15,5 +15,5 @@ inputs:
     required: true
     default: 'common_lint.json'
 runs:
-  using: 'node12'
+  using: 'node16'
   main: '../../dist/transformer-junit.js'
