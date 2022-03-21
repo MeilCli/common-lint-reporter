@@ -10,7 +10,7 @@ jobs:
   operator-add:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./testing/create
       - uses: ./operator/add
         with:
@@ -57,7 +57,7 @@ jobs:
   operator-filter:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./testing/create
       - uses: ./operator/filter
         with:
@@ -82,7 +82,7 @@ jobs:
   operator-distinct:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./testing/create
       - uses: ./operator/distinct
         with:
@@ -113,7 +113,7 @@ jobs:
   operator-map:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./testing/create
       - uses: ./operator/map
         with:
