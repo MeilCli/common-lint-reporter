@@ -7902,11 +7902,10 @@ function buildObjectNode(val, key, attrStr, level) {
   }
 
   if (attrStr && val.indexOf('<') === -1) {
-    return (
-      this.indentate(level) + '<' +  key + attrStr + piClosingChar + '>' +
-      val +
-      tagEndExp    );
-  } else {
+    return ( this.indentate(level) + '<' +  key + attrStr + piClosingChar + '>' + val + tagEndExp );
+  } else if (this.options.commentPropName !== false && key === this.options.commentPropName && piClosingChar.length === 0) {
+    return this.indentate(level) + `<!--${val}-->` + this.newLine;
+  }else {
     return (
       this.indentate(level) + '<' + key + attrStr + piClosingChar + this.tagEndChar +
       val +
@@ -7924,20 +7923,27 @@ function buildEmptyObjNode(val, key, attrStr, level) {
 }
 
 function buildTextValNode(val, key, attrStr, level) {
-  let textValue = this.options.tagValueProcessor(key, val);
-  textValue = this.replaceEntitiesValue(textValue);
-
-  if( textValue === '' && this.options.unpairedTags.indexOf(key) !== -1){ //unpaired
-    if(this.options.suppressUnpairedNode){
-      return this.indentate(level) + '<' + key + this.tagEndChar;
-    }else{
-      return this.indentate(level) + '<' + key + "/" + this.tagEndChar;
-    }
+  if (this.options.cdataPropName !== false && key === this.options.cdataPropName) {
+    return this.indentate(level) + `<![CDATA[${val}]]>` +  this.newLine;
+  }else if (this.options.commentPropName !== false && key === this.options.commentPropName) {
+    return this.indentate(level) + `<!--${val}-->` +  this.newLine;
   }else{
-    return (
-      this.indentate(level) + '<' + key + attrStr + '>' +
-       textValue +
-      '</' + key + this.tagEndChar  );
+    let textValue = this.options.tagValueProcessor(key, val);
+    textValue = this.replaceEntitiesValue(textValue);
+  
+    if( textValue === '' && this.options.unpairedTags.indexOf(key) !== -1){ //unpaired
+      if(this.options.suppressUnpairedNode){
+        return this.indentate(level) + '<' + key + this.tagEndChar;
+      }else{
+        return this.indentate(level) + '<' + key + "/" + this.tagEndChar;
+      }
+    } else{
+      return (
+        this.indentate(level) + '<' + key + attrStr + '>' +
+         textValue +
+        '</' + key + this.tagEndChar  );
+    }
+
   }
 }
 
@@ -8029,7 +8035,10 @@ function arrToStr(arr, options, jPath, level){
             continue;
         }else if( tagName[0] === "?"){
             const attStr = attr_to_str(tagObj[":@"], options);
-            xmlStr += indentation + `<${tagName} ${tagObj[tagName][0][options.textNodeName]} ${attStr}?>`;
+            const tempInd = tagName === "?xml" ? "" : indentation;
+            let piTextNodeName = tagObj[tagName][0][options.textNodeName];
+            piTextNodeName = piTextNodeName.length !== 0 ? " " + piTextNodeName : ""; //remove extra spacing
+            xmlStr += tempInd + `<${tagName}${piTextNodeName}${attStr}?>`;
             continue;
         }
         const attStr = attr_to_str(tagObj[":@"], options);
