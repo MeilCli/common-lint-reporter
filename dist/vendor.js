@@ -3846,7 +3846,7 @@ class RequestError extends Error {
 
 
 
-const dist_web_VERSION = "5.6.2";
+const dist_web_VERSION = "5.6.3";
 
 function getBufferResponse(response) {
     return response.arrayBuffer();
@@ -4171,7 +4171,7 @@ const createTokenAuth = function createTokenAuth(token) {
 
 
 
-const core_dist_web_VERSION = "3.5.1";
+const core_dist_web_VERSION = "3.6.0";
 
 class Octokit {
     constructor(options = {}) {
@@ -28112,7 +28112,7 @@ function parseURL(urlStr) {
 	return parse_url(urlStr);
 }
 
-const streamDestructionSupported = 'destroy' in stream__WEBPACK_IMPORTED_MODULE_0__.Readable.prototype;
+const streamDestructionSupported = "destroy" in stream__WEBPACK_IMPORTED_MODULE_0__.Readable.prototype;
 
 /**
  * Check if a value is an instance of Request.
