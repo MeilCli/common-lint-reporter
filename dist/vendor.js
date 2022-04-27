@@ -14375,7 +14375,6 @@ function wrap(originalFunction, options) {
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
-var __webpack_unused_export__;
 /**
  * @license React
  * react.production.min.js
@@ -14394,14 +14393,14 @@ function N(a,b){return{$$typeof:l,type:a.type,key:b,ref:a.ref,props:a.props,_own
 function R(a,b,e,d,c){var k=typeof a;if("undefined"===k||"boolean"===k)a=null;var h=!1;if(null===a)h=!0;else switch(k){case "string":case "number":h=!0;break;case "object":switch(a.$$typeof){case l:case n:h=!0}}if(h)return h=a,c=c(h),a=""===d?"."+Q(h,0):d,I(c)?(e="",null!=a&&(e=a.replace(P,"$&/")+"/"),R(c,b,e,"",function(a){return a})):null!=c&&(O(c)&&(c=N(c,e+(!c.key||h&&h.key===c.key?"":(""+c.key).replace(P,"$&/")+"/")+a)),b.push(c)),1;h=0;d=""===d?".":d+":";if(I(a))for(var g=0;g<a.length;g++){k=
 a[g];var f=d+Q(k,g);h+=R(k,b,e,f,c)}else if(f=A(a),"function"===typeof f)for(a=f.call(a),g=0;!(k=a.next()).done;)k=k.value,f=d+Q(k,g++),h+=R(k,b,e,f,c);else if("object"===k)throw b=String(a),Error("Objects are not valid as a React child (found: "+("[object Object]"===b?"object with keys {"+Object.keys(a).join(", ")+"}":b)+"). If you meant to render a collection of children, use an array instead.");return h}
 function S(a,b,e){if(null==a)return a;var d=[],c=0;R(a,d,"","",function(a){return b.call(e,a,c++)});return d}function T(a){if(-1===a._status){var b=a._result;b=b();b.then(function(b){if(0===a._status||-1===a._status)a._status=1,a._result=b},function(b){if(0===a._status||-1===a._status)a._status=2,a._result=b});-1===a._status&&(a._status=0,a._result=b)}if(1===a._status)return a._result.default;throw a._result;}
-var U={current:null},V={transition:null},W={ReactCurrentDispatcher:U,ReactCurrentBatchConfig:V,ReactCurrentOwner:K};__webpack_unused_export__={map:S,forEach:function(a,b,e){S(a,function(){b.apply(this,arguments)},e)},count:function(a){var b=0;S(a,function(){b++});return b},toArray:function(a){return S(a,function(a){return a})||[]},only:function(a){if(!O(a))throw Error("React.Children.only expected to receive a single React element child.");return a}};__webpack_unused_export__=E;__webpack_unused_export__=p;
-__webpack_unused_export__=r;__webpack_unused_export__=G;__webpack_unused_export__=q;__webpack_unused_export__=w;__webpack_unused_export__=W;
-__webpack_unused_export__=function(a,b,e){if(null===a||void 0===a)throw Error("React.cloneElement(...): The argument must be a React element, but you passed "+a+".");var d=C({},a.props),c=a.key,k=a.ref,h=a._owner;if(null!=b){void 0!==b.ref&&(k=b.ref,h=K.current);void 0!==b.key&&(c=""+b.key);if(a.type&&a.type.defaultProps)var g=a.type.defaultProps;for(f in b)J.call(b,f)&&!L.hasOwnProperty(f)&&(d[f]=void 0===b[f]&&void 0!==g?g[f]:b[f])}var f=arguments.length-2;if(1===f)d.children=e;else if(1<f){g=Array(f);
-for(var m=0;m<f;m++)g[m]=arguments[m+2];d.children=g}return{$$typeof:l,type:a.type,key:c,ref:k,props:d,_owner:h}};exports.createContext=function(a){a={$$typeof:u,_currentValue:a,_currentValue2:a,_threadCount:0,Provider:null,Consumer:null,_defaultValue:null,_globalName:null};a.Provider={$$typeof:t,_context:a};return a.Consumer=a};exports.createElement=M;__webpack_unused_export__=function(a){var b=M.bind(null,a);b.type=a;return b};__webpack_unused_export__=function(){return{current:null}};
-__webpack_unused_export__=function(a){return{$$typeof:v,render:a}};__webpack_unused_export__=O;__webpack_unused_export__=function(a){return{$$typeof:y,_payload:{_status:-1,_result:a},_init:T}};__webpack_unused_export__=function(a,b){return{$$typeof:x,type:a,compare:void 0===b?null:b}};__webpack_unused_export__=function(a){var b=V.transition;V.transition={};try{a()}finally{V.transition=b}};__webpack_unused_export__=function(){throw Error("act(...) is not supported in production builds of React.");};
-exports.useCallback=function(a,b){return U.current.useCallback(a,b)};exports.useContext=function(a){return U.current.useContext(a)};__webpack_unused_export__=function(){};__webpack_unused_export__=function(a){return U.current.useDeferredValue(a)};exports.useEffect=function(a,b){return U.current.useEffect(a,b)};__webpack_unused_export__=function(){return U.current.useId()};__webpack_unused_export__=function(a,b,e){return U.current.useImperativeHandle(a,b,e)};
-__webpack_unused_export__=function(a,b){return U.current.useInsertionEffect(a,b)};__webpack_unused_export__=function(a,b){return U.current.useLayoutEffect(a,b)};exports.useMemo=function(a,b){return U.current.useMemo(a,b)};__webpack_unused_export__=function(a,b,e){return U.current.useReducer(a,b,e)};exports.useRef=function(a){return U.current.useRef(a)};exports.useState=function(a){return U.current.useState(a)};__webpack_unused_export__=function(a,b,e){return U.current.useSyncExternalStore(a,b,e)};
-__webpack_unused_export__=function(){return U.current.useTransition()};__webpack_unused_export__="18.0.0-fc46dba67-20220329";
+var U={current:null},V={transition:null},W={ReactCurrentDispatcher:U,ReactCurrentBatchConfig:V,ReactCurrentOwner:K};exports.Children={map:S,forEach:function(a,b,e){S(a,function(){b.apply(this,arguments)},e)},count:function(a){var b=0;S(a,function(){b++});return b},toArray:function(a){return S(a,function(a){return a})||[]},only:function(a){if(!O(a))throw Error("React.Children.only expected to receive a single React element child.");return a}};exports.Component=E;exports.Fragment=p;
+exports.Profiler=r;exports.PureComponent=G;exports.StrictMode=q;exports.Suspense=w;exports.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED=W;
+exports.cloneElement=function(a,b,e){if(null===a||void 0===a)throw Error("React.cloneElement(...): The argument must be a React element, but you passed "+a+".");var d=C({},a.props),c=a.key,k=a.ref,h=a._owner;if(null!=b){void 0!==b.ref&&(k=b.ref,h=K.current);void 0!==b.key&&(c=""+b.key);if(a.type&&a.type.defaultProps)var g=a.type.defaultProps;for(f in b)J.call(b,f)&&!L.hasOwnProperty(f)&&(d[f]=void 0===b[f]&&void 0!==g?g[f]:b[f])}var f=arguments.length-2;if(1===f)d.children=e;else if(1<f){g=Array(f);
+for(var m=0;m<f;m++)g[m]=arguments[m+2];d.children=g}return{$$typeof:l,type:a.type,key:c,ref:k,props:d,_owner:h}};exports.createContext=function(a){a={$$typeof:u,_currentValue:a,_currentValue2:a,_threadCount:0,Provider:null,Consumer:null,_defaultValue:null,_globalName:null};a.Provider={$$typeof:t,_context:a};return a.Consumer=a};exports.createElement=M;exports.createFactory=function(a){var b=M.bind(null,a);b.type=a;return b};exports.createRef=function(){return{current:null}};
+exports.forwardRef=function(a){return{$$typeof:v,render:a}};exports.isValidElement=O;exports.lazy=function(a){return{$$typeof:y,_payload:{_status:-1,_result:a},_init:T}};exports.memo=function(a,b){return{$$typeof:x,type:a,compare:void 0===b?null:b}};exports.startTransition=function(a){var b=V.transition;V.transition={};try{a()}finally{V.transition=b}};exports.unstable_act=function(){throw Error("act(...) is not supported in production builds of React.");};
+exports.useCallback=function(a,b){return U.current.useCallback(a,b)};exports.useContext=function(a){return U.current.useContext(a)};exports.useDebugValue=function(){};exports.useDeferredValue=function(a){return U.current.useDeferredValue(a)};exports.useEffect=function(a,b){return U.current.useEffect(a,b)};exports.useId=function(){return U.current.useId()};exports.useImperativeHandle=function(a,b,e){return U.current.useImperativeHandle(a,b,e)};
+exports.useInsertionEffect=function(a,b){return U.current.useInsertionEffect(a,b)};exports.useLayoutEffect=function(a,b){return U.current.useLayoutEffect(a,b)};exports.useMemo=function(a,b){return U.current.useMemo(a,b)};exports.useReducer=function(a,b,e){return U.current.useReducer(a,b,e)};exports.useRef=function(a){return U.current.useRef(a)};exports.useState=function(a){return U.current.useState(a)};exports.useSyncExternalStore=function(a,b,e){return U.current.useSyncExternalStore(a,b,e)};
+exports.useTransition=function(){return U.current.useTransition()};exports.version="18.1.0";
 
 
 /***/ }),
@@ -14546,74 +14545,6 @@ function trimZeros(numStr){
     return numStr;
 }
 module.exports = toNumber
-
-
-/***/ }),
-
-/***/ 7591:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "U6": () => (/* binding */ setVerbosity),
-/* harmony export */   "ej": () => (/* binding */ InvariantError),
-/* harmony export */   "kG": () => (/* binding */ invariant)
-/* harmony export */ });
-/* unused harmony export default */
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(655);
-
-
-var genericMessage = "Invariant Violation";
-var _a = Object.setPrototypeOf, setPrototypeOf = _a === void 0 ? function (obj, proto) {
-    obj.__proto__ = proto;
-    return obj;
-} : _a;
-var InvariantError = /** @class */ (function (_super) {
-    (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__extends */ .ZT)(InvariantError, _super);
-    function InvariantError(message) {
-        if (message === void 0) { message = genericMessage; }
-        var _this = _super.call(this, typeof message === "number"
-            ? genericMessage + ": " + message + " (see https://github.com/apollographql/invariant-packages)"
-            : message) || this;
-        _this.framesToPop = 1;
-        _this.name = genericMessage;
-        setPrototypeOf(_this, InvariantError.prototype);
-        return _this;
-    }
-    return InvariantError;
-}(Error));
-function invariant(condition, message) {
-    if (!condition) {
-        throw new InvariantError(message);
-    }
-}
-var verbosityLevels = ["debug", "log", "warn", "error", "silent"];
-var verbosityLevel = verbosityLevels.indexOf("log");
-function wrapConsoleMethod(name) {
-    return function () {
-        if (verbosityLevels.indexOf(name) >= verbosityLevel) {
-            // Default to console.log if this host environment happens not to provide
-            // all the console.* methods we need.
-            var method = console[name] || console.log;
-            return method.apply(console, arguments);
-        }
-    };
-}
-(function (invariant) {
-    invariant.debug = wrapConsoleMethod("debug");
-    invariant.log = wrapConsoleMethod("log");
-    invariant.warn = wrapConsoleMethod("warn");
-    invariant.error = wrapConsoleMethod("error");
-})(invariant || (invariant = {}));
-function setVerbosity(level) {
-    var old = verbosityLevels[verbosityLevel];
-    verbosityLevel = Math.max(0, verbosityLevels.indexOf(level));
-    return old;
-}
-var invariant$1 = (/* unused pure expression or super */ null && (invariant));
-
-
-//# sourceMappingURL=invariant.esm.js.map
 
 
 /***/ }),
@@ -15154,6 +15085,38 @@ exports.debug = debug; // for test
 
 /***/ }),
 
+/***/ 3250:
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+/**
+ * @license React
+ * use-sync-external-store-shim.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+var e=__webpack_require__(7294);function h(a,b){return a===b&&(0!==a||1/a===1/b)||a!==a&&b!==b}var k="function"===typeof Object.is?Object.is:h,l=e.useState,m=e.useEffect,n=e.useLayoutEffect,p=e.useDebugValue;function q(a,b){var d=b(),f=l({inst:{value:d,getSnapshot:b}}),c=f[0].inst,g=f[1];n(function(){c.value=d;c.getSnapshot=b;r(c)&&g({inst:c})},[a,d,b]);m(function(){r(c)&&g({inst:c});return a(function(){r(c)&&g({inst:c})})},[a]);p(d);return d}
+function r(a){var b=a.getSnapshot;a=a.value;try{var d=b();return!k(a,d)}catch(f){return!0}}function t(a,b){return b()}var u="undefined"===typeof window||"undefined"===typeof window.document||"undefined"===typeof window.document.createElement?t:q;exports.useSyncExternalStore=void 0!==e.useSyncExternalStore?e.useSyncExternalStore:u;
+
+
+/***/ }),
+
+/***/ 1688:
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+if (true) {
+  module.exports = __webpack_require__(3250);
+} else {}
+
+
+/***/ }),
+
 /***/ 2479:
 /***/ ((module) => {
 
@@ -15429,7 +15392,7 @@ var isArray = function (a) { return Array.isArray(a); };
 
 /***/ }),
 
-/***/ 6988:
+/***/ 521:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -15442,7 +15405,7 @@ __webpack_require__.d(__webpack_exports__, {
 // EXTERNAL MODULE: ./node_modules/tslib/tslib.es6.js
 var tslib_es6 = __webpack_require__(655);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/globals/index.js + 5 modules
-var globals = __webpack_require__(9137);
+var globals = __webpack_require__(846);
 // EXTERNAL MODULE: ./node_modules/optimism/lib/bundle.esm.js
 var bundle_esm = __webpack_require__(507);
 // EXTERNAL MODULE: ./node_modules/@wry/equality/lib/equality.esm.js
@@ -15467,43 +15430,10 @@ var mergeDeep = __webpack_require__(182);
 var fragments = __webpack_require__(3361);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/directives.js
 var directives = __webpack_require__(9065);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/maybeDeepFreeze.js
+var maybeDeepFreeze = __webpack_require__(8702);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/objects.js
 var objects = __webpack_require__(3154);
-;// CONCATENATED MODULE: ./node_modules/@apollo/client/utilities/common/maybeDeepFreeze.js
-
-
-function deepFreeze(value) {
-    var workSet = new Set([value]);
-    workSet.forEach(function (obj) {
-        if ((0,objects/* isNonNullObject */.s)(obj) && shallowFreeze(obj) === obj) {
-            Object.getOwnPropertyNames(obj).forEach(function (name) {
-                if ((0,objects/* isNonNullObject */.s)(obj[name]))
-                    workSet.add(obj[name]);
-            });
-        }
-    });
-    return value;
-}
-function shallowFreeze(obj) {
-    if (__DEV__ && !Object.isFrozen(obj)) {
-        try {
-            Object.freeze(obj);
-        }
-        catch (e) {
-            if (e instanceof TypeError)
-                return null;
-            throw e;
-        }
-    }
-    return obj;
-}
-function maybeDeepFreeze(obj) {
-    if (__DEV__) {
-        deepFreeze(obj);
-    }
-    return obj;
-}
-//# sourceMappingURL=maybeDeepFreeze.js.map
 // EXTERNAL MODULE: ./node_modules/@wry/trie/lib/trie.esm.js
 var trie_esm = __webpack_require__(657);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/cache/inmemory/helpers.js
@@ -15527,7 +15457,7 @@ var EntityStore = (function () {
         this.data = Object.create(null);
         this.rootIds = Object.create(null);
         this.refs = Object.create(null);
-        this.getFieldValue = function (objectOrReference, storeFieldName) { return maybeDeepFreeze((0,storeUtils/* isReference */.Yk)(objectOrReference)
+        this.getFieldValue = function (objectOrReference, storeFieldName) { return (0,maybeDeepFreeze/* maybeDeepFreeze */.J)((0,storeUtils/* isReference */.Yk)(objectOrReference)
             ? _this.get(objectOrReference.__ref, storeFieldName)
             : objectOrReference && objectOrReference[storeFieldName]); };
         this.canRead = function (objOrRef) {
@@ -15661,7 +15591,7 @@ var EntityStore = (function () {
                     : fields[storeFieldName] || fields[fieldName];
                 if (modify) {
                     var newValue = modify === delModifier ? DELETE :
-                        modify(maybeDeepFreeze(fieldValue), (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, sharedDetails_1), { fieldName: fieldName, storeFieldName: storeFieldName, storage: _this.getStorage(dataId, storeFieldName) }));
+                        modify((0,maybeDeepFreeze/* maybeDeepFreeze */.J)(fieldValue), (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, sharedDetails_1), { fieldName: fieldName, storeFieldName: storeFieldName, storage: _this.getStorage(dataId, storeFieldName) }));
                     if (newValue === INVALIDATE) {
                         _this.group.dirty(dataId, storeFieldName);
                     }
@@ -16174,7 +16104,7 @@ var StoreReader = (function () {
         var finalResult = { result: result, missing: missing };
         var frozen = context.canonizeResults
             ? this.canon.admit(finalResult)
-            : maybeDeepFreeze(finalResult);
+            : (0,maybeDeepFreeze/* maybeDeepFreeze */.J)(finalResult);
         if (frozen.result) {
             this.knownResults.set(frozen.result, selectionSet);
         }
@@ -17527,7 +17457,7 @@ var InMemoryCache = (function (_super) {
 /* harmony export */   "h": () => (/* binding */ ObjectCanon)
 /* harmony export */ });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(655);
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9137);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 /* harmony import */ var _wry_trie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(657);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3154);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(320);
@@ -17742,22 +17672,21 @@ function broadcast(cache) {
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  "f": () => (/* binding */ ApolloClient),
-  "J": () => (/* binding */ mergeOptions)
+  "f": () => (/* binding */ ApolloClient)
 });
+
+// UNUSED EXPORTS: mergeOptions
 
 // EXTERNAL MODULE: ./node_modules/tslib/tslib.es6.js
 var tslib_es6 = __webpack_require__(655);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/globals/index.js + 5 modules
-var globals = __webpack_require__(9137);
+var globals = __webpack_require__(846);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/ApolloLink.js + 3 modules
 var ApolloLink = __webpack_require__(3581);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
 var execute = __webpack_require__(7037);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/compact.js
-var compact = __webpack_require__(3712);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.5.10';
+var version = '3.6.0';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
@@ -18266,6 +18195,7 @@ var LocalState = (function () {
 
 
 
+
 ;
 var destructiveMethodCounts = new (canUse/* canUseWeakMap */.mr ? WeakMap : Map)();
 function wrapDestructiveCacheMethod(cache, methodName) {
@@ -18387,11 +18317,12 @@ var QueryInfo = (function () {
         if (oq) {
             oq["queryInfo"] = this;
             this.listeners.add(this.oqListener = function () {
-                if (_this.getDiff().fromOptimisticTransaction) {
+                var diff = _this.getDiff();
+                if (diff.fromOptimisticTransaction) {
                     oq["observe"]();
                 }
                 else {
-                    oq.reobserve();
+                    (0,ObservableQuery/* reobserveCacheFirst */.vj)(oq);
                 }
             });
         }
@@ -18549,7 +18480,7 @@ function shouldWriteResult(result, errorPolicy) {
 var QueryManager_hasOwnProperty = Object.prototype.hasOwnProperty;
 var QueryManager = (function () {
     function QueryManager(_a) {
-        var cache = _a.cache, link = _a.link, _b = _a.queryDeduplication, queryDeduplication = _b === void 0 ? false : _b, onBroadcast = _a.onBroadcast, _c = _a.ssrMode, ssrMode = _c === void 0 ? false : _c, _d = _a.clientAwareness, clientAwareness = _d === void 0 ? {} : _d, localState = _a.localState, assumeImmutableResults = _a.assumeImmutableResults;
+        var cache = _a.cache, link = _a.link, defaultOptions = _a.defaultOptions, _b = _a.queryDeduplication, queryDeduplication = _b === void 0 ? false : _b, onBroadcast = _a.onBroadcast, _c = _a.ssrMode, ssrMode = _c === void 0 ? false : _c, _d = _a.clientAwareness, clientAwareness = _d === void 0 ? {} : _d, localState = _a.localState, assumeImmutableResults = _a.assumeImmutableResults;
         this.clientAwareness = {};
         this.queries = new Map();
         this.fetchCancelFns = new Map();
@@ -18560,6 +18491,7 @@ var QueryManager = (function () {
         this.inFlightLinkObservables = new Map();
         this.cache = cache;
         this.link = link;
+        this.defaultOptions = defaultOptions || Object.create(null);
         this.queryDeduplication = queryDeduplication;
         this.clientAwareness = clientAwareness;
         this.localState = localState || new LocalState({ cache: cache });
@@ -18581,11 +18513,12 @@ var QueryManager = (function () {
         this.fetchCancelFns.clear();
     };
     QueryManager.prototype.mutate = function (_a) {
-        var mutation = _a.mutation, variables = _a.variables, optimisticResponse = _a.optimisticResponse, updateQueries = _a.updateQueries, _b = _a.refetchQueries, refetchQueries = _b === void 0 ? [] : _b, _c = _a.awaitRefetchQueries, awaitRefetchQueries = _c === void 0 ? false : _c, updateWithProxyFn = _a.update, onQueryUpdated = _a.onQueryUpdated, _d = _a.errorPolicy, errorPolicy = _d === void 0 ? 'none' : _d, _e = _a.fetchPolicy, fetchPolicy = _e === void 0 ? 'network-only' : _e, keepRootFields = _a.keepRootFields, context = _a.context;
+        var _b, _c;
+        var mutation = _a.mutation, variables = _a.variables, optimisticResponse = _a.optimisticResponse, updateQueries = _a.updateQueries, _d = _a.refetchQueries, refetchQueries = _d === void 0 ? [] : _d, _e = _a.awaitRefetchQueries, awaitRefetchQueries = _e === void 0 ? false : _e, updateWithProxyFn = _a.update, onQueryUpdated = _a.onQueryUpdated, _f = _a.fetchPolicy, fetchPolicy = _f === void 0 ? ((_b = this.defaultOptions.mutate) === null || _b === void 0 ? void 0 : _b.fetchPolicy) || "network-only" : _f, _g = _a.errorPolicy, errorPolicy = _g === void 0 ? ((_c = this.defaultOptions.mutate) === null || _c === void 0 ? void 0 : _c.errorPolicy) || "none" : _g, keepRootFields = _a.keepRootFields, context = _a.context;
         return (0,tslib_es6/* __awaiter */.mG)(this, void 0, void 0, function () {
             var mutationId, mutationStoreValue, self;
-            return (0,tslib_es6/* __generator */.Jh)(this, function (_f) {
-                switch (_f.label) {
+            return (0,tslib_es6/* __generator */.Jh)(this, function (_h) {
+                switch (_h.label) {
                     case 0:
                         __DEV__ ? (0,globals/* invariant */.kG)(mutation, 'mutation option is required. You must specify your GraphQL document in the mutation option.') : (0,globals/* invariant */.kG)(mutation, 12);
                         __DEV__ ? (0,globals/* invariant */.kG)(fetchPolicy === 'network-only' ||
@@ -18597,8 +18530,8 @@ var QueryManager = (function () {
                         if (!this.transform(mutation).hasClientExports) return [3, 2];
                         return [4, this.localState.addExportedVariables(mutation, variables, context)];
                     case 1:
-                        variables = (_f.sent());
-                        _f.label = 2;
+                        variables = (_h.sent());
+                        _h.label = 2;
                     case 2:
                         mutationStoreValue = this.mutationStore &&
                             (this.mutationStore[mutationId] = {
@@ -18865,9 +18798,9 @@ var QueryManager = (function () {
         });
         this.queries.set(observable.queryId, queryInfo);
         queryInfo.init({
-            document: options.query,
+            document: observable.query,
             observableQuery: observable,
-            variables: options.variables,
+            variables: observable.variables,
         });
         return observable;
     };
@@ -19051,8 +18984,10 @@ var QueryManager = (function () {
     };
     QueryManager.prototype.removeQuery = function (queryId) {
         this.fetchCancelFns.delete(queryId);
-        this.getQuery(queryId).stop();
-        this.queries.delete(queryId);
+        if (this.queries.has(queryId)) {
+            this.getQuery(queryId).stop();
+            this.queries.delete(queryId);
+        }
     };
     QueryManager.prototype.broadcastQueries = function () {
         if (this.onBroadcast)
@@ -19136,10 +19071,11 @@ var QueryManager = (function () {
             var aqr = {
                 data: result.data,
                 loading: false,
-                networkStatus: queryInfo.networkStatus || core_networkStatus/* NetworkStatus.ready */.I.ready,
+                networkStatus: core_networkStatus/* NetworkStatus.ready */.I.ready,
             };
             if (hasErrors && options.errorPolicy !== "ignore") {
                 aqr.errors = result.errors;
+                aqr.networkStatus = core_networkStatus/* NetworkStatus.error */.I.error;
             }
             return aqr;
         }, function (networkError) {
@@ -19158,7 +19094,8 @@ var QueryManager = (function () {
         var query = this.transform(options.query).document;
         var variables = this.getVariables(query, options.variables);
         var queryInfo = this.getQuery(queryId);
-        var _a = options.fetchPolicy, fetchPolicy = _a === void 0 ? "cache-first" : _a, _b = options.errorPolicy, errorPolicy = _b === void 0 ? "none" : _b, _c = options.returnPartialData, returnPartialData = _c === void 0 ? false : _c, _d = options.notifyOnNetworkStatusChange, notifyOnNetworkStatusChange = _d === void 0 ? false : _d, _e = options.context, context = _e === void 0 ? {} : _e;
+        var defaults = this.defaultOptions.watchQuery;
+        var _a = options.fetchPolicy, fetchPolicy = _a === void 0 ? defaults && defaults.fetchPolicy || "cache-first" : _a, _b = options.errorPolicy, errorPolicy = _b === void 0 ? defaults && defaults.errorPolicy || "none" : _b, _c = options.returnPartialData, returnPartialData = _c === void 0 ? false : _c, _d = options.notifyOnNetworkStatusChange, notifyOnNetworkStatusChange = _d === void 0 ? false : _d, _e = options.context, context = _e === void 0 ? {} : _e;
         var normalized = Object.assign({}, options, {
             query: query,
             variables: variables,
@@ -19180,7 +19117,9 @@ var QueryManager = (function () {
             : fromVariables(normalized.variables));
         concast.cleanup(function () {
             _this.fetchCancelFns.delete(queryId);
-            (0,ObservableQuery/* applyNextFetchPolicy */.fb)(options);
+            if (queryInfo.observableQuery) {
+                queryInfo.observableQuery["applyNextFetchPolicy"]("after-fetch", options);
+            }
         });
         return concast;
     };
@@ -19254,10 +19193,10 @@ var QueryManager = (function () {
     };
     QueryManager.prototype.fetchQueryByPolicy = function (queryInfo, _a, networkStatus) {
         var _this = this;
-        var query = _a.query, variables = _a.variables, fetchPolicy = _a.fetchPolicy, refetchWritePolicy = _a.refetchWritePolicy, errorPolicy = _a.errorPolicy, returnPartialData = _a.returnPartialData, context = _a.context, notifyOnNetworkStatusChange = _a.notifyOnNetworkStatusChange;
+        var query = _a.query, variables = _a.variables, fetchPolicy = _a.fetchPolicy, refetchWritePolicy = _a.refetchWritePolicy, errorPolicy = _a.errorPolicy, returnPartialData = _a.returnPartialData, context = _a.context, notifyOnNetworkStatusChange = _a.notifyOnNetworkStatusChange, fetchBlockingPromise = _a.fetchBlockingPromise;
         var oldNetworkStatus = queryInfo.networkStatus;
         queryInfo.init({
-            document: query,
+            document: this.transform(query).document,
             variables: variables,
             networkStatus: networkStatus,
         });
@@ -19287,12 +19226,26 @@ var QueryManager = (function () {
                 refetchWritePolicy !== "merge") ? 1
                 : 2;
         var resultsFromLink = function () {
-            return _this.getResultsFromLink(queryInfo, cacheWriteBehavior, {
+            var get = function () { return _this.getResultsFromLink(queryInfo, cacheWriteBehavior, {
                 variables: variables,
                 context: context,
                 fetchPolicy: fetchPolicy,
                 errorPolicy: errorPolicy,
-            });
+            }); };
+            return fetchBlockingPromise ? fetchBlockingPromise.then(function (ok) { return ok ? get() : zen_observable_ts_module/* Observable.of */.y.of(); }, function (error) {
+                var apolloError = (0,errors/* isApolloError */.M)(error)
+                    ? error
+                    : new errors/* ApolloError */.c({ clientErrors: [error] });
+                if (errorPolicy !== "ignore") {
+                    queryInfo.markError(apolloError);
+                }
+                return zen_observable_ts_module/* Observable.of */.y.of({
+                    loading: false,
+                    networkStatus: core_networkStatus/* NetworkStatus.error */.I.error,
+                    error: apolloError,
+                    data: readCache().result,
+                });
+            }) : get();
         };
         var shouldNotify = notifyOnNetworkStatusChange &&
             typeof oldNetworkStatus === "number" &&
@@ -19368,6 +19321,8 @@ var QueryManager = (function () {
 }());
 
 //# sourceMappingURL=QueryManager.js.map
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/mergeOptions.js
+var mergeOptions = __webpack_require__(4012);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/core/ApolloClient.js
 
 
@@ -19376,17 +19331,12 @@ var QueryManager = (function () {
 
 
 
-
 var hasSuggestedDevtools = false;
-function mergeOptions(defaults, options) {
-    return (0,compact/* compact */.o)(defaults, options, options.variables && {
-        variables: (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, defaults.variables), options.variables),
-    });
-}
+
+
 var ApolloClient = (function () {
     function ApolloClient(options) {
         var _this = this;
-        this.defaultOptions = {};
         this.resetStoreCallbacks = [];
         this.clearStoreCallbacks = [];
         var uri = options.uri, credentials = options.credentials, headers = options.headers, cache = options.cache, _a = options.ssrMode, ssrMode = _a === void 0 ? false : _a, _b = options.ssrForceFetchDelay, ssrForceFetchDelay = _b === void 0 ? 0 : _b, _c = options.connectToDevTools, connectToDevTools = _c === void 0 ? typeof window === 'object' &&
@@ -19407,7 +19357,7 @@ var ApolloClient = (function () {
         this.cache = cache;
         this.disableNetworkFetches = ssrMode || ssrForceFetchDelay > 0;
         this.queryDeduplication = queryDeduplication;
-        this.defaultOptions = defaultOptions || {};
+        this.defaultOptions = defaultOptions || Object.create(null);
         this.typeDefs = typeDefs;
         if (ssrForceFetchDelay) {
             setTimeout(function () { return (_this.disableNetworkFetches = false); }, ssrForceFetchDelay);
@@ -19454,6 +19404,7 @@ var ApolloClient = (function () {
         this.queryManager = new QueryManager({
             cache: this.cache,
             link: this.link,
+            defaultOptions: this.defaultOptions,
             queryDeduplication: queryDeduplication,
             ssrMode: ssrMode,
             clientAwareness: {
@@ -19481,7 +19432,7 @@ var ApolloClient = (function () {
     };
     ApolloClient.prototype.watchQuery = function (options) {
         if (this.defaultOptions.watchQuery) {
-            options = mergeOptions(this.defaultOptions.watchQuery, options);
+            options = (0,mergeOptions/* mergeOptions */.J)(this.defaultOptions.watchQuery, options);
         }
         if (this.disableNetworkFetches &&
             (options.fetchPolicy === 'network-only' ||
@@ -19492,7 +19443,7 @@ var ApolloClient = (function () {
     };
     ApolloClient.prototype.query = function (options) {
         if (this.defaultOptions.query) {
-            options = mergeOptions(this.defaultOptions.query, options);
+            options = (0,mergeOptions/* mergeOptions */.J)(this.defaultOptions.query, options);
         }
         __DEV__ ? (0,globals/* invariant */.kG)(options.fetchPolicy !== 'cache-and-network', 'The cache-and-network fetchPolicy does not work with client.query, because ' +
             'client.query can only return a single result. Please use client.watchQuery ' +
@@ -19505,7 +19456,7 @@ var ApolloClient = (function () {
     };
     ApolloClient.prototype.mutate = function (options) {
         if (this.defaultOptions.mutate) {
-            options = mergeOptions(this.defaultOptions.mutate, options);
+            options = (0,mergeOptions/* mergeOptions */.J)(this.defaultOptions.mutate, options);
         }
         return this.queryManager.mutate(options);
     };
@@ -19622,17 +19573,17 @@ var ApolloClient = (function () {
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "DC": () => (/* binding */ logMissingFieldErrors),
-/* harmony export */   "fb": () => (/* binding */ applyNextFetchPolicy),
-/* harmony export */   "ue": () => (/* binding */ ObservableQuery)
+/* harmony export */   "ue": () => (/* binding */ ObservableQuery),
+/* harmony export */   "vj": () => (/* binding */ reobserveCacheFirst)
 /* harmony export */ });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(655);
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9137);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 /* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2152);
 /* harmony import */ var _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1644);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6765);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(9487);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(1436);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(3712);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(4012);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(8263);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(8216);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(6403);
@@ -19642,7 +19593,6 @@ var ApolloClient = (function () {
 
 
 var assign = Object.assign, hasOwnProperty = Object.hasOwnProperty;
-var warnedAboutUpdateQuery = false;
 var ObservableQuery = (function (_super) {
     (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__extends */ .ZT)(ObservableQuery, _super);
     function ObservableQuery(_a) {
@@ -19675,16 +19625,22 @@ var ObservableQuery = (function (_super) {
         }) || this;
         _this.observers = new Set();
         _this.subscriptions = new Set();
-        _this.isTornDown = false;
-        _this.options = options;
-        _this.queryId = queryInfo.queryId || queryManager.generateQueryId();
-        var opDef = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .getOperationDefinition */ .$H)(options.query);
-        _this.queryName = opDef && opDef.name && opDef.name.value;
-        _this.initialFetchPolicy = options.fetchPolicy || "cache-first";
-        _this.queryManager = queryManager;
         _this.queryInfo = queryInfo;
+        _this.queryManager = queryManager;
+        _this.isTornDown = false;
+        _this.options = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({ initialFetchPolicy: options.fetchPolicy || "cache-first" }, options);
+        _this.queryId = queryInfo.queryId || queryManager.generateQueryId();
+        var opDef = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .getOperationDefinition */ .$H)(_this.query);
+        _this.queryName = opDef && opDef.name && opDef.name.value;
         return _this;
     }
+    Object.defineProperty(ObservableQuery.prototype, "query", {
+        get: function () {
+            return this.queryManager.transform(this.options.query).document;
+        },
+        enumerable: false,
+        configurable: true
+    });
     Object.defineProperty(ObservableQuery.prototype, "variables", {
         get: function () {
             return this.options.variables;
@@ -19799,7 +19755,7 @@ var ObservableQuery = (function (_super) {
             reobserveOptions.fetchPolicy = 'network-only';
         }
         if (__DEV__ && variables && hasOwnProperty.call(variables, "variables")) {
-            var queryDef = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .getQueryDefinition */ .iW)(this.options.query);
+            var queryDef = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .getQueryDefinition */ .iW)(this.query);
             var vars = queryDef.variableDefinitions;
             if (!vars || !vars.some(function (v) { return v.variable.name.value === "variables"; })) {
                 __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.warn */ .kG.warn("Called refetch(".concat(JSON.stringify(variables), ") for query ").concat(((_a = queryDef.name) === null || _a === void 0 ? void 0 : _a.value) || JSON.stringify(queryDef), ", which does not declare a $variables variable.\nDid you mean to call refetch(variables) instead of refetch({ variables })?"));
@@ -19813,37 +19769,51 @@ var ObservableQuery = (function (_super) {
     };
     ObservableQuery.prototype.fetchMore = function (fetchMoreOptions) {
         var _this = this;
-        var combinedOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, (fetchMoreOptions.query ? fetchMoreOptions : (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, this.options), fetchMoreOptions), { variables: (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, this.options.variables), fetchMoreOptions.variables) }))), { fetchPolicy: "no-cache" });
+        var combinedOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, (fetchMoreOptions.query ? fetchMoreOptions : (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, this.options), { query: this.query }), fetchMoreOptions), { variables: (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, this.options.variables), fetchMoreOptions.variables) }))), { fetchPolicy: "no-cache" });
         var qid = this.queryManager.generateQueryId();
+        var queryInfo = this.queryInfo;
+        var originalNetworkStatus = queryInfo.networkStatus;
+        queryInfo.networkStatus = _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.fetchMore */ .I.fetchMore;
         if (combinedOptions.notifyOnNetworkStatusChange) {
-            this.queryInfo.networkStatus = _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.fetchMore */ .I.fetchMore;
             this.observe();
         }
+        var updatedQuerySet = new Set();
         return this.queryManager.fetchQuery(qid, combinedOptions, _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.fetchMore */ .I.fetchMore).then(function (fetchMoreResult) {
-            var data = fetchMoreResult.data;
-            var updateQuery = fetchMoreOptions.updateQuery;
-            if (updateQuery) {
-                if (__DEV__ &&
-                    !warnedAboutUpdateQuery) {
-                    __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.warn */ .kG.warn("The updateQuery callback for fetchMore is deprecated, and will be removed\nin the next major version of Apollo Client.\n\nPlease convert updateQuery functions to field policies with appropriate\nread and merge functions, or use/adapt a helper function (such as\nconcatPagination, offsetLimitPagination, or relayStylePagination) from\n@apollo/client/utilities.\n\nThe field policy system handles pagination more effectively than a\nhand-written updateQuery function, and you only need to define the policy\nonce, rather than every time you call fetchMore.");
-                    warnedAboutUpdateQuery = true;
-                }
-                _this.updateQuery(function (previous) { return updateQuery(previous, {
-                    fetchMoreResult: data,
-                    variables: combinedOptions.variables,
-                }); });
+            _this.queryManager.removeQuery(qid);
+            if (queryInfo.networkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.fetchMore */ .I.fetchMore) {
+                queryInfo.networkStatus = originalNetworkStatus;
             }
-            else {
-                _this.queryManager.cache.writeQuery({
-                    query: combinedOptions.query,
-                    variables: combinedOptions.variables,
-                    data: data,
-                });
-            }
+            _this.queryManager.cache.batch({
+                update: function (cache) {
+                    var updateQuery = fetchMoreOptions.updateQuery;
+                    if (updateQuery) {
+                        cache.updateQuery({
+                            query: _this.query,
+                            variables: _this.variables,
+                            returnPartialData: true,
+                            optimistic: false,
+                        }, function (previous) { return updateQuery(previous, {
+                            fetchMoreResult: fetchMoreResult.data,
+                            variables: combinedOptions.variables,
+                        }); });
+                    }
+                    else {
+                        cache.writeQuery({
+                            query: combinedOptions.query,
+                            variables: combinedOptions.variables,
+                            data: fetchMoreResult.data,
+                        });
+                    }
+                },
+                onWatchUpdated: function (watch) {
+                    updatedQuerySet.add(watch.query);
+                },
+            });
             return fetchMoreResult;
         }).finally(function () {
-            _this.queryManager.stopQuery(qid);
-            _this.reobserve();
+            if (!updatedQuerySet.has(_this.query)) {
+                reobserveCacheFirst(_this);
+            }
         });
     };
     ObservableQuery.prototype.subscribeToMore = function (options) {
@@ -19896,7 +19866,7 @@ var ObservableQuery = (function (_super) {
             return Promise.resolve();
         }
         return this.reobserve({
-            fetchPolicy: this.initialFetchPolicy,
+            fetchPolicy: this.options.initialFetchPolicy,
             variables: variables,
         }, _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.setVariables */ .I.setVariables);
     };
@@ -19927,6 +19897,26 @@ var ObservableQuery = (function (_super) {
     ObservableQuery.prototype.stopPolling = function () {
         this.options.pollInterval = 0;
         this.updatePolling();
+    };
+    ObservableQuery.prototype.applyNextFetchPolicy = function (reason, options) {
+        if (options.nextFetchPolicy) {
+            var _a = options.fetchPolicy, fetchPolicy = _a === void 0 ? "cache-first" : _a, _b = options.initialFetchPolicy, initialFetchPolicy = _b === void 0 ? fetchPolicy : _b;
+            if (typeof options.nextFetchPolicy === "function") {
+                options.fetchPolicy = options.nextFetchPolicy(fetchPolicy, {
+                    reason: reason,
+                    options: options,
+                    observable: this,
+                    initialFetchPolicy: initialFetchPolicy,
+                });
+            }
+            else if (reason === "variables-changed") {
+                options.fetchPolicy = initialFetchPolicy;
+            }
+            else {
+                options.fetchPolicy = options.nextFetchPolicy;
+            }
+        }
+        return options.fetchPolicy;
     };
     ObservableQuery.prototype.fetch = function (options, newNetworkStatus) {
         this.queryManager.setObservableQuery(this);
@@ -19991,16 +19981,18 @@ var ObservableQuery = (function (_super) {
             newNetworkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.fetchMore */ .I.fetchMore ||
             newNetworkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.poll */ .I.poll;
         var oldVariables = this.options.variables;
+        var oldFetchPolicy = this.options.fetchPolicy;
+        var mergedOptions = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_7__/* .mergeOptions */ .J)(this.options, newOptions || {});
         var options = useDisposableConcast
-            ? (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_7__/* .compact */ .o)(this.options, newOptions)
-            : assign(this.options, (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_7__/* .compact */ .o)(newOptions));
+            ? mergedOptions
+            : assign(this.options, mergedOptions);
         if (!useDisposableConcast) {
             this.updatePolling();
             if (newOptions &&
                 newOptions.variables &&
-                !newOptions.fetchPolicy &&
-                !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(newOptions.variables, oldVariables)) {
-                options.fetchPolicy = this.initialFetchPolicy;
+                !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(newOptions.variables, oldVariables) &&
+                (!newOptions.fetchPolicy || newOptions.fetchPolicy === oldFetchPolicy)) {
+                this.applyNextFetchPolicy("variables-changed", options);
                 if (newNetworkStatus === void 0) {
                     newNetworkStatus = _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.setVariables */ .I.setVariables;
                 }
@@ -20065,20 +20057,29 @@ var ObservableQuery = (function (_super) {
 }(_utilities_index_js__WEBPACK_IMPORTED_MODULE_9__/* .Observable */ .y));
 
 (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_10__/* .fixObservableSubclass */ .D)(ObservableQuery);
+function reobserveCacheFirst(obsQuery) {
+    var _a = obsQuery.options, fetchPolicy = _a.fetchPolicy, nextFetchPolicy = _a.nextFetchPolicy;
+    if (fetchPolicy === "cache-and-network" ||
+        fetchPolicy === "network-only") {
+        return obsQuery.reobserve({
+            fetchPolicy: "cache-first",
+            nextFetchPolicy: function () {
+                this.nextFetchPolicy = nextFetchPolicy;
+                if (typeof nextFetchPolicy === "function") {
+                    return nextFetchPolicy.apply(this, arguments);
+                }
+                return fetchPolicy;
+            },
+        });
+    }
+    return obsQuery.reobserve();
+}
 function defaultSubscriptionObserverErrorCallback(error) {
     __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.error */ .kG.error('Unhandled error', error.message, error.stack);
 }
 function logMissingFieldErrors(missing) {
     if (__DEV__ && missing) {
         __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.debug */ .kG.debug("Missing cache result fields: ".concat(JSON.stringify(missing)), missing);
-    }
-}
-function applyNextFetchPolicy(options) {
-    var _a = options.fetchPolicy, fetchPolicy = _a === void 0 ? "cache-first" : _a, nextFetchPolicy = options.nextFetchPolicy;
-    if (nextFetchPolicy) {
-        options.fetchPolicy = typeof nextFetchPolicy === "function"
-            ? nextFetchPolicy.call(options, fetchPolicy)
-            : nextFetchPolicy;
     }
 }
 //# sourceMappingURL=ObservableQuery.js.map
@@ -20090,109 +20091,111 @@ function applyNextFetchPolicy(options) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "$g": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.$g),
-/* harmony export */   "Ct": () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_5__.C),
-/* harmony export */   "Dp": () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_11__.Dp),
-/* harmony export */   "E4": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.E4),
-/* harmony export */   "HW": () => (/* reexport safe */ graphql_tag__WEBPACK_IMPORTED_MODULE_20__.resetCaches),
-/* harmony export */   "Hg": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.Hg),
-/* harmony export */   "Ie": () => (/* reexport safe */ _networkStatus_js__WEBPACK_IMPORTED_MODULE_3__.I),
-/* harmony export */   "J9": () => (/* reexport safe */ graphql_tag__WEBPACK_IMPORTED_MODULE_20__.disableExperimentalFragmentVariables),
-/* harmony export */   "JH": () => (/* reexport safe */ _ApolloClient_js__WEBPACK_IMPORTED_MODULE_1__.J),
-/* harmony export */   "LQ": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.LQ),
-/* harmony export */   "MS": () => (/* reexport safe */ _errors_index_js__WEBPACK_IMPORTED_MODULE_4__.M),
-/* harmony export */   "PW": () => (/* reexport safe */ _link_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.P),
-/* harmony export */   "Ps": () => (/* reexport safe */ graphql_tag__WEBPACK_IMPORTED_MODULE_20__.gql),
-/* harmony export */   "QS": () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_10__.QS),
-/* harmony export */   "Qc": () => (/* reexport safe */ _link_utils_index_js__WEBPACK_IMPORTED_MODULE_13__.Q),
-/* harmony export */   "Ri": () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_6__.R),
-/* harmony export */   "SC": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.SC),
-/* harmony export */   "U2": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.U2),
-/* harmony export */   "Vi": () => (/* reexport safe */ _link_utils_index_js__WEBPACK_IMPORTED_MODULE_14__.V),
-/* harmony export */   "Vl": () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_11__.Vl),
-/* harmony export */   "Yk": () => (/* reexport safe */ _utilities_index_js__WEBPACK_IMPORTED_MODULE_18__.Yk),
-/* harmony export */   "_t": () => (/* reexport safe */ graphql_tag__WEBPACK_IMPORTED_MODULE_20__.disableFragmentWarnings),
-/* harmony export */   "cA": () => (/* reexport safe */ _errors_index_js__WEBPACK_IMPORTED_MODULE_4__.c),
-/* harmony export */   "cS": () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_11__.cS),
-/* harmony export */   "dO": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.dO),
-/* harmony export */   "fb": () => (/* reexport safe */ _ObservableQuery_js__WEBPACK_IMPORTED_MODULE_2__.fb),
+/* harmony export */   "$g": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.$g),
+/* harmony export */   "Ct": () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_6__.C),
+/* harmony export */   "Dp": () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_12__.Dp),
+/* harmony export */   "E4": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.E4),
+/* harmony export */   "HW": () => (/* reexport safe */ graphql_tag__WEBPACK_IMPORTED_MODULE_21__.resetCaches),
+/* harmony export */   "Hg": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.Hg),
+/* harmony export */   "Ie": () => (/* reexport safe */ _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__.I),
+/* harmony export */   "J9": () => (/* reexport safe */ graphql_tag__WEBPACK_IMPORTED_MODULE_21__.disableExperimentalFragmentVariables),
+/* harmony export */   "JH": () => (/* reexport safe */ _ApolloClient_js__WEBPACK_IMPORTED_MODULE_2__.J),
+/* harmony export */   "LQ": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.LQ),
+/* harmony export */   "MS": () => (/* reexport safe */ _errors_index_js__WEBPACK_IMPORTED_MODULE_5__.M),
+/* harmony export */   "PW": () => (/* reexport safe */ _link_utils_index_js__WEBPACK_IMPORTED_MODULE_17__.P),
+/* harmony export */   "Ps": () => (/* reexport safe */ graphql_tag__WEBPACK_IMPORTED_MODULE_21__.gql),
+/* harmony export */   "QS": () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_11__.QS),
+/* harmony export */   "Qc": () => (/* reexport safe */ _link_utils_index_js__WEBPACK_IMPORTED_MODULE_14__.Q),
+/* harmony export */   "Ri": () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_7__.R),
+/* harmony export */   "SC": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.SC),
+/* harmony export */   "U2": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.U2),
+/* harmony export */   "Vi": () => (/* reexport safe */ _link_utils_index_js__WEBPACK_IMPORTED_MODULE_15__.V),
+/* harmony export */   "Vl": () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_12__.Vl),
+/* harmony export */   "Yk": () => (/* reexport safe */ _utilities_index_js__WEBPACK_IMPORTED_MODULE_19__.Yk),
+/* harmony export */   "_t": () => (/* reexport safe */ graphql_tag__WEBPACK_IMPORTED_MODULE_21__.disableFragmentWarnings),
+/* harmony export */   "cA": () => (/* reexport safe */ _errors_index_js__WEBPACK_IMPORTED_MODULE_5__.c),
+/* harmony export */   "cS": () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_12__.cS),
+/* harmony export */   "dO": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.dO),
 /* harmony export */   "fe": () => (/* reexport safe */ _ApolloClient_js__WEBPACK_IMPORTED_MODULE_1__.f),
-/* harmony export */   "gE": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.gE),
-/* harmony export */   "h4": () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_7__.h),
-/* harmony export */   "ht": () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_11__.ht),
-/* harmony export */   "i0": () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_11__.i0),
-/* harmony export */   "kQ": () => (/* reexport safe */ _utilities_index_js__WEBPACK_IMPORTED_MODULE_18__.kQ),
-/* harmony export */   "p4": () => (/* reexport safe */ _link_utils_index_js__WEBPACK_IMPORTED_MODULE_15__.p),
-/* harmony export */   "qu": () => (/* reexport safe */ ts_invariant__WEBPACK_IMPORTED_MODULE_19__.U6),
-/* harmony export */   "rg": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.rg),
-/* harmony export */   "sb": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.sb),
-/* harmony export */   "uG": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.uG),
-/* harmony export */   "ue": () => (/* reexport safe */ _ObservableQuery_js__WEBPACK_IMPORTED_MODULE_2__.ue),
-/* harmony export */   "vR": () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_9__.uG),
-/* harmony export */   "ve": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.ve),
-/* harmony export */   "wO": () => (/* reexport safe */ graphql_tag__WEBPACK_IMPORTED_MODULE_20__.enableExperimentalFragmentVariables),
-/* harmony export */   "y$": () => (/* reexport safe */ _utilities_index_js__WEBPACK_IMPORTED_MODULE_17__.y),
-/* harmony export */   "yD": () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_8__.y),
-/* harmony export */   "zo": () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_11__.zo)
+/* harmony export */   "gE": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.gE),
+/* harmony export */   "h4": () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_8__.h),
+/* harmony export */   "ht": () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_12__.ht),
+/* harmony export */   "i0": () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_12__.i0),
+/* harmony export */   "kQ": () => (/* reexport safe */ _utilities_index_js__WEBPACK_IMPORTED_MODULE_19__.kQ),
+/* harmony export */   "p4": () => (/* reexport safe */ _link_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.p),
+/* harmony export */   "qu": () => (/* reexport safe */ ts_invariant__WEBPACK_IMPORTED_MODULE_20__.U6),
+/* harmony export */   "rg": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.rg),
+/* harmony export */   "sb": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.sb),
+/* harmony export */   "uG": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.uG),
+/* harmony export */   "ue": () => (/* reexport safe */ _ObservableQuery_js__WEBPACK_IMPORTED_MODULE_3__.ue),
+/* harmony export */   "vR": () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_10__.uG),
+/* harmony export */   "ve": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.ve),
+/* harmony export */   "wO": () => (/* reexport safe */ graphql_tag__WEBPACK_IMPORTED_MODULE_21__.enableExperimentalFragmentVariables),
+/* harmony export */   "y$": () => (/* reexport safe */ _utilities_index_js__WEBPACK_IMPORTED_MODULE_18__.y),
+/* harmony export */   "yD": () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_9__.y),
+/* harmony export */   "zo": () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_12__.zo)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9137);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _ApolloClient_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5614);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _ObservableQuery_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4780);
+	/* harmony import */ var _ApolloClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4012);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _networkStatus_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1644);
+	/* harmony import */ var _ObservableQuery_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4780);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _errors_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(990);
+	/* harmony import */ var _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1644);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5087);
+	/* harmony import */ var _errors_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(990);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(1294);
+	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(5087);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(6988);
+	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(1294);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(5727);
+	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(521);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(9641);
+	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(5727);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(6438);
+	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(9641);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _link_core_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(6148);
+	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(6438);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(5645);
+	/* harmony import */ var _link_core_index_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(6148);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _link_utils_index_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(6261);
+	/* harmony import */ var _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(5645);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _link_utils_index_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(5933);
+	/* harmony import */ var _link_utils_index_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(6261);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _link_utils_index_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(2824);
+	/* harmony import */ var _link_utils_index_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(5933);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _link_utils_index_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(2782);
+	/* harmony import */ var _link_utils_index_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(2824);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(8216);
+	/* harmony import */ var _link_utils_index_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(2782);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(1761);
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(8216);
 }
-/* harmony import */ var ts_invariant__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(7591);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var graphql_tag__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(5584);
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(1761);
+}
+/* harmony import */ var ts_invariant__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(6128);
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var graphql_tag__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(5584);
 }
 
 
@@ -20208,7 +20211,7 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 
 
-(0,ts_invariant__WEBPACK_IMPORTED_MODULE_19__/* .setVerbosity */ .U6)(_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .DEV */ .Rk ? "log" : "silent");
+(0,ts_invariant__WEBPACK_IMPORTED_MODULE_20__/* .setVerbosity */ .U6)(_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .DEV */ .Rk ? "log" : "silent");
 
 //# sourceMappingURL=index.js.map
 
@@ -20248,7 +20251,7 @@ function isNetworkRequestInFlight(networkStatus) {
 /* harmony export */   "c": () => (/* binding */ ApolloError)
 /* harmony export */ });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(655);
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9137);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1436);
 
 
@@ -20314,7 +20317,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "NetworkStatus": () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.Ie),
 /* harmony export */   "Observable": () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.y$),
 /* harmony export */   "ObservableQuery": () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.ue),
-/* harmony export */   "applyNextFetchPolicy": () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.fb),
 /* harmony export */   "checkFetcher": () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.U2),
 /* harmony export */   "concat": () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.zo),
 /* harmony export */   "createHttpLink": () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.LQ),
@@ -20383,7 +20385,7 @@ __webpack_require__.d(__webpack_exports__, {
 // EXTERNAL MODULE: ./node_modules/tslib/tslib.es6.js
 var tslib_es6 = __webpack_require__(655);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/globals/index.js + 5 modules
-var globals = __webpack_require__(9137);
+var globals = __webpack_require__(846);
 // EXTERNAL MODULE: ./node_modules/zen-observable-ts/module.js
 var zen_observable_ts_module = __webpack_require__(8216);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/link/utils/createOperation.js
@@ -20621,7 +20623,7 @@ var from = _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__/* .ApolloLink.from */ .i.
 /* harmony export */   "i0": () => (/* reexport safe */ _ApolloLink_js__WEBPACK_IMPORTED_MODULE_6__.i),
 /* harmony export */   "zo": () => (/* reexport safe */ _concat_js__WEBPACK_IMPORTED_MODULE_4__.z)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9137);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _empty_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6973);
 }
@@ -20701,7 +20703,7 @@ var HttpLink = (function (_super) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "U": () => (/* binding */ checkFetcher)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9137);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 
 var checkFetcher = function (fetcher) {
     if (!fetcher && typeof fetch === 'undefined') {
@@ -20722,7 +20724,7 @@ var checkFetcher = function (fetcher) {
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(655);
 }
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9137);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(7304);
 }
@@ -20917,7 +20919,7 @@ var createSignalIfSupported = function () {
 /* harmony export */   "uG": () => (/* reexport safe */ _HttpLink_js__WEBPACK_IMPORTED_MODULE_8__.u),
 /* harmony export */   "ve": () => (/* reexport safe */ _selectHttpOptionsAndBody_js__WEBPACK_IMPORTED_MODULE_3__.ve)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9137);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4805);
 }
@@ -21177,7 +21179,7 @@ var selectURI = function (operation, fallbackURI) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "g": () => (/* binding */ serializeFetchParameter)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9137);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 
 var serializeFetchParameter = function (p, label) {
     var serialized;
@@ -21266,7 +21268,7 @@ var throwServerError = function (response, result, message) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "V": () => (/* binding */ toPromise)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9137);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 
 function toPromise(observable) {
     var completed = false;
@@ -21296,7 +21298,7 @@ function toPromise(observable) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "a": () => (/* binding */ ApolloConsumer)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9137);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7294);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _ApolloContext_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5317);
@@ -21356,7 +21358,7 @@ function getApolloContext() {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "e": () => (/* binding */ ApolloProvider)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9137);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7294);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _ApolloContext_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5317);
@@ -21393,7 +21395,7 @@ var ApolloProvider = function (_a) {
 /* harmony export */   "td": () => (/* reexport safe */ _useLazyQuery_js__WEBPACK_IMPORTED_MODULE_2__.t),
 /* harmony export */   "xJ": () => (/* reexport safe */ _useApolloClient_js__WEBPACK_IMPORTED_MODULE_1__.x)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9137);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6252);
 }
@@ -21430,7 +21432,7 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "x": () => (/* binding */ useApolloClient)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9137);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7294);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _context_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5317);
@@ -21458,41 +21460,57 @@ function useApolloClient(override) {
 /* harmony export */   "t": () => (/* binding */ useLazyQuery)
 /* harmony export */ });
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(655);
+	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(655);
 }
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7294);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _errors_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(990);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _useQuery_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1641);
 }
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6252);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1436);
+}
+
+
+
 
 
 
 var EAGER_METHODS = (/* runtime-dependent pure expression or super */ /^(33[45]|149|179|28|452)$/.test(__webpack_require__.j) ? ([
     'refetch',
+    'reobserve',
     'fetchMore',
     'updateQuery',
     'startPolling',
     'subscribeToMore',
 ]) : null);
 function useLazyQuery(query, options) {
-    var _a = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
-        called: false,
-    }), execution = _a[0], setExecution = _a[1];
-    var result = (0,_useQuery_js__WEBPACK_IMPORTED_MODULE_1__/* .useQuery */ .a)(query, (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, options), execution.options), { fetchPolicy: execution.called ? options === null || options === void 0 ? void 0 : options.fetchPolicy : 'standby', skip: undefined }));
-    if (!execution.called) {
-        result = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, result), { loading: false, data: void 0, error: void 0, called: false });
-    }
+    var internalState = (0,_useQuery_js__WEBPACK_IMPORTED_MODULE_1__/* .useInternalState */ .A)((0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__/* .useApolloClient */ .x)(options && options.client), query);
+    var execOptionsRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
+    var defaultOptions = internalState.client.defaultOptions.watchQuery;
+    var initialFetchPolicy = (options && options.fetchPolicy) ||
+        (execOptionsRef.current && execOptionsRef.current.fetchPolicy) ||
+        (defaultOptions && defaultOptions.fetchPolicy) ||
+        "cache-first";
+    var useQueryResult = internalState.useQuery((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({}, options), execOptionsRef.current), { skip: !execOptionsRef.current }));
+    var result = Object.assign(useQueryResult, {
+        called: !!execOptionsRef.current,
+    });
     var eagerMethods = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
         var eagerMethods = {};
         var _loop_1 = function (key) {
             var method = result[key];
             eagerMethods[key] = function () {
-                var args = [];
-                for (var _i = 0; _i < arguments.length; _i++) {
-                    args[_i] = arguments[_i];
+                if (!execOptionsRef.current) {
+                    execOptionsRef.current = Object.create(null);
+                    internalState.forceUpdate();
                 }
-                setExecution(function (execution) { return ((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, execution), { called: true })); });
-                return method.apply(void 0, args);
+                return method.apply(this, arguments);
             };
         };
         for (var _i = 0, EAGER_METHODS_1 = EAGER_METHODS; _i < EAGER_METHODS_1.length; _i++) {
@@ -21501,15 +21519,24 @@ function useLazyQuery(query, options) {
         }
         return eagerMethods;
     }, []);
-    result.error = result.error || void 0;
     Object.assign(result, eagerMethods);
     var execute = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (executeOptions) {
-        setExecution({ called: true, options: executeOptions });
-        var promise = result.refetch(executeOptions === null || executeOptions === void 0 ? void 0 : executeOptions.variables).then(function (result1) {
-            var result2 = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, result), { data: result1.data, error: result1.error, called: true, loading: false });
-            Object.assign(result2, eagerMethods);
-            return result2;
-        });
+        var promise = result.reobserve(execOptionsRef.current = executeOptions ? (0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({}, executeOptions), { fetchPolicy: executeOptions.fetchPolicy || initialFetchPolicy }) : {
+            fetchPolicy: initialFetchPolicy,
+        }).then(function (apolloQueryResult) {
+            apolloQueryResult = apolloQueryResult || internalState["getCurrentResult"]();
+            if (apolloQueryResult.error ||
+                (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .isNonEmptyArray */ .O)(apolloQueryResult.errors)) {
+                var _a = result.observable.options.errorPolicy, errorPolicy = _a === void 0 ? "none" : _a;
+                if (errorPolicy === "none") {
+                    throw apolloQueryResult.error || new _errors_index_js__WEBPACK_IMPORTED_MODULE_5__/* .ApolloError */ .c({
+                        graphQLErrors: apolloQueryResult.errors,
+                    });
+                }
+            }
+            return internalState.toQueryResult(apolloQueryResult);
+        }).then(function (queryResult) { return Object.assign(queryResult, eagerMethods); });
+        internalState.forceUpdate();
         promise.catch(function () { });
         return promise;
     }, []);
@@ -21531,7 +21558,7 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 }
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7294);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5614);
+	/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4012);
 }
 /* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2152);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
@@ -21632,9 +21659,12 @@ function useMutation(mutation, options) {
     var reset = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
         setResult({ called: false, loading: false, client: client });
     }, []);
-    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () { return function () {
-        ref.current.isMounted = false;
-    }; }, []);
+    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+        ref.current.isMounted = true;
+        return function () {
+            ref.current.isMounted = false;
+        };
+    }, []);
     return [execute, (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)({ reset: reset }, result)];
 }
 //# sourceMappingURL=useMutation.js.map
@@ -21646,31 +21676,24 @@ function useMutation(mutation, options) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "A": () => (/* binding */ useInternalState),
 /* harmony export */   "a": () => (/* binding */ useQuery)
 /* harmony export */ });
-if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(655);
-}
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(655);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7294);
-/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2152);
-if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(5614);
-}
-if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _context_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5317);
-}
-if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _errors_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(990);
-}
-if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1644);
-}
-if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _parser_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4692);
-}
+/* harmony import */ var use_sync_external_store_shim_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1688);
+/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2152);
+/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(4012);
+/* harmony import */ var _context_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(5317);
+/* harmony import */ var _errors_index_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(990);
+/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1644);
+/* harmony import */ var _parser_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(4692);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6252);
 }
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(8702);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(320);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(1436);
 
 
 
@@ -21680,226 +21703,276 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 
 
+
+
+var hasOwnProperty = Object.prototype.hasOwnProperty;
 function useQuery(query, options) {
-    var _a;
-    var context = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)((0,_context_index_js__WEBPACK_IMPORTED_MODULE_2__/* .getApolloContext */ .K)());
-    var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .x)(options === null || options === void 0 ? void 0 : options.client);
-    var defaultWatchQueryOptions = client.defaultOptions.watchQuery;
-    (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_4__/* .verifyDocumentType */ .Vp)(query, _parser_index_js__WEBPACK_IMPORTED_MODULE_4__/* .DocumentType.Query */ .n_.Query);
-    var _b = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(function () {
-        var watchQueryOptions = createWatchQueryOptions(query, options, defaultWatchQueryOptions);
-        var obsQuery = null;
-        if (context.renderPromises) {
-            obsQuery = context.renderPromises.getSSRObservable(watchQueryOptions);
-        }
-        if (!obsQuery) {
-            obsQuery = client.watchQuery(watchQueryOptions);
-            if (context.renderPromises) {
-                context.renderPromises.registerSSRObservable(obsQuery, watchQueryOptions);
-            }
-        }
-        if (context.renderPromises &&
-            (options === null || options === void 0 ? void 0 : options.ssr) !== false &&
-            !(options === null || options === void 0 ? void 0 : options.skip) &&
-            obsQuery.getCurrentResult().loading) {
-            context.renderPromises.addQueryPromise({
-                getOptions: function () { return createWatchQueryOptions(query, options, defaultWatchQueryOptions); },
-                fetchData: function () { return new Promise(function (resolve) {
-                    var sub = obsQuery.subscribe({
-                        next: function (result) {
-                            if (!result.loading) {
-                                resolve();
-                                sub.unsubscribe();
-                            }
-                        },
-                        error: function () {
-                            resolve();
-                            sub.unsubscribe();
-                        },
-                        complete: function () {
-                            resolve();
-                        },
-                    });
-                }); },
-            }, function () { return null; });
-        }
-        return obsQuery;
-    }), obsQuery = _b[0], setObsQuery = _b[1];
-    var _c = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(function () {
-        var _a, _b;
-        var result = obsQuery.getCurrentResult();
-        if (!result.loading && options) {
-            if (result.error) {
-                (_a = options.onError) === null || _a === void 0 ? void 0 : _a.call(options, result.error);
-            }
-            else if (result.data) {
-                (_b = options.onCompleted) === null || _b === void 0 ? void 0 : _b.call(options, result.data);
-            }
-        }
-        return result;
-    }), result = _c[0], setResult = _c[1];
-    var ref = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)({
-        client: client,
-        query: query,
-        options: options,
-        result: result,
-        previousData: void 0,
-        watchQueryOptions: createWatchQueryOptions(query, options, defaultWatchQueryOptions),
-    });
-    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-        var _a, _b;
-        var watchQueryOptions = createWatchQueryOptions(query, options, defaultWatchQueryOptions);
-        var nextResult;
-        if (ref.current.client !== client || !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(ref.current.query, query)) {
-            var obsQuery_1 = client.watchQuery(watchQueryOptions);
-            setObsQuery(obsQuery_1);
-            nextResult = obsQuery_1.getCurrentResult();
-        }
-        else if (!(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(ref.current.watchQueryOptions, watchQueryOptions)) {
-            obsQuery.setOptions(watchQueryOptions).catch(function () { });
-            nextResult = obsQuery.getCurrentResult();
-            ref.current.watchQueryOptions = watchQueryOptions;
-        }
-        if (nextResult) {
-            var previousResult = ref.current.result;
-            if (previousResult.data) {
-                ref.current.previousData = previousResult.data;
-            }
-            setResult(ref.current.result = nextResult);
-            if (!nextResult.loading && options) {
-                if (nextResult.error) {
-                    (_a = options.onError) === null || _a === void 0 ? void 0 : _a.call(options, nextResult.error);
-                }
-                else if (nextResult.data) {
-                    (_b = options.onCompleted) === null || _b === void 0 ? void 0 : _b.call(options, nextResult.data);
-                }
-            }
-        }
-        Object.assign(ref.current, { client: client, query: query });
-    }, [obsQuery, client, query, options]);
-    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-        if (context.renderPromises) {
-            return;
-        }
-        var subscription = obsQuery.subscribe(onNext, onError);
-        function onNext() {
-            var _a, _b;
-            var previousResult = ref.current.result;
-            var result = obsQuery.getCurrentResult();
-            if (previousResult &&
-                previousResult.loading === result.loading &&
-                previousResult.networkStatus === result.networkStatus &&
-                (0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(previousResult.data, result.data)) {
-                return;
-            }
-            if (previousResult.data) {
-                ref.current.previousData = previousResult.data;
-            }
-            setResult(ref.current.result = result);
-            if (!result.loading) {
-                (_b = (_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onCompleted) === null || _b === void 0 ? void 0 : _b.call(_a, result.data);
-            }
-        }
-        function onError(error) {
-            var _a, _b;
-            var last = obsQuery["last"];
-            subscription.unsubscribe();
-            try {
-                obsQuery.resetLastResults();
-                subscription = obsQuery.subscribe(onNext, onError);
-            }
-            finally {
-                obsQuery["last"] = last;
-            }
-            if (!error.hasOwnProperty('graphQLErrors')) {
-                throw error;
-            }
-            var previousResult = ref.current.result;
-            if ((previousResult && previousResult.loading) ||
-                !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(error, previousResult.error)) {
-                setResult(ref.current.result = {
-                    data: previousResult.data,
-                    error: error,
-                    loading: false,
-                    networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus.error */ .I.error,
-                });
-                (_b = (_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onError) === null || _b === void 0 ? void 0 : _b.call(_a, error);
-            }
-        }
-        return function () { return subscription.unsubscribe(); };
-    }, [obsQuery, context.renderPromises, client.disableNetworkFetches]);
-    var partial;
-    (_a = result, partial = _a.partial, result = (0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__rest */ ._T)(_a, ["partial"]));
-    {
-        if (partial &&
-            (options === null || options === void 0 ? void 0 : options.partialRefetch) &&
-            !result.loading &&
-            (!result.data || Object.keys(result.data).length === 0) &&
-            obsQuery.options.fetchPolicy !== 'cache-only') {
-            result = (0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)({}, result), { loading: true, networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus.refetch */ .I.refetch });
-            obsQuery.refetch();
-        }
-        if (context.renderPromises &&
-            (options === null || options === void 0 ? void 0 : options.ssr) !== false &&
-            !(options === null || options === void 0 ? void 0 : options.skip) &&
-            result.loading) {
-            obsQuery.setOptions(createWatchQueryOptions(query, options, defaultWatchQueryOptions)).catch(function () { });
-        }
-        Object.assign(ref.current, { options: options });
+    if (options === void 0) { options = Object.create(null); }
+    return useInternalState((0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .x)(options.client), query).useQuery(options);
+}
+function useInternalState(client, query) {
+    var stateRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
+    if (!stateRef.current ||
+        client !== stateRef.current.client ||
+        query !== stateRef.current.query) {
+        stateRef.current = new InternalState(client, query);
     }
-    if ((context.renderPromises || client.disableNetworkFetches) &&
-        (options === null || options === void 0 ? void 0 : options.ssr) === false) {
-        result = ref.current.result = {
+    var state = stateRef.current;
+    var _a = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0), _tick = _a[0], setTick = _a[1];
+    state.forceUpdate = function () {
+        setTick(function (tick) { return tick + 1; });
+    };
+    return state;
+}
+var InternalState = (function () {
+    function InternalState(client, query) {
+        this.client = client;
+        this.query = query;
+        this.ssrDisabledResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .maybeDeepFreeze */ .J)({
             loading: true,
             data: void 0,
             error: void 0,
             networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus.loading */ .I.loading,
-        };
-    }
-    else if ((options === null || options === void 0 ? void 0 : options.skip) || (options === null || options === void 0 ? void 0 : options.fetchPolicy) === 'standby') {
-        result = {
+        });
+        this.skipStandbyResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .maybeDeepFreeze */ .J)({
             loading: false,
             data: void 0,
             error: void 0,
             networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus.ready */ .I.ready,
-        };
+        });
+        this.toQueryResultCache = new (_utilities_index_js__WEBPACK_IMPORTED_MODULE_6__/* .canUseWeakMap */ .mr ? WeakMap : Map)();
+        (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_7__/* .verifyDocumentType */ .Vp)(query, _parser_index_js__WEBPACK_IMPORTED_MODULE_7__/* .DocumentType.Query */ .n_.Query);
     }
-    if (result.errors && result.errors.length) {
-        result = (0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)({}, result), { error: result.error || new _errors_index_js__WEBPACK_IMPORTED_MODULE_7__/* .ApolloError */ .c({ graphQLErrors: result.errors }) });
+    InternalState.prototype.forceUpdate = function () {
+    };
+    InternalState.prototype.useQuery = function (options) {
+        var _this = this;
+        this.renderPromises = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)((0,_context_index_js__WEBPACK_IMPORTED_MODULE_8__/* .getApolloContext */ .K)()).renderPromises;
+        this.useOptions(options);
+        var obsQuery = this.useObservableQuery();
+        var result = (0,use_sync_external_store_shim_index_js__WEBPACK_IMPORTED_MODULE_1__.useSyncExternalStore)((0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
+            if (_this.renderPromises) {
+                return function () { };
+            }
+            var onNext = function () {
+                var previousResult = _this.result;
+                var result = obsQuery.getCurrentResult();
+                if (previousResult &&
+                    previousResult.loading === result.loading &&
+                    previousResult.networkStatus === result.networkStatus &&
+                    (0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .D)(previousResult.data, result.data)) {
+                    return;
+                }
+                _this.setResult(result);
+            };
+            var onError = function (error) {
+                var last = obsQuery["last"];
+                subscription.unsubscribe();
+                try {
+                    obsQuery.resetLastResults();
+                    subscription = obsQuery.subscribe(onNext, onError);
+                }
+                finally {
+                    obsQuery["last"] = last;
+                }
+                if (!hasOwnProperty.call(error, 'graphQLErrors')) {
+                    throw error;
+                }
+                var previousResult = _this.result;
+                if (!previousResult ||
+                    (previousResult && previousResult.loading) ||
+                    !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .D)(error, previousResult.error)) {
+                    _this.setResult({
+                        data: (previousResult && previousResult.data),
+                        error: error,
+                        loading: false,
+                        networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus.error */ .I.error,
+                    });
+                }
+            };
+            var subscription = obsQuery.subscribe(onNext, onError);
+            return function () { return subscription.unsubscribe(); };
+        }, [
+            obsQuery,
+            this.renderPromises,
+            this.client.disableNetworkFetches,
+        ]), function () { return _this.getCurrentResult(); });
+        this.unsafeHandlePartialRefetch(result);
+        return this.toQueryResult(result);
+    };
+    InternalState.prototype.useOptions = function (options) {
+        var _a;
+        var watchQueryOptions = this.createWatchQueryOptions(this.queryHookOptions = options);
+        var currentWatchQueryOptions = this.watchQueryOptions;
+        var resolveFetchBlockingPromise;
+        if (!(0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .D)(watchQueryOptions, currentWatchQueryOptions)) {
+            this.watchQueryOptions = watchQueryOptions;
+            if (currentWatchQueryOptions && this.observable) {
+                this.observable.reobserve((0,tslib__WEBPACK_IMPORTED_MODULE_9__/* .__assign */ .pi)({ fetchBlockingPromise: new Promise(function (resolve) {
+                        resolveFetchBlockingPromise = resolve;
+                    }) }, watchQueryOptions));
+                this.previousData = ((_a = this.result) === null || _a === void 0 ? void 0 : _a.data) || this.previousData;
+                this.result = void 0;
+            }
+        }
+        useUnblockFetchEffect(this.renderPromises, resolveFetchBlockingPromise);
+        this.onCompleted = options.onCompleted || InternalState.prototype.onCompleted;
+        this.onError = options.onError || InternalState.prototype.onError;
+        if ((this.renderPromises || this.client.disableNetworkFetches) &&
+            this.queryHookOptions.ssr === false) {
+            this.result = this.ssrDisabledResult;
+        }
+        else if (this.queryHookOptions.skip ||
+            this.watchQueryOptions.fetchPolicy === 'standby') {
+            this.result = this.skipStandbyResult;
+        }
+        else if (this.result === this.ssrDisabledResult ||
+            this.result === this.skipStandbyResult) {
+            this.result = void 0;
+        }
+    };
+    InternalState.prototype.createWatchQueryOptions = function (_a) {
+        if (_a === void 0) { _a = {}; }
+        var skip = _a.skip, ssr = _a.ssr, onCompleted = _a.onCompleted, onError = _a.onError, displayName = _a.displayName, defaultOptions = _a.defaultOptions, otherOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_9__/* .__rest */ ._T)(_a, ["skip", "ssr", "onCompleted", "onError", "displayName", "defaultOptions"]);
+        var toMerge = [];
+        var globalDefaults = this.client.defaultOptions.watchQuery;
+        if (globalDefaults)
+            toMerge.push(globalDefaults);
+        if (defaultOptions)
+            toMerge.push(defaultOptions);
+        var latestOptions = this.observable && this.observable.options;
+        if (latestOptions && toMerge.length) {
+            var defaults_1 = toMerge.reduce(_core_index_js__WEBPACK_IMPORTED_MODULE_10__/* .mergeOptions */ .J, Object.create(null));
+            toMerge.length = 1;
+            toMerge[0] = defaults_1;
+            Object.keys(defaults_1).forEach(function (defaultOptionName) {
+                var currentOptionValue = latestOptions[defaultOptionName];
+                if (hasOwnProperty.call(latestOptions, defaultOptionName) &&
+                    !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .D)(defaults_1[defaultOptionName], currentOptionValue)) {
+                    defaults_1[defaultOptionName] = defaultOptionName === "variables"
+                        ? (0,tslib__WEBPACK_IMPORTED_MODULE_9__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_9__/* .__assign */ .pi)({}, defaults_1.variables), currentOptionValue) : currentOptionValue;
+                }
+            });
+        }
+        toMerge.push(otherOptions);
+        var merged = toMerge.reduce(_core_index_js__WEBPACK_IMPORTED_MODULE_10__/* .mergeOptions */ .J, Object.create(null));
+        var watchQueryOptions = Object.assign(merged, { query: this.query });
+        if (this.renderPromises &&
+            (watchQueryOptions.fetchPolicy === 'network-only' ||
+                watchQueryOptions.fetchPolicy === 'cache-and-network')) {
+            watchQueryOptions.fetchPolicy = 'cache-first';
+        }
+        else if (!watchQueryOptions.fetchPolicy) {
+            watchQueryOptions.fetchPolicy = 'cache-first';
+        }
+        if (skip) {
+            var _b = watchQueryOptions.initialFetchPolicy, initialFetchPolicy = _b === void 0 ? watchQueryOptions.fetchPolicy : _b;
+            Object.assign(watchQueryOptions, {
+                initialFetchPolicy: initialFetchPolicy,
+                fetchPolicy: 'standby',
+            });
+        }
+        if (!watchQueryOptions.variables) {
+            watchQueryOptions.variables = {};
+        }
+        return watchQueryOptions;
+    };
+    InternalState.prototype.onCompleted = function (data) { };
+    InternalState.prototype.onError = function (error) { };
+    InternalState.prototype.useObservableQuery = function () {
+        var resolveFetchBlockingPromise;
+        var obsQuery = this.observable =
+            this.renderPromises
+                && this.renderPromises.getSSRObservable(this.watchQueryOptions)
+                || this.observable
+                || this.client.watchQuery((0,tslib__WEBPACK_IMPORTED_MODULE_9__/* .__assign */ .pi)({ fetchBlockingPromise: new Promise(function (resolve) {
+                        resolveFetchBlockingPromise = resolve;
+                    }) }, this.watchQueryOptions));
+        useUnblockFetchEffect(this.renderPromises, resolveFetchBlockingPromise);
+        this.obsQueryFields = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () { return ({
+            refetch: obsQuery.refetch.bind(obsQuery),
+            reobserve: obsQuery.reobserve.bind(obsQuery),
+            fetchMore: obsQuery.fetchMore.bind(obsQuery),
+            updateQuery: obsQuery.updateQuery.bind(obsQuery),
+            startPolling: obsQuery.startPolling.bind(obsQuery),
+            stopPolling: obsQuery.stopPolling.bind(obsQuery),
+            subscribeToMore: obsQuery.subscribeToMore.bind(obsQuery),
+        }); }, [obsQuery]);
+        if (this.renderPromises) {
+            this.renderPromises.registerSSRObservable(obsQuery);
+            var ssrAllowed = !(this.queryHookOptions.ssr === false ||
+                this.queryHookOptions.skip);
+            if (ssrAllowed && obsQuery.getCurrentResult().loading) {
+                this.renderPromises.addObservableQueryPromise(obsQuery);
+            }
+        }
+        return obsQuery;
+    };
+    InternalState.prototype.setResult = function (nextResult) {
+        var previousResult = this.result;
+        if (previousResult && previousResult.data) {
+            this.previousData = previousResult.data;
+        }
+        this.result = nextResult;
+        this.forceUpdate();
+        this.handleErrorOrCompleted(nextResult);
+    };
+    InternalState.prototype.handleErrorOrCompleted = function (result) {
+        if (!result.loading) {
+            if (result.error) {
+                this.onError(result.error);
+            }
+            else if (result.data) {
+                this.onCompleted(result.data);
+            }
+        }
+    };
+    InternalState.prototype.getCurrentResult = function () {
+        if (!this.result) {
+            this.handleErrorOrCompleted(this.result = this.observable.getCurrentResult());
+        }
+        return this.result;
+    };
+    InternalState.prototype.toQueryResult = function (result) {
+        var queryResult = this.toQueryResultCache.get(result);
+        if (queryResult)
+            return queryResult;
+        var data = result.data, partial = result.partial, resultWithoutPartial = (0,tslib__WEBPACK_IMPORTED_MODULE_9__/* .__rest */ ._T)(result, ["data", "partial"]);
+        this.toQueryResultCache.set(result, queryResult = (0,tslib__WEBPACK_IMPORTED_MODULE_9__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_9__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_9__/* .__assign */ .pi)({ data: data }, resultWithoutPartial), this.obsQueryFields), { client: this.client, observable: this.observable, variables: this.observable.variables, called: true, previousData: this.previousData }));
+        if (!queryResult.error && (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_11__/* .isNonEmptyArray */ .O)(result.errors)) {
+            queryResult.error = new _errors_index_js__WEBPACK_IMPORTED_MODULE_12__/* .ApolloError */ .c({ graphQLErrors: result.errors });
+        }
+        return queryResult;
+    };
+    InternalState.prototype.unsafeHandlePartialRefetch = function (result) {
+        if (result.partial &&
+            this.queryHookOptions.partialRefetch &&
+            !result.loading &&
+            (!result.data || Object.keys(result.data).length === 0) &&
+            this.observable.options.fetchPolicy !== 'cache-only') {
+            Object.assign(result, {
+                loading: true,
+                networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus.refetch */ .I.refetch,
+            });
+            this.observable.refetch();
+        }
+    };
+    return InternalState;
+}());
+function useUnblockFetchEffect(renderPromises, resolveFetchBlockingPromise) {
+    if (resolveFetchBlockingPromise) {
+        if (renderPromises) {
+            resolveFetchBlockingPromise(true);
+        }
+        else {
+            setTimeout(function () { return resolveFetchBlockingPromise(false); }, 5000);
+        }
     }
-    var obsQueryFields = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () { return ({
-        refetch: obsQuery.refetch.bind(obsQuery),
-        fetchMore: obsQuery.fetchMore.bind(obsQuery),
-        updateQuery: obsQuery.updateQuery.bind(obsQuery),
-        startPolling: obsQuery.startPolling.bind(obsQuery),
-        stopPolling: obsQuery.stopPolling.bind(obsQuery),
-        subscribeToMore: obsQuery.subscribeToMore.bind(obsQuery),
-    }); }, [obsQuery]);
-    return (0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)({}, obsQueryFields), { variables: createWatchQueryOptions(query, options, defaultWatchQueryOptions).variables, client: client, called: true, previousData: ref.current.previousData }), result);
-}
-function createWatchQueryOptions(query, options, defaultOptions) {
-    var _a;
-    if (options === void 0) { options = {}; }
-    var skip = options.skip, ssr = options.ssr, onCompleted = options.onCompleted, onError = options.onError, displayName = options.displayName, otherOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__rest */ ._T)(options, ["skip", "ssr", "onCompleted", "onError", "displayName"]);
-    var watchQueryOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)({ query: query }, otherOptions);
-    if (defaultOptions) {
-        watchQueryOptions = (0,_core_index_js__WEBPACK_IMPORTED_MODULE_8__/* .mergeOptions */ .J)(defaultOptions, watchQueryOptions);
-    }
-    if (skip) {
-        watchQueryOptions.fetchPolicy = 'standby';
-    }
-    else if (((_a = watchQueryOptions.context) === null || _a === void 0 ? void 0 : _a.renderPromises) &&
-        (watchQueryOptions.fetchPolicy === 'network-only' ||
-            watchQueryOptions.fetchPolicy === 'cache-and-network')) {
-        watchQueryOptions.fetchPolicy = 'cache-first';
-    }
-    else if (!watchQueryOptions.fetchPolicy) {
-        watchQueryOptions.fetchPolicy = 'cache-first';
-    }
-    if (!watchQueryOptions.variables) {
-        watchQueryOptions.variables = {};
-    }
-    return watchQueryOptions;
+    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+        if (resolveFetchBlockingPromise) {
+            resolveFetchBlockingPromise(true);
+        }
+    }, [resolveFetchBlockingPromise]);
 }
 //# sourceMappingURL=useQuery.js.map
 
@@ -21939,7 +22012,7 @@ function useReactiveVar(rv) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "m": () => (/* binding */ useSubscription)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9137);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7294);
 /* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2152);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
@@ -22072,7 +22145,7 @@ function useSubscription(subscription, options) {
 /* harmony export */   "td": () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.td),
 /* harmony export */   "xJ": () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.xJ)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9137);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _context_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3768);
 }
@@ -22107,7 +22180,7 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 /* harmony export */   "mw": () => (/* binding */ operationName),
 /* harmony export */   "n_": () => (/* binding */ DocumentType)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9137);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 
 var DocumentType;
 (function (DocumentType) {
@@ -22333,6 +22406,54 @@ function makeUniqueId(prefix) {
 
 /***/ }),
 
+/***/ 8702:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "J": () => (/* binding */ maybeDeepFreeze)
+/* harmony export */ });
+/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _objects_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3154);
+}
+
+
+function deepFreeze(value) {
+    var workSet = new Set([value]);
+    workSet.forEach(function (obj) {
+        if ((0,_objects_js__WEBPACK_IMPORTED_MODULE_1__/* .isNonNullObject */ .s)(obj) && shallowFreeze(obj) === obj) {
+            Object.getOwnPropertyNames(obj).forEach(function (name) {
+                if ((0,_objects_js__WEBPACK_IMPORTED_MODULE_1__/* .isNonNullObject */ .s)(obj[name]))
+                    workSet.add(obj[name]);
+            });
+        }
+    });
+    return value;
+}
+function shallowFreeze(obj) {
+    if (__DEV__ && !Object.isFrozen(obj)) {
+        try {
+            Object.freeze(obj);
+        }
+        catch (e) {
+            if (e instanceof TypeError)
+                return null;
+            throw e;
+        }
+    }
+    return obj;
+}
+function maybeDeepFreeze(obj) {
+    if (__DEV__) {
+        deepFreeze(obj);
+    }
+    return obj;
+}
+//# sourceMappingURL=maybeDeepFreeze.js.map
+
+/***/ }),
+
 /***/ 182:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
@@ -22426,6 +22547,30 @@ var DeepMerger = (function () {
 
 /***/ }),
 
+/***/ 4012:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "J": () => (/* binding */ mergeOptions)
+/* harmony export */ });
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(655);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _compact_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3712);
+}
+
+
+function mergeOptions(defaults, options) {
+    return (0,_compact_js__WEBPACK_IMPORTED_MODULE_0__/* .compact */ .o)(defaults, options, options.variables && {
+        variables: (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)({}, defaults.variables), options.variables),
+    });
+}
+//# sourceMappingURL=mergeOptions.js.map
+
+/***/ }),
+
 /***/ 3154:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
@@ -22440,7 +22585,7 @@ function isNonNullObject(obj) {
 
 /***/ }),
 
-/***/ 9137:
+/***/ 846:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -22448,15 +22593,15 @@ function isNonNullObject(obj) {
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
   "Rk": () => (/* reexport */ DEV),
-  "ej": () => (/* reexport */ invariant_esm/* InvariantError */.ej),
-  "kG": () => (/* reexport */ invariant_esm/* invariant */.kG),
+  "ej": () => (/* reexport */ invariant/* InvariantError */.ej),
+  "kG": () => (/* reexport */ invariant/* invariant */.kG),
   "wY": () => (/* reexport */ maybe)
 });
 
 // UNUSED EXPORTS: checkDEV, global
 
-// EXTERNAL MODULE: ./node_modules/ts-invariant/lib/invariant.esm.js
-var invariant_esm = __webpack_require__(7591);
+// EXTERNAL MODULE: ./node_modules/ts-invariant/lib/invariant.js
+var invariant = __webpack_require__(6128);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/utilities/globals/maybe.js
 function maybe(thunk) {
     try {
@@ -22562,7 +22707,7 @@ function removeTemporaryGlobals() {
 
 
 function checkDEV() {
-    __DEV__ ? (0,invariant_esm/* invariant */.kG)("boolean" === typeof DEV, DEV) : (0,invariant_esm/* invariant */.kG)("boolean" === typeof DEV, 36);
+    __DEV__ ? (0,invariant/* invariant */.kG)("boolean" === typeof DEV, DEV) : (0,invariant/* invariant */.kG)("boolean" === typeof DEV, 36);
 }
 
 removeTemporaryGlobals();
@@ -22584,7 +22729,7 @@ checkDEV();
 /* harmony export */   "mj": () => (/* binding */ hasClientExports)
 /* harmony export */ });
 /* unused harmony exports getDirectiveNames, getInclusionDirectives */
-/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9137);
+/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7304);
 }
@@ -22665,7 +22810,7 @@ function getInclusionDirectives(directives) {
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(655);
 }
-/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9137);
+/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 
 
 function getFragmentQueryDocument(document, fragmentName) {
@@ -22743,7 +22888,7 @@ function getFragmentFromSelection(selection, fragmentMap) {
 /* harmony export */   "pD": () => (/* binding */ getFragmentDefinition),
 /* harmony export */   "rY": () => (/* binding */ getOperationName)
 /* harmony export */ });
-/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9137);
+/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _storeUtils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1761);
 }
@@ -22843,7 +22988,7 @@ function getDefaultValues(definition) {
 /* harmony export */   "vb": () => (/* binding */ valueToObjectRepresentation),
 /* harmony export */   "vf": () => (/* binding */ storeKeyNameFromField)
 /* harmony export */ });
-/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9137);
+/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 /* harmony import */ var _common_objects_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3154);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _fragments_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3361);
@@ -23071,9 +23216,11 @@ function isInlineFragment(selection) {
 /* harmony export */ });
 /* unused harmony exports removeDirectivesFromDocument, removeArgumentsFromDocument, removeFragmentSpreadFromDocument */
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(655);
-/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9137);
+/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 /* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7304);
-/* harmony import */ var _getFromAST_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6765);
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _getFromAST_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6765);
+}
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _common_filterInPlace_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(2629);
 }
@@ -23180,7 +23327,7 @@ function removeDirectivesFromDocument(directives, doc) {
     return modifiedDoc;
 }
 var addTypenameToDocument = Object.assign(function (doc) {
-    return (0,graphql__WEBPACK_IMPORTED_MODULE_3__/* .visit */ .Vn)((0,_getFromAST_js__WEBPACK_IMPORTED_MODULE_1__/* .checkDocument */ .A$)(doc), {
+    return (0,graphql__WEBPACK_IMPORTED_MODULE_3__/* .visit */ .Vn)(doc, {
         SelectionSet: {
             enter: function (node, _key, parent) {
                 if (parent &&
@@ -28319,6 +28466,70 @@ fetch.Promise = global.Promise;
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((/* runtime-dependent pure expression or super */ /^(33[45]|149|179|28|452|474)$/.test(__webpack_require__.j) ? (fetch) : null));
 
 
+
+/***/ }),
+
+/***/ 6128:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "U6": () => (/* binding */ setVerbosity),
+/* harmony export */   "ej": () => (/* binding */ InvariantError),
+/* harmony export */   "kG": () => (/* binding */ invariant)
+/* harmony export */ });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(655);
+
+var genericMessage = "Invariant Violation";
+var _a = Object.setPrototypeOf, setPrototypeOf = _a === void 0 ? function (obj, proto) {
+    obj.__proto__ = proto;
+    return obj;
+} : _a;
+var InvariantError = /** @class */ (function (_super) {
+    (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__extends */ .ZT)(InvariantError, _super);
+    function InvariantError(message) {
+        if (message === void 0) { message = genericMessage; }
+        var _this = _super.call(this, typeof message === "number"
+            ? genericMessage + ": " + message + " (see https://github.com/apollographql/invariant-packages)"
+            : message) || this;
+        _this.framesToPop = 1;
+        _this.name = genericMessage;
+        setPrototypeOf(_this, InvariantError.prototype);
+        return _this;
+    }
+    return InvariantError;
+}(Error));
+
+function invariant(condition, message) {
+    if (!condition) {
+        throw new InvariantError(message);
+    }
+}
+var verbosityLevels = ["debug", "log", "warn", "error", "silent"];
+var verbosityLevel = verbosityLevels.indexOf("log");
+function wrapConsoleMethod(name) {
+    return function () {
+        if (verbosityLevels.indexOf(name) >= verbosityLevel) {
+            // Default to console.log if this host environment happens not to provide
+            // all the console.* methods we need.
+            var method = console[name] || console.log;
+            return method.apply(console, arguments);
+        }
+    };
+}
+(function (invariant) {
+    invariant.debug = wrapConsoleMethod("debug");
+    invariant.log = wrapConsoleMethod("log");
+    invariant.warn = wrapConsoleMethod("warn");
+    invariant.error = wrapConsoleMethod("error");
+})(invariant || (invariant = {}));
+function setVerbosity(level) {
+    var old = verbosityLevels[verbosityLevel];
+    verbosityLevel = Math.max(0, verbosityLevels.indexOf(level));
+    return old;
+}
+/* unused harmony default export */ var __WEBPACK_DEFAULT_EXPORT__ = ((/* unused pure expression or super */ null && (invariant)));
+//# sourceMappingURL=invariant.js.map
 
 /***/ }),
 
