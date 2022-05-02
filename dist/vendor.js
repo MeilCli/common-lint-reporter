@@ -17686,7 +17686,7 @@ var ApolloLink = __webpack_require__(3581);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
 var execute = __webpack_require__(7037);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.6.0';
+var version = '3.6.1';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
@@ -19193,7 +19193,7 @@ var QueryManager = (function () {
     };
     QueryManager.prototype.fetchQueryByPolicy = function (queryInfo, _a, networkStatus) {
         var _this = this;
-        var query = _a.query, variables = _a.variables, fetchPolicy = _a.fetchPolicy, refetchWritePolicy = _a.refetchWritePolicy, errorPolicy = _a.errorPolicy, returnPartialData = _a.returnPartialData, context = _a.context, notifyOnNetworkStatusChange = _a.notifyOnNetworkStatusChange, fetchBlockingPromise = _a.fetchBlockingPromise;
+        var query = _a.query, variables = _a.variables, fetchPolicy = _a.fetchPolicy, refetchWritePolicy = _a.refetchWritePolicy, errorPolicy = _a.errorPolicy, returnPartialData = _a.returnPartialData, context = _a.context, notifyOnNetworkStatusChange = _a.notifyOnNetworkStatusChange;
         var oldNetworkStatus = queryInfo.networkStatus;
         queryInfo.init({
             document: this.transform(query).document,
@@ -19225,28 +19225,12 @@ var QueryManager = (function () {
             (networkStatus === core_networkStatus/* NetworkStatus.refetch */.I.refetch &&
                 refetchWritePolicy !== "merge") ? 1
                 : 2;
-        var resultsFromLink = function () {
-            var get = function () { return _this.getResultsFromLink(queryInfo, cacheWriteBehavior, {
-                variables: variables,
-                context: context,
-                fetchPolicy: fetchPolicy,
-                errorPolicy: errorPolicy,
-            }); };
-            return fetchBlockingPromise ? fetchBlockingPromise.then(function (ok) { return ok ? get() : zen_observable_ts_module/* Observable.of */.y.of(); }, function (error) {
-                var apolloError = (0,errors/* isApolloError */.M)(error)
-                    ? error
-                    : new errors/* ApolloError */.c({ clientErrors: [error] });
-                if (errorPolicy !== "ignore") {
-                    queryInfo.markError(apolloError);
-                }
-                return zen_observable_ts_module/* Observable.of */.y.of({
-                    loading: false,
-                    networkStatus: core_networkStatus/* NetworkStatus.error */.I.error,
-                    error: apolloError,
-                    data: readCache().result,
-                });
-            }) : get();
-        };
+        var resultsFromLink = function () { return _this.getResultsFromLink(queryInfo, cacheWriteBehavior, {
+            variables: variables,
+            context: context,
+            fetchPolicy: fetchPolicy,
+            errorPolicy: errorPolicy,
+        }); };
         var shouldNotify = notifyOnNetworkStatusChange &&
             typeof oldNetworkStatus === "number" &&
             oldNetworkStatus !== networkStatus &&
@@ -21804,18 +21788,14 @@ var InternalState = (function () {
         var _a;
         var watchQueryOptions = this.createWatchQueryOptions(this.queryHookOptions = options);
         var currentWatchQueryOptions = this.watchQueryOptions;
-        var resolveFetchBlockingPromise;
         if (!(0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .D)(watchQueryOptions, currentWatchQueryOptions)) {
             this.watchQueryOptions = watchQueryOptions;
             if (currentWatchQueryOptions && this.observable) {
-                this.observable.reobserve((0,tslib__WEBPACK_IMPORTED_MODULE_9__/* .__assign */ .pi)({ fetchBlockingPromise: new Promise(function (resolve) {
-                        resolveFetchBlockingPromise = resolve;
-                    }) }, watchQueryOptions));
+                this.observable.reobserve(watchQueryOptions);
                 this.previousData = ((_a = this.result) === null || _a === void 0 ? void 0 : _a.data) || this.previousData;
                 this.result = void 0;
             }
         }
-        useUnblockFetchEffect(this.renderPromises, resolveFetchBlockingPromise);
         this.onCompleted = options.onCompleted || InternalState.prototype.onCompleted;
         this.onError = options.onError || InternalState.prototype.onError;
         if ((this.renderPromises || this.client.disableNetworkFetches) &&
@@ -21880,15 +21860,11 @@ var InternalState = (function () {
     InternalState.prototype.onCompleted = function (data) { };
     InternalState.prototype.onError = function (error) { };
     InternalState.prototype.useObservableQuery = function () {
-        var resolveFetchBlockingPromise;
         var obsQuery = this.observable =
             this.renderPromises
                 && this.renderPromises.getSSRObservable(this.watchQueryOptions)
                 || this.observable
-                || this.client.watchQuery((0,tslib__WEBPACK_IMPORTED_MODULE_9__/* .__assign */ .pi)({ fetchBlockingPromise: new Promise(function (resolve) {
-                        resolveFetchBlockingPromise = resolve;
-                    }) }, this.watchQueryOptions));
-        useUnblockFetchEffect(this.renderPromises, resolveFetchBlockingPromise);
+                || this.client.watchQuery((0,tslib__WEBPACK_IMPORTED_MODULE_9__/* .__assign */ .pi)({}, this.watchQueryOptions));
         this.obsQueryFields = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () { return ({
             refetch: obsQuery.refetch.bind(obsQuery),
             reobserve: obsQuery.reobserve.bind(obsQuery),
@@ -21959,21 +21935,6 @@ var InternalState = (function () {
     };
     return InternalState;
 }());
-function useUnblockFetchEffect(renderPromises, resolveFetchBlockingPromise) {
-    if (resolveFetchBlockingPromise) {
-        if (renderPromises) {
-            resolveFetchBlockingPromise(true);
-        }
-        else {
-            setTimeout(function () { return resolveFetchBlockingPromise(false); }, 5000);
-        }
-    }
-    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-        if (resolveFetchBlockingPromise) {
-            resolveFetchBlockingPromise(true);
-        }
-    }, [resolveFetchBlockingPromise]);
-}
 //# sourceMappingURL=useQuery.js.map
 
 /***/ }),
@@ -22212,16 +22173,30 @@ function parser(document) {
     __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!!document && !!document.kind, "Argument of ".concat(document, " passed to parser was not a valid GraphQL ") +
         "DocumentNode. You may need to use 'graphql-tag' or another method " +
         "to convert your operation into a document") : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!!document && !!document.kind, 30);
-    var fragments = document.definitions.filter(function (x) { return x.kind === 'FragmentDefinition'; });
-    var queries = document.definitions.filter(function (x) {
-        return x.kind === 'OperationDefinition' && x.operation === 'query';
-    });
-    var mutations = document.definitions.filter(function (x) {
-        return x.kind === 'OperationDefinition' && x.operation === 'mutation';
-    });
-    var subscriptions = document.definitions.filter(function (x) {
-        return x.kind === 'OperationDefinition' && x.operation === 'subscription';
-    });
+    var fragments = [];
+    var queries = [];
+    var mutations = [];
+    var subscriptions = [];
+    for (var _i = 0, _a = document.definitions; _i < _a.length; _i++) {
+        var x = _a[_i];
+        if (x.kind === 'FragmentDefinition') {
+            fragments.push(x);
+            continue;
+        }
+        if (x.kind === 'OperationDefinition') {
+            switch (x.operation) {
+                case 'query':
+                    queries.push(x);
+                    break;
+                case 'mutation':
+                    mutations.push(x);
+                    break;
+                case 'subscription':
+                    subscriptions.push(x);
+                    break;
+            }
+        }
+    }
     __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!fragments.length ||
         (queries.length || mutations.length || subscriptions.length), "Passing only a fragment to 'graphql' is not yet supported. " +
         "You must include a query, subscription or mutation as well") : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!fragments.length ||
