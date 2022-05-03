@@ -17686,7 +17686,7 @@ var ApolloLink = __webpack_require__(3581);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
 var execute = __webpack_require__(7037);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.6.1';
+var version = '3.6.2';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
@@ -21292,11 +21292,11 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 var ApolloConsumer = function (props) {
     var ApolloContext = (0,_ApolloContext_js__WEBPACK_IMPORTED_MODULE_2__/* .getApolloContext */ .K)();
-    return react__WEBPACK_IMPORTED_MODULE_1__.createElement(ApolloContext.Consumer, null, function (context) {
+    return (react__WEBPACK_IMPORTED_MODULE_1__.createElement(ApolloContext.Consumer, null, function (context) {
         __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(context && context.client, 'Could not find "client" in the context of ApolloConsumer. ' +
             'Wrap the root component in an <ApolloProvider>.') : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(context && context.client, 25);
         return props.children(context.client);
-    });
+    }));
 };
 //# sourceMappingURL=ApolloConsumer.js.map
 
@@ -21353,7 +21353,7 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 var ApolloProvider = function (_a) {
     var client = _a.client, children = _a.children;
     var ApolloContext = (0,_ApolloContext_js__WEBPACK_IMPORTED_MODULE_2__/* .getApolloContext */ .K)();
-    return react__WEBPACK_IMPORTED_MODULE_1__.createElement(ApolloContext.Consumer, null, function (context) {
+    return (react__WEBPACK_IMPORTED_MODULE_1__.createElement(ApolloContext.Consumer, null, function (context) {
         if (context === void 0) { context = {}; }
         if (client && context.client !== client) {
             context = Object.assign({}, context, { client: client });
@@ -21361,7 +21361,7 @@ var ApolloProvider = function (_a) {
         __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(context.client, 'ApolloProvider was not passed a client instance. Make ' +
             'sure you pass in your client via the "client" prop.') : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(context.client, 26);
         return (react__WEBPACK_IMPORTED_MODULE_1__.createElement(ApolloContext.Provider, { value: context }, children));
-    });
+    }));
 };
 //# sourceMappingURL=ApolloProvider.js.map
 
@@ -21780,7 +21780,7 @@ var InternalState = (function () {
             obsQuery,
             this.renderPromises,
             this.client.disableNetworkFetches,
-        ]), function () { return _this.getCurrentResult(); });
+        ]), function () { return _this.getCurrentResult(); }, function () { return _this.getCurrentResult(); });
         this.unsafeHandlePartialRefetch(result);
         return this.toQueryResult(result);
     };
@@ -22590,8 +22590,7 @@ function maybe(thunk) {
 /* harmony default export */ const globals_global = (maybe(function () { return globalThis; }) ||
     maybe(function () { return window; }) ||
     maybe(function () { return self; }) ||
-    maybe(function () { return global; }) ||
-    maybe(function () { return maybe.constructor("return this")(); }));
+    maybe(function () { return global; }) || maybe(function () { return maybe.constructor("return this")(); }));
 //# sourceMappingURL=global.js.map
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/utilities/globals/DEV.js
 
