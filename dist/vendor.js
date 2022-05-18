@@ -15186,38 +15186,6 @@ exports.debug = debug; // for test
 
 /***/ }),
 
-/***/ 3250:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-"use strict";
-/**
- * @license React
- * use-sync-external-store-shim.production.min.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-var e=__webpack_require__(7294);function h(a,b){return a===b&&(0!==a||1/a===1/b)||a!==a&&b!==b}var k="function"===typeof Object.is?Object.is:h,l=e.useState,m=e.useEffect,n=e.useLayoutEffect,p=e.useDebugValue;function q(a,b){var d=b(),f=l({inst:{value:d,getSnapshot:b}}),c=f[0].inst,g=f[1];n(function(){c.value=d;c.getSnapshot=b;r(c)&&g({inst:c})},[a,d,b]);m(function(){r(c)&&g({inst:c});return a(function(){r(c)&&g({inst:c})})},[a]);p(d);return d}
-function r(a){var b=a.getSnapshot;a=a.value;try{var d=b();return!k(a,d)}catch(f){return!0}}function t(a,b){return b()}var u="undefined"===typeof window||"undefined"===typeof window.document||"undefined"===typeof window.document.createElement?t:q;exports.useSyncExternalStore=void 0!==e.useSyncExternalStore?e.useSyncExternalStore:u;
-
-
-/***/ }),
-
-/***/ 1688:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-"use strict";
-
-
-if (true) {
-  module.exports = __webpack_require__(3250);
-} else {}
-
-
-/***/ }),
-
 /***/ 2479:
 /***/ ((module) => {
 
@@ -17787,7 +17755,7 @@ var ApolloLink = __webpack_require__(3581);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
 var execute = __webpack_require__(7037);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.6.2';
+var version = '3.6.4';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
@@ -17910,9 +17878,12 @@ var Concast = (function (_super) {
                 }
             },
             complete: function () {
-                if (_this.sub !== null) {
+                var sub = _this.sub;
+                if (sub !== null) {
                     var value = _this.sources.shift();
                     if (!value) {
+                        if (sub)
+                            setTimeout(function () { return sub.unsubscribe(); });
                         _this.sub = null;
                         if (_this.latest &&
                             _this.latest[0] === "next") {
@@ -17980,7 +17951,7 @@ var Concast = (function (_super) {
         if (this.observers.delete(observer) &&
             --this.addCount < 1 &&
             !quietly) {
-            this.handlers.error(new Error("Observable cancelled prematurely"));
+            this.handlers.complete();
         }
     };
     Concast.prototype.cleanup = function (callback) {
@@ -19713,7 +19684,9 @@ var ObservableQuery = (function (_super) {
         _this.queryInfo = queryInfo;
         _this.queryManager = queryManager;
         _this.isTornDown = false;
-        _this.options = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({ initialFetchPolicy: options.fetchPolicy || "cache-first" }, options);
+        var _b = queryManager.defaultOptions.watchQuery, _c = _b === void 0 ? {} : _b, _d = _c.fetchPolicy, defaultFetchPolicy = _d === void 0 ? "cache-first" : _d;
+        var _e = options.fetchPolicy, fetchPolicy = _e === void 0 ? defaultFetchPolicy : _e, _f = options.initialFetchPolicy, initialFetchPolicy = _f === void 0 ? (fetchPolicy === "standby" ? defaultFetchPolicy : fetchPolicy) : _f;
+        _this.options = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, options), { initialFetchPolicy: initialFetchPolicy, fetchPolicy: fetchPolicy });
         _this.queryId = queryInfo.queryId || queryManager.generateQueryId();
         var opDef = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .getOperationDefinition */ .$H)(_this.query);
         _this.queryName = opDef && opDef.name && opDef.name.value;
@@ -21491,7 +21464,7 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _useMutation_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(319);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useQuery_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1641);
+	/* harmony import */ var _useQuery_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4316);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _useSubscription_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5436);
@@ -21549,19 +21522,11 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 }
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7294);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _errors_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(990);
-}
-if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useQuery_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1641);
+	/* harmony import */ var _useQuery_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4316);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6252);
 }
-if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1436);
-}
-
-
 
 
 
@@ -21577,12 +21542,9 @@ var EAGER_METHODS = (/* runtime-dependent pure expression or super */ /^(33[45]|
 function useLazyQuery(query, options) {
     var internalState = (0,_useQuery_js__WEBPACK_IMPORTED_MODULE_1__/* .useInternalState */ .A)((0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__/* .useApolloClient */ .x)(options && options.client), query);
     var execOptionsRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
-    var defaultOptions = internalState.client.defaultOptions.watchQuery;
-    var initialFetchPolicy = (options && options.fetchPolicy) ||
-        (execOptionsRef.current && execOptionsRef.current.fetchPolicy) ||
-        (defaultOptions && defaultOptions.fetchPolicy) ||
-        "cache-first";
     var useQueryResult = internalState.useQuery((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({}, options), execOptionsRef.current), { skip: !execOptionsRef.current }));
+    var initialFetchPolicy = useQueryResult.observable.options.initialFetchPolicy ||
+        internalState.getDefaultFetchPolicy();
     var result = Object.assign(useQueryResult, {
         called: !!execOptionsRef.current,
     });
@@ -21606,22 +21568,12 @@ function useLazyQuery(query, options) {
     }, []);
     Object.assign(result, eagerMethods);
     var execute = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (executeOptions) {
-        var promise = result.reobserve(execOptionsRef.current = executeOptions ? (0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({}, executeOptions), { fetchPolicy: executeOptions.fetchPolicy || initialFetchPolicy }) : {
+        execOptionsRef.current = executeOptions ? (0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({}, executeOptions), { fetchPolicy: executeOptions.fetchPolicy || initialFetchPolicy }) : {
             fetchPolicy: initialFetchPolicy,
-        }).then(function (apolloQueryResult) {
-            apolloQueryResult = apolloQueryResult || internalState["getCurrentResult"]();
-            if (apolloQueryResult.error ||
-                (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .isNonEmptyArray */ .O)(apolloQueryResult.errors)) {
-                var _a = result.observable.options.errorPolicy, errorPolicy = _a === void 0 ? "none" : _a;
-                if (errorPolicy === "none") {
-                    throw apolloQueryResult.error || new _errors_index_js__WEBPACK_IMPORTED_MODULE_5__/* .ApolloError */ .c({
-                        graphQLErrors: apolloQueryResult.errors,
-                    });
-                }
-            }
-            return internalState.toQueryResult(apolloQueryResult);
-        }).then(function (queryResult) { return Object.assign(queryResult, eagerMethods); });
-        internalState.forceUpdate();
+        };
+        var promise = internalState
+            .asyncUpdate()
+            .then(function (queryResult) { return Object.assign(queryResult, eagerMethods); });
         promise.catch(function () { });
         return promise;
     }, []);
@@ -21756,29 +21708,94 @@ function useMutation(mutation, options) {
 
 /***/ }),
 
-/***/ 1641:
+/***/ 4316:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "A": () => (/* binding */ useInternalState),
-/* harmony export */   "a": () => (/* binding */ useQuery)
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(655);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7294);
-/* harmony import */ var use_sync_external_store_shim_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1688);
-/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2152);
-/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(4012);
-/* harmony import */ var _context_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(5317);
-/* harmony import */ var _errors_index_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(990);
-/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1644);
-/* harmony import */ var _parser_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(4692);
-if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6252);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "A": () => (/* binding */ useInternalState),
+  "a": () => (/* binding */ useQuery)
+});
+
+// EXTERNAL MODULE: ./node_modules/tslib/tslib.es6.js
+var tslib_es6 = __webpack_require__(655);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/globals/index.js + 5 modules
+var globals = __webpack_require__(846);
+// EXTERNAL MODULE: ./node_modules/react/index.js
+var react = __webpack_require__(7294);
+var react_namespaceObject = /*#__PURE__*/__webpack_require__.t(react, 2);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/canUse.js
+var canUse = __webpack_require__(320);
+;// CONCATENATED MODULE: ./node_modules/@apollo/client/react/hooks/useSyncExternalStore.js
+
+
+
+var didWarnUncachedGetSnapshot = false;
+var uSESKey = "useSyncExternalStore";
+var realHook = react_namespaceObject[uSESKey];
+var useSyncExternalStore = realHook || (function (subscribe, getSnapshot, getServerSnapshot) {
+    var value = getSnapshot();
+    if (__DEV__ &&
+        !didWarnUncachedGetSnapshot &&
+        value !== getSnapshot()) {
+        didWarnUncachedGetSnapshot = true;
+        __DEV__ && globals/* invariant.error */.kG.error('The result of getSnapshot should be cached to avoid an infinite loop');
+    }
+    var _a = react.useState({ inst: { value: value, getSnapshot: getSnapshot } }), inst = _a[0].inst, forceUpdate = _a[1];
+    if (canUse/* canUseLayoutEffect */.JC) {
+        react.useLayoutEffect(function () {
+            Object.assign(inst, { value: value, getSnapshot: getSnapshot });
+            if (checkIfSnapshotChanged(inst)) {
+                forceUpdate({ inst: inst });
+            }
+        }, [subscribe, value, getSnapshot]);
+    }
+    else {
+        Object.assign(inst, { value: value, getSnapshot: getSnapshot });
+    }
+    react.useEffect(function () {
+        if (checkIfSnapshotChanged(inst)) {
+            forceUpdate({ inst: inst });
+        }
+        return subscribe(function handleStoreChange() {
+            if (checkIfSnapshotChanged(inst)) {
+                forceUpdate({ inst: inst });
+            }
+        });
+    }, [subscribe]);
+    return value;
+});
+function checkIfSnapshotChanged(_a) {
+    var value = _a.value, getSnapshot = _a.getSnapshot;
+    try {
+        return value !== getSnapshot();
+    }
+    catch (_b) {
+        return true;
+    }
 }
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(8702);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(320);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(1436);
+//# sourceMappingURL=useSyncExternalStore.js.map
+// EXTERNAL MODULE: ./node_modules/@wry/equality/lib/equality.esm.js
+var equality_esm = __webpack_require__(2152);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/mergeOptions.js
+var mergeOptions = __webpack_require__(4012);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/react/context/ApolloContext.js
+var ApolloContext = __webpack_require__(5317);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/errors/index.js
+var errors = __webpack_require__(990);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/core/networkStatus.js
+var networkStatus = __webpack_require__(1644);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/react/parser/index.js
+var parser = __webpack_require__(4692);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/react/hooks/useApolloClient.js
+var useApolloClient = __webpack_require__(6252);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/maybeDeepFreeze.js
+var maybeDeepFreeze = __webpack_require__(8702);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/arrays.js
+var arrays = __webpack_require__(1436);
+;// CONCATENATED MODULE: ./node_modules/@apollo/client/react/hooks/useQuery.js
 
 
 
@@ -21790,20 +21807,21 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 
 
-var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+var useQuery_hasOwnProperty = Object.prototype.hasOwnProperty;
 function useQuery(query, options) {
     if (options === void 0) { options = Object.create(null); }
-    return useInternalState((0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .x)(options.client), query).useQuery(options);
+    return useInternalState((0,useApolloClient/* useApolloClient */.x)(options.client), query).useQuery(options);
 }
 function useInternalState(client, query) {
-    var stateRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
+    var stateRef = (0,react.useRef)();
     if (!stateRef.current ||
         client !== stateRef.current.client ||
         query !== stateRef.current.query) {
         stateRef.current = new InternalState(client, query);
     }
     var state = stateRef.current;
-    var _a = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0), _tick = _a[0], setTick = _a[1];
+    var _a = (0,react.useState)(0), _tick = _a[0], setTick = _a[1];
     state.forceUpdate = function () {
         setTick(function (tick) { return tick + 1; });
     };
@@ -21813,29 +21831,40 @@ var InternalState = (function () {
     function InternalState(client, query) {
         this.client = client;
         this.query = query;
-        this.ssrDisabledResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .maybeDeepFreeze */ .J)({
+        this.asyncResolveFns = new Set();
+        this.optionsToIgnoreOnce = new (canUse/* canUseWeakSet */.sy ? WeakSet : Set)();
+        this.ssrDisabledResult = (0,maybeDeepFreeze/* maybeDeepFreeze */.J)({
             loading: true,
             data: void 0,
             error: void 0,
-            networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus.loading */ .I.loading,
+            networkStatus: networkStatus/* NetworkStatus.loading */.I.loading,
         });
-        this.skipStandbyResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .maybeDeepFreeze */ .J)({
+        this.skipStandbyResult = (0,maybeDeepFreeze/* maybeDeepFreeze */.J)({
             loading: false,
             data: void 0,
             error: void 0,
-            networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus.ready */ .I.ready,
+            networkStatus: networkStatus/* NetworkStatus.ready */.I.ready,
         });
-        this.toQueryResultCache = new (_utilities_index_js__WEBPACK_IMPORTED_MODULE_6__/* .canUseWeakMap */ .mr ? WeakMap : Map)();
-        (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_7__/* .verifyDocumentType */ .Vp)(query, _parser_index_js__WEBPACK_IMPORTED_MODULE_7__/* .DocumentType.Query */ .n_.Query);
+        this.toQueryResultCache = new (canUse/* canUseWeakMap */.mr ? WeakMap : Map)();
+        (0,parser/* verifyDocumentType */.Vp)(query, parser/* DocumentType.Query */.n_.Query);
     }
     InternalState.prototype.forceUpdate = function () {
+        __DEV__ && globals/* invariant.warn */.kG.warn("Calling default no-op implementation of InternalState#forceUpdate");
+    };
+    InternalState.prototype.asyncUpdate = function () {
+        var _this = this;
+        return new Promise(function (resolve) {
+            _this.asyncResolveFns.add(resolve);
+            _this.optionsToIgnoreOnce.add(_this.watchQueryOptions);
+            _this.forceUpdate();
+        });
     };
     InternalState.prototype.useQuery = function (options) {
         var _this = this;
-        this.renderPromises = (0,react__WEBPACK_IMPORTED_MODULE_0__.useContext)((0,_context_index_js__WEBPACK_IMPORTED_MODULE_8__/* .getApolloContext */ .K)()).renderPromises;
+        this.renderPromises = (0,react.useContext)((0,ApolloContext/* getApolloContext */.K)()).renderPromises;
         this.useOptions(options);
         var obsQuery = this.useObservableQuery();
-        var result = (0,use_sync_external_store_shim_index_js__WEBPACK_IMPORTED_MODULE_1__.useSyncExternalStore)((0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
+        var result = useSyncExternalStore((0,react.useCallback)(function () {
             if (_this.renderPromises) {
                 return function () { };
             }
@@ -21845,7 +21874,7 @@ var InternalState = (function () {
                 if (previousResult &&
                     previousResult.loading === result.loading &&
                     previousResult.networkStatus === result.networkStatus &&
-                    (0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .D)(previousResult.data, result.data)) {
+                    (0,equality_esm/* equal */.D)(previousResult.data, result.data)) {
                     return;
                 }
                 _this.setResult(result);
@@ -21860,18 +21889,18 @@ var InternalState = (function () {
                 finally {
                     obsQuery["last"] = last;
                 }
-                if (!hasOwnProperty.call(error, 'graphQLErrors')) {
+                if (!useQuery_hasOwnProperty.call(error, 'graphQLErrors')) {
                     throw error;
                 }
                 var previousResult = _this.result;
                 if (!previousResult ||
                     (previousResult && previousResult.loading) ||
-                    !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .D)(error, previousResult.error)) {
+                    !(0,equality_esm/* equal */.D)(error, previousResult.error)) {
                     _this.setResult({
                         data: (previousResult && previousResult.data),
                         error: error,
                         loading: false,
-                        networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus.error */ .I.error,
+                        networkStatus: networkStatus/* NetworkStatus.error */.I.error,
                     });
                 }
             };
@@ -21883,15 +21912,22 @@ var InternalState = (function () {
             this.client.disableNetworkFetches,
         ]), function () { return _this.getCurrentResult(); }, function () { return _this.getCurrentResult(); });
         this.unsafeHandlePartialRefetch(result);
-        return this.toQueryResult(result);
+        var queryResult = this.toQueryResult(result);
+        if (!queryResult.loading && this.asyncResolveFns.size) {
+            this.asyncResolveFns.forEach(function (resolve) { return resolve(queryResult); });
+            this.asyncResolveFns.clear();
+        }
+        return queryResult;
     };
     InternalState.prototype.useOptions = function (options) {
         var _a;
         var watchQueryOptions = this.createWatchQueryOptions(this.queryHookOptions = options);
         var currentWatchQueryOptions = this.watchQueryOptions;
-        if (!(0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .D)(watchQueryOptions, currentWatchQueryOptions)) {
+        if (this.optionsToIgnoreOnce.has(currentWatchQueryOptions) ||
+            !(0,equality_esm/* equal */.D)(watchQueryOptions, currentWatchQueryOptions)) {
             this.watchQueryOptions = watchQueryOptions;
             if (currentWatchQueryOptions && this.observable) {
+                this.optionsToIgnoreOnce.delete(currentWatchQueryOptions);
                 this.observable.reobserve(watchQueryOptions);
                 this.previousData = ((_a = this.result) === null || _a === void 0 ? void 0 : _a.data) || this.previousData;
                 this.result = void 0;
@@ -21900,7 +21936,8 @@ var InternalState = (function () {
         this.onCompleted = options.onCompleted || InternalState.prototype.onCompleted;
         this.onError = options.onError || InternalState.prototype.onError;
         if ((this.renderPromises || this.client.disableNetworkFetches) &&
-            this.queryHookOptions.ssr === false) {
+            this.queryHookOptions.ssr === false &&
+            !this.queryHookOptions.skip) {
             this.result = this.ssrDisabledResult;
         }
         else if (this.queryHookOptions.skip ||
@@ -21913,50 +21950,37 @@ var InternalState = (function () {
         }
     };
     InternalState.prototype.createWatchQueryOptions = function (_a) {
+        var _b;
         if (_a === void 0) { _a = {}; }
-        var skip = _a.skip, ssr = _a.ssr, onCompleted = _a.onCompleted, onError = _a.onError, displayName = _a.displayName, defaultOptions = _a.defaultOptions, otherOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_9__/* .__rest */ ._T)(_a, ["skip", "ssr", "onCompleted", "onError", "displayName", "defaultOptions"]);
-        var toMerge = [];
-        var globalDefaults = this.client.defaultOptions.watchQuery;
-        if (globalDefaults)
-            toMerge.push(globalDefaults);
-        if (defaultOptions)
-            toMerge.push(defaultOptions);
-        var latestOptions = this.observable && this.observable.options;
-        if (latestOptions && toMerge.length) {
-            var defaults_1 = toMerge.reduce(_core_index_js__WEBPACK_IMPORTED_MODULE_10__/* .mergeOptions */ .J, Object.create(null));
-            toMerge.length = 1;
-            toMerge[0] = defaults_1;
-            Object.keys(defaults_1).forEach(function (defaultOptionName) {
-                var currentOptionValue = latestOptions[defaultOptionName];
-                if (hasOwnProperty.call(latestOptions, defaultOptionName) &&
-                    !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .D)(defaults_1[defaultOptionName], currentOptionValue)) {
-                    defaults_1[defaultOptionName] = defaultOptionName === "variables"
-                        ? (0,tslib__WEBPACK_IMPORTED_MODULE_9__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_9__/* .__assign */ .pi)({}, defaults_1.variables), currentOptionValue) : currentOptionValue;
-                }
-            });
-        }
-        toMerge.push(otherOptions);
-        var merged = toMerge.reduce(_core_index_js__WEBPACK_IMPORTED_MODULE_10__/* .mergeOptions */ .J, Object.create(null));
-        var watchQueryOptions = Object.assign(merged, { query: this.query });
+        var skip = _a.skip, ssr = _a.ssr, onCompleted = _a.onCompleted, onError = _a.onError, displayName = _a.displayName, defaultOptions = _a.defaultOptions, otherOptions = (0,tslib_es6/* __rest */._T)(_a, ["skip", "ssr", "onCompleted", "onError", "displayName", "defaultOptions"]);
+        var watchQueryOptions = Object.assign(otherOptions, { query: this.query });
         if (this.renderPromises &&
             (watchQueryOptions.fetchPolicy === 'network-only' ||
                 watchQueryOptions.fetchPolicy === 'cache-and-network')) {
             watchQueryOptions.fetchPolicy = 'cache-first';
         }
-        else if (!watchQueryOptions.fetchPolicy) {
-            watchQueryOptions.fetchPolicy = 'cache-first';
+        if (!watchQueryOptions.variables) {
+            watchQueryOptions.variables = {};
         }
         if (skip) {
-            var _b = watchQueryOptions.initialFetchPolicy, initialFetchPolicy = _b === void 0 ? watchQueryOptions.fetchPolicy : _b;
+            var _c = watchQueryOptions.fetchPolicy, fetchPolicy = _c === void 0 ? this.getDefaultFetchPolicy() : _c, _d = watchQueryOptions.initialFetchPolicy, initialFetchPolicy = _d === void 0 ? fetchPolicy : _d;
             Object.assign(watchQueryOptions, {
                 initialFetchPolicy: initialFetchPolicy,
                 fetchPolicy: 'standby',
             });
         }
-        if (!watchQueryOptions.variables) {
-            watchQueryOptions.variables = {};
+        else if (!watchQueryOptions.fetchPolicy) {
+            watchQueryOptions.fetchPolicy =
+                ((_b = this.observable) === null || _b === void 0 ? void 0 : _b.options.initialFetchPolicy) ||
+                    this.getDefaultFetchPolicy();
         }
         return watchQueryOptions;
+    };
+    InternalState.prototype.getDefaultFetchPolicy = function () {
+        var _a, _b;
+        return (((_a = this.queryHookOptions.defaultOptions) === null || _a === void 0 ? void 0 : _a.fetchPolicy) ||
+            ((_b = this.client.defaultOptions.watchQuery) === null || _b === void 0 ? void 0 : _b.fetchPolicy) ||
+            "cache-first");
     };
     InternalState.prototype.onCompleted = function (data) { };
     InternalState.prototype.onError = function (error) { };
@@ -21965,8 +21989,8 @@ var InternalState = (function () {
             this.renderPromises
                 && this.renderPromises.getSSRObservable(this.watchQueryOptions)
                 || this.observable
-                || this.client.watchQuery((0,tslib__WEBPACK_IMPORTED_MODULE_9__/* .__assign */ .pi)({}, this.watchQueryOptions));
-        this.obsQueryFields = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () { return ({
+                || this.client.watchQuery((0,mergeOptions/* mergeOptions */.J)(this.queryHookOptions.defaultOptions, this.watchQueryOptions));
+        this.obsQueryFields = (0,react.useMemo)(function () { return ({
             refetch: obsQuery.refetch.bind(obsQuery),
             reobserve: obsQuery.reobserve.bind(obsQuery),
             fetchMore: obsQuery.fetchMore.bind(obsQuery),
@@ -21975,11 +21999,11 @@ var InternalState = (function () {
             stopPolling: obsQuery.stopPolling.bind(obsQuery),
             subscribeToMore: obsQuery.subscribeToMore.bind(obsQuery),
         }); }, [obsQuery]);
-        if (this.renderPromises) {
+        var ssrAllowed = !(this.queryHookOptions.ssr === false ||
+            this.queryHookOptions.skip);
+        if (this.renderPromises && ssrAllowed) {
             this.renderPromises.registerSSRObservable(obsQuery);
-            var ssrAllowed = !(this.queryHookOptions.ssr === false ||
-                this.queryHookOptions.skip);
-            if (ssrAllowed && obsQuery.getCurrentResult().loading) {
+            if (obsQuery.getCurrentResult().loading) {
                 this.renderPromises.addObservableQueryPromise(obsQuery);
             }
         }
@@ -22014,10 +22038,10 @@ var InternalState = (function () {
         var queryResult = this.toQueryResultCache.get(result);
         if (queryResult)
             return queryResult;
-        var data = result.data, partial = result.partial, resultWithoutPartial = (0,tslib__WEBPACK_IMPORTED_MODULE_9__/* .__rest */ ._T)(result, ["data", "partial"]);
-        this.toQueryResultCache.set(result, queryResult = (0,tslib__WEBPACK_IMPORTED_MODULE_9__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_9__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_9__/* .__assign */ .pi)({ data: data }, resultWithoutPartial), this.obsQueryFields), { client: this.client, observable: this.observable, variables: this.observable.variables, called: true, previousData: this.previousData }));
-        if (!queryResult.error && (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_11__/* .isNonEmptyArray */ .O)(result.errors)) {
-            queryResult.error = new _errors_index_js__WEBPACK_IMPORTED_MODULE_12__/* .ApolloError */ .c({ graphQLErrors: result.errors });
+        var data = result.data, partial = result.partial, resultWithoutPartial = (0,tslib_es6/* __rest */._T)(result, ["data", "partial"]);
+        this.toQueryResultCache.set(result, queryResult = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({ data: data }, resultWithoutPartial), this.obsQueryFields), { client: this.client, observable: this.observable, variables: this.observable.variables, called: true, previousData: this.previousData }));
+        if (!queryResult.error && (0,arrays/* isNonEmptyArray */.O)(result.errors)) {
+            queryResult.error = new errors/* ApolloError */.c({ graphQLErrors: result.errors });
         }
         return queryResult;
     };
@@ -22029,7 +22053,7 @@ var InternalState = (function () {
             this.observable.options.fetchPolicy !== 'cache-only') {
             Object.assign(result, {
                 loading: true,
-                networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus.refetch */ .I.refetch,
+                networkStatus: networkStatus/* NetworkStatus.refetch */.I.refetch,
             });
             this.observable.refetch();
         }
@@ -22108,6 +22132,12 @@ function useSubscription(subscription, options) {
             context: options === null || options === void 0 ? void 0 : options.context,
         });
     }), observable = _b[0], setObservable = _b[1];
+    var canResetObservableRef = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)(false);
+    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(function () {
+        return function () {
+            canResetObservableRef.current = true;
+        };
+    }, []);
     var ref = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)({ client: client, subscription: subscription, options: options });
     (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(function () {
         var _a, _b, _c, _d;
@@ -22116,7 +22146,7 @@ function useSubscription(subscription, options) {
             shouldResubscribe = !!shouldResubscribe(options);
         }
         if (options === null || options === void 0 ? void 0 : options.skip) {
-            if (!(options === null || options === void 0 ? void 0 : options.skip) !== !((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.skip)) {
+            if (!(options === null || options === void 0 ? void 0 : options.skip) !== !((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.skip) || canResetObservableRef.current) {
                 setResult({
                     loading: false,
                     data: void 0,
@@ -22124,13 +22154,16 @@ function useSubscription(subscription, options) {
                     variables: options === null || options === void 0 ? void 0 : options.variables,
                 });
                 setObservable(null);
+                canResetObservableRef.current = false;
             }
         }
-        else if (shouldResubscribe !== false && (client !== ref.current.client ||
-            subscription !== ref.current.subscription ||
-            (options === null || options === void 0 ? void 0 : options.fetchPolicy) !== ((_b = ref.current.options) === null || _b === void 0 ? void 0 : _b.fetchPolicy) ||
-            !(options === null || options === void 0 ? void 0 : options.skip) !== !((_c = ref.current.options) === null || _c === void 0 ? void 0 : _c.skip) ||
-            !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .D)(options === null || options === void 0 ? void 0 : options.variables, (_d = ref.current.options) === null || _d === void 0 ? void 0 : _d.variables))) {
+        else if ((shouldResubscribe !== false &&
+            (client !== ref.current.client ||
+                subscription !== ref.current.subscription ||
+                (options === null || options === void 0 ? void 0 : options.fetchPolicy) !== ((_b = ref.current.options) === null || _b === void 0 ? void 0 : _b.fetchPolicy) ||
+                !(options === null || options === void 0 ? void 0 : options.skip) !== !((_c = ref.current.options) === null || _c === void 0 ? void 0 : _c.skip) ||
+                !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .D)(options === null || options === void 0 ? void 0 : options.variables, (_d = ref.current.options) === null || _d === void 0 ? void 0 : _d.variables))) ||
+            canResetObservableRef.current) {
             setResult({
                 loading: true,
                 data: void 0,
@@ -22143,9 +22176,10 @@ function useSubscription(subscription, options) {
                 fetchPolicy: options === null || options === void 0 ? void 0 : options.fetchPolicy,
                 context: options === null || options === void 0 ? void 0 : options.context,
             }));
+            canResetObservableRef.current = false;
         }
         Object.assign(ref.current, { client: client, subscription: subscription, options: options });
-    }, [client, subscription, options]);
+    }, [client, subscription, options, canResetObservableRef.current]);
     (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(function () {
         if (!observable) {
             return;
@@ -22359,15 +22393,22 @@ function isNonEmptyArray(value) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "JC": () => (/* binding */ canUseLayoutEffect),
 /* harmony export */   "aS": () => (/* binding */ canUseSymbol),
 /* harmony export */   "mr": () => (/* binding */ canUseWeakMap),
 /* harmony export */   "sy": () => (/* binding */ canUseWeakSet)
 /* harmony export */ });
-var canUseWeakMap = typeof WeakMap === 'function' && !(typeof navigator === 'object' &&
-    navigator.product === 'ReactNative');
+/* unused harmony export canUseDOM */
+/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+
+var canUseWeakMap = typeof WeakMap === 'function' &&
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .wY)(function () { return navigator.product; }) !== 'ReactNative';
 var canUseWeakSet = typeof WeakSet === 'function';
 var canUseSymbol = typeof Symbol === 'function' &&
     typeof Symbol.for === 'function';
+var canUseDOM = typeof (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .wY)(function () { return window.document.createElement; }) === "function";
+var usingJSDOM = (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .wY)(function () { return navigator.userAgent.indexOf("jsdom") >= 0; }) || false;
+var canUseLayoutEffect = canUseDOM && !usingJSDOM;
 //# sourceMappingURL=canUse.js.map
 
 /***/ }),
@@ -22640,7 +22681,7 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 function mergeOptions(defaults, options) {
     return (0,_compact_js__WEBPACK_IMPORTED_MODULE_0__/* .compact */ .o)(defaults, options, options.variables && {
-        variables: (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)({}, defaults.variables), options.variables),
+        variables: (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)({}, (defaults && defaults.variables)), options.variables),
     });
 }
 //# sourceMappingURL=mergeOptions.js.map
@@ -28623,7 +28664,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
 // === Symbol Support ===
 var hasSymbols = function () {
