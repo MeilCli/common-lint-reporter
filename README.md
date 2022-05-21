@@ -1,4 +1,5 @@
 # common-lint-reporter
+[![CI-Master](https://github.com/MeilCli/common-lint-reporter/actions/workflows/ci-master.yml/badge.svg)](https://github.com/MeilCli/common-lint-reporter/actions/workflows/ci-master.yml)  
 This is generalized lint reporter action
 
 Focuses on:
