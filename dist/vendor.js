@@ -15493,10 +15493,10 @@ var canUse = __webpack_require__(320);
 var compact = __webpack_require__(3712);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/getFromAST.js
 var getFromAST = __webpack_require__(6765);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/mergeDeep.js
-var mergeDeep = __webpack_require__(182);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/fragments.js
 var fragments = __webpack_require__(3361);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/mergeDeep.js
+var mergeDeep = __webpack_require__(182);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/directives.js
 var directives = __webpack_require__(9065);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/maybeDeepFreeze.js
@@ -16048,7 +16048,6 @@ var StoreReader = (function () {
         var policies = this.config.cache.policies;
         variables = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, (0,getFromAST/* getDefaultValues */.O4)((0,getFromAST/* getQueryDefinition */.iW)(query))), variables);
         var rootRef = (0,storeUtils/* makeReference */.kQ)(rootId);
-        var merger = new mergeDeep/* DeepMerger */.w0;
         var execResult = this.executeSelectionSet({
             selectionSet: (0,getFromAST/* getMainDefinition */.p$)(query).selectionSet,
             objectOrReference: rootRef,
@@ -16061,9 +16060,6 @@ var StoreReader = (function () {
                 varString: (0,object_canon/* canonicalStringify */.B)(variables),
                 canonizeResults: canonizeResults,
                 fragmentMap: (0,fragments/* createFragmentMap */.F)((0,getFromAST/* getFragmentDefinitions */.kU)(query)),
-                merge: function (a, b) {
-                    return merger.merge(a, b);
-                },
             },
         });
         var missing;
@@ -16102,17 +16098,18 @@ var StoreReader = (function () {
         }
         var variables = context.variables, policies = context.policies, store = context.store;
         var typename = store.getFieldValue(objectOrReference, "__typename");
-        var result = {};
+        var objectsToMerge = [];
         var missing;
+        var missingMerger = new mergeDeep/* DeepMerger */.w0();
         if (this.config.addTypename &&
             typeof typename === "string" &&
             !policies.rootIdsByTypename[typename]) {
-            result = { __typename: typename };
+            objectsToMerge.push({ __typename: typename });
         }
         function handleMissing(result, resultName) {
             var _a;
             if (result.missing) {
-                missing = context.merge(missing, (_a = {}, _a[resultName] = result.missing, _a));
+                missing = missingMerger.merge(missing, (_a = {}, _a[resultName] = result.missing, _a));
             }
             return result.result;
         }
@@ -16131,7 +16128,7 @@ var StoreReader = (function () {
                 var resultName = (0,storeUtils/* resultKeyNameFromField */.u2)(selection);
                 if (fieldValue === void 0) {
                     if (!transform/* addTypenameToDocument.added */.Gw.added(selection)) {
-                        missing = context.merge(missing, (_a = {},
+                        missing = missingMerger.merge(missing, (_a = {},
                             _a[resultName] = "Can't find field '".concat(selection.name.value, "' on ").concat((0,storeUtils/* isReference */.Yk)(objectOrReference)
                                 ? objectOrReference.__ref + " object"
                                 : "object " + JSON.stringify(objectOrReference, null, 2)),
@@ -16160,7 +16157,7 @@ var StoreReader = (function () {
                     }), resultName);
                 }
                 if (fieldValue !== void 0) {
-                    result = context.merge(result, (_b = {}, _b[resultName] = fieldValue, _b));
+                    objectsToMerge.push((_b = {}, _b[resultName] = fieldValue, _b));
                 }
             }
             else {
@@ -16170,6 +16167,7 @@ var StoreReader = (function () {
                 }
             }
         });
+        var result = (0,mergeDeep/* mergeDeepArray */.bw)(objectsToMerge);
         var finalResult = { result: result, missing: missing };
         var frozen = context.canonizeResults
             ? this.canon.admit(finalResult)
@@ -16183,10 +16181,11 @@ var StoreReader = (function () {
         var _this = this;
         var field = _a.field, array = _a.array, enclosingRef = _a.enclosingRef, context = _a.context;
         var missing;
+        var missingMerger = new mergeDeep/* DeepMerger */.w0();
         function handleMissing(childResult, i) {
             var _a;
             if (childResult.missing) {
-                missing = context.merge(missing, (_a = {}, _a[i] = childResult.missing, _a));
+                missing = missingMerger.merge(missing, (_a = {}, _a[i] = childResult.missing, _a));
             }
             return childResult.result;
         }
@@ -17755,7 +17754,7 @@ var ApolloLink = __webpack_require__(3581);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
 var execute = __webpack_require__(7037);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.6.4';
+var version = '3.6.5';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
@@ -19639,7 +19638,7 @@ var ApolloClient = (function () {
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6765);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(9487);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(1436);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(4012);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(3712);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(8263);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(8216);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(6403);
@@ -20040,7 +20039,7 @@ var ObservableQuery = (function (_super) {
             newNetworkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.poll */ .I.poll;
         var oldVariables = this.options.variables;
         var oldFetchPolicy = this.options.fetchPolicy;
-        var mergedOptions = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_7__/* .mergeOptions */ .J)(this.options, newOptions || {});
+        var mergedOptions = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_7__/* .compact */ .o)(this.options, newOptions || {});
         var options = useDisposableConcast
             ? mergedOptions
             : assign(this.options, mergedOptions);
@@ -21518,15 +21517,19 @@ function useApolloClient(override) {
 /* harmony export */   "t": () => (/* binding */ useLazyQuery)
 /* harmony export */ });
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(655);
+	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(655);
 }
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7294);
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4012);
+}
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _useQuery_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4316);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6252);
 }
+
 
 
 
@@ -21542,7 +21545,10 @@ var EAGER_METHODS = (/* runtime-dependent pure expression or super */ /^(33[45]|
 function useLazyQuery(query, options) {
     var internalState = (0,_useQuery_js__WEBPACK_IMPORTED_MODULE_1__/* .useInternalState */ .A)((0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__/* .useApolloClient */ .x)(options && options.client), query);
     var execOptionsRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
-    var useQueryResult = internalState.useQuery((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({}, options), execOptionsRef.current), { skip: !execOptionsRef.current }));
+    var merged = execOptionsRef.current
+        ? (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .mergeOptions */ .J)(options, execOptionsRef.current)
+        : options;
+    var useQueryResult = internalState.useQuery((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)({}, merged), { skip: !execOptionsRef.current }));
     var initialFetchPolicy = useQueryResult.observable.options.initialFetchPolicy ||
         internalState.getDefaultFetchPolicy();
     var result = Object.assign(useQueryResult, {
@@ -21568,7 +21574,7 @@ function useLazyQuery(query, options) {
     }, []);
     Object.assign(result, eagerMethods);
     var execute = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (executeOptions) {
-        execOptionsRef.current = executeOptions ? (0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({}, executeOptions), { fetchPolicy: executeOptions.fetchPolicy || initialFetchPolicy }) : {
+        execOptionsRef.current = executeOptions ? (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)({}, executeOptions), { fetchPolicy: executeOptions.fetchPolicy || initialFetchPolicy }) : {
             fetchPolicy: initialFetchPolicy,
         };
         var promise = internalState
@@ -21649,7 +21655,7 @@ function useMutation(mutation, options) {
         var mutationId = ++ref.current.mutationId;
         var clientOptions = (0,_core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .mergeOptions */ .J)(baseOptions, executeOptions);
         return client.mutate(clientOptions).then(function (response) {
-            var _a, _b;
+            var _a, _b, _c;
             var data = response.data, errors = response.errors;
             var error = errors && errors.length > 0
                 ? new _errors_index_js__WEBPACK_IMPORTED_MODULE_6__/* .ApolloError */ .c({ graphQLErrors: errors })
@@ -21667,11 +21673,11 @@ function useMutation(mutation, options) {
                     setResult(ref.current.result = result_1);
                 }
             }
-            (_a = baseOptions.onCompleted) === null || _a === void 0 ? void 0 : _a.call(baseOptions, response.data);
-            (_b = executeOptions.onCompleted) === null || _b === void 0 ? void 0 : _b.call(executeOptions, response.data);
+            (_b = (_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onCompleted) === null || _b === void 0 ? void 0 : _b.call(_a, response.data);
+            (_c = executeOptions.onCompleted) === null || _c === void 0 ? void 0 : _c.call(executeOptions, response.data);
             return response;
         }).catch(function (error) {
-            var _a, _b;
+            var _a, _b, _c, _d;
             if (mutationId === ref.current.mutationId &&
                 ref.current.isMounted) {
                 var result_2 = {
@@ -21685,9 +21691,9 @@ function useMutation(mutation, options) {
                     setResult(ref.current.result = result_2);
                 }
             }
-            if (baseOptions.onError || clientOptions.onError) {
-                (_a = baseOptions.onError) === null || _a === void 0 ? void 0 : _a.call(baseOptions, error);
-                (_b = executeOptions.onError) === null || _b === void 0 ? void 0 : _b.call(executeOptions, error);
+            if (((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onError) || clientOptions.onError) {
+                (_c = (_b = ref.current.options) === null || _b === void 0 ? void 0 : _b.onError) === null || _c === void 0 ? void 0 : _c.call(_b, error);
+                (_d = executeOptions.onError) === null || _d === void 0 ? void 0 : _d.call(executeOptions, error);
                 return { data: void 0, errors: error };
             }
             throw error;
@@ -21818,7 +21824,7 @@ function useInternalState(client, query) {
     if (!stateRef.current ||
         client !== stateRef.current.client ||
         query !== stateRef.current.query) {
-        stateRef.current = new InternalState(client, query);
+        stateRef.current = new InternalState(client, query, stateRef.current);
     }
     var state = stateRef.current;
     var _a = (0,react.useState)(0), _tick = _a[0], setTick = _a[1];
@@ -21828,7 +21834,7 @@ function useInternalState(client, query) {
     return state;
 }
 var InternalState = (function () {
-    function InternalState(client, query) {
+    function InternalState(client, query, previous) {
         this.client = client;
         this.query = query;
         this.asyncResolveFns = new Set();
@@ -21847,6 +21853,11 @@ var InternalState = (function () {
         });
         this.toQueryResultCache = new (canUse/* canUseWeakMap */.mr ? WeakMap : Map)();
         (0,parser/* verifyDocumentType */.Vp)(query, parser/* DocumentType.Query */.n_.Query);
+        var previousResult = previous && previous.result;
+        var previousData = previousResult && previousResult.data;
+        if (previousData) {
+            this.previousData = previousData;
+        }
     }
     InternalState.prototype.forceUpdate = function () {
         __DEV__ && globals/* invariant.warn */.kG.warn("Calling default no-op implementation of InternalState#forceUpdate");
@@ -22642,18 +22653,15 @@ var DeepMerger = (function () {
     };
     DeepMerger.prototype.shallowCopyForMerge = function (value) {
         if ((0,_objects_js__WEBPACK_IMPORTED_MODULE_0__/* .isNonNullObject */ .s)(value)) {
-            if (this.pastCopies.has(value)) {
-                if (!Object.isFrozen(value))
-                    return value;
-                this.pastCopies.delete(value);
+            if (!this.pastCopies.has(value)) {
+                if (Array.isArray(value)) {
+                    value = value.slice(0);
+                }
+                else {
+                    value = (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)({ __proto__: Object.getPrototypeOf(value) }, value);
+                }
+                this.pastCopies.add(value);
             }
-            if (Array.isArray(value)) {
-                value = value.slice(0);
-            }
-            else {
-                value = (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)({ __proto__: Object.getPrototypeOf(value) }, value);
-            }
-            this.pastCopies.add(value);
         }
         return value;
     };
