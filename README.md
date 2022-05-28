@@ -88,8 +88,14 @@ jobs:
   - [Lint result file format](documents/lint-result.md)
   - [Operator context](documents/operator/context.md)
 
+## Contributes
+[<img src="https://gist.github.com/MeilCli/2d3bbbc636d3e542aba28207b33b78bc/raw/b4dd7406351e857572e45537f9f929bf355689ff/metrics_contributors.svg">](https://github.com/MeilCli/common-lint-reporter/graphs/contributors)
+
+### Could you want to contribute?
+see [Contributing.md](./.github/CONTRIBUTING.md)
+
 ## License
-MIT License
+[<img src="https://gist.github.com/MeilCli/2d3bbbc636d3e542aba28207b33b78bc/raw/b4dd7406351e857572e45537f9f929bf355689ff/metrics_licenses.svg">](LICENSE.txt)
 
 ### Using
 - [actions/toolkit](https://github.com/actions/toolkit), published by [MIT License](https://github.com/actions/toolkit/blob/master/LICENSE.md)
