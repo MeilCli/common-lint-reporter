@@ -8289,7 +8289,7 @@ const parseXml = function(xmlData) {
           currentNode.add(this.options.cdataPropName, [ { [this.options.textNodeName] : tagExp } ]);
         }else{
           let val = this.parseTextData(tagExp, currentNode.tagname, jPath, true, false, true);
-          if(!val) val = "";
+          if(val == undefined) val = "";
           currentNode.add(this.options.textNodeName, val);
         }
         
@@ -8524,17 +8524,35 @@ function readTagExp(xmlData,i, removeNSPrefix, closingChar = ">"){
  */
 function readStopNodeData(xmlData, tagName, i){
   const startIndex = i;
+  // Starting at 1 since we already have an open tag
+  let openTagCount = 1;
+
   for (; i < xmlData.length; i++) {
-    if( xmlData[i] === "<" && xmlData[i+1] === "/"){ 
-        const closeIndex = findClosingIndex(xmlData, ">", i, `${tagName} is not closed`);
-        let closeTagName = xmlData.substring(i+2,closeIndex).trim();
-        if(closeTagName === tagName){
-          return {
-            tagContent: xmlData.substring(startIndex, i),
-            i : closeIndex
+    if( xmlData[i] === "<"){ 
+      if (xmlData[i+1] === "/") {
+          const closeIndex = findClosingIndex(xmlData, ">", i, `${tagName} is not closed`);
+          let closeTagName = xmlData.substring(i+2,closeIndex).trim();
+          if(closeTagName === tagName){
+            openTagCount--;
+            if (openTagCount === 0) {
+              return {
+                tagContent: xmlData.substring(startIndex, i),
+                i : closeIndex
+              }
+            }
+          }
+          i=closeIndex;
+        } else {
+          const tagData = readTagExp(xmlData, i, '>')
+
+          if (tagData) {
+            const openTagName = tagData && tagData.tagName;
+            if (openTagName === tagName) {
+              openTagCount++;
+            }
+            i=tagData.closeIndex;
           }
         }
-        i=closeIndex;
       }
   }//end for loop
 }
@@ -8675,9 +8693,9 @@ function compress(arr, options, jPath){
         else val = "";
       }
 
-      if(compressedObj[property] !== undefined) {
+      if(compressedObj[property] !== undefined && compressedObj.hasOwnProperty(property)) {
         if(!Array.isArray(compressedObj[property])) {
-          compressedObj[property] = [ compressedObj[property] ];
+            compressedObj[property] = [ compressedObj[property] ];
         }
         compressedObj[property].push(val);
       }else{
