@@ -17772,7 +17772,7 @@ var ApolloLink = __webpack_require__(3581);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
 var execute = __webpack_require__(7037);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.6.5';
+var version = '3.6.6';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
@@ -21817,6 +21817,8 @@ var parser = __webpack_require__(4692);
 var useApolloClient = __webpack_require__(6252);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/maybeDeepFreeze.js
 var maybeDeepFreeze = __webpack_require__(8702);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/compact.js
+var compact = __webpack_require__(3712);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/arrays.js
 var arrays = __webpack_require__(1436);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/react/hooks/useQuery.js
@@ -21957,7 +21959,7 @@ var InternalState = (function () {
             this.watchQueryOptions = watchQueryOptions;
             if (currentWatchQueryOptions && this.observable) {
                 this.optionsToIgnoreOnce.delete(currentWatchQueryOptions);
-                this.observable.reobserve(watchQueryOptions);
+                this.observable.reobserve(this.getObsQueryOptions());
                 this.previousData = ((_a = this.result) === null || _a === void 0 ? void 0 : _a.data) || this.previousData;
                 this.result = void 0;
             }
@@ -21977,6 +21979,17 @@ var InternalState = (function () {
             this.result === this.skipStandbyResult) {
             this.result = void 0;
         }
+    };
+    InternalState.prototype.getObsQueryOptions = function () {
+        var toMerge = [];
+        var globalDefaults = this.client.defaultOptions.watchQuery;
+        if (globalDefaults)
+            toMerge.push(globalDefaults);
+        if (this.queryHookOptions.defaultOptions) {
+            toMerge.push(this.queryHookOptions.defaultOptions);
+        }
+        toMerge.push((0,compact/* compact */.o)(this.observable && this.observable.options, this.watchQueryOptions));
+        return toMerge.reduce(mergeOptions/* mergeOptions */.J);
     };
     InternalState.prototype.createWatchQueryOptions = function (_a) {
         var _b;
@@ -22018,7 +22031,7 @@ var InternalState = (function () {
             this.renderPromises
                 && this.renderPromises.getSSRObservable(this.watchQueryOptions)
                 || this.observable
-                || this.client.watchQuery((0,mergeOptions/* mergeOptions */.J)(this.queryHookOptions.defaultOptions, this.watchQueryOptions));
+                || this.client.watchQuery(this.getObsQueryOptions());
         this.obsQueryFields = (0,react.useMemo)(function () { return ({
             refetch: obsQuery.refetch.bind(obsQuery),
             reobserve: obsQuery.reobserve.bind(obsQuery),
