@@ -11844,7 +11844,10 @@ export type PackageTag = Node & {
 export enum PackageType {
   /** A debian package. */
   Debian = 'DEBIAN',
-  /** A docker image. */
+  /**
+   * A docker image.
+   * @deprecated DOCKER will be removed from this enum as this type will be migrated to only be used by the Packages REST API. Removal on 2021-06-21 UTC.
+   */
   Docker = 'DOCKER',
   /** A maven package. */
   Maven = 'MAVEN',
@@ -16860,7 +16863,10 @@ export type RepositoryInvitationOrder = {
 export enum RepositoryInvitationOrderField {
   /** Order repository invitations by creation time */
   CreatedAt = 'CREATED_AT',
-  /** Order repository invitations by invitee login */
+  /**
+   * Order repository invitations by invitee login
+   * @deprecated `INVITEE_LOGIN` is no longer a valid field value. Repository invitations can now be associated with an email, not only an invitee. Removal on 2020-10-01 UTC.
+   */
   InviteeLogin = 'INVITEE_LOGIN'
 }
 
