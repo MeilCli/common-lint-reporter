@@ -28,7 +28,7 @@
         "@actions/core": "^1.8.2",
         "@actions/github": "^5.0.3",
         "@actions/glob": "^0.3.0",
-        "@apollo/client": "^3.6.7",
+        "@apollo/client": "^3.6.8",
         "cross-fetch": "^3.1.5",
         "fast-xml-parser": "^4.0.8",
         "graphql": "^16.5.0",
