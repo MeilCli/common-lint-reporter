@@ -16760,7 +16760,7 @@ function makeFieldFunctionOptions(policies, objectOrReference, fieldSpec, contex
         cache: policies.cache,
         canRead: canRead,
         readField: function () {
-            return policies.readField(normalizeReadFieldOptions(arguments, objectOrReference, context), context);
+            return policies.readField(normalizeReadFieldOptions(arguments, objectOrReference, variables), context);
         },
         mergeObjects: makeMergeObjectsFunction(context.store),
     };
@@ -17772,7 +17772,7 @@ var ApolloLink = __webpack_require__(3581);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
 var execute = __webpack_require__(7037);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.6.7';
+var version = '3.6.8';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
@@ -20085,7 +20085,7 @@ var ObservableQuery = (function (_super) {
         };
         if (!useDisposableConcast) {
             if (this.concast && this.observer) {
-                this.concast.removeObserver(this.observer, true);
+                this.concast.removeObserver(this.observer);
             }
             this.concast = concast;
             this.observer = observer;
@@ -22081,7 +22081,7 @@ var InternalState = (function () {
         if (queryResult)
             return queryResult;
         var data = result.data, partial = result.partial, resultWithoutPartial = (0,tslib_es6/* __rest */._T)(result, ["data", "partial"]);
-        this.toQueryResultCache.set(result, queryResult = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({ data: data }, resultWithoutPartial), this.obsQueryFields), { client: this.client, observable: this.observable, variables: this.observable.variables, called: true, previousData: this.previousData }));
+        this.toQueryResultCache.set(result, queryResult = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({ data: data }, resultWithoutPartial), this.obsQueryFields), { client: this.client, observable: this.observable, variables: this.observable.variables, called: !this.queryHookOptions.skip, previousData: this.previousData }));
         if (!queryResult.error && (0,arrays/* isNonEmptyArray */.O)(result.errors)) {
             queryResult.error = new errors/* ApolloError */.c({ graphQLErrors: result.errors });
         }
