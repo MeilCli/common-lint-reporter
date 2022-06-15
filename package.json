@@ -52,7 +52,7 @@
         "jest": "^28.1.1",
         "jest-circus": "^28.1.0",
         "prettier": "^2.7.0",
-        "react": "^18.1.0",
+        "react": "^18.2.0",
         "replace-in-files-cli": "^2.0.0",
         "ts-jest": "^28.0.5",
         "ts-loader": "^9.3.0",
