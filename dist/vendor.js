@@ -17844,7 +17844,7 @@ var ApolloLink = __webpack_require__(3581);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
 var execute = __webpack_require__(7037);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.6.8';
+var version = '3.6.9';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
@@ -19268,20 +19268,23 @@ var QueryManager = (function () {
         });
         var fromVariables = function (variables) {
             normalized.variables = variables;
-            return _this.fetchQueryByPolicy(queryInfo, normalized, networkStatus);
+            var concastSources = _this.fetchQueryByPolicy(queryInfo, normalized, networkStatus);
+            if (normalized.fetchPolicy !== "standby" &&
+                concastSources.length > 0 &&
+                queryInfo.observableQuery) {
+                queryInfo.observableQuery["applyNextFetchPolicy"]("after-fetch", options);
+            }
+            return concastSources;
         };
+        var cleanupCancelFn = function () { return _this.fetchCancelFns.delete(queryId); };
         this.fetchCancelFns.set(queryId, function (reason) {
+            cleanupCancelFn();
             setTimeout(function () { return concast.cancel(reason); });
         });
         var concast = new Concast(this.transform(normalized.query).hasClientExports
             ? this.localState.addExportedVariables(normalized.query, normalized.variables, normalized.context).then(fromVariables)
             : fromVariables(normalized.variables));
-        concast.cleanup(function () {
-            _this.fetchCancelFns.delete(queryId);
-            if (queryInfo.observableQuery) {
-                queryInfo.observableQuery["applyNextFetchPolicy"]("after-fetch", options);
-            }
-        });
+        concast.promise.then(cleanupCancelFn, cleanupCancelFn);
         return concast;
     };
     QueryManager.prototype.refetchQueries = function (_a) {
@@ -20048,7 +20051,9 @@ var ObservableQuery = (function (_super) {
     ObservableQuery.prototype.applyNextFetchPolicy = function (reason, options) {
         if (options.nextFetchPolicy) {
             var _a = options.fetchPolicy, fetchPolicy = _a === void 0 ? "cache-first" : _a, _b = options.initialFetchPolicy, initialFetchPolicy = _b === void 0 ? fetchPolicy : _b;
-            if (typeof options.nextFetchPolicy === "function") {
+            if (fetchPolicy === "standby") {
+            }
+            else if (typeof options.nextFetchPolicy === "function") {
                 options.fetchPolicy = options.nextFetchPolicy(fetchPolicy, {
                     reason: reason,
                     options: options,
@@ -20138,7 +20143,8 @@ var ObservableQuery = (function (_super) {
             if (newOptions &&
                 newOptions.variables &&
                 !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(newOptions.variables, oldVariables) &&
-                (!newOptions.fetchPolicy || newOptions.fetchPolicy === oldFetchPolicy)) {
+                options.fetchPolicy !== "standby" &&
+                options.fetchPolicy === oldFetchPolicy) {
                 this.applyNextFetchPolicy("variables-changed", options);
                 if (newNetworkStatus === void 0) {
                     newNetworkStatus = _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.setVariables */ .I.setVariables;
