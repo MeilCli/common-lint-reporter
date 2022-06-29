@@ -1867,6 +1867,8 @@ var SecurityAdvisoryEcosystem;
 (function (SecurityAdvisoryEcosystem) {
     /** PHP packages hosted at packagist.org */
     SecurityAdvisoryEcosystem["Composer"] = "COMPOSER";
+    /** Erlang/Elixir packages hosted at hex.pm */
+    SecurityAdvisoryEcosystem["Erlang"] = "ERLANG";
     /** Go modules */
     SecurityAdvisoryEcosystem["Go"] = "GO";
     /** Java artifacts hosted at the Maven central repository */
