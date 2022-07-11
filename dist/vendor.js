@@ -7615,7 +7615,8 @@ const defaultOptions = {
     { regex: new RegExp("\"", "g"), val: "&quot;" }
   ],
   processEntities: true,
-  stopNodes: []
+  stopNodes: [],
+  transformTagName: false,
 };
 
 function Builder(options) {
@@ -8002,6 +8003,31 @@ function readDocType(xmlData, i){
                 ){
                     //Not supported
                     i += 8;
+                }else if( hasBody && 
+                    xmlData[i+1] === '!' &&
+                    xmlData[i+2] === 'A' &&
+                    xmlData[i+3] === 'T' &&
+                    xmlData[i+4] === 'T' &&
+                    xmlData[i+5] === 'L' &&
+                    xmlData[i+6] === 'I' &&
+                    xmlData[i+7] === 'S' &&
+                    xmlData[i+8] === 'T'
+                ){
+                    //Not supported
+                    i += 8;
+                }else if( hasBody && 
+                    xmlData[i+1] === '!' &&
+                    xmlData[i+2] === 'N' &&
+                    xmlData[i+3] === 'O' &&
+                    xmlData[i+4] === 'T' &&
+                    xmlData[i+5] === 'A' &&
+                    xmlData[i+6] === 'T' &&
+                    xmlData[i+7] === 'I' &&
+                    xmlData[i+8] === 'O' &&
+                    xmlData[i+9] === 'N'
+                ){
+                    //Not supported
+                    i += 9;
                 }else if( //comment
                     xmlData[i+1] === '!' &&
                     xmlData[i+2] === '-' &&
@@ -8092,7 +8118,8 @@ const defaultOptions = {
     processEntities: true,
     htmlEntities: false,
     ignoreDeclaration: false,
-    ignorePiTags: false
+    ignorePiTags: false,
+    transformTagName: false,
 };
    
 const buildOptions = function(options) {
@@ -8303,6 +8330,10 @@ const parseXml = function(xmlData) {
           }
         }
 
+        if(this.options.transformTagName) {
+          tagName = this.options.transformTagName(tagName);
+        }
+
         if(currentNode){
           textData = this.saveTextToParentTag(textData, currentNode, jPath);
         }
@@ -8367,12 +8398,15 @@ const parseXml = function(xmlData) {
         
         i = closeIndex + 2;
       }else {//Opening tag
-       
         let result = readTagExp(xmlData,i, this. options.removeNSPrefix);
         let tagName= result.tagName;
         let tagExp = result.tagExp;
         let attrExpPresent = result.attrExpPresent;
         let closeIndex = result.closeIndex;
+
+        if (this.options.transformTagName) {
+          tagName = this.options.transformTagName(tagName);
+        }
         
         //save text as child node
         if (currentNode && textData) {
@@ -8431,6 +8465,10 @@ const parseXml = function(xmlData) {
               tagExp = tagName;
             }else{
               tagExp = tagExp.substr(0, tagExp.length - 1);
+            }
+            
+            if(this.options.transformTagName) {
+              tagName = this.options.transformTagName(tagName);
             }
 
             const childNode = new xmlNode(tagName);
@@ -8601,7 +8639,7 @@ function readStopNodeData(xmlData, tagName, i){
 
   for (; i < xmlData.length; i++) {
     if( xmlData[i] === "<"){ 
-      if (xmlData[i+1] === "/") {
+      if (xmlData[i+1] === "/") {//close tag
           const closeIndex = findClosingIndex(xmlData, ">", i, `${tagName} is not closed`);
           let closeTagName = xmlData.substring(i+2,closeIndex).trim();
           if(closeTagName === tagName){
@@ -8614,12 +8652,21 @@ function readStopNodeData(xmlData, tagName, i){
             }
           }
           i=closeIndex;
+        } else if(xmlData[i+1] === '?') { 
+          const closeIndex = findClosingIndex(xmlData, "?>", i+1, "StopNode is not closed.")
+          i=closeIndex;
+        } else if(xmlData.substr(i + 1, 3) === '!--') { 
+          const closeIndex = findClosingIndex(xmlData, "-->", i+3, "StopNode is not closed.")
+          i=closeIndex;
+        } else if(xmlData.substr(i + 1, 2) === '![') { 
+          const closeIndex = findClosingIndex(xmlData, "]]>", i, "StopNode is not closed.") - 2;
+          i=closeIndex;
         } else {
           const tagData = readTagExp(xmlData, i, '>')
 
           if (tagData) {
             const openTagName = tagData && tagData.tagName;
-            if (openTagName === tagName) {
+            if (openTagName === tagName && tagData.tagExp[tagData.tagExp.length-1] !== "/") {
               openTagCount++;
             }
             i=tagData.closeIndex;
@@ -14752,8 +14799,8 @@ module.exports = toNumber
 /* harmony export */   "mG": () => (/* binding */ __awaiter),
 /* harmony export */   "pi": () => (/* binding */ __assign)
 /* harmony export */ });
-/* unused harmony exports __decorate, __param, __metadata, __createBinding, __exportStar, __values, __read, __spread, __spreadArrays, __await, __asyncGenerator, __asyncDelegator, __asyncValues, __makeTemplateObject, __importStar, __importDefault, __classPrivateFieldGet, __classPrivateFieldSet */
-/*! *****************************************************************************
+/* unused harmony exports __decorate, __param, __metadata, __createBinding, __exportStar, __values, __read, __spread, __spreadArrays, __await, __asyncGenerator, __asyncDelegator, __asyncValues, __makeTemplateObject, __importStar, __importDefault, __classPrivateFieldGet, __classPrivateFieldSet, __classPrivateFieldIn */
+/******************************************************************************
 Copyright (c) Microsoft Corporation.
 
 Permission to use, copy, modify, and/or distribute this software for any
@@ -14862,7 +14909,11 @@ function __generator(thisArg, body) {
 
 var __createBinding = Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+        desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -14991,6 +15042,11 @@ function __classPrivateFieldSet(receiver, state, value, kind, f) {
     if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
     return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+}
+
+function __classPrivateFieldIn(state, receiver) {
+    if (receiver === null || (typeof receiver !== "object" && typeof receiver !== "function")) throw new TypeError("Cannot use 'in' operator on non-object");
+    return typeof state === "function" ? receiver === state : state.has(receiver);
 }
 
 
