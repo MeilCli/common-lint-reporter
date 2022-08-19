@@ -9021,10 +9021,11 @@ function parseType(source, options) {
  */
 
 class Parser {
-  constructor(source, options) {
+  constructor(source, options = {}) {
     const sourceObj = (0,language_source/* isSource */.T)(source) ? source : new language_source/* Source */.H(source);
     this._lexer = new lexer/* Lexer */.h(sourceObj);
     this._options = options;
+    this._tokenCounter = 0;
   }
   /**
    * Converts a name lex token into a name parse node.
@@ -9353,18 +9354,12 @@ class Parser {
    */
 
   parseFragmentDefinition() {
-    var _this$_options;
-
     const start = this._lexer.token;
     this.expectKeyword('fragment'); // Legacy support for defining variables within fragments changes
     // the grammar of FragmentDefinition:
     //   - fragment FragmentName VariableDefinitions? on TypeCondition Directives? SelectionSet
 
-    if (
-      ((_this$_options = this._options) === null || _this$_options === void 0
-        ? void 0
-        : _this$_options.allowLegacyFragmentVariables) === true
-    ) {
+    if (this._options.allowLegacyFragmentVariables === true) {
       return this.node(start, {
         kind: kinds/* Kind.FRAGMENT_DEFINITION */.h.FRAGMENT_DEFINITION,
         name: this.parseFragmentName(),
@@ -9425,16 +9420,14 @@ class Parser {
         return this.parseObject(isConst);
 
       case tokenKind/* TokenKind.INT */.T.INT:
-        this._lexer.advance();
-
+        this.advanceLexer();
         return this.node(token, {
           kind: kinds/* Kind.INT */.h.INT,
           value: token.value,
         });
 
       case tokenKind/* TokenKind.FLOAT */.T.FLOAT:
-        this._lexer.advance();
-
+        this.advanceLexer();
         return this.node(token, {
           kind: kinds/* Kind.FLOAT */.h.FLOAT,
           value: token.value,
@@ -9445,7 +9438,7 @@ class Parser {
         return this.parseStringLiteral();
 
       case tokenKind/* TokenKind.NAME */.T.NAME:
-        this._lexer.advance();
+        this.advanceLexer();
 
         switch (token.value) {
           case 'true':
@@ -9501,9 +9494,7 @@ class Parser {
 
   parseStringLiteral() {
     const token = this._lexer.token;
-
-    this._lexer.advance();
-
+    this.advanceLexer();
     return this.node(token, {
       kind: kinds/* Kind.STRING */.h.STRING,
       value: token.value,
@@ -10275,13 +10266,7 @@ class Parser {
    */
 
   node(startToken, node) {
-    var _this$_options2;
-
-    if (
-      ((_this$_options2 = this._options) === null || _this$_options2 === void 0
-        ? void 0
-        : _this$_options2.noLocation) !== true
-    ) {
+    if (this._options.noLocation !== true) {
       node.loc = new ast/* Location */.Ye(
         startToken,
         this._lexer.lastToken,
@@ -10307,8 +10292,7 @@ class Parser {
     const token = this._lexer.token;
 
     if (token.kind === kind) {
-      this._lexer.advance();
-
+      this.advanceLexer();
       return token;
     }
 
@@ -10327,8 +10311,7 @@ class Parser {
     const token = this._lexer.token;
 
     if (token.kind === kind) {
-      this._lexer.advance();
-
+      this.advanceLexer();
       return true;
     }
 
@@ -10343,7 +10326,7 @@ class Parser {
     const token = this._lexer.token;
 
     if (token.kind === tokenKind/* TokenKind.NAME */.T.NAME && token.value === value) {
-      this._lexer.advance();
+      this.advanceLexer();
     } else {
       throw (0,syntaxError/* syntaxError */.h)(
         this._lexer.source,
@@ -10361,8 +10344,7 @@ class Parser {
     const token = this._lexer.token;
 
     if (token.kind === tokenKind/* TokenKind.NAME */.T.NAME && token.value === value) {
-      this._lexer.advance();
-
+      this.advanceLexer();
       return true;
     }
 
@@ -10448,6 +10430,24 @@ class Parser {
     } while (this.expectOptionalToken(delimiterKind));
 
     return nodes;
+  }
+
+  advanceLexer() {
+    const { maxTokens } = this._options;
+
+    const token = this._lexer.advance();
+
+    if (maxTokens !== undefined && token.kind !== tokenKind/* TokenKind.EOF */.T.EOF) {
+      ++this._tokenCounter;
+
+      if (this._tokenCounter > maxTokens) {
+        throw (0,syntaxError/* syntaxError */.h)(
+          this._lexer.source,
+          token.start,
+          `Document contains more that ${maxTokens} tokens. Parsing aborted.`,
+        );
+      }
+    }
   }
 }
 /**
@@ -24936,13 +24936,15 @@ function isNode(maybeNode) {
 }
 /** Name */
 
-let OperationTypeNode;
+var OperationTypeNode;
 
 (function (OperationTypeNode) {
   OperationTypeNode['QUERY'] = 'query';
   OperationTypeNode['MUTATION'] = 'mutation';
   OperationTypeNode['SUBSCRIPTION'] = 'subscription';
 })(OperationTypeNode || (OperationTypeNode = {}));
+
+
 
 
 /***/ }),
@@ -25230,12 +25232,7 @@ function isNameContinue(code) {
 /**
  * The set of allowed directive location values.
  */
-let DirectiveLocation;
-/**
- * The enum type representing the directive location values.
- *
- * @deprecated Please use `DirectiveLocation`. Will be remove in v17.
- */
+var DirectiveLocation;
 
 (function (DirectiveLocation) {
   DirectiveLocation['QUERY'] = 'QUERY';
@@ -25260,6 +25257,13 @@ let DirectiveLocation;
 })(DirectiveLocation || (DirectiveLocation = {}));
 
 
+/**
+ * The enum type representing the directive location values.
+ *
+ * @deprecated Please use `DirectiveLocation`. Will be remove in v17.
+ */
+
+
 /***/ }),
 
 /***/ 7359:
@@ -25272,12 +25276,7 @@ let DirectiveLocation;
 /**
  * The set of allowed kind values for AST nodes.
  */
-let Kind;
-/**
- * The enum type representing the possible kind values of AST nodes.
- *
- * @deprecated Please use `Kind`. Will be remove in v17.
- */
+var Kind;
 
 (function (Kind) {
   Kind['NAME'] = 'Name';
@@ -25324,6 +25323,13 @@ let Kind;
   Kind['ENUM_TYPE_EXTENSION'] = 'EnumTypeExtension';
   Kind['INPUT_OBJECT_TYPE_EXTENSION'] = 'InputObjectTypeExtension';
 })(Kind || (Kind = {}));
+
+
+/**
+ * The enum type representing the possible kind values of AST nodes.
+ *
+ * @deprecated Please use `Kind`. Will be remove in v17.
+ */
 
 
 /***/ }),
@@ -27000,12 +27006,7 @@ function isSource(source) {
  * An exported enum describing the different kinds of tokens that the
  * lexer emits.
  */
-let TokenKind;
-/**
- * The enum type representing the token kinds values.
- *
- * @deprecated Please use `TokenKind`. Will be remove in v17.
- */
+var TokenKind;
 
 (function (TokenKind) {
   TokenKind['SOF'] = '<SOF>';
@@ -27031,6 +27032,13 @@ let TokenKind;
   TokenKind['BLOCK_STRING'] = 'BlockString';
   TokenKind['COMMENT'] = 'Comment';
 })(TokenKind || (TokenKind = {}));
+
+
+/**
+ * The enum type representing the token kinds values.
+ *
+ * @deprecated Please use `TokenKind`. Will be remove in v17.
+ */
 
 
 /***/ }),
