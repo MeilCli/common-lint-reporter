@@ -2467,7 +2467,7 @@ export type CommitMessage = {
  * qualified).
  *
  * The Ref may be specified by its global node ID or by the
- * repository nameWithOwner and branch name.
+ * `repositoryNameWithOwner` and `branchName`.
  *
  * ### Examples
  *
@@ -2475,10 +2475,10 @@ export type CommitMessage = {
  *
  *     { "id": "MDM6UmVmMTpyZWZzL2hlYWRzL21haW4=" }
  *
- * Specify a branch using nameWithOwner and branch name:
+ * Specify a branch using `repositoryNameWithOwner` and `branchName`:
  *
  *     {
- *       "nameWithOwner": "github/graphql-client",
+ *       "repositoryNameWithOwner": "github/graphql-client",
  *       "branchName": "main"
  *     }
  *
@@ -5165,7 +5165,7 @@ export type EnablePullRequestAutoMergeInput = {
   commitBody?: InputMaybe<Scalars['String']>;
   /** Commit headline to use for the commit when the PR is mergable; if omitted, a default message will be used. */
   commitHeadline?: InputMaybe<Scalars['String']>;
-  /** The merge method to use. If omitted, defaults to 'MERGE' */
+  /** The merge method to use. If omitted, defaults to `MERGE` */
   mergeMethod?: InputMaybe<PullRequestMergeMethod>;
   /** ID of the pull request to enable auto-merge on. */
   pullRequestId: Scalars['ID'];
@@ -9489,6 +9489,8 @@ export type Mutation = {
   updateNotificationRestrictionSetting?: Maybe<UpdateNotificationRestrictionSettingPayload>;
   /** Sets whether private repository forks are enabled for an organization. */
   updateOrganizationAllowPrivateRepositoryForkingSetting?: Maybe<UpdateOrganizationAllowPrivateRepositoryForkingSettingPayload>;
+  /** Sets whether contributors are required to sign off on web-based commits for repositories in an organization. */
+  updateOrganizationWebCommitSignoffSetting?: Maybe<UpdateOrganizationWebCommitSignoffSettingPayload>;
   /** Updates an existing project. */
   updateProject?: Maybe<UpdateProjectPayload>;
   /** Updates an existing project card. */
@@ -9530,6 +9532,8 @@ export type Mutation = {
   updateRef?: Maybe<UpdateRefPayload>;
   /** Update information about a repository. */
   updateRepository?: Maybe<UpdateRepositoryPayload>;
+  /** Sets whether contributors are required to sign off on web-based commits for a repository. */
+  updateRepositoryWebCommitSignoffSetting?: Maybe<UpdateRepositoryWebCommitSignoffSettingPayload>;
   /** Change visibility of your sponsorship and opt in or out of email updates from the maintainer. */
   updateSponsorshipPreferences?: Maybe<UpdateSponsorshipPreferencesPayload>;
   /** Updates the state for subscribable subjects. */
@@ -10520,6 +10524,12 @@ export type MutationUpdateOrganizationAllowPrivateRepositoryForkingSettingArgs =
 
 
 /** The root query for implementing GraphQL mutations. */
+export type MutationUpdateOrganizationWebCommitSignoffSettingArgs = {
+  input: UpdateOrganizationWebCommitSignoffSettingInput;
+};
+
+
+/** The root query for implementing GraphQL mutations. */
 export type MutationUpdateProjectArgs = {
   input: UpdateProjectInput;
 };
@@ -10612,6 +10622,12 @@ export type MutationUpdateRefArgs = {
 /** The root query for implementing GraphQL mutations. */
 export type MutationUpdateRepositoryArgs = {
   input: UpdateRepositoryInput;
+};
+
+
+/** The root query for implementing GraphQL mutations. */
+export type MutationUpdateRepositoryWebCommitSignoffSettingArgs = {
+  input: UpdateRepositoryWebCommitSignoffSettingInput;
 };
 
 
@@ -12288,6 +12304,8 @@ export type Organization = Actor & MemberStatusable & Node & PackageOwner & Prof
   viewerIsFollowing: Scalars['Boolean'];
   /** True if the viewer is sponsoring this user/organization. */
   viewerIsSponsoring: Scalars['Boolean'];
+  /** Whether contributors are required to sign off on web-based commits for repositories in this organization. */
+  webCommitSignoffRequired: Scalars['Boolean'];
   /** The organization's public profile URL. */
   websiteUrl?: Maybe<Scalars['URI']>;
 };
@@ -19156,6 +19174,8 @@ export type Repository = Node & PackageOwner & ProjectOwner & ProjectV2Recent & 
   vulnerabilityAlerts?: Maybe<RepositoryVulnerabilityAlertConnection>;
   /** A list of users watching the repository. */
   watchers: UserConnection;
+  /** Whether contributors are required to sign off on web-based commits in this repository. */
+  webCommitSignoffRequired: Scalars['Boolean'];
 };
 
 
@@ -21792,6 +21812,8 @@ export type StartRepositoryMigrationInput = {
   gitArchiveUrl?: InputMaybe<Scalars['String']>;
   /** The GitHub personal access token of the user importing to the target repository. */
   githubPat?: InputMaybe<Scalars['String']>;
+  /** Whether to lock the source repository. */
+  lockSource?: InputMaybe<Scalars['Boolean']>;
   /** The signed URL to access the user-uploaded metadata archive */
   metadataArchiveUrl?: InputMaybe<Scalars['String']>;
   /** The ID of the organization that will own the imported repository. */
@@ -24156,6 +24178,27 @@ export type UpdateOrganizationAllowPrivateRepositoryForkingSettingPayload = {
   organization?: Maybe<Organization>;
 };
 
+/** Autogenerated input type of UpdateOrganizationWebCommitSignoffSetting */
+export type UpdateOrganizationWebCommitSignoffSettingInput = {
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The ID of the organization on which to set the web commit signoff setting. */
+  organizationId: Scalars['ID'];
+  /** Enable signoff on web-based commits for repositories in the organization? */
+  webCommitSignoffRequired: Scalars['Boolean'];
+};
+
+/** Autogenerated return type of UpdateOrganizationWebCommitSignoffSetting */
+export type UpdateOrganizationWebCommitSignoffSettingPayload = {
+  __typename?: 'UpdateOrganizationWebCommitSignoffSettingPayload';
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** A message confirming the result of updating the web commit signoff setting. */
+  message?: Maybe<Scalars['String']>;
+  /** The organization with the updated web commit signoff setting. */
+  organization?: Maybe<Organization>;
+};
+
 /** Autogenerated input type of UpdateProjectCard */
 export type UpdateProjectCardInput = {
   /** A unique identifier for the client performing the mutation. */
@@ -24612,6 +24655,27 @@ export type UpdateRepositoryPayload = {
   __typename?: 'UpdateRepositoryPayload';
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: Maybe<Scalars['String']>;
+  /** The updated repository. */
+  repository?: Maybe<Repository>;
+};
+
+/** Autogenerated input type of UpdateRepositoryWebCommitSignoffSetting */
+export type UpdateRepositoryWebCommitSignoffSettingInput = {
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The ID of the repository to update. */
+  repositoryId: Scalars['ID'];
+  /** Indicates if the repository should require signoff on web-based commits. */
+  webCommitSignoffRequired: Scalars['Boolean'];
+};
+
+/** Autogenerated return type of UpdateRepositoryWebCommitSignoffSetting */
+export type UpdateRepositoryWebCommitSignoffSettingPayload = {
+  __typename?: 'UpdateRepositoryWebCommitSignoffSettingPayload';
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** A message confirming the result of updating the web commit signoff setting. */
+  message?: Maybe<Scalars['String']>;
   /** The updated repository. */
   repository?: Maybe<Repository>;
 };
@@ -26995,6 +27059,8 @@ export type ResolversTypes = {
   UpdateNotificationRestrictionSettingPayload: ResolverTypeWrapper<Omit<UpdateNotificationRestrictionSettingPayload, 'owner'> & { owner?: Maybe<ResolversTypes['VerifiableDomainOwner']> }>;
   UpdateOrganizationAllowPrivateRepositoryForkingSettingInput: UpdateOrganizationAllowPrivateRepositoryForkingSettingInput;
   UpdateOrganizationAllowPrivateRepositoryForkingSettingPayload: ResolverTypeWrapper<UpdateOrganizationAllowPrivateRepositoryForkingSettingPayload>;
+  UpdateOrganizationWebCommitSignoffSettingInput: UpdateOrganizationWebCommitSignoffSettingInput;
+  UpdateOrganizationWebCommitSignoffSettingPayload: ResolverTypeWrapper<UpdateOrganizationWebCommitSignoffSettingPayload>;
   UpdateProjectCardInput: UpdateProjectCardInput;
   UpdateProjectCardPayload: ResolverTypeWrapper<UpdateProjectCardPayload>;
   UpdateProjectColumnInput: UpdateProjectColumnInput;
@@ -27027,6 +27093,8 @@ export type ResolversTypes = {
   UpdateRefPayload: ResolverTypeWrapper<UpdateRefPayload>;
   UpdateRepositoryInput: UpdateRepositoryInput;
   UpdateRepositoryPayload: ResolverTypeWrapper<UpdateRepositoryPayload>;
+  UpdateRepositoryWebCommitSignoffSettingInput: UpdateRepositoryWebCommitSignoffSettingInput;
+  UpdateRepositoryWebCommitSignoffSettingPayload: ResolverTypeWrapper<UpdateRepositoryWebCommitSignoffSettingPayload>;
   UpdateSponsorshipPreferencesInput: UpdateSponsorshipPreferencesInput;
   UpdateSponsorshipPreferencesPayload: ResolverTypeWrapper<UpdateSponsorshipPreferencesPayload>;
   UpdateSubscriptionInput: UpdateSubscriptionInput;
@@ -28121,6 +28189,8 @@ export type ResolversParentTypes = {
   UpdateNotificationRestrictionSettingPayload: Omit<UpdateNotificationRestrictionSettingPayload, 'owner'> & { owner?: Maybe<ResolversParentTypes['VerifiableDomainOwner']> };
   UpdateOrganizationAllowPrivateRepositoryForkingSettingInput: UpdateOrganizationAllowPrivateRepositoryForkingSettingInput;
   UpdateOrganizationAllowPrivateRepositoryForkingSettingPayload: UpdateOrganizationAllowPrivateRepositoryForkingSettingPayload;
+  UpdateOrganizationWebCommitSignoffSettingInput: UpdateOrganizationWebCommitSignoffSettingInput;
+  UpdateOrganizationWebCommitSignoffSettingPayload: UpdateOrganizationWebCommitSignoffSettingPayload;
   UpdateProjectCardInput: UpdateProjectCardInput;
   UpdateProjectCardPayload: UpdateProjectCardPayload;
   UpdateProjectColumnInput: UpdateProjectColumnInput;
@@ -28153,6 +28223,8 @@ export type ResolversParentTypes = {
   UpdateRefPayload: UpdateRefPayload;
   UpdateRepositoryInput: UpdateRepositoryInput;
   UpdateRepositoryPayload: UpdateRepositoryPayload;
+  UpdateRepositoryWebCommitSignoffSettingInput: UpdateRepositoryWebCommitSignoffSettingInput;
+  UpdateRepositoryWebCommitSignoffSettingPayload: UpdateRepositoryWebCommitSignoffSettingPayload;
   UpdateSponsorshipPreferencesInput: UpdateSponsorshipPreferencesInput;
   UpdateSponsorshipPreferencesPayload: UpdateSponsorshipPreferencesPayload;
   UpdateSubscriptionInput: UpdateSubscriptionInput;
@@ -31615,6 +31687,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateIssueComment?: Resolver<Maybe<ResolversTypes['UpdateIssueCommentPayload']>, ParentType, ContextType, RequireFields<MutationUpdateIssueCommentArgs, 'input'>>;
   updateNotificationRestrictionSetting?: Resolver<Maybe<ResolversTypes['UpdateNotificationRestrictionSettingPayload']>, ParentType, ContextType, RequireFields<MutationUpdateNotificationRestrictionSettingArgs, 'input'>>;
   updateOrganizationAllowPrivateRepositoryForkingSetting?: Resolver<Maybe<ResolversTypes['UpdateOrganizationAllowPrivateRepositoryForkingSettingPayload']>, ParentType, ContextType, RequireFields<MutationUpdateOrganizationAllowPrivateRepositoryForkingSettingArgs, 'input'>>;
+  updateOrganizationWebCommitSignoffSetting?: Resolver<Maybe<ResolversTypes['UpdateOrganizationWebCommitSignoffSettingPayload']>, ParentType, ContextType, RequireFields<MutationUpdateOrganizationWebCommitSignoffSettingArgs, 'input'>>;
   updateProject?: Resolver<Maybe<ResolversTypes['UpdateProjectPayload']>, ParentType, ContextType, RequireFields<MutationUpdateProjectArgs, 'input'>>;
   updateProjectCard?: Resolver<Maybe<ResolversTypes['UpdateProjectCardPayload']>, ParentType, ContextType, RequireFields<MutationUpdateProjectCardArgs, 'input'>>;
   updateProjectColumn?: Resolver<Maybe<ResolversTypes['UpdateProjectColumnPayload']>, ParentType, ContextType, RequireFields<MutationUpdateProjectColumnArgs, 'input'>>;
@@ -31631,6 +31704,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updatePullRequestReviewComment?: Resolver<Maybe<ResolversTypes['UpdatePullRequestReviewCommentPayload']>, ParentType, ContextType, RequireFields<MutationUpdatePullRequestReviewCommentArgs, 'input'>>;
   updateRef?: Resolver<Maybe<ResolversTypes['UpdateRefPayload']>, ParentType, ContextType, RequireFields<MutationUpdateRefArgs, 'input'>>;
   updateRepository?: Resolver<Maybe<ResolversTypes['UpdateRepositoryPayload']>, ParentType, ContextType, RequireFields<MutationUpdateRepositoryArgs, 'input'>>;
+  updateRepositoryWebCommitSignoffSetting?: Resolver<Maybe<ResolversTypes['UpdateRepositoryWebCommitSignoffSettingPayload']>, ParentType, ContextType, RequireFields<MutationUpdateRepositoryWebCommitSignoffSettingArgs, 'input'>>;
   updateSponsorshipPreferences?: Resolver<Maybe<ResolversTypes['UpdateSponsorshipPreferencesPayload']>, ParentType, ContextType, RequireFields<MutationUpdateSponsorshipPreferencesArgs, 'input'>>;
   updateSubscription?: Resolver<Maybe<ResolversTypes['UpdateSubscriptionPayload']>, ParentType, ContextType, RequireFields<MutationUpdateSubscriptionArgs, 'input'>>;
   updateTeamDiscussion?: Resolver<Maybe<ResolversTypes['UpdateTeamDiscussionPayload']>, ParentType, ContextType, RequireFields<MutationUpdateTeamDiscussionArgs, 'input'>>;
@@ -32422,6 +32496,7 @@ export type OrganizationResolvers<ContextType = any, ParentType extends Resolver
   viewerIsAMember?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerIsFollowing?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerIsSponsoring?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  webCommitSignoffRequired?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   websiteUrl?: Resolver<Maybe<ResolversTypes['URI']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -34976,6 +35051,7 @@ export type RepositoryResolvers<ContextType = any, ParentType extends ResolversP
   visibility?: Resolver<ResolversTypes['RepositoryVisibility'], ParentType, ContextType>;
   vulnerabilityAlerts?: Resolver<Maybe<ResolversTypes['RepositoryVulnerabilityAlertConnection']>, ParentType, ContextType, Partial<RepositoryVulnerabilityAlertsArgs>>;
   watchers?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, Partial<RepositoryWatchersArgs>>;
+  webCommitSignoffRequired?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -36721,6 +36797,13 @@ export type UpdateOrganizationAllowPrivateRepositoryForkingSettingPayloadResolve
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UpdateOrganizationWebCommitSignoffSettingPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateOrganizationWebCommitSignoffSettingPayload'] = ResolversParentTypes['UpdateOrganizationWebCommitSignoffSettingPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  organization?: Resolver<Maybe<ResolversTypes['Organization']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type UpdateProjectCardPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateProjectCardPayload'] = ResolversParentTypes['UpdateProjectCardPayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   projectCard?: Resolver<Maybe<ResolversTypes['ProjectCard']>, ParentType, ContextType>;
@@ -36814,6 +36897,13 @@ export type UpdateRefPayloadResolvers<ContextType = any, ParentType extends Reso
 
 export type UpdateRepositoryPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateRepositoryPayload'] = ResolversParentTypes['UpdateRepositoryPayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  repository?: Resolver<Maybe<ResolversTypes['Repository']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpdateRepositoryWebCommitSignoffSettingPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateRepositoryWebCommitSignoffSettingPayload'] = ResolversParentTypes['UpdateRepositoryWebCommitSignoffSettingPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   repository?: Resolver<Maybe<ResolversTypes['Repository']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -37930,6 +38020,7 @@ export type Resolvers<ContextType = any> = {
   UpdateIssuePayload?: UpdateIssuePayloadResolvers<ContextType>;
   UpdateNotificationRestrictionSettingPayload?: UpdateNotificationRestrictionSettingPayloadResolvers<ContextType>;
   UpdateOrganizationAllowPrivateRepositoryForkingSettingPayload?: UpdateOrganizationAllowPrivateRepositoryForkingSettingPayloadResolvers<ContextType>;
+  UpdateOrganizationWebCommitSignoffSettingPayload?: UpdateOrganizationWebCommitSignoffSettingPayloadResolvers<ContextType>;
   UpdateProjectCardPayload?: UpdateProjectCardPayloadResolvers<ContextType>;
   UpdateProjectColumnPayload?: UpdateProjectColumnPayloadResolvers<ContextType>;
   UpdateProjectDraftIssuePayload?: UpdateProjectDraftIssuePayloadResolvers<ContextType>;
@@ -37946,6 +38037,7 @@ export type Resolvers<ContextType = any> = {
   UpdatePullRequestReviewPayload?: UpdatePullRequestReviewPayloadResolvers<ContextType>;
   UpdateRefPayload?: UpdateRefPayloadResolvers<ContextType>;
   UpdateRepositoryPayload?: UpdateRepositoryPayloadResolvers<ContextType>;
+  UpdateRepositoryWebCommitSignoffSettingPayload?: UpdateRepositoryWebCommitSignoffSettingPayloadResolvers<ContextType>;
   UpdateSponsorshipPreferencesPayload?: UpdateSponsorshipPreferencesPayloadResolvers<ContextType>;
   UpdateSubscriptionPayload?: UpdateSubscriptionPayloadResolvers<ContextType>;
   UpdateTeamDiscussionCommentPayload?: UpdateTeamDiscussionCommentPayloadResolvers<ContextType>;
