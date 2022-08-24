@@ -23079,6 +23079,8 @@ export enum TrackedIssueStates {
 export type TransferIssueInput = {
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: InputMaybe<Scalars['String']>;
+  /** Whether to create labels if they don't exist in the target repository (matched by name) */
+  createLabelsIfMissing?: InputMaybe<Scalars['Boolean']>;
   /** The Node ID of the issue to be transferred */
   issueId: Scalars['ID'];
   /** The Node ID of the repository the issue should be transferred to */
