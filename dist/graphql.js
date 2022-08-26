@@ -707,12 +707,8 @@ var MigrationSourceType;
     MigrationSourceType["AzureDevops"] = "AZURE_DEVOPS";
     /** A Bitbucket Server migration source. */
     MigrationSourceType["BitbucketServer"] = "BITBUCKET_SERVER";
-    /** A GitHub migration source. */
-    MigrationSourceType["Github"] = "GITHUB";
     /** A GitHub Migration API source. */
     MigrationSourceType["GithubArchive"] = "GITHUB_ARCHIVE";
-    /** A GitLab migration source. */
-    MigrationSourceType["Gitlab"] = "GITLAB";
 })(MigrationSourceType = exports.MigrationSourceType || (exports.MigrationSourceType = {}));
 /** The Octoshift migration state. */
 var MigrationState;

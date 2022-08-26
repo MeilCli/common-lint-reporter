@@ -8870,12 +8870,8 @@ export enum MigrationSourceType {
   AzureDevops = 'AZURE_DEVOPS',
   /** A Bitbucket Server migration source. */
   BitbucketServer = 'BITBUCKET_SERVER',
-  /** A GitHub migration source. */
-  Github = 'GITHUB',
   /** A GitHub Migration API source. */
-  GithubArchive = 'GITHUB_ARCHIVE',
-  /** A GitLab migration source. */
-  Gitlab = 'GITLAB'
+  GithubArchive = 'GITHUB_ARCHIVE'
 }
 
 /** The Octoshift migration state. */
