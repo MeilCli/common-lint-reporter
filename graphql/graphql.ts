@@ -21754,6 +21754,27 @@ export enum SquashMergeCommitTitle {
   PrTitle = 'PR_TITLE'
 }
 
+/** Represents an SSH signature on a Commit or Tag. */
+export type SshSignature = GitSignature & {
+  __typename?: 'SshSignature';
+  /** Email used to sign this object. */
+  email: Scalars['String'];
+  /** True if the signature is valid and verified by GitHub. */
+  isValid: Scalars['Boolean'];
+  /** Hex-encoded fingerprint of the key that signed this object. */
+  keyFingerprint?: Maybe<Scalars['String']>;
+  /** Payload for GPG signing object. Raw ODB object without the signature header. */
+  payload: Scalars['String'];
+  /** ASCII-armored signature header from object. */
+  signature: Scalars['String'];
+  /** GitHub user corresponding to the email signing this commit. */
+  signer?: Maybe<User>;
+  /** The state of this signature. `VALID` if signature is valid and verified by GitHub, otherwise represents reason why signature is considered invalid. */
+  state: GitSignatureState;
+  /** True if the signature was made with GitHub's signing key. */
+  wasSignedByGitHub: Scalars['Boolean'];
+};
+
 /** Ways in which star connections can be ordered. */
 export type StarOrder = {
   /** The direction in which to order nodes. */
@@ -26308,7 +26329,7 @@ export type ResolversTypes = {
   GitObject: ResolversTypes['Blob'] | ResolversTypes['Commit'] | ResolversTypes['Tag'] | ResolversTypes['Tree'];
   GitObjectID: ResolverTypeWrapper<Scalars['GitObjectID']>;
   GitSSHRemote: ResolverTypeWrapper<Scalars['GitSSHRemote']>;
-  GitSignature: ResolversTypes['GpgSignature'] | ResolversTypes['SmimeSignature'] | ResolversTypes['UnknownSignature'];
+  GitSignature: ResolversTypes['GpgSignature'] | ResolversTypes['SmimeSignature'] | ResolversTypes['SshSignature'] | ResolversTypes['UnknownSignature'];
   GitSignatureState: GitSignatureState;
   GitTimestamp: ResolverTypeWrapper<Scalars['GitTimestamp']>;
   GpgSignature: ResolverTypeWrapper<GpgSignature>;
@@ -26941,6 +26962,7 @@ export type ResolversTypes = {
   SponsorshipPrivacy: SponsorshipPrivacy;
   SquashMergeCommitMessage: SquashMergeCommitMessage;
   SquashMergeCommitTitle: SquashMergeCommitTitle;
+  SshSignature: ResolverTypeWrapper<SshSignature>;
   StarOrder: StarOrder;
   StarOrderField: StarOrderField;
   StargazerConnection: ResolverTypeWrapper<StargazerConnection>;
@@ -27580,7 +27602,7 @@ export type ResolversParentTypes = {
   GitObject: ResolversParentTypes['Blob'] | ResolversParentTypes['Commit'] | ResolversParentTypes['Tag'] | ResolversParentTypes['Tree'];
   GitObjectID: Scalars['GitObjectID'];
   GitSSHRemote: Scalars['GitSSHRemote'];
-  GitSignature: ResolversParentTypes['GpgSignature'] | ResolversParentTypes['SmimeSignature'] | ResolversParentTypes['UnknownSignature'];
+  GitSignature: ResolversParentTypes['GpgSignature'] | ResolversParentTypes['SmimeSignature'] | ResolversParentTypes['SshSignature'] | ResolversParentTypes['UnknownSignature'];
   GitTimestamp: Scalars['GitTimestamp'];
   GpgSignature: GpgSignature;
   GrantEnterpriseOrganizationsMigratorRoleInput: GrantEnterpriseOrganizationsMigratorRoleInput;
@@ -28085,6 +28107,7 @@ export type ResolversParentTypes = {
   SponsorshipNewsletterEdge: SponsorshipNewsletterEdge;
   SponsorshipNewsletterOrder: SponsorshipNewsletterOrder;
   SponsorshipOrder: SponsorshipOrder;
+  SshSignature: SshSignature;
   StarOrder: StarOrder;
   StargazerConnection: StargazerConnection;
   StargazerEdge: StargazerEdge;
@@ -30797,7 +30820,7 @@ export interface GitSshRemoteScalarConfig extends GraphQLScalarTypeConfig<Resolv
 }
 
 export type GitSignatureResolvers<ContextType = any, ParentType extends ResolversParentTypes['GitSignature'] = ResolversParentTypes['GitSignature']> = {
-  __resolveType: TypeResolveFn<'GpgSignature' | 'SmimeSignature' | 'UnknownSignature', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'GpgSignature' | 'SmimeSignature' | 'SshSignature' | 'UnknownSignature', ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   isValid?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   payload?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -35921,6 +35944,18 @@ export type SponsorshipNewsletterEdgeResolvers<ContextType = any, ParentType ext
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type SshSignatureResolvers<ContextType = any, ParentType extends ResolversParentTypes['SshSignature'] = ResolversParentTypes['SshSignature']> = {
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  isValid?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  keyFingerprint?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  payload?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  signature?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  signer?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  state?: Resolver<ResolversTypes['GitSignatureState'], ParentType, ContextType>;
+  wasSignedByGitHub?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type StargazerConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['StargazerConnection'] = ResolversParentTypes['StargazerConnection']> = {
   edges?: Resolver<Maybe<Array<Maybe<ResolversTypes['StargazerEdge']>>>, ParentType, ContextType>;
   nodes?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
@@ -37971,6 +38006,7 @@ export type Resolvers<ContextType = any> = {
   SponsorshipNewsletter?: SponsorshipNewsletterResolvers<ContextType>;
   SponsorshipNewsletterConnection?: SponsorshipNewsletterConnectionResolvers<ContextType>;
   SponsorshipNewsletterEdge?: SponsorshipNewsletterEdgeResolvers<ContextType>;
+  SshSignature?: SshSignatureResolvers<ContextType>;
   StargazerConnection?: StargazerConnectionResolvers<ContextType>;
   StargazerEdge?: StargazerEdgeResolvers<ContextType>;
   Starrable?: StarrableResolvers<ContextType>;
