@@ -1587,8 +1587,12 @@ export type CheckRunFilter = {
   checkName?: InputMaybe<Scalars['String']>;
   /** Filters the check runs by this type. */
   checkType?: InputMaybe<CheckRunType>;
-  /** Filters the check runs by this status. */
+  /** Filters the check runs by these conclusions. */
+  conclusions?: InputMaybe<Array<CheckConclusionState>>;
+  /** Filters the check runs by this status. Superceded by statuses. */
   status?: InputMaybe<CheckStatusState>;
+  /** Filters the check runs by this status. Overrides status. */
+  statuses?: InputMaybe<Array<CheckStatusState>>;
 };
 
 /** Descriptive details about the check run. */
@@ -25775,8 +25779,20 @@ export type Workflow = Node & {
   id: Scalars['ID'];
   /** The name of the workflow. */
   name: Scalars['String'];
+  /** The runs of the workflow. */
+  runs: WorkflowRunConnection;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
+};
+
+
+/** A workflow contains meta information about an Actions workflow file. */
+export type WorkflowRunsArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<WorkflowRunOrder>;
 };
 
 /** A workflow run. */
@@ -25822,6 +25838,42 @@ export type WorkflowRunPendingDeploymentRequestsArgs = {
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
 };
+
+/** The connection type for WorkflowRun. */
+export type WorkflowRunConnection = {
+  __typename?: 'WorkflowRunConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<WorkflowRunEdge>>>;
+  /** A list of nodes. */
+  nodes?: Maybe<Array<Maybe<WorkflowRun>>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of items in the connection. */
+  totalCount: Scalars['Int'];
+};
+
+/** An edge in a connection. */
+export type WorkflowRunEdge = {
+  __typename?: 'WorkflowRunEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node?: Maybe<WorkflowRun>;
+};
+
+/** Ways in which lists of workflow runs can be ordered upon return. */
+export type WorkflowRunOrder = {
+  /** The direction in which to order workflow runs by the specified field. */
+  direction: OrderDirection;
+  /** The field by which to order workflows. */
+  field: WorkflowRunOrderField;
+};
+
+/** Properties by which workflow run connections can be ordered. */
+export enum WorkflowRunOrderField {
+  /** Order workflow runs by most recently created */
+  CreatedAt = 'CREATED_AT'
+}
 
 
 
@@ -27201,6 +27253,10 @@ export type ResolversTypes = {
   Votable: ResolversTypes['Discussion'] | ResolversTypes['DiscussionComment'];
   Workflow: ResolverTypeWrapper<Workflow>;
   WorkflowRun: ResolverTypeWrapper<WorkflowRun>;
+  WorkflowRunConnection: ResolverTypeWrapper<WorkflowRunConnection>;
+  WorkflowRunEdge: ResolverTypeWrapper<WorkflowRunEdge>;
+  WorkflowRunOrder: WorkflowRunOrder;
+  WorkflowRunOrderField: WorkflowRunOrderField;
   X509Certificate: ResolverTypeWrapper<Scalars['X509Certificate']>;
 };
 
@@ -28329,6 +28385,9 @@ export type ResolversParentTypes = {
   Votable: ResolversParentTypes['Discussion'] | ResolversParentTypes['DiscussionComment'];
   Workflow: Workflow;
   WorkflowRun: WorkflowRun;
+  WorkflowRunConnection: WorkflowRunConnection;
+  WorkflowRunEdge: WorkflowRunEdge;
+  WorkflowRunOrder: WorkflowRunOrder;
   X509Certificate: Scalars['X509Certificate'];
 };
 
@@ -37269,6 +37328,7 @@ export type WorkflowResolvers<ContextType = any, ParentType extends ResolversPar
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  runs?: Resolver<ResolversTypes['WorkflowRunConnection'], ParentType, ContextType, RequireFields<WorkflowRunsArgs, 'orderBy'>>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -37285,6 +37345,20 @@ export type WorkflowRunResolvers<ContextType = any, ParentType extends Resolvers
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   workflow?: Resolver<ResolversTypes['Workflow'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WorkflowRunConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['WorkflowRunConnection'] = ResolversParentTypes['WorkflowRunConnection']> = {
+  edges?: Resolver<Maybe<Array<Maybe<ResolversTypes['WorkflowRunEdge']>>>, ParentType, ContextType>;
+  nodes?: Resolver<Maybe<Array<Maybe<ResolversTypes['WorkflowRun']>>>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type WorkflowRunEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['WorkflowRunEdge'] = ResolversParentTypes['WorkflowRunEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['WorkflowRun']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -38150,6 +38224,8 @@ export type Resolvers<ContextType = any> = {
   Votable?: VotableResolvers<ContextType>;
   Workflow?: WorkflowResolvers<ContextType>;
   WorkflowRun?: WorkflowRunResolvers<ContextType>;
+  WorkflowRunConnection?: WorkflowRunConnectionResolvers<ContextType>;
+  WorkflowRunEdge?: WorkflowRunEdgeResolvers<ContextType>;
   X509Certificate?: GraphQLScalarType;
 };
 
