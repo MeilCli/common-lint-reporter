@@ -2069,8 +2069,13 @@ export type Commit = GitObject & Node & Subscribable & UniformResourceLocatable 
   authors: GitActorConnection;
   /** Fetches `git blame` information. */
   blame: Blame;
-  /** The number of changed files in this commit. */
+  /**
+   * We recommend using the `changedFielsIfAvailable` field instead of `changedFiles`, as `changedFiles` will cause your request to return an error if GitHub is unable to calculate the number of changed files.
+   * @deprecated `changedFiles` will be removed. Use `changedFilesIfAvailable` instead. Removal on 2023-01-01 UTC.
+   */
   changedFiles: Scalars['Int'];
+  /** The number of changed files in this commit. If GitHub is unable to calculate the number of changed files (for example due to a timeout), this will return `null`. We recommend using this field instead of `changedFiles`. */
+  changedFilesIfAvailable?: Maybe<Scalars['Int']>;
   /** The check suites associated with a commit. */
   checkSuites?: Maybe<CheckSuiteConnection>;
   /** Comments made on the commit. */
@@ -5342,6 +5347,22 @@ export enum EnterpriseAdministratorRole {
   Owner = 'OWNER'
 }
 
+/** The possible values for the enterprise allow private repository forking policy value. */
+export enum EnterpriseAllowPrivateRepositoryForkingPolicyValue {
+  /** Members can fork a repository to an organization within this enterprise. */
+  EnterpriseOrganizations = 'ENTERPRISE_ORGANIZATIONS',
+  /** Members can fork a repository to their enterprise-managed user account or an organization inside this enterprise. */
+  EnterpriseOrganizationsUserAccounts = 'ENTERPRISE_ORGANIZATIONS_USER_ACCOUNTS',
+  /** Members can fork a repository to their user account or an organization, either inside or outside of this enterprise. */
+  Everywhere = 'EVERYWHERE',
+  /** Members can fork a repository only within the same organization (intra-org). */
+  SameOrganization = 'SAME_ORGANIZATION',
+  /** Members can fork a repository to their user account or within the same organization. */
+  SameOrganizationUserAccounts = 'SAME_ORGANIZATION_USER_ACCOUNTS',
+  /** Members can fork a repository to their user account. */
+  UserAccounts = 'USER_ACCOUNTS'
+}
+
 /** Metadata for an audit entry containing enterprise account information. */
 export type EnterpriseAuditEntryData = {
   /** The HTTP path for this enterprise. */
@@ -5577,6 +5598,8 @@ export type EnterpriseOwnerInfo = {
   allowPrivateRepositoryForkingSetting: EnterpriseEnabledDisabledSettingValue;
   /** A list of enterprise organizations configured with the provided private repository forking setting value. */
   allowPrivateRepositoryForkingSettingOrganizations: OrganizationConnection;
+  /** The value for the allow private repository forking policy on the enterprise. */
+  allowPrivateRepositoryForkingSettingPolicyValue?: Maybe<EnterpriseAllowPrivateRepositoryForkingPolicyValue>;
   /** The setting value for base repository permissions for organizations in this enterprise. */
   defaultRepositoryPermissionSetting: EnterpriseDefaultRepositoryPermissionSettingValue;
   /** A list of enterprise organizations configured with the provided base repository permission. */
@@ -16869,7 +16892,7 @@ export type Query = {
   repositoryOwner?: Maybe<RepositoryOwner>;
   /** Lookup resource by a URL. */
   resource?: Maybe<UniformResourceLocatable>;
-  /** Perform a search across resources. */
+  /** Perform a search across resources, returning a maximum of 1,000 results. */
   search: SearchResultItemConnection;
   /** GitHub Security Advisories */
   securityAdvisories: SecurityAdvisoryConnection;
@@ -20772,26 +20795,26 @@ export enum SavedReplyOrderField {
 /** The results of a search. */
 export type SearchResultItem = App | Discussion | Issue | MarketplaceListing | Organization | PullRequest | Repository | User;
 
-/** A list of results that matched against a search query. */
+/** A list of results that matched against a search query. Regardless of the number of matches, a maximum of 1,000 results will be available across all types, potentially split across many pages. */
 export type SearchResultItemConnection = {
   __typename?: 'SearchResultItemConnection';
-  /** The number of pieces of code that matched the search query. */
+  /** The total number of pieces of code that matched the search query. Regardless of the total number of matches, a maximum of 1,000 results will be available across all types. */
   codeCount: Scalars['Int'];
-  /** The number of discussions that matched the search query. */
+  /** The total number of discussions that matched the search query. Regardless of the total number of matches, a maximum of 1,000 results will be available across all types. */
   discussionCount: Scalars['Int'];
   /** A list of edges. */
   edges?: Maybe<Array<Maybe<SearchResultItemEdge>>>;
-  /** The number of issues that matched the search query. */
+  /** The total number of issues that matched the search query. Regardless of the total number of matches, a maximum of 1,000 results will be available across all types. */
   issueCount: Scalars['Int'];
   /** A list of nodes. */
   nodes?: Maybe<Array<Maybe<SearchResultItem>>>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
-  /** The number of repositories that matched the search query. */
+  /** The total number of repositories that matched the search query. Regardless of the total number of matches, a maximum of 1,000 results will be available across all types. */
   repositoryCount: Scalars['Int'];
-  /** The number of users that matched the search query. */
+  /** The total number of users that matched the search query. Regardless of the total number of matches, a maximum of 1,000 results will be available across all types. */
   userCount: Scalars['Int'];
-  /** The number of wiki pages that matched the search query. */
+  /** The total number of wiki pages that matched the search query. Regardless of the total number of matches, a maximum of 1,000 results will be available across all types. */
   wikiCount: Scalars['Int'];
 };
 
@@ -23729,6 +23752,8 @@ export type UpdateEnterpriseAllowPrivateRepositoryForkingSettingInput = {
   clientMutationId?: InputMaybe<Scalars['String']>;
   /** The ID of the enterprise on which to set the allow private repository forking setting. */
   enterpriseId: Scalars['ID'];
+  /** The value for the allow private repository forking policy on the enterprise. */
+  policyValue?: InputMaybe<EnterpriseAllowPrivateRepositoryForkingPolicyValue>;
   /** The value for the allow private repository forking setting on the enterprise. */
   settingValue: EnterpriseEnabledDisabledSettingValue;
 };
@@ -26294,6 +26319,7 @@ export type ResolversTypes = {
   EnterpriseAdministratorInvitationOrder: EnterpriseAdministratorInvitationOrder;
   EnterpriseAdministratorInvitationOrderField: EnterpriseAdministratorInvitationOrderField;
   EnterpriseAdministratorRole: EnterpriseAdministratorRole;
+  EnterpriseAllowPrivateRepositoryForkingPolicyValue: EnterpriseAllowPrivateRepositoryForkingPolicyValue;
   EnterpriseAuditEntryData: ResolversTypes['MembersCanDeleteReposClearAuditEntry'] | ResolversTypes['MembersCanDeleteReposDisableAuditEntry'] | ResolversTypes['MembersCanDeleteReposEnableAuditEntry'] | ResolversTypes['OrgInviteToBusinessAuditEntry'] | ResolversTypes['PrivateRepositoryForkingDisableAuditEntry'] | ResolversTypes['PrivateRepositoryForkingEnableAuditEntry'] | ResolversTypes['RepositoryVisibilityChangeDisableAuditEntry'] | ResolversTypes['RepositoryVisibilityChangeEnableAuditEntry'];
   EnterpriseBillingInfo: ResolverTypeWrapper<EnterpriseBillingInfo>;
   EnterpriseDefaultRepositoryPermissionSettingValue: EnterpriseDefaultRepositoryPermissionSettingValue;
@@ -29178,6 +29204,7 @@ export type CommitResolvers<ContextType = any, ParentType extends ResolversParen
   authors?: Resolver<ResolversTypes['GitActorConnection'], ParentType, ContextType, Partial<CommitAuthorsArgs>>;
   blame?: Resolver<ResolversTypes['Blame'], ParentType, ContextType, RequireFields<CommitBlameArgs, 'path'>>;
   changedFiles?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  changedFilesIfAvailable?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   checkSuites?: Resolver<Maybe<ResolversTypes['CheckSuiteConnection']>, ParentType, ContextType, Partial<CommitCheckSuitesArgs>>;
   comments?: Resolver<ResolversTypes['CommitCommentConnection'], ParentType, ContextType, Partial<CommitCommentsArgs>>;
   commitResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
@@ -30423,6 +30450,7 @@ export type EnterpriseOwnerInfoResolvers<ContextType = any, ParentType extends R
   affiliatedUsersWithTwoFactorDisabledExist?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   allowPrivateRepositoryForkingSetting?: Resolver<ResolversTypes['EnterpriseEnabledDisabledSettingValue'], ParentType, ContextType>;
   allowPrivateRepositoryForkingSettingOrganizations?: Resolver<ResolversTypes['OrganizationConnection'], ParentType, ContextType, RequireFields<EnterpriseOwnerInfoAllowPrivateRepositoryForkingSettingOrganizationsArgs, 'orderBy' | 'value'>>;
+  allowPrivateRepositoryForkingSettingPolicyValue?: Resolver<Maybe<ResolversTypes['EnterpriseAllowPrivateRepositoryForkingPolicyValue']>, ParentType, ContextType>;
   defaultRepositoryPermissionSetting?: Resolver<ResolversTypes['EnterpriseDefaultRepositoryPermissionSettingValue'], ParentType, ContextType>;
   defaultRepositoryPermissionSettingOrganizations?: Resolver<ResolversTypes['OrganizationConnection'], ParentType, ContextType, RequireFields<EnterpriseOwnerInfoDefaultRepositoryPermissionSettingOrganizationsArgs, 'orderBy' | 'value'>>;
   domains?: Resolver<ResolversTypes['VerifiableDomainConnection'], ParentType, ContextType, RequireFields<EnterpriseOwnerInfoDomainsArgs, 'isApproved' | 'isVerified' | 'orderBy'>>;
