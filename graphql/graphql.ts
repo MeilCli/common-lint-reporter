@@ -1619,6 +1619,47 @@ export type CheckRunOutputImage = {
   imageUrl: Scalars['URI'];
 };
 
+/** The possible states of a check run in a status rollup. */
+export enum CheckRunState {
+  /** The check run requires action. */
+  ActionRequired = 'ACTION_REQUIRED',
+  /** The check run has been cancelled. */
+  Cancelled = 'CANCELLED',
+  /** The check run has been completed. */
+  Completed = 'COMPLETED',
+  /** The check run has failed. */
+  Failure = 'FAILURE',
+  /** The check run is in progress. */
+  InProgress = 'IN_PROGRESS',
+  /** The check run was neutral. */
+  Neutral = 'NEUTRAL',
+  /** The check run is in pending state. */
+  Pending = 'PENDING',
+  /** The check run has been queued. */
+  Queued = 'QUEUED',
+  /** The check run was skipped. */
+  Skipped = 'SKIPPED',
+  /** The check run was marked stale by GitHub. Only GitHub can use this conclusion. */
+  Stale = 'STALE',
+  /** The check run has failed at startup. */
+  StartupFailure = 'STARTUP_FAILURE',
+  /** The check run has succeeded. */
+  Success = 'SUCCESS',
+  /** The check run has timed out. */
+  TimedOut = 'TIMED_OUT',
+  /** The check run is in waiting state. */
+  Waiting = 'WAITING'
+}
+
+/** Represents a count of the state of a check run. */
+export type CheckRunStateCount = {
+  __typename?: 'CheckRunStateCount';
+  /** The number of check runs with this state. */
+  count: Scalars['Int'];
+  /** The state of a check run. */
+  state: CheckRunState;
+};
+
 /** The possible types of check runs. */
 export enum CheckRunType {
   /** Every check run available. */
@@ -16583,6 +16624,8 @@ export type PullRequestThread = Node & {
   __typename?: 'PullRequestThread';
   /** A list of pull request comments associated with the thread. */
   comments: PullRequestReviewCommentConnection;
+  /** The side of the diff on which this thread was placed. */
+  diffSide: DiffSide;
   id: Scalars['ID'];
   /** Whether or not the thread has been collapsed (resolved) */
   isCollapsed: Scalars['Boolean'];
@@ -16590,12 +16633,18 @@ export type PullRequestThread = Node & {
   isOutdated: Scalars['Boolean'];
   /** Whether this thread has been resolved */
   isResolved: Scalars['Boolean'];
+  /** The line in the file to which this thread refers */
+  line?: Maybe<Scalars['Int']>;
   /** Identifies the pull request associated with this thread. */
   pullRequest: PullRequest;
   /** Identifies the repository associated with this thread. */
   repository: Repository;
   /** The user who resolved this thread */
   resolvedBy?: Maybe<User>;
+  /** The side of the diff that the first line of the thread starts on (multi-line only) */
+  startDiffSide?: Maybe<DiffSide>;
+  /** The line of the first file diff in the thread. */
+  startLine?: Maybe<Scalars['Int']>;
   /** Indicates whether the current viewer can reply to this thread. */
   viewerCanReply: Scalars['Boolean'];
   /** Whether or not the viewer can resolve this thread */
@@ -21985,12 +22034,20 @@ export type StatusCheckRollupContext = CheckRun | StatusContext;
 /** The connection type for StatusCheckRollupContext. */
 export type StatusCheckRollupContextConnection = {
   __typename?: 'StatusCheckRollupContextConnection';
+  /** The number of check runs in this rollup. */
+  checkRunCount: Scalars['Int'];
+  /** Counts of check runs by state. */
+  checkRunCountsByState?: Maybe<Array<CheckRunStateCount>>;
   /** A list of edges. */
   edges?: Maybe<Array<Maybe<StatusCheckRollupContextEdge>>>;
   /** A list of nodes. */
   nodes?: Maybe<Array<Maybe<StatusCheckRollupContext>>>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
+  /** The number of status contexts in this rollup. */
+  statusContextCount: Scalars['Int'];
+  /** Counts of status contexts by state. */
+  statusContextCountsByState?: Maybe<Array<StatusContextStateCount>>;
   /** Identifies the total count of items in the connection. */
   totalCount: Scalars['Int'];
 };
@@ -22039,6 +22096,15 @@ export type StatusContextAvatarUrlArgs = {
 export type StatusContextIsRequiredArgs = {
   pullRequestId?: InputMaybe<Scalars['ID']>;
   pullRequestNumber?: InputMaybe<Scalars['Int']>;
+};
+
+/** Represents a count of the state of a status context. */
+export type StatusContextStateCount = {
+  __typename?: 'StatusContextStateCount';
+  /** The number of statuses with this state. */
+  count: Scalars['Int'];
+  /** The state of a status context. */
+  state: StatusState;
 };
 
 /** The possible commit status states. */
@@ -26086,6 +26152,8 @@ export type ResolversTypes = {
   CheckRunFilter: CheckRunFilter;
   CheckRunOutput: CheckRunOutput;
   CheckRunOutputImage: CheckRunOutputImage;
+  CheckRunState: CheckRunState;
+  CheckRunStateCount: ResolverTypeWrapper<CheckRunStateCount>;
   CheckRunType: CheckRunType;
   CheckStatusState: CheckStatusState;
   CheckStep: ResolverTypeWrapper<CheckStep>;
@@ -27056,6 +27124,7 @@ export type ResolversTypes = {
   StatusCheckRollupContextConnection: ResolverTypeWrapper<Omit<StatusCheckRollupContextConnection, 'nodes'> & { nodes?: Maybe<Array<Maybe<ResolversTypes['StatusCheckRollupContext']>>> }>;
   StatusCheckRollupContextEdge: ResolverTypeWrapper<Omit<StatusCheckRollupContextEdge, 'node'> & { node?: Maybe<ResolversTypes['StatusCheckRollupContext']> }>;
   StatusContext: ResolverTypeWrapper<StatusContext>;
+  StatusContextStateCount: ResolverTypeWrapper<StatusContextStateCount>;
   StatusState: StatusState;
   String: ResolverTypeWrapper<Scalars['String']>;
   SubmitPullRequestReviewInput: SubmitPullRequestReviewInput;
@@ -27401,6 +27470,7 @@ export type ResolversParentTypes = {
   CheckRunFilter: CheckRunFilter;
   CheckRunOutput: CheckRunOutput;
   CheckRunOutputImage: CheckRunOutputImage;
+  CheckRunStateCount: CheckRunStateCount;
   CheckStep: CheckStep;
   CheckStepConnection: CheckStepConnection;
   CheckStepEdge: CheckStepEdge;
@@ -28204,6 +28274,7 @@ export type ResolversParentTypes = {
   StatusCheckRollupContextConnection: Omit<StatusCheckRollupContextConnection, 'nodes'> & { nodes?: Maybe<Array<Maybe<ResolversParentTypes['StatusCheckRollupContext']>>> };
   StatusCheckRollupContextEdge: Omit<StatusCheckRollupContextEdge, 'node'> & { node?: Maybe<ResolversParentTypes['StatusCheckRollupContext']> };
   StatusContext: StatusContext;
+  StatusContextStateCount: StatusContextStateCount;
   String: Scalars['String'];
   SubmitPullRequestReviewInput: SubmitPullRequestReviewInput;
   SubmitPullRequestReviewPayload: SubmitPullRequestReviewPayload;
@@ -29039,6 +29110,12 @@ export type CheckRunConnectionResolvers<ContextType = any, ParentType extends Re
 export type CheckRunEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['CheckRunEdge'] = ResolversParentTypes['CheckRunEdge']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   node?: Resolver<Maybe<ResolversTypes['CheckRun']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CheckRunStateCountResolvers<ContextType = any, ParentType extends ResolversParentTypes['CheckRunStateCount'] = ResolversParentTypes['CheckRunStateCount']> = {
+  count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  state?: Resolver<ResolversTypes['CheckRunState'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -34109,13 +34186,17 @@ export type PullRequestTemplateResolvers<ContextType = any, ParentType extends R
 
 export type PullRequestThreadResolvers<ContextType = any, ParentType extends ResolversParentTypes['PullRequestThread'] = ResolversParentTypes['PullRequestThread']> = {
   comments?: Resolver<ResolversTypes['PullRequestReviewCommentConnection'], ParentType, ContextType, Partial<PullRequestThreadCommentsArgs>>;
+  diffSide?: Resolver<ResolversTypes['DiffSide'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   isCollapsed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   isOutdated?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   isResolved?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  line?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   pullRequest?: Resolver<ResolversTypes['PullRequest'], ParentType, ContextType>;
   repository?: Resolver<ResolversTypes['Repository'], ParentType, ContextType>;
   resolvedBy?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  startDiffSide?: Resolver<Maybe<ResolversTypes['DiffSide']>, ParentType, ContextType>;
+  startLine?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   viewerCanReply?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanResolve?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanUnresolve?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -36111,9 +36192,13 @@ export type StatusCheckRollupContextResolvers<ContextType = any, ParentType exte
 };
 
 export type StatusCheckRollupContextConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['StatusCheckRollupContextConnection'] = ResolversParentTypes['StatusCheckRollupContextConnection']> = {
+  checkRunCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  checkRunCountsByState?: Resolver<Maybe<Array<ResolversTypes['CheckRunStateCount']>>, ParentType, ContextType>;
   edges?: Resolver<Maybe<Array<Maybe<ResolversTypes['StatusCheckRollupContextEdge']>>>, ParentType, ContextType>;
   nodes?: Resolver<Maybe<Array<Maybe<ResolversTypes['StatusCheckRollupContext']>>>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  statusContextCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  statusContextCountsByState?: Resolver<Maybe<Array<ResolversTypes['StatusContextStateCount']>>, ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -36135,6 +36220,12 @@ export type StatusContextResolvers<ContextType = any, ParentType extends Resolve
   isRequired?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, Partial<StatusContextIsRequiredArgs>>;
   state?: Resolver<ResolversTypes['StatusState'], ParentType, ContextType>;
   targetUrl?: Resolver<Maybe<ResolversTypes['URI']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type StatusContextStateCountResolvers<ContextType = any, ParentType extends ResolversParentTypes['StatusContextStateCount'] = ResolversParentTypes['StatusContextStateCount']> = {
+  count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  state?: Resolver<ResolversTypes['StatusState'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -37472,6 +37563,7 @@ export type Resolvers<ContextType = any> = {
   CheckRun?: CheckRunResolvers<ContextType>;
   CheckRunConnection?: CheckRunConnectionResolvers<ContextType>;
   CheckRunEdge?: CheckRunEdgeResolvers<ContextType>;
+  CheckRunStateCount?: CheckRunStateCountResolvers<ContextType>;
   CheckStep?: CheckStepResolvers<ContextType>;
   CheckStepConnection?: CheckStepConnectionResolvers<ContextType>;
   CheckStepEdge?: CheckStepEdgeResolvers<ContextType>;
@@ -38121,6 +38213,7 @@ export type Resolvers<ContextType = any> = {
   StatusCheckRollupContextConnection?: StatusCheckRollupContextConnectionResolvers<ContextType>;
   StatusCheckRollupContextEdge?: StatusCheckRollupContextEdgeResolvers<ContextType>;
   StatusContext?: StatusContextResolvers<ContextType>;
+  StatusContextStateCount?: StatusContextStateCountResolvers<ContextType>;
   SubmitPullRequestReviewPayload?: SubmitPullRequestReviewPayloadResolvers<ContextType>;
   Submodule?: SubmoduleResolvers<ContextType>;
   SubmoduleConnection?: SubmoduleConnectionResolvers<ContextType>;
