@@ -21613,6 +21613,10 @@ export type SponsorsListing = Node & {
   activeGoal?: Maybe<SponsorsGoal>;
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
+  /** The HTTP path for the Sponsors dashboard for this Sponsors listing. */
+  dashboardResourcePath: Scalars['URI'];
+  /** The HTTP URL for the Sponsors dashboard for this Sponsors listing. */
+  dashboardUrl: Scalars['URI'];
   /** The full description of the listing. */
   fullDescription: Scalars['String'];
   /** The full description of the listing rendered to HTML. */
@@ -21624,6 +21628,8 @@ export type SponsorsListing = Node & {
   name: Scalars['String'];
   /** A future date on which this listing is eligible to receive a payout. */
   nextPayoutDate?: Maybe<Scalars['Date']>;
+  /** The HTTP path for this Sponsors listing. */
+  resourcePath: Scalars['URI'];
   /** The short description of the listing. */
   shortDescription: Scalars['String'];
   /** The short name of the listing. */
@@ -21632,6 +21638,8 @@ export type SponsorsListing = Node & {
   sponsorable: Sponsorable;
   /** The published tiers for this GitHub Sponsors listing. */
   tiers?: Maybe<SponsorsTierConnection>;
+  /** The HTTP URL for this Sponsors listing. */
+  url: Scalars['URI'];
 };
 
 
@@ -36074,16 +36082,20 @@ export type SponsorsGoalResolvers<ContextType = any, ParentType extends Resolver
 export type SponsorsListingResolvers<ContextType = any, ParentType extends ResolversParentTypes['SponsorsListing'] = ResolversParentTypes['SponsorsListing']> = {
   activeGoal?: Resolver<Maybe<ResolversTypes['SponsorsGoal']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
+  dashboardResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
+  dashboardUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   fullDescription?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   fullDescriptionHTML?: Resolver<ResolversTypes['HTML'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   isPublic?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   nextPayoutDate?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
+  resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   shortDescription?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   sponsorable?: Resolver<ResolversTypes['Sponsorable'], ParentType, ContextType>;
   tiers?: Resolver<Maybe<ResolversTypes['SponsorsTierConnection']>, ParentType, ContextType, RequireFields<SponsorsListingTiersArgs, 'orderBy'>>;
+  url?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
