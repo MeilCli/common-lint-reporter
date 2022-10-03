@@ -1175,7 +1175,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getOctokitOptions = exports.GitHub = exports.context = void 0;
+exports.getOctokitOptions = exports.GitHub = exports.defaults = exports.context = void 0;
 const Context = __importStar(__webpack_require__(37));
 const Utils = __importStar(__webpack_require__(3460));
 // octokit + plugins
@@ -1184,13 +1184,13 @@ const plugin_rest_endpoint_methods_1 = __webpack_require__(9401);
 const plugin_paginate_rest_1 = __webpack_require__(5745);
 exports.context = new Context.Context();
 const baseUrl = Utils.getApiBaseUrl();
-const defaults = {
+exports.defaults = {
     baseUrl,
     request: {
         agent: Utils.getProxyAgent(baseUrl)
     }
 };
-exports.GitHub = core_1.Octokit.plugin(plugin_rest_endpoint_methods_1.restEndpointMethods, plugin_paginate_rest_1.paginateRest).defaults(defaults);
+exports.GitHub = core_1.Octokit.plugin(plugin_rest_endpoint_methods_1.restEndpointMethods, plugin_paginate_rest_1.paginateRest).defaults(exports.defaults);
 /**
  * Convience function to correctly format Octokit Options to pass into the constructor.
  *
@@ -15809,6 +15809,9 @@ var ApolloCache = (function () {
     ApolloCache.prototype.transformDocument = function (document) {
         return document;
     };
+    ApolloCache.prototype.transformForLink = function (document) {
+        return document;
+    };
     ApolloCache.prototype.identify = function (object) {
         return;
     };
@@ -15817,9 +15820,6 @@ var ApolloCache = (function () {
     };
     ApolloCache.prototype.modify = function (options) {
         return false;
-    };
-    ApolloCache.prototype.transformForLink = function (document) {
-        return document;
     };
     ApolloCache.prototype.readQuery = function (options, optimistic) {
         if (optimistic === void 0) { optimistic = !!options.optimistic; }
@@ -15901,11 +15901,21 @@ var Cache;
 var MissingFieldError = (function (_super) {
     (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__extends */ .ZT)(MissingFieldError, _super);
     function MissingFieldError(message, path, query, variables) {
+        var _a;
         var _this = _super.call(this, message) || this;
         _this.message = message;
         _this.path = path;
         _this.query = query;
         _this.variables = variables;
+        if (Array.isArray(_this.path)) {
+            _this.missing = _this.message;
+            for (var i = _this.path.length - 1; i >= 0; --i) {
+                _this.missing = (_a = {}, _a[_this.path[i]] = _this.missing, _a);
+            }
+        }
+        else {
+            _this.missing = _this.path;
+        }
         _this.__proto__ = MissingFieldError.prototype;
         return _this;
     }
@@ -15923,6 +15933,7 @@ var MissingFieldError = (function (_super) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "$O": () => (/* binding */ TypeOrFieldNameRegExp),
 /* harmony export */   "E_": () => (/* binding */ fieldNameFromStoreName),
+/* harmony export */   "Is": () => (/* binding */ extractFragmentContext),
 /* harmony export */   "RC": () => (/* binding */ selectionSetMatchesResult),
 /* harmony export */   "RI": () => (/* binding */ hasOwn),
 /* harmony export */   "ig": () => (/* binding */ makeProcessedFieldsMerger),
@@ -15933,6 +15944,7 @@ var MissingFieldError = (function (_super) {
 /* harmony export */   "lg": () => (/* binding */ shouldCanonizeResults),
 /* harmony export */   "uG": () => (/* binding */ defaultDataIdFromObject)
 /* harmony export */ });
+/* unused harmony export isNullish */
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3712);
 }
@@ -15948,20 +15960,31 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(182);
 }
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(3361);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(6765);
+}
 
 var hasOwn = Object.prototype.hasOwnProperty;
+function isNullish(value) {
+    return value === null || value === void 0;
+}
+var isArray = Array.isArray;
 function defaultDataIdFromObject(_a, context) {
     var __typename = _a.__typename, id = _a.id, _id = _a._id;
     if (typeof __typename === "string") {
         if (context) {
             context.keyObject =
-                id !== void 0 ? { id: id } :
-                    _id !== void 0 ? { _id: _id } :
+                !isNullish(id) ? { id: id } :
+                    !isNullish(_id) ? { _id: _id } :
                         void 0;
         }
-        if (id === void 0)
+        if (isNullish(id) && !isNullish(_id)) {
             id = _id;
-        if (id !== void 0) {
+        }
+        if (!isNullish(id)) {
             return "".concat(__typename, ":").concat((typeof id === "number" ||
                 typeof id === "string") ? id : JSON.stringify(id));
         }
@@ -16014,7 +16037,19 @@ function storeValueIsStoreObject(value) {
 function makeProcessedFieldsMerger() {
     return new _utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .DeepMerger */ .w0;
 }
-var isArray = function (a) { return Array.isArray(a); };
+function extractFragmentContext(document, fragments) {
+    var fragmentMap = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .createFragmentMap */ .F)((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_6__/* .getFragmentDefinitions */ .kU)(document));
+    return {
+        fragmentMap: fragmentMap,
+        lookupFragment: function (name) {
+            var def = fragmentMap[name];
+            if (!def && fragments) {
+                def = fragments.lookup(name);
+            }
+            return def || null;
+        },
+    };
+}
 //# sourceMappingURL=helpers.js.map
 
 /***/ }),
@@ -16045,18 +16080,20 @@ var common = __webpack_require__(5727);
 var storeUtils = __webpack_require__(1761);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/transform.js
 var transform = __webpack_require__(6487);
+// EXTERNAL MODULE: ./node_modules/graphql/language/kinds.mjs
+var kinds = __webpack_require__(7359);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/canUse.js
 var canUse = __webpack_require__(320);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/compact.js
 var compact = __webpack_require__(3712);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/getFromAST.js
 var getFromAST = __webpack_require__(6765);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/fragments.js
-var fragments = __webpack_require__(3361);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/mergeDeep.js
 var mergeDeep = __webpack_require__(182);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/directives.js
 var directives = __webpack_require__(9065);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/fragments.js
+var fragments = __webpack_require__(3361);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/maybeDeepFreeze.js
 var maybeDeepFreeze = __webpack_require__(8702);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/objects.js
@@ -16544,6 +16581,7 @@ var object_canon = __webpack_require__(900);
 
 
 
+
 ;
 function execSelectionSetKeyArgs(options) {
     return [
@@ -16610,15 +16648,7 @@ var StoreReader = (function () {
             selectionSet: (0,getFromAST/* getMainDefinition */.p$)(query).selectionSet,
             objectOrReference: rootRef,
             enclosingRef: rootRef,
-            context: {
-                store: store,
-                query: query,
-                policies: policies,
-                variables: variables,
-                varString: (0,object_canon/* canonicalStringify */.B)(variables),
-                canonizeResults: canonizeResults,
-                fragmentMap: (0,fragments/* createFragmentMap */.F)((0,getFromAST/* getFragmentDefinitions */.kU)(query)),
-            },
+            context: (0,tslib_es6/* __assign */.pi)({ store: store, query: query, policies: policies, variables: variables, varString: (0,object_canon/* canonicalStringify */.B)(variables), canonizeResults: canonizeResults }, (0,helpers/* extractFragmentContext */.Is)(query, this.config.fragments)),
         });
         var missing;
         if (execResult.missing) {
@@ -16719,7 +16749,10 @@ var StoreReader = (function () {
                 }
             }
             else {
-                var fragment = (0,fragments/* getFragmentFromSelection */.hi)(selection, context.fragmentMap);
+                var fragment = (0,fragments/* getFragmentFromSelection */.hi)(selection, context.lookupFragment);
+                if (!fragment && selection.kind === kinds/* Kind.FRAGMENT_SPREAD */.h.FRAGMENT_SPREAD) {
+                    throw __DEV__ ? new globals/* InvariantError */.ej("No fragment named ".concat(selection.name.value)) : new globals/* InvariantError */.ej(5);
+                }
                 if (fragment && policies.fragmentMatches(fragment, typename)) {
                     fragment.selectionSet.selections.forEach(workSet.add, workSet);
                 }
@@ -16800,7 +16833,7 @@ function assertSelectionSetForIdValue(store, field, fieldValue) {
         var workSet_1 = new Set([fieldValue]);
         workSet_1.forEach(function (value) {
             if ((0,objects/* isNonNullObject */.s)(value)) {
-                __DEV__ ? (0,globals/* invariant */.kG)(!(0,storeUtils/* isReference */.Yk)(value), "Missing selection set for object of type ".concat((0,helpers/* getTypenameFromStoreObject */.jp)(store, value), " returned for query field ").concat(field.name.value)) : (0,globals/* invariant */.kG)(!(0,storeUtils/* isReference */.Yk)(value), 5);
+                __DEV__ ? (0,globals/* invariant */.kG)(!(0,storeUtils/* isReference */.Yk)(value), "Missing selection set for object of type ".concat((0,helpers/* getTypenameFromStoreObject */.jp)(store, value), " returned for query field ").concat(field.name.value)) : (0,globals/* invariant */.kG)(!(0,storeUtils/* isReference */.Yk)(value), 6);
                 Object.values(value).forEach(workSet_1.add, workSet_1);
             }
         });
@@ -17369,6 +17402,7 @@ function makeMergeObjectsFunction(store) {
 
 
 
+
 ;
 function getContextFlavor(context, clientOnly, deferred) {
     var key = "".concat(clientOnly).concat(deferred);
@@ -17380,9 +17414,10 @@ function getContextFlavor(context, clientOnly, deferred) {
     return flavored;
 }
 var StoreWriter = (function () {
-    function StoreWriter(cache, reader) {
+    function StoreWriter(cache, reader, fragments) {
         this.cache = cache;
         this.reader = reader;
+        this.fragments = fragments;
     }
     StoreWriter.prototype.writeToStore = function (store, _a) {
         var _this = this;
@@ -17390,21 +17425,9 @@ var StoreWriter = (function () {
         var operationDefinition = (0,getFromAST/* getOperationDefinition */.$H)(query);
         var merger = (0,helpers/* makeProcessedFieldsMerger */.ig)();
         variables = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, (0,getFromAST/* getDefaultValues */.O4)(operationDefinition)), variables);
-        var context = {
-            store: store,
-            written: Object.create(null),
-            merge: function (existing, incoming) {
+        var context = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({ store: store, written: Object.create(null), merge: function (existing, incoming) {
                 return merger.merge(existing, incoming);
-            },
-            variables: variables,
-            varString: (0,object_canon/* canonicalStringify */.B)(variables),
-            fragmentMap: (0,fragments/* createFragmentMap */.F)((0,getFromAST/* getFragmentDefinitions */.kU)(query)),
-            overwrite: !!overwrite,
-            incomingById: new Map,
-            clientOnly: false,
-            deferred: false,
-            flavors: new Map,
-        };
+            }, variables: variables, varString: (0,object_canon/* canonicalStringify */.B)(variables) }, (0,helpers/* extractFragmentContext */.Is)(query, this.fragments)), { overwrite: !!overwrite, incomingById: new Map, clientOnly: false, deferred: false, flavors: new Map });
         var ref = this.processSelectionSet({
             result: result || Object.create(null),
             dataId: dataId,
@@ -17413,7 +17436,7 @@ var StoreWriter = (function () {
             context: context,
         });
         if (!(0,storeUtils/* isReference */.Yk)(ref)) {
-            throw __DEV__ ? new globals/* InvariantError */.ej("Could not identify object ".concat(JSON.stringify(result))) : new globals/* InvariantError */.ej(6);
+            throw __DEV__ ? new globals/* InvariantError */.ej("Could not identify object ".concat(JSON.stringify(result))) : new globals/* InvariantError */.ej(7);
         }
         context.incomingById.forEach(function (_a, dataId) {
             var storeObject = _a.storeObject, mergeTree = _a.mergeTree, fieldNodeSet = _a.fieldNodeSet;
@@ -17620,7 +17643,10 @@ var StoreWriter = (function () {
                     fieldMap.set(selection, getContextFlavor(context, clientOnly, deferred));
                 }
                 else {
-                    var fragment = (0,fragments/* getFragmentFromSelection */.hi)(selection, context.fragmentMap);
+                    var fragment = (0,fragments/* getFragmentFromSelection */.hi)(selection, context.lookupFragment);
+                    if (!fragment && selection.kind === kinds/* Kind.FRAGMENT_SPREAD */.h.FRAGMENT_SPREAD) {
+                        throw __DEV__ ? new globals/* InvariantError */.ej("No fragment named ".concat(selection.name.value)) : new globals/* InvariantError */.ej(8);
+                    }
                     if (fragment &&
                         policies.fragmentMatches(fragment, typename, result, context.variables)) {
                         flatten(fragment.selectionSet, getContextFlavor(context, clientOnly, deferred));
@@ -17809,6 +17835,7 @@ var InMemoryCache = (function (_super) {
     InMemoryCache.prototype.resetResultCache = function (resetResultIdentities) {
         var _this = this;
         var previousReader = this.storeReader;
+        var fragments = this.config.fragments;
         this.storeWriter = new StoreWriter(this, this.storeReader = new StoreReader({
             cache: this,
             addTypename: this.addTypename,
@@ -17817,7 +17844,8 @@ var InMemoryCache = (function (_super) {
             canon: resetResultIdentities
                 ? void 0
                 : previousReader && previousReader.canon,
-        }));
+            fragments: fragments,
+        }), fragments);
         this.maybeBroadcastWatch = (0,bundle_esm/* wrap */.re)(function (c, options) {
             return _this.broadcastWatch(c, options);
         }, {
@@ -17825,8 +17853,8 @@ var InMemoryCache = (function (_super) {
             makeCacheKey: function (c) {
                 var store = c.optimistic ? _this.optimisticData : _this.data;
                 if (supportsResultCaching(store)) {
-                    var optimistic = c.optimistic, rootId = c.rootId, variables = c.variables;
-                    return store.makeCacheKey(c.query, c.callback, (0,object_canon/* canonicalStringify */.B)({ optimistic: optimistic, rootId: rootId, variables: variables }));
+                    var optimistic = c.optimistic, id = c.id, variables = c.variables;
+                    return store.makeCacheKey(c.query, c.callback, (0,object_canon/* canonicalStringify */.B)({ optimistic: optimistic, id: id, variables: variables }));
                 }
             }
         });
@@ -18043,6 +18071,12 @@ var InMemoryCache = (function (_super) {
             return result;
         }
         return document;
+    };
+    InMemoryCache.prototype.transformForLink = function (document) {
+        var fragments = this.config.fragments;
+        return fragments
+            ? fragments.transform(document)
+            : document;
     };
     InMemoryCache.prototype.broadcastWatches = function (options) {
         var _this = this;
@@ -18525,7 +18559,7 @@ function broadcast(cache) {
 
 /***/ }),
 
-/***/ 5614:
+/***/ 2359:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -18546,12 +18580,17 @@ var ApolloLink = __webpack_require__(3581);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
 var execute = __webpack_require__(7037);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.6.10';
+var version = '3.7.0';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
 // EXTERNAL MODULE: ./node_modules/@wry/equality/lib/equality.esm.js
 var equality_esm = __webpack_require__(2152);
+;// CONCATENATED MODULE: ./node_modules/@apollo/client/utilities/common/incrementalResult.js
+function isExecutionPatchIncrementalResult(value) {
+    return !!value.incremental;
+}
+//# sourceMappingURL=incrementalResult.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/cache/inmemory/object-canon.js
 var object_canon = __webpack_require__(900);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/canUse.js
@@ -18645,7 +18684,6 @@ var Concast = (function (_super) {
             return function () { return _this.removeObserver(observer); };
         }) || this;
         _this.observers = new Set();
-        _this.addCount = 0;
         _this.promise = new Promise(function (resolve, reject) {
             _this.resolve = resolve;
             _this.reject = reject;
@@ -18654,6 +18692,7 @@ var Concast = (function (_super) {
             next: function (result) {
                 if (_this.sub !== null) {
                     _this.latest = ["next", result];
+                    _this.notify("next", result);
                     (0,iteration/* iterateObserversSafely */.p)(_this.observers, "next", result);
                 }
             },
@@ -18665,6 +18704,7 @@ var Concast = (function (_super) {
                     _this.sub = null;
                     _this.latest = ["error", error];
                     _this.reject(error);
+                    _this.notify("error", error);
                     (0,iteration/* iterateObserversSafely */.p)(_this.observers, "error", error);
                 }
             },
@@ -18683,6 +18723,7 @@ var Concast = (function (_super) {
                         else {
                             _this.resolve();
                         }
+                        _this.notify("complete");
                         (0,iteration/* iterateObserversSafely */.p)(_this.observers, "complete");
                     }
                     else if (isPromiseLike(value)) {
@@ -18694,6 +18735,7 @@ var Concast = (function (_super) {
                 }
             },
         };
+        _this.nextResultListeners = new Set();
         _this.cancel = function (reason) {
             _this.reject(reason);
             _this.sources = [];
@@ -18735,40 +18777,37 @@ var Concast = (function (_super) {
         if (!this.observers.has(observer)) {
             this.deliverLastMessage(observer);
             this.observers.add(observer);
-            ++this.addCount;
         }
     };
-    Concast.prototype.removeObserver = function (observer, quietly) {
+    Concast.prototype.removeObserver = function (observer) {
         if (this.observers.delete(observer) &&
-            --this.addCount < 1 &&
-            !quietly) {
+            this.observers.size < 1) {
             this.handlers.complete();
         }
     };
-    Concast.prototype.cleanup = function (callback) {
-        var _this = this;
+    Concast.prototype.notify = function (method, arg) {
+        var nextResultListeners = this.nextResultListeners;
+        if (nextResultListeners.size) {
+            this.nextResultListeners = new Set;
+            nextResultListeners.forEach(function (listener) { return listener(method, arg); });
+        }
+    };
+    Concast.prototype.beforeNext = function (callback) {
         var called = false;
-        var once = function () {
+        this.nextResultListeners.add(function (method, arg) {
             if (!called) {
                 called = true;
-                _this.observers.delete(observer);
-                callback();
+                callback(method, arg);
             }
-        };
-        var observer = {
-            next: once,
-            error: once,
-            complete: once,
-        };
-        var count = this.addCount;
-        this.addObserver(observer);
-        this.addCount = count;
+        });
     };
     return Concast;
 }(zen_observable_ts_module/* Observable */.y));
 
 (0,subclassing/* fixObservableSubclass */.D)(Concast);
 //# sourceMappingURL=Concast.js.map
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/cloneDeep.js
+var cloneDeep = __webpack_require__(9487);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/arrays.js
 var arrays = __webpack_require__(1436);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/errors/index.js
@@ -18960,7 +18999,7 @@ var LocalState = (function () {
                         }
                         else {
                             fragment = fragmentMap[selection.name.value];
-                            __DEV__ ? (0,globals/* invariant */.kG)(fragment, "No fragment named ".concat(selection.name.value)) : (0,globals/* invariant */.kG)(fragment, 9);
+                            __DEV__ ? (0,globals/* invariant */.kG)(fragment, "No fragment named ".concat(selection.name.value)) : (0,globals/* invariant */.kG)(fragment, 11);
                         }
                         if (fragment && fragment.typeCondition) {
                             typeCondition = fragment.typeCondition.name.value;
@@ -19059,6 +19098,7 @@ var LocalState = (function () {
 
 
 
+
 ;
 var destructiveMethodCounts = new (canUse/* canUseWeakMap */.mr ? WeakMap : Map)();
 function wrapDestructiveCacheMethod(cache, methodName) {
@@ -19122,7 +19162,6 @@ var QueryInfo = (function () {
     };
     QueryInfo.prototype.reset = function () {
         cancelNotifyTimeout(this);
-        this.lastDiff = void 0;
         this.dirty = false;
     };
     QueryInfo.prototype.getDiff = function (variables) {
@@ -19252,10 +19291,32 @@ var QueryInfo = (function () {
             (0,equality_esm/* equal */.D)(variables, lastWrite.variables) &&
             (0,equality_esm/* equal */.D)(result.data, lastWrite.result.data));
     };
-    QueryInfo.prototype.markResult = function (result, options, cacheWriteBehavior) {
+    QueryInfo.prototype.markResult = function (result, document, options, cacheWriteBehavior) {
         var _this = this;
-        this.graphQLErrors = (0,arrays/* isNonEmptyArray */.O)(result.errors) ? result.errors : [];
+        var graphQLErrors = (0,arrays/* isNonEmptyArray */.O)(result.errors)
+            ? result.errors.slice(0)
+            : [];
         this.reset();
+        if ('incremental' in result && (0,arrays/* isNonEmptyArray */.O)(result.incremental)) {
+            var mergedData_1 = this.getDiff().result;
+            var merger_1 = new mergeDeep/* DeepMerger */.w0();
+            result.incremental.forEach(function (_a) {
+                var data = _a.data, path = _a.path, errors = _a.errors;
+                for (var i = path.length - 1; i >= 0; --i) {
+                    var key = path[i];
+                    var isNumericKey = !isNaN(+key);
+                    var parent_1 = isNumericKey ? [] : {};
+                    parent_1[key] = data;
+                    data = parent_1;
+                }
+                if (errors) {
+                    graphQLErrors.push.apply(graphQLErrors, errors);
+                }
+                mergedData_1 = merger_1.merge(mergedData_1, data);
+            });
+            result.data = mergedData_1;
+        }
+        this.graphQLErrors = graphQLErrors;
         if (options.fetchPolicy === 'no-cache') {
             this.updateLastDiff({ result: result.data, complete: true }, this.getDiffOptions(options.variables));
         }
@@ -19264,7 +19325,7 @@ var QueryInfo = (function () {
                 this.cache.performTransaction(function (cache) {
                     if (_this.shouldWrite(result, options.variables)) {
                         cache.writeQuery({
-                            query: _this.document,
+                            query: document,
                             data: result.data,
                             variables: options.variables,
                             overwrite: cacheWriteBehavior === 1,
@@ -19340,6 +19401,7 @@ function shouldWriteResult(result, errorPolicy) {
 
 
 
+
 var QueryManager_hasOwnProperty = Object.prototype.hasOwnProperty;
 var QueryManager = (function () {
     function QueryManager(_a) {
@@ -19369,7 +19431,7 @@ var QueryManager = (function () {
         this.queries.forEach(function (_info, queryId) {
             _this.stopQueryNoBroadcast(queryId);
         });
-        this.cancelPendingFetches(__DEV__ ? new globals/* InvariantError */.ej('QueryManager stopped while query was in flight') : new globals/* InvariantError */.ej(11));
+        this.cancelPendingFetches(__DEV__ ? new globals/* InvariantError */.ej('QueryManager stopped while query was in flight') : new globals/* InvariantError */.ej(13));
     };
     QueryManager.prototype.cancelPendingFetches = function (error) {
         this.fetchCancelFns.forEach(function (cancel) { return cancel(error); });
@@ -19379,22 +19441,23 @@ var QueryManager = (function () {
         var _b, _c;
         var mutation = _a.mutation, variables = _a.variables, optimisticResponse = _a.optimisticResponse, updateQueries = _a.updateQueries, _d = _a.refetchQueries, refetchQueries = _d === void 0 ? [] : _d, _e = _a.awaitRefetchQueries, awaitRefetchQueries = _e === void 0 ? false : _e, updateWithProxyFn = _a.update, onQueryUpdated = _a.onQueryUpdated, _f = _a.fetchPolicy, fetchPolicy = _f === void 0 ? ((_b = this.defaultOptions.mutate) === null || _b === void 0 ? void 0 : _b.fetchPolicy) || "network-only" : _f, _g = _a.errorPolicy, errorPolicy = _g === void 0 ? ((_c = this.defaultOptions.mutate) === null || _c === void 0 ? void 0 : _c.errorPolicy) || "none" : _g, keepRootFields = _a.keepRootFields, context = _a.context;
         return (0,tslib_es6/* __awaiter */.mG)(this, void 0, void 0, function () {
-            var mutationId, mutationStoreValue, self;
-            return (0,tslib_es6/* __generator */.Jh)(this, function (_h) {
-                switch (_h.label) {
+            var mutationId, _h, document, hasClientExports, mutationStoreValue, self;
+            return (0,tslib_es6/* __generator */.Jh)(this, function (_j) {
+                switch (_j.label) {
                     case 0:
-                        __DEV__ ? (0,globals/* invariant */.kG)(mutation, 'mutation option is required. You must specify your GraphQL document in the mutation option.') : (0,globals/* invariant */.kG)(mutation, 12);
+                        __DEV__ ? (0,globals/* invariant */.kG)(mutation, 'mutation option is required. You must specify your GraphQL document in the mutation option.') : (0,globals/* invariant */.kG)(mutation, 14);
                         __DEV__ ? (0,globals/* invariant */.kG)(fetchPolicy === 'network-only' ||
                             fetchPolicy === 'no-cache', "Mutations support only 'network-only' or 'no-cache' fetchPolicy strings. The default `network-only` behavior automatically writes mutation results to the cache. Passing `no-cache` skips the cache write.") : (0,globals/* invariant */.kG)(fetchPolicy === 'network-only' ||
-                            fetchPolicy === 'no-cache', 13);
+                            fetchPolicy === 'no-cache', 15);
                         mutationId = this.generateMutationId();
-                        mutation = this.transform(mutation).document;
+                        _h = this.transform(mutation), document = _h.document, hasClientExports = _h.hasClientExports;
+                        mutation = this.cache.transformForLink(document);
                         variables = this.getVariables(mutation, variables);
-                        if (!this.transform(mutation).hasClientExports) return [3, 2];
+                        if (!hasClientExports) return [3, 2];
                         return [4, this.localState.addExportedVariables(mutation, variables, context)];
                     case 1:
-                        variables = (_h.sent());
-                        _h.label = 2;
+                        variables = (_j.sent());
+                        _j.label = 2;
                     case 2:
                         mutationStoreValue = this.mutationStore &&
                             (this.mutationStore[mutationId] = {
@@ -19545,7 +19608,7 @@ var QueryManager = (function () {
                                 optimistic: false,
                                 returnPartialData: true,
                             });
-                            if (diff.complete) {
+                            if (diff.complete && !(isExecutionPatchIncrementalResult(result))) {
                                 result = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, result), { data: diff.result });
                             }
                         }
@@ -19615,9 +19678,9 @@ var QueryManager = (function () {
         var transformCache = this.transformCache;
         if (!transformCache.has(document)) {
             var transformed = this.cache.transformDocument(document);
-            var forLink = (0,transform/* removeConnectionDirectiveFromDocument */.Fo)(this.cache.transformForLink(transformed));
+            var noConnection = (0,transform/* removeConnectionDirectiveFromDocument */.Fo)(transformed);
             var clientQuery = this.localState.clientQuery(transformed);
-            var serverQuery = forLink && this.localState.serverQuery(forLink);
+            var serverQuery = noConnection && this.localState.serverQuery(noConnection);
             var cacheEntry_1 = {
                 document: transformed,
                 hasClientExports: (0,directives/* hasClientExports */.mj)(transformed),
@@ -19671,10 +19734,10 @@ var QueryManager = (function () {
         var _this = this;
         if (queryId === void 0) { queryId = this.generateQueryId(); }
         __DEV__ ? (0,globals/* invariant */.kG)(options.query, 'query option is required. You must specify your GraphQL document ' +
-            'in the query option.') : (0,globals/* invariant */.kG)(options.query, 14);
-        __DEV__ ? (0,globals/* invariant */.kG)(options.query.kind === 'Document', 'You must wrap the query string in a "gql" tag.') : (0,globals/* invariant */.kG)(options.query.kind === 'Document', 15);
-        __DEV__ ? (0,globals/* invariant */.kG)(!options.returnPartialData, 'returnPartialData option only supported on watchQuery.') : (0,globals/* invariant */.kG)(!options.returnPartialData, 16);
-        __DEV__ ? (0,globals/* invariant */.kG)(!options.pollInterval, 'pollInterval option only supported on watchQuery.') : (0,globals/* invariant */.kG)(!options.pollInterval, 17);
+            'in the query option.') : (0,globals/* invariant */.kG)(options.query, 16);
+        __DEV__ ? (0,globals/* invariant */.kG)(options.query.kind === 'Document', 'You must wrap the query string in a "gql" tag.') : (0,globals/* invariant */.kG)(options.query.kind === 'Document', 17);
+        __DEV__ ? (0,globals/* invariant */.kG)(!options.returnPartialData, 'returnPartialData option only supported on watchQuery.') : (0,globals/* invariant */.kG)(!options.returnPartialData, 18);
+        __DEV__ ? (0,globals/* invariant */.kG)(!options.pollInterval, 'pollInterval option only supported on watchQuery.') : (0,globals/* invariant */.kG)(!options.pollInterval, 19);
         return this.fetchQuery(queryId, options).finally(function () { return _this.stopQuery(queryId); });
     };
     QueryManager.prototype.generateQueryId = function () {
@@ -19699,7 +19762,7 @@ var QueryManager = (function () {
         if (options === void 0) { options = {
             discardWatches: true,
         }; }
-        this.cancelPendingFetches(__DEV__ ? new globals/* InvariantError */.ej('Store reset while query was in flight (not completed in link chain)') : new globals/* InvariantError */.ej(18));
+        this.cancelPendingFetches(__DEV__ ? new globals/* InvariantError */.ej('Store reset while query was in flight (not completed in link chain)') : new globals/* InvariantError */.ej(20));
         this.queries.forEach(function (queryInfo) {
             if (queryInfo.observableQuery) {
                 queryInfo.networkStatus = core_networkStatus/* NetworkStatus.loading */.I.loading;
@@ -19885,7 +19948,7 @@ var QueryManager = (function () {
                         (0,execute/* execute */.h)(link, operation)
                     ]);
                     byVariables_1.set(varJson_1, observable = concast);
-                    concast.cleanup(function () {
+                    concast.beforeNext(function () {
                         if (byVariables_1.delete(varJson_1) &&
                             byVariables_1.size < 1) {
                             inFlightLinkObservables_1.delete(serverQuery);
@@ -19920,15 +19983,27 @@ var QueryManager = (function () {
     };
     QueryManager.prototype.getResultsFromLink = function (queryInfo, cacheWriteBehavior, options) {
         var requestId = queryInfo.lastRequestId = this.generateRequestId();
-        return asyncMap(this.getObservableFromLink(queryInfo.document, options.context, options.variables), function (result) {
-            var hasErrors = (0,arrays/* isNonEmptyArray */.O)(result.errors);
+        options = (0,cloneDeep/* cloneDeep */.X)(options);
+        var linkDocument = this.cache.transformForLink(this.transform(queryInfo.document).document);
+        return asyncMap(this.getObservableFromLink(linkDocument, options.context, options.variables), function (result) {
+            var graphQLErrors = (0,arrays/* isNonEmptyArray */.O)(result.errors)
+                ? result.errors.slice(0)
+                : [];
+            if ('incremental' in result && (0,arrays/* isNonEmptyArray */.O)(result.incremental)) {
+                result.incremental.forEach(function (incrementalResult) {
+                    if (incrementalResult.errors) {
+                        graphQLErrors.push.apply(graphQLErrors, incrementalResult.errors);
+                    }
+                });
+            }
+            var hasErrors = (0,arrays/* isNonEmptyArray */.O)(graphQLErrors);
             if (requestId >= queryInfo.lastRequestId) {
                 if (hasErrors && options.errorPolicy === "none") {
                     throw queryInfo.markError(new errors/* ApolloError */.c({
-                        graphQLErrors: result.errors,
+                        graphQLErrors: graphQLErrors,
                     }));
                 }
-                queryInfo.markResult(result, options, cacheWriteBehavior);
+                queryInfo.markResult(result, linkDocument, options, cacheWriteBehavior);
                 queryInfo.markReady();
             }
             var aqr = {
@@ -19937,7 +20012,7 @@ var QueryManager = (function () {
                 networkStatus: core_networkStatus/* NetworkStatus.ready */.I.ready,
             };
             if (hasErrors && options.errorPolicy !== "ignore") {
-                aqr.errors = result.errors;
+                aqr.errors = graphQLErrors;
                 aqr.networkStatus = core_networkStatus/* NetworkStatus.error */.I.error;
             }
             return aqr;
@@ -20201,7 +20276,7 @@ var ApolloClient = (function () {
         if (!cache) {
             throw __DEV__ ? new globals/* InvariantError */.ej("To initialize Apollo Client, you must specify a 'cache' property " +
                 "in the options object. \n" +
-                "For more information, please visit: https://go.apollo.dev/c/docs") : new globals/* InvariantError */.ej(7);
+                "For more information, please visit: https://go.apollo.dev/c/docs") : new globals/* InvariantError */.ej(9);
         }
         this.link = link;
         this.cache = cache;
@@ -20298,7 +20373,7 @@ var ApolloClient = (function () {
         __DEV__ ? (0,globals/* invariant */.kG)(options.fetchPolicy !== 'cache-and-network', 'The cache-and-network fetchPolicy does not work with client.query, because ' +
             'client.query can only return a single result. Please use client.watchQuery ' +
             'to receive multiple results from the cache and the network, or consider ' +
-            'using a different fetchPolicy, such as cache-first or network-only.') : (0,globals/* invariant */.kG)(options.fetchPolicy !== 'cache-and-network', 8);
+            'using a different fetchPolicy, such as cache-first or network-only.') : (0,globals/* invariant */.kG)(options.fetchPolicy !== 'cache-and-network', 10);
         if (this.disableNetworkFetches && options.fetchPolicy === 'network-only') {
             options = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { fetchPolicy: 'cache-first' });
         }
@@ -20793,14 +20868,14 @@ var ObservableQuery = (function (_super) {
             pollingInfo.interval === pollInterval) {
             return;
         }
-        __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(pollInterval, 'Attempted to start a polling query without a polling interval.') : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(pollInterval, 10);
+        __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(pollInterval, 'Attempted to start a polling query without a polling interval.') : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(pollInterval, 12);
         var info = pollingInfo || (this.pollingInfo = {});
         info.interval = pollInterval;
         var maybeFetch = function () {
             if (_this.pollingInfo) {
                 if (!(0,_networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .isNetworkRequestInFlight */ .O)(_this.queryInfo.networkStatus)) {
                     _this.reobserve({
-                        fetchPolicy: "network-only",
+                        fetchPolicy: _this.options.initialFetchPolicy === 'no-cache' ? 'no-cache' : 'network-only',
                     }, _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.poll */ .I.poll).then(poll, poll);
                 }
                 else {
@@ -20992,7 +21067,7 @@ function logMissingFieldErrors(missing) {
 /* harmony export */ });
 /* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _ApolloClient_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5614);
+	/* harmony import */ var _ApolloClient_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2359);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _ApolloClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4012);
@@ -21209,6 +21284,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "throwServerError": () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.PW),
 /* harmony export */   "toPromise": () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.Vi),
 /* harmony export */   "useApolloClient": () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.xJ),
+/* harmony export */   "useFragment_experimental": () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.$W),
 /* harmony export */   "useLazyQuery": () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.td),
 /* harmony export */   "useMutation": () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.Db),
 /* harmony export */   "useQuery": () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.aM),
@@ -21300,7 +21376,7 @@ function validateOperation(operation) {
     for (var _i = 0, _a = Object.keys(operation); _i < _a.length; _i++) {
         var key = _a[_i];
         if (OPERATION_FIELDS.indexOf(key) < 0) {
-            throw __DEV__ ? new globals/* InvariantError */.ej("illegal argument: ".concat(key)) : new globals/* InvariantError */.ej(24);
+            throw __DEV__ ? new globals/* InvariantError */.ej("illegal argument: ".concat(key)) : new globals/* InvariantError */.ej(26);
         }
     }
     return operation;
@@ -21390,7 +21466,7 @@ var ApolloLink = (function () {
         return ApolloLink.concat(this, next);
     };
     ApolloLink.prototype.request = function (operation, forward) {
-        throw __DEV__ ? new globals/* InvariantError */.ej('request is not implemented') : new globals/* InvariantError */.ej(19);
+        throw __DEV__ ? new globals/* InvariantError */.ej('request is not implemented') : new globals/* InvariantError */.ej(21);
     };
     ApolloLink.prototype.onError = function (error, observer) {
         if (observer && observer.error) {
@@ -21562,7 +21638,7 @@ var HttpLink = (function (_super) {
 
 var checkFetcher = function (fetcher) {
     if (!fetcher && typeof fetch === 'undefined') {
-        throw __DEV__ ? new _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej("\n\"fetch\" has not been found globally and no fetcher has been configured. To fix this, install a fetch package (like https://www.npmjs.com/package/cross-fetch), instantiate the fetcher, and pass it into your HttpLink constructor. For example:\n\nimport fetch from 'cross-fetch';\nimport { ApolloClient, HttpLink } from '@apollo/client';\nconst client = new ApolloClient({\n  link: new HttpLink({ uri: '/graphql', fetch })\n});\n    ") : new _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej(20);
+        throw __DEV__ ? new _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej("\n\"fetch\" has not been found globally and no fetcher has been configured. To fix this, install a fetch package (like https://www.npmjs.com/package/cross-fetch), instantiate the fetcher, and pass it into your HttpLink constructor. For example:\n\nimport fetch from 'cross-fetch';\nimport { ApolloClient, HttpLink } from '@apollo/client';\nconst client = new ApolloClient({\n  link: new HttpLink({ uri: '/graphql', fetch })\n});\n    ") : new _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej(22);
     }
 };
 //# sourceMappingURL=checkFetcher.js.map
@@ -21587,16 +21663,19 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(3581);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(8216);
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(9065);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _serializeFetchParameter_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(5049);
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(8216);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _serializeFetchParameter_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(5049);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _selectURI_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1037);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(4805);
+	/* harmony import */ var _parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(4805);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _checkFetcher_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3178);
@@ -21608,10 +21687,10 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _createSignalIfSupported_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(7388);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _rewriteURIForGET_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(8663);
+	/* harmony import */ var _rewriteURIForGET_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(8663);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(6261);
+	/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(6261);
 }
 
 
@@ -21630,12 +21709,12 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 var backupFetch = (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .wY)(function () { return fetch; });
 var createHttpLink = function (linkOptions) {
     if (linkOptions === void 0) { linkOptions = {}; }
-    var _a = linkOptions.uri, uri = _a === void 0 ? '/graphql' : _a, preferredFetch = linkOptions.fetch, _b = linkOptions.print, print = _b === void 0 ? _selectHttpOptionsAndBody_js__WEBPACK_IMPORTED_MODULE_1__/* .defaultPrinter */ .sb : _b, includeExtensions = linkOptions.includeExtensions, useGETForQueries = linkOptions.useGETForQueries, _c = linkOptions.includeUnusedVariables, includeUnusedVariables = _c === void 0 ? false : _c, requestOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__rest */ ._T)(linkOptions, ["uri", "fetch", "print", "includeExtensions", "useGETForQueries", "includeUnusedVariables"]);
+    var _a = linkOptions.uri, uri = _a === void 0 ? '/graphql' : _a, preferredFetch = linkOptions.fetch, _b = linkOptions.print, print = _b === void 0 ? _selectHttpOptionsAndBody_js__WEBPACK_IMPORTED_MODULE_1__/* .defaultPrinter */ .sb : _b, includeExtensions = linkOptions.includeExtensions, preserveHeaderCase = linkOptions.preserveHeaderCase, useGETForQueries = linkOptions.useGETForQueries, _c = linkOptions.includeUnusedVariables, includeUnusedVariables = _c === void 0 ? false : _c, requestOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__rest */ ._T)(linkOptions, ["uri", "fetch", "print", "includeExtensions", "preserveHeaderCase", "useGETForQueries", "includeUnusedVariables"]);
     if (__DEV__) {
         (0,_checkFetcher_js__WEBPACK_IMPORTED_MODULE_3__/* .checkFetcher */ .U)(preferredFetch || backupFetch);
     }
     var linkConfig = {
-        http: { includeExtensions: includeExtensions },
+        http: { includeExtensions: includeExtensions, preserveHeaderCase: preserveHeaderCase },
         options: requestOptions.fetchOptions,
         credentials: requestOptions.credentials,
         headers: requestOptions.headers,
@@ -21691,42 +21770,39 @@ var createHttpLink = function (linkOptions) {
             !operation.query.definitions.some(definitionIsMutation)) {
             options.method = 'GET';
         }
+        if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_8__/* .hasDirectives */ .FS)(['defer'], operation.query)) {
+            options.headers.accept = "multipart/mixed; deferSpec=20220824, application/json";
+        }
         if (options.method === 'GET') {
-            var _d = (0,_rewriteURIForGET_js__WEBPACK_IMPORTED_MODULE_8__/* .rewriteURIForGET */ .H)(chosenURI, body), newURI = _d.newURI, parseError = _d.parseError;
+            var _d = (0,_rewriteURIForGET_js__WEBPACK_IMPORTED_MODULE_9__/* .rewriteURIForGET */ .H)(chosenURI, body), newURI = _d.newURI, parseError = _d.parseError;
             if (parseError) {
-                return (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_9__/* .fromError */ .Q)(parseError);
+                return (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_10__/* .fromError */ .Q)(parseError);
             }
             chosenURI = newURI;
         }
         else {
             try {
-                options.body = (0,_serializeFetchParameter_js__WEBPACK_IMPORTED_MODULE_10__/* .serializeFetchParameter */ .g)(body, 'Payload');
+                options.body = (0,_serializeFetchParameter_js__WEBPACK_IMPORTED_MODULE_11__/* .serializeFetchParameter */ .g)(body, 'Payload');
             }
             catch (parseError) {
-                return (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_9__/* .fromError */ .Q)(parseError);
+                return (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_10__/* .fromError */ .Q)(parseError);
             }
         }
-        return new _utilities_index_js__WEBPACK_IMPORTED_MODULE_11__/* .Observable */ .y(function (observer) {
+        return new _utilities_index_js__WEBPACK_IMPORTED_MODULE_12__/* .Observable */ .y(function (observer) {
             var currentFetch = preferredFetch || (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .wY)(function () { return fetch; }) || backupFetch;
             currentFetch(chosenURI, options)
                 .then(function (response) {
+                var _a;
                 operation.setContext({ response: response });
-                return response;
-            })
-                .then((0,_parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_12__/* .parseAndCheckHttpResponse */ .d)(operation))
-                .then(function (result) {
-                observer.next(result);
-                observer.complete();
-                return result;
-            })
-                .catch(function (err) {
-                if (err.name === 'AbortError')
-                    return;
-                if (err.result && err.result.errors && err.result.data) {
-                    observer.next(err.result);
+                var ctype = (_a = response.headers) === null || _a === void 0 ? void 0 : _a.get('content-type');
+                if (ctype !== null && /^multipart\/mixed/i.test(ctype)) {
+                    return (0,_parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_13__/* .readMultipartBody */ .TF)(response, observer);
                 }
-                observer.error(err);
-            });
+                else {
+                    return (0,_parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_13__/* .readJsonBody */ .Wm)(response, operation, observer);
+                }
+            })
+                .catch(function (err) { return (0,_parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_13__/* .handleError */ .S3)(err, observer); });
             return function () {
                 if (controller)
                     controller.abort();
@@ -21767,7 +21843,7 @@ var createSignalIfSupported = function () {
 /* harmony export */   "LQ": () => (/* reexport safe */ _createHttpLink_js__WEBPACK_IMPORTED_MODULE_7__.L),
 /* harmony export */   "SC": () => (/* reexport safe */ _selectHttpOptionsAndBody_js__WEBPACK_IMPORTED_MODULE_3__.SC),
 /* harmony export */   "U2": () => (/* reexport safe */ _checkFetcher_js__WEBPACK_IMPORTED_MODULE_4__.U),
-/* harmony export */   "dO": () => (/* reexport safe */ _parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_1__.d),
+/* harmony export */   "dO": () => (/* reexport safe */ _parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_1__.dO),
 /* harmony export */   "gE": () => (/* reexport safe */ _serializeFetchParameter_js__WEBPACK_IMPORTED_MODULE_2__.g),
 /* harmony export */   "rg": () => (/* reexport safe */ _selectURI_js__WEBPACK_IMPORTED_MODULE_6__.r),
 /* harmony export */   "sb": () => (/* reexport safe */ _selectHttpOptionsAndBody_js__WEBPACK_IMPORTED_MODULE_3__.sb),
@@ -21816,57 +21892,399 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 /***/ }),
 
+/***/ 1793:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Z": () => (/* binding */ asyncIterator)
+/* harmony export */ });
+function asyncIterator(source) {
+    var _a;
+    var iterator = source[Symbol.asyncIterator]();
+    return _a = {
+            next: function () {
+                return iterator.next();
+            }
+        },
+        _a[Symbol.asyncIterator] = function () {
+            return this;
+        },
+        _a;
+}
+//# sourceMappingURL=async.js.map
+
+/***/ }),
+
+/***/ 7038:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Z": () => (/* binding */ nodeStreamIterator)
+/* harmony export */ });
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(320);
+}
+
+function nodeStreamIterator(stream) {
+    var cleanup = null;
+    var error = null;
+    var done = false;
+    var data = [];
+    var waiting = [];
+    function onData(chunk) {
+        if (error)
+            return;
+        if (waiting.length) {
+            var shiftedArr = waiting.shift();
+            if (Array.isArray(shiftedArr) && shiftedArr[0]) {
+                return shiftedArr[0]({ value: chunk, done: false });
+            }
+        }
+        data.push(chunk);
+    }
+    function onError(err) {
+        error = err;
+        var all = waiting.slice();
+        all.forEach(function (pair) {
+            pair[1](err);
+        });
+        !cleanup || cleanup();
+    }
+    function onEnd() {
+        done = true;
+        var all = waiting.slice();
+        all.forEach(function (pair) {
+            pair[0]({ value: undefined, done: true });
+        });
+        !cleanup || cleanup();
+    }
+    cleanup = function () {
+        cleanup = null;
+        stream.removeListener("data", onData);
+        stream.removeListener("error", onError);
+        stream.removeListener("end", onEnd);
+        stream.removeListener("finish", onEnd);
+        stream.removeListener("close", onEnd);
+    };
+    stream.on("data", onData);
+    stream.on("error", onError);
+    stream.on("end", onEnd);
+    stream.on("finish", onEnd);
+    stream.on("close", onEnd);
+    function getNext() {
+        return new Promise(function (resolve, reject) {
+            if (error)
+                return reject(error);
+            if (data.length)
+                return resolve({ value: data.shift(), done: false });
+            if (done)
+                return resolve({ value: undefined, done: true });
+            waiting.push([resolve, reject]);
+        });
+    }
+    var iterator = {
+        next: function () {
+            return getNext();
+        },
+    };
+    if (_utilities_index_js__WEBPACK_IMPORTED_MODULE_0__/* .canUseAsyncIteratorSymbol */ .DN) {
+        iterator[Symbol.asyncIterator] = function () {
+            return this;
+        };
+    }
+    return iterator;
+}
+//# sourceMappingURL=nodeStream.js.map
+
+/***/ }),
+
+/***/ 7930:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Z": () => (/* binding */ promiseIterator)
+/* harmony export */ });
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(320);
+}
+
+function promiseIterator(promise) {
+    var resolved = false;
+    var iterator = {
+        next: function () {
+            if (resolved)
+                return Promise.resolve({
+                    value: undefined,
+                    done: true,
+                });
+            resolved = true;
+            return new Promise(function (resolve, reject) {
+                promise
+                    .then(function (value) {
+                    resolve({ value: value, done: false });
+                })
+                    .catch(reject);
+            });
+        },
+    };
+    if (_utilities_index_js__WEBPACK_IMPORTED_MODULE_0__/* .canUseAsyncIteratorSymbol */ .DN) {
+        iterator[Symbol.asyncIterator] = function () {
+            return this;
+        };
+    }
+    return iterator;
+}
+//# sourceMappingURL=promise.js.map
+
+/***/ }),
+
+/***/ 4516:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Z": () => (/* binding */ readerIterator)
+/* harmony export */ });
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(320);
+}
+
+function readerIterator(reader) {
+    var iterator = {
+        next: function () {
+            return reader.read();
+        },
+    };
+    if (_utilities_index_js__WEBPACK_IMPORTED_MODULE_0__/* .canUseAsyncIteratorSymbol */ .DN) {
+        iterator[Symbol.asyncIterator] = function () {
+            return this;
+        };
+    }
+    return iterator;
+}
+//# sourceMappingURL=reader.js.map
+
+/***/ }),
+
 /***/ 4805:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "d": () => (/* binding */ parseAndCheckHttpResponse)
+/* harmony export */   "S3": () => (/* binding */ handleError),
+/* harmony export */   "TF": () => (/* binding */ readMultipartBody),
+/* harmony export */   "Wm": () => (/* binding */ readJsonBody),
+/* harmony export */   "dO": () => (/* binding */ parseAndCheckHttpResponse)
 /* harmony export */ });
+/* unused harmony exports parseHeaders, parseJsonBody */
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2782);
+	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(655);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _responseIterator_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6395);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2782);
 }
 
+
+
 var hasOwnProperty = Object.prototype.hasOwnProperty;
-function parseAndCheckHttpResponse(operations) {
-    return function (response) { return response
-        .text()
-        .then(function (bodyText) {
-        if (response.status >= 300) {
-            var getResult = function () {
-                try {
-                    return JSON.parse(bodyText);
-                }
-                catch (err) {
-                    return bodyText;
-                }
-            };
-            (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_0__/* .throwServerError */ .P)(response, getResult(), "Response not successful: Received status code ".concat(response.status));
+function readMultipartBody(response, observer) {
+    var _a, _b, _c;
+    return (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__awaiter */ .mG)(this, void 0, void 0, function () {
+        var decoder, contentType, delimiter, boundaryVal, boundary, buffer, iterator, running, _d, value, done, chunk, bi, message, i, headers, contentType_1, body, result;
+        var _e;
+        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__generator */ .Jh)(this, function (_f) {
+            switch (_f.label) {
+                case 0:
+                    if (TextDecoder === undefined) {
+                        throw new Error("TextDecoder must be defined in the environment: please import a polyfill.");
+                    }
+                    decoder = new TextDecoder("utf-8");
+                    contentType = (_a = response.headers) === null || _a === void 0 ? void 0 : _a.get('content-type');
+                    delimiter = "boundary=";
+                    boundaryVal = (contentType === null || contentType === void 0 ? void 0 : contentType.includes(delimiter))
+                        ? contentType === null || contentType === void 0 ? void 0 : contentType.substring((contentType === null || contentType === void 0 ? void 0 : contentType.indexOf(delimiter)) + delimiter.length).replace(/['"]/g, "").replace(/\;(.*)/gm, "").trim()
+                        : "-";
+                    boundary = "--".concat(boundaryVal);
+                    buffer = "";
+                    iterator = (0,_responseIterator_js__WEBPACK_IMPORTED_MODULE_1__/* .responseIterator */ .k)(response);
+                    running = true;
+                    _f.label = 1;
+                case 1:
+                    if (!running) return [3, 3];
+                    return [4, iterator.next()];
+                case 2:
+                    _d = _f.sent(), value = _d.value, done = _d.done;
+                    chunk = typeof value === "string" ? value : decoder.decode(value);
+                    running = !done;
+                    buffer += chunk;
+                    bi = buffer.indexOf(boundary);
+                    while (bi > -1) {
+                        message = void 0;
+                        _e = [
+                            buffer.slice(0, bi),
+                            buffer.slice(bi + boundary.length),
+                        ], message = _e[0], buffer = _e[1];
+                        if (message.trim()) {
+                            i = message.indexOf("\r\n\r\n");
+                            headers = parseHeaders(message.slice(0, i));
+                            contentType_1 = headers["content-type"];
+                            if (contentType_1 &&
+                                contentType_1.toLowerCase().indexOf("application/json") === -1) {
+                                throw new Error("Unsupported patch content type: application/json is required.");
+                            }
+                            body = message.slice(i);
+                            try {
+                                result = parseJsonBody(response, body.replace("\r\n", ""));
+                                if (Object.keys(result).length > 1 ||
+                                    "data" in result ||
+                                    "incremental" in result ||
+                                    "errors" in result) {
+                                    (_b = observer.next) === null || _b === void 0 ? void 0 : _b.call(observer, result);
+                                }
+                            }
+                            catch (err) {
+                                handleError(err, observer);
+                            }
+                        }
+                        bi = buffer.indexOf(boundary);
+                    }
+                    return [3, 1];
+                case 3:
+                    (_c = observer.complete) === null || _c === void 0 ? void 0 : _c.call(observer);
+                    return [2];
+            }
+        });
+    });
+}
+function parseHeaders(headerText) {
+    var headersInit = {};
+    headerText.split("\n").forEach(function (line) {
+        var i = line.indexOf(":");
+        if (i > -1) {
+            var name_1 = line.slice(0, i).trim().toLowerCase();
+            var value = line.slice(i + 1).trim();
+            headersInit[name_1] = value;
         }
-        try {
-            return JSON.parse(bodyText);
-        }
-        catch (err) {
-            var parseError = err;
-            parseError.name = 'ServerParseError';
-            parseError.response = response;
-            parseError.statusCode = response.status;
-            parseError.bodyText = bodyText;
-            throw parseError;
-        }
-    })
+    });
+    return headersInit;
+}
+function parseJsonBody(response, bodyText) {
+    if (response.status >= 300) {
+        var getResult = function () {
+            try {
+                return JSON.parse(bodyText);
+            }
+            catch (err) {
+                return bodyText;
+            }
+        };
+        (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_2__/* .throwServerError */ .P)(response, getResult(), "Response not successful: Received status code ".concat(response.status));
+    }
+    try {
+        return JSON.parse(bodyText);
+    }
+    catch (err) {
+        var parseError = err;
+        parseError.name = "ServerParseError";
+        parseError.response = response;
+        parseError.statusCode = response.status;
+        parseError.bodyText = bodyText;
+        throw parseError;
+    }
+}
+function handleError(err, observer) {
+    var _a, _b;
+    if (err.name === "AbortError")
+        return;
+    if (err.result && err.result.errors && err.result.data) {
+        (_a = observer.next) === null || _a === void 0 ? void 0 : _a.call(observer, err.result);
+    }
+    (_b = observer.error) === null || _b === void 0 ? void 0 : _b.call(observer, err);
+}
+function readJsonBody(response, operation, observer) {
+    parseAndCheckHttpResponse(operation)(response)
         .then(function (result) {
-        if (!Array.isArray(result) &&
-            !hasOwnProperty.call(result, 'data') &&
-            !hasOwnProperty.call(result, 'errors')) {
-            (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_0__/* .throwServerError */ .P)(response, result, "Server response was missing for query '".concat(Array.isArray(operations)
-                ? operations.map(function (op) { return op.operationName; })
-                : operations.operationName, "'."));
-        }
-        return result;
-    }); };
+        var _a, _b;
+        (_a = observer.next) === null || _a === void 0 ? void 0 : _a.call(observer, result);
+        (_b = observer.complete) === null || _b === void 0 ? void 0 : _b.call(observer);
+    })
+        .catch(function (err) { return handleError(err, observer); });
+}
+function parseAndCheckHttpResponse(operations) {
+    return function (response) {
+        return response
+            .text()
+            .then(function (bodyText) { return parseJsonBody(response, bodyText); })
+            .then(function (result) {
+            if (response.status >= 300) {
+                (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_2__/* .throwServerError */ .P)(response, result, "Response not successful: Received status code ".concat(response.status));
+            }
+            if (!Array.isArray(result) &&
+                !hasOwnProperty.call(result, "data") &&
+                !hasOwnProperty.call(result, "errors")) {
+                (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_2__/* .throwServerError */ .P)(response, result, "Server response was missing for query '".concat(Array.isArray(operations)
+                    ? operations.map(function (op) { return op.operationName; })
+                    : operations.operationName, "'."));
+            }
+            return result;
+        });
+    };
 }
 //# sourceMappingURL=parseAndCheckHttpResponse.js.map
+
+/***/ }),
+
+/***/ 6395:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "k": () => (/* binding */ responseIterator)
+/* harmony export */ });
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utilities_common_responseIterator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3613);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _iterators_async_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1793);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _iterators_nodeStream_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7038);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _iterators_promise_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7930);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _iterators_reader_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4516);
+}
+
+
+
+
+
+function responseIterator(response) {
+    var body = response;
+    if ((0,_utilities_common_responseIterator_js__WEBPACK_IMPORTED_MODULE_0__/* .isNodeResponse */ .Ss)(response))
+        body = response.body;
+    if ((0,_utilities_common_responseIterator_js__WEBPACK_IMPORTED_MODULE_0__/* .isAsyncIterableIterator */ .sV)(body))
+        return (0,_iterators_async_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z)(body);
+    if ((0,_utilities_common_responseIterator_js__WEBPACK_IMPORTED_MODULE_0__/* .isReadableStream */ .Os)(body))
+        return (0,_iterators_reader_js__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z)(body.getReader());
+    if ((0,_utilities_common_responseIterator_js__WEBPACK_IMPORTED_MODULE_0__/* .isStreamableBlob */ .Qe)(body)) {
+        return (0,_iterators_reader_js__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z)(body.stream().getReader());
+    }
+    if ((0,_utilities_common_responseIterator_js__WEBPACK_IMPORTED_MODULE_0__/* .isBlob */ .Lj)(body))
+        return (0,_iterators_promise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z)(body.arrayBuffer());
+    if ((0,_utilities_common_responseIterator_js__WEBPACK_IMPORTED_MODULE_0__/* .isNodeReadableStream */ .QV)(body))
+        return (0,_iterators_nodeStream_js__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Z)(body);
+    throw new Error("Unknown body type for responseIterator. Please pass a streamable response.");
+}
+//# sourceMappingURL=responseIterator.js.map
 
 /***/ }),
 
@@ -21948,6 +22366,7 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 var defaultHttpOptions = {
     includeQuery: true,
     includeExtensions: false,
+    preserveHeaderCase: false,
 };
 var defaultHeaders = {
     accept: '*/*',
@@ -21979,12 +22398,13 @@ function selectHttpOptionsAndBodyInternal(operation, printer) {
     var options = {};
     var http = {};
     configs.forEach(function (config) {
-        options = (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)({}, options), config.options), { headers: (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)({}, options.headers), headersToLowerCase(config.headers)) });
+        options = (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)({}, options), config.options), { headers: (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)({}, options.headers), config.headers) });
         if (config.credentials) {
             options.credentials = config.credentials;
         }
         http = (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)({}, http), config.http);
     });
+    options.headers = removeDuplicateHeaders(options.headers, http.preserveHeaderCase);
     var operationName = operation.operationName, extensions = operation.extensions, variables = operation.variables, query = operation.query;
     var body = { operationName: operationName, variables: variables };
     if (http.includeExtensions)
@@ -21997,15 +22417,23 @@ function selectHttpOptionsAndBodyInternal(operation, printer) {
     };
 }
 ;
-function headersToLowerCase(headers) {
-    if (headers) {
-        var normalized_1 = Object.create(null);
+function removeDuplicateHeaders(headers, preserveHeaderCase) {
+    if (!preserveHeaderCase) {
+        var normalizedHeaders_1 = Object.create(null);
         Object.keys(Object(headers)).forEach(function (name) {
-            normalized_1[name.toLowerCase()] = headers[name];
+            normalizedHeaders_1[name.toLowerCase()] = headers[name];
         });
-        return normalized_1;
+        return normalizedHeaders_1;
     }
-    return headers;
+    var headerData = Object.create(null);
+    Object.keys(Object(headers)).forEach(function (name) {
+        headerData[name.toLowerCase()] = { originalName: name, value: headers[name] };
+    });
+    var normalizedHeaders = Object.create(null);
+    Object.keys(headerData).forEach(function (name) {
+        normalizedHeaders[headerData[name].originalName] = headerData[name].value;
+    });
+    return normalizedHeaders;
 }
 //# sourceMappingURL=selectHttpOptionsAndBody.js.map
 
@@ -22050,7 +22478,7 @@ var serializeFetchParameter = function (p, label) {
         serialized = JSON.stringify(p);
     }
     catch (e) {
-        var parseError = __DEV__ ? new _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej("Network request failed. ".concat(label, " is not serializable: ").concat(e.message)) : new _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej(21);
+        var parseError = __DEV__ ? new _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej("Network request failed. ".concat(label, " is not serializable: ").concat(e.message)) : new _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej(23);
         parseError.parseError = e;
         throw parseError;
     }
@@ -22173,7 +22601,7 @@ var ApolloConsumer = function (props) {
     var ApolloContext = (0,_ApolloContext_js__WEBPACK_IMPORTED_MODULE_2__/* .getApolloContext */ .K)();
     return (react__WEBPACK_IMPORTED_MODULE_1__.createElement(ApolloContext.Consumer, null, function (context) {
         __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(context && context.client, 'Could not find "client" in the context of ApolloConsumer. ' +
-            'Wrap the root component in an <ApolloProvider>.') : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(context && context.client, 25);
+            'Wrap the root component in an <ApolloProvider>.') : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(context && context.client, 27);
         return props.children(context.client);
     }));
 };
@@ -22238,7 +22666,7 @@ var ApolloProvider = function (_a) {
             context = Object.assign({}, context, { client: client });
         }
         __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(context.client, 'ApolloProvider was not passed a client instance. Make ' +
-            'sure you pass in your client via the "client" prop.') : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(context.client, 26);
+            'sure you pass in your client via the "client" prop.') : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(context.client, 28);
         return (react__WEBPACK_IMPORTED_MODULE_1__.createElement(ApolloContext.Provider, { value: context }, children));
     }));
 };
@@ -22251,6 +22679,7 @@ var ApolloProvider = function (_a) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "$W": () => (/* reexport safe */ _useFragment_js__WEBPACK_IMPORTED_MODULE_7__.$),
 /* harmony export */   "Db": () => (/* reexport safe */ _useMutation_js__WEBPACK_IMPORTED_MODULE_3__.D),
 /* harmony export */   "aM": () => (/* reexport safe */ _useQuery_js__WEBPACK_IMPORTED_MODULE_4__.a),
 /* harmony export */   "lY": () => (/* reexport safe */ _useReactiveVar_js__WEBPACK_IMPORTED_MODULE_6__.l),
@@ -22269,7 +22698,7 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _useMutation_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(319);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useQuery_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4316);
+	/* harmony import */ var _useQuery_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1641);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _useSubscription_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5436);
@@ -22277,6 +22706,10 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _useReactiveVar_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(3433);
 }
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _useFragment_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(819);
+}
+
 
 
 
@@ -22308,10 +22741,74 @@ function useApolloClient(override) {
     var client = override || context.client;
     __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!!client, 'Could not find "client" in the context or passed in as an option. ' +
         'Wrap the root component in an <ApolloProvider>, or pass an ApolloClient ' +
-        'instance in via options.') : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!!client, 29);
+        'instance in via options.') : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!!client, 31);
     return client;
 }
 //# sourceMappingURL=useApolloClient.js.map
+
+/***/ }),
+
+/***/ 819:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "$": () => (/* binding */ useFragment_experimental)
+/* harmony export */ });
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(655);
+}
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7294);
+/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2152);
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(182);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6252);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9564);
+}
+
+
+
+
+
+
+function useFragment_experimental(options) {
+    var cache = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__/* .useApolloClient */ .x)().cache;
+    var fragment = options.fragment, fragmentName = options.fragmentName, from = options.from, _a = options.optimistic, optimistic = _a === void 0 ? true : _a, rest = (0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__rest */ ._T)(options, ["fragment", "fragmentName", "from", "optimistic"]);
+    var diffOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({}, rest), { id: typeof from === "string" ? from : cache.identify(from), query: cache["getFragmentDoc"](fragment, fragmentName), optimistic: optimistic });
+    var resultRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
+    var latestDiff = cache.diff(diffOptions);
+    return (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_4__/* .useSyncExternalStore */ .$)(function (forceUpdate) {
+        var immediate = true;
+        return cache.watch((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({}, diffOptions), { immediate: immediate, callback: function (diff) {
+                if (!immediate && !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(diff, latestDiff)) {
+                    resultRef.current = diffToResult(latestDiff = diff);
+                    forceUpdate();
+                }
+                immediate = false;
+            } }));
+    }, function () {
+        var latestDiffToResult = diffToResult(latestDiff);
+        return resultRef.current &&
+            (0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(resultRef.current.data, latestDiffToResult.data)
+            ? resultRef.current
+            : (resultRef.current = latestDiffToResult);
+    });
+}
+function diffToResult(diff) {
+    var result = {
+        data: diff.result,
+        complete: !!diff.complete,
+    };
+    if (diff.missing) {
+        result.missing = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .mergeDeepArray */ .bw)(diff.missing.map(function (error) { return error.missing; }));
+    }
+    return result;
+}
+//# sourceMappingURL=useFragment.js.map
 
 /***/ }),
 
@@ -22330,7 +22827,7 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4012);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useQuery_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4316);
+	/* harmony import */ var _useQuery_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1641);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6252);
@@ -22522,96 +23019,31 @@ function useMutation(mutation, options) {
 
 /***/ }),
 
-/***/ 4316:
+/***/ 1641:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  "A": () => (/* binding */ useInternalState),
-  "a": () => (/* binding */ useQuery)
-});
-
-// EXTERNAL MODULE: ./node_modules/tslib/tslib.es6.js
-var tslib_es6 = __webpack_require__(655);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/globals/index.js + 5 modules
-var globals = __webpack_require__(846);
-// EXTERNAL MODULE: ./node_modules/react/index.js
-var react = __webpack_require__(7294);
-var react_namespaceObject = /*#__PURE__*/__webpack_require__.t(react, 2);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/canUse.js
-var canUse = __webpack_require__(320);
-;// CONCATENATED MODULE: ./node_modules/@apollo/client/react/hooks/useSyncExternalStore.js
-
-
-
-var didWarnUncachedGetSnapshot = false;
-var uSESKey = "useSyncExternalStore";
-var realHook = react_namespaceObject[uSESKey];
-var useSyncExternalStore = realHook || (function (subscribe, getSnapshot, getServerSnapshot) {
-    var value = getSnapshot();
-    if (__DEV__ &&
-        !didWarnUncachedGetSnapshot &&
-        value !== getSnapshot()) {
-        didWarnUncachedGetSnapshot = true;
-        __DEV__ && globals/* invariant.error */.kG.error('The result of getSnapshot should be cached to avoid an infinite loop');
-    }
-    var _a = react.useState({ inst: { value: value, getSnapshot: getSnapshot } }), inst = _a[0].inst, forceUpdate = _a[1];
-    if (canUse/* canUseLayoutEffect */.JC) {
-        react.useLayoutEffect(function () {
-            Object.assign(inst, { value: value, getSnapshot: getSnapshot });
-            if (checkIfSnapshotChanged(inst)) {
-                forceUpdate({ inst: inst });
-            }
-        }, [subscribe, value, getSnapshot]);
-    }
-    else {
-        Object.assign(inst, { value: value, getSnapshot: getSnapshot });
-    }
-    react.useEffect(function () {
-        if (checkIfSnapshotChanged(inst)) {
-            forceUpdate({ inst: inst });
-        }
-        return subscribe(function handleStoreChange() {
-            if (checkIfSnapshotChanged(inst)) {
-                forceUpdate({ inst: inst });
-            }
-        });
-    }, [subscribe]);
-    return value;
-});
-function checkIfSnapshotChanged(_a) {
-    var value = _a.value, getSnapshot = _a.getSnapshot;
-    try {
-        return value !== getSnapshot();
-    }
-    catch (_b) {
-        return true;
-    }
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "A": () => (/* binding */ useInternalState),
+/* harmony export */   "a": () => (/* binding */ useQuery)
+/* harmony export */ });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(655);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7294);
+/* harmony import */ var _useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(9564);
+/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2152);
+/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(4012);
+/* harmony import */ var _context_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(5317);
+/* harmony import */ var _errors_index_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(990);
+/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(1644);
+/* harmony import */ var _parser_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(4692);
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6252);
 }
-//# sourceMappingURL=useSyncExternalStore.js.map
-// EXTERNAL MODULE: ./node_modules/@wry/equality/lib/equality.esm.js
-var equality_esm = __webpack_require__(2152);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/mergeOptions.js
-var mergeOptions = __webpack_require__(4012);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/react/context/ApolloContext.js
-var ApolloContext = __webpack_require__(5317);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/errors/index.js
-var errors = __webpack_require__(990);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/core/networkStatus.js
-var networkStatus = __webpack_require__(1644);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/react/parser/index.js
-var parser = __webpack_require__(4692);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/react/hooks/useApolloClient.js
-var useApolloClient = __webpack_require__(6252);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/maybeDeepFreeze.js
-var maybeDeepFreeze = __webpack_require__(8702);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/compact.js
-var compact = __webpack_require__(3712);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/arrays.js
-var arrays = __webpack_require__(1436);
-;// CONCATENATED MODULE: ./node_modules/@apollo/client/react/hooks/useQuery.js
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(320);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8702);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(3712);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(1436);
 
 
 
@@ -22624,20 +23056,20 @@ var arrays = __webpack_require__(1436);
 
 
 
-var useQuery_hasOwnProperty = Object.prototype.hasOwnProperty;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
 function useQuery(query, options) {
     if (options === void 0) { options = Object.create(null); }
-    return useInternalState((0,useApolloClient/* useApolloClient */.x)(options.client), query).useQuery(options);
+    return useInternalState((0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .x)(options.client), query).useQuery(options);
 }
 function useInternalState(client, query) {
-    var stateRef = (0,react.useRef)();
+    var stateRef = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)();
     if (!stateRef.current ||
         client !== stateRef.current.client ||
         query !== stateRef.current.query) {
         stateRef.current = new InternalState(client, query, stateRef.current);
     }
     var state = stateRef.current;
-    var _a = (0,react.useState)(0), _tick = _a[0], setTick = _a[1];
+    var _a = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(0), _tick = _a[0], setTick = _a[1];
     state.forceUpdate = function () {
         setTick(function (tick) { return tick + 1; });
     };
@@ -22648,21 +23080,21 @@ var InternalState = (function () {
         this.client = client;
         this.query = query;
         this.asyncResolveFns = new Set();
-        this.optionsToIgnoreOnce = new (canUse/* canUseWeakSet */.sy ? WeakSet : Set)();
-        this.ssrDisabledResult = (0,maybeDeepFreeze/* maybeDeepFreeze */.J)({
+        this.optionsToIgnoreOnce = new (_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .canUseWeakSet */ .sy ? WeakSet : Set)();
+        this.ssrDisabledResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .maybeDeepFreeze */ .J)({
             loading: true,
             data: void 0,
             error: void 0,
-            networkStatus: networkStatus/* NetworkStatus.loading */.I.loading,
+            networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_6__/* .NetworkStatus.loading */ .I.loading,
         });
-        this.skipStandbyResult = (0,maybeDeepFreeze/* maybeDeepFreeze */.J)({
+        this.skipStandbyResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .maybeDeepFreeze */ .J)({
             loading: false,
             data: void 0,
             error: void 0,
-            networkStatus: networkStatus/* NetworkStatus.ready */.I.ready,
+            networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_6__/* .NetworkStatus.ready */ .I.ready,
         });
-        this.toQueryResultCache = new (canUse/* canUseWeakMap */.mr ? WeakMap : Map)();
-        (0,parser/* verifyDocumentType */.Vp)(query, parser/* DocumentType.Query */.n_.Query);
+        this.toQueryResultCache = new (_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .canUseWeakMap */ .mr ? WeakMap : Map)();
+        (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_7__/* .verifyDocumentType */ .Vp)(query, _parser_index_js__WEBPACK_IMPORTED_MODULE_7__/* .DocumentType.Query */ .n_.Query);
         var previousResult = previous && previous.result;
         var previousData = previousResult && previousResult.data;
         if (previousData) {
@@ -22670,7 +23102,7 @@ var InternalState = (function () {
         }
     }
     InternalState.prototype.forceUpdate = function () {
-        __DEV__ && globals/* invariant.warn */.kG.warn("Calling default no-op implementation of InternalState#forceUpdate");
+        __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.warn */ .kG.warn("Calling default no-op implementation of InternalState#forceUpdate");
     };
     InternalState.prototype.asyncUpdate = function () {
         var _this = this;
@@ -22682,10 +23114,10 @@ var InternalState = (function () {
     };
     InternalState.prototype.useQuery = function (options) {
         var _this = this;
-        this.renderPromises = (0,react.useContext)((0,ApolloContext/* getApolloContext */.K)()).renderPromises;
+        this.renderPromises = (0,react__WEBPACK_IMPORTED_MODULE_1__.useContext)((0,_context_index_js__WEBPACK_IMPORTED_MODULE_8__/* .getApolloContext */ .K)()).renderPromises;
         this.useOptions(options);
         var obsQuery = this.useObservableQuery();
-        var result = useSyncExternalStore((0,react.useCallback)(function () {
+        var result = (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_9__/* .useSyncExternalStore */ .$)((0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)(function () {
             if (_this.renderPromises) {
                 return function () { };
             }
@@ -22695,7 +23127,7 @@ var InternalState = (function () {
                 if (previousResult &&
                     previousResult.loading === result.loading &&
                     previousResult.networkStatus === result.networkStatus &&
-                    (0,equality_esm/* equal */.D)(previousResult.data, result.data)) {
+                    (0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .D)(previousResult.data, result.data)) {
                     return;
                 }
                 _this.setResult(result);
@@ -22710,18 +23142,18 @@ var InternalState = (function () {
                 finally {
                     obsQuery["last"] = last;
                 }
-                if (!useQuery_hasOwnProperty.call(error, 'graphQLErrors')) {
+                if (!hasOwnProperty.call(error, 'graphQLErrors')) {
                     throw error;
                 }
                 var previousResult = _this.result;
                 if (!previousResult ||
                     (previousResult && previousResult.loading) ||
-                    !(0,equality_esm/* equal */.D)(error, previousResult.error)) {
+                    !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .D)(error, previousResult.error)) {
                     _this.setResult({
                         data: (previousResult && previousResult.data),
                         error: error,
                         loading: false,
-                        networkStatus: networkStatus/* NetworkStatus.error */.I.error,
+                        networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_6__/* .NetworkStatus.error */ .I.error,
                     });
                 }
             };
@@ -22745,7 +23177,7 @@ var InternalState = (function () {
         var watchQueryOptions = this.createWatchQueryOptions(this.queryHookOptions = options);
         var currentWatchQueryOptions = this.watchQueryOptions;
         if (this.optionsToIgnoreOnce.has(currentWatchQueryOptions) ||
-            !(0,equality_esm/* equal */.D)(watchQueryOptions, currentWatchQueryOptions)) {
+            !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .D)(watchQueryOptions, currentWatchQueryOptions)) {
             this.watchQueryOptions = watchQueryOptions;
             if (currentWatchQueryOptions && this.observable) {
                 this.optionsToIgnoreOnce.delete(currentWatchQueryOptions);
@@ -22778,13 +23210,13 @@ var InternalState = (function () {
         if (this.queryHookOptions.defaultOptions) {
             toMerge.push(this.queryHookOptions.defaultOptions);
         }
-        toMerge.push((0,compact/* compact */.o)(this.observable && this.observable.options, this.watchQueryOptions));
-        return toMerge.reduce(mergeOptions/* mergeOptions */.J);
+        toMerge.push((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_10__/* .compact */ .o)(this.observable && this.observable.options, this.watchQueryOptions));
+        return toMerge.reduce(_core_index_js__WEBPACK_IMPORTED_MODULE_11__/* .mergeOptions */ .J);
     };
     InternalState.prototype.createWatchQueryOptions = function (_a) {
         var _b;
         if (_a === void 0) { _a = {}; }
-        var skip = _a.skip, ssr = _a.ssr, onCompleted = _a.onCompleted, onError = _a.onError, defaultOptions = _a.defaultOptions, otherOptions = (0,tslib_es6/* __rest */._T)(_a, ["skip", "ssr", "onCompleted", "onError", "defaultOptions"]);
+        var skip = _a.skip, ssr = _a.ssr, onCompleted = _a.onCompleted, onError = _a.onError, defaultOptions = _a.defaultOptions, otherOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__rest */ ._T)(_a, ["skip", "ssr", "onCompleted", "onError", "defaultOptions"]);
         var watchQueryOptions = Object.assign(otherOptions, { query: this.query });
         if (this.renderPromises &&
             (watchQueryOptions.fetchPolicy === 'network-only' ||
@@ -22822,7 +23254,7 @@ var InternalState = (function () {
                 && this.renderPromises.getSSRObservable(this.watchQueryOptions)
                 || this.observable
                 || this.client.watchQuery(this.getObsQueryOptions());
-        this.obsQueryFields = (0,react.useMemo)(function () { return ({
+        this.obsQueryFields = (0,react__WEBPACK_IMPORTED_MODULE_1__.useMemo)(function () { return ({
             refetch: obsQuery.refetch.bind(obsQuery),
             reobserve: obsQuery.reobserve.bind(obsQuery),
             fetchMore: obsQuery.fetchMore.bind(obsQuery),
@@ -22851,13 +23283,18 @@ var InternalState = (function () {
         this.handleErrorOrCompleted(nextResult);
     };
     InternalState.prototype.handleErrorOrCompleted = function (result) {
+        var _this = this;
         if (!result.loading) {
-            if (result.error) {
-                this.onError(result.error);
-            }
-            else if (result.data) {
-                this.onCompleted(result.data);
-            }
+            Promise.resolve().then(function () {
+                if (result.error) {
+                    _this.onError(result.error);
+                }
+                else if (result.data) {
+                    _this.onCompleted(result.data);
+                }
+            }).catch(function (error) {
+                __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.warn */ .kG.warn(error);
+            });
         }
     };
     InternalState.prototype.getCurrentResult = function () {
@@ -22870,10 +23307,10 @@ var InternalState = (function () {
         var queryResult = this.toQueryResultCache.get(result);
         if (queryResult)
             return queryResult;
-        var data = result.data, partial = result.partial, resultWithoutPartial = (0,tslib_es6/* __rest */._T)(result, ["data", "partial"]);
-        this.toQueryResultCache.set(result, queryResult = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({ data: data }, resultWithoutPartial), this.obsQueryFields), { client: this.client, observable: this.observable, variables: this.observable.variables, called: !this.queryHookOptions.skip, previousData: this.previousData }));
-        if (!queryResult.error && (0,arrays/* isNonEmptyArray */.O)(result.errors)) {
-            queryResult.error = new errors/* ApolloError */.c({ graphQLErrors: result.errors });
+        var data = result.data, partial = result.partial, resultWithoutPartial = (0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__rest */ ._T)(result, ["data", "partial"]);
+        this.toQueryResultCache.set(result, queryResult = (0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__assign */ .pi)({ data: data }, resultWithoutPartial), this.obsQueryFields), { client: this.client, observable: this.observable, variables: this.observable.variables, called: !this.queryHookOptions.skip, previousData: this.previousData }));
+        if (!queryResult.error && (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_13__/* .isNonEmptyArray */ .O)(result.errors)) {
+            queryResult.error = new _errors_index_js__WEBPACK_IMPORTED_MODULE_14__/* .ApolloError */ .c({ graphQLErrors: result.errors });
         }
         return queryResult;
     };
@@ -22885,7 +23322,7 @@ var InternalState = (function () {
             this.observable.options.fetchPolicy !== 'cache-only') {
             Object.assign(result, {
                 loading: true,
-                networkStatus: networkStatus/* NetworkStatus.refetch */.I.refetch,
+                networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_6__/* .NetworkStatus.refetch */ .I.refetch,
             });
             this.observable.refetch();
         }
@@ -22944,7 +23381,9 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 
 
+
 function useSubscription(subscription, options) {
+    var hasIssuedDeprecationWarningRef = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)(false);
     var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .x)(options === null || options === void 0 ? void 0 : options.client);
     (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_4__/* .verifyDocumentType */ .Vp)(subscription, _parser_index_js__WEBPACK_IMPORTED_MODULE_4__/* .DocumentType.Subscription */ .n_.Subscription);
     var _a = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)({
@@ -22953,6 +23392,19 @@ function useSubscription(subscription, options) {
         data: void 0,
         variables: options === null || options === void 0 ? void 0 : options.variables,
     }), result = _a[0], setResult = _a[1];
+    if (!hasIssuedDeprecationWarningRef.current) {
+        hasIssuedDeprecationWarningRef.current = true;
+        if (options === null || options === void 0 ? void 0 : options.onSubscriptionData) {
+            __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.warn */ .kG.warn(options.onData
+                ? "'useSubscription' supports only the 'onSubscriptionData' or 'onData' option, but not both. Only the 'onData' option will be used."
+                : "'onSubscriptionData' is deprecated and will be removed in a future major version. Please use the 'onData' option instead.");
+        }
+        if (options === null || options === void 0 ? void 0 : options.onSubscriptionComplete) {
+            __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.warn */ .kG.warn(options.onComplete
+                ? "'useSubscription' supports only the 'onSubscriptionComplete' or 'onComplete' option, but not both. Only the 'onComplete' option will be used."
+                : "'onSubscriptionComplete' is deprecated and will be removed in a future major version. Please use the 'onComplete' option instead.");
+        }
+    }
     var _b = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(function () {
         if (options === null || options === void 0 ? void 0 : options.skip) {
             return null;
@@ -23026,22 +23478,37 @@ function useSubscription(subscription, options) {
                     variables: options === null || options === void 0 ? void 0 : options.variables,
                 };
                 setResult(result);
-                (_b = (_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onSubscriptionData) === null || _b === void 0 ? void 0 : _b.call(_a, {
-                    client: client,
-                    subscriptionData: result
-                });
+                if ((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onData) {
+                    ref.current.options.onData({
+                        client: client,
+                        data: result
+                    });
+                }
+                else if ((_b = ref.current.options) === null || _b === void 0 ? void 0 : _b.onSubscriptionData) {
+                    ref.current.options.onSubscriptionData({
+                        client: client,
+                        subscriptionData: result
+                    });
+                }
             },
             error: function (error) {
+                var _a, _b;
                 setResult({
                     loading: false,
                     data: void 0,
                     error: error,
                     variables: options === null || options === void 0 ? void 0 : options.variables,
                 });
+                (_b = (_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onError) === null || _b === void 0 ? void 0 : _b.call(_a, error);
             },
             complete: function () {
                 var _a, _b;
-                (_b = (_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onSubscriptionComplete) === null || _b === void 0 ? void 0 : _b.call(_a);
+                if ((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onComplete) {
+                    ref.current.options.onComplete();
+                }
+                else if ((_b = ref.current.options) === null || _b === void 0 ? void 0 : _b.onSubscriptionComplete) {
+                    ref.current.options.onSubscriptionComplete();
+                }
             },
         });
         return function () {
@@ -23054,11 +23521,74 @@ function useSubscription(subscription, options) {
 
 /***/ }),
 
+/***/ 9564:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+var react__WEBPACK_IMPORTED_MODULE_1___namespace_cache;
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "$": () => (/* binding */ useSyncExternalStore)
+/* harmony export */ });
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7294);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(320);
+
+
+
+var didWarnUncachedGetSnapshot = false;
+var uSESKey = "useSyncExternalStore";
+var realHook = /*#__PURE__*/ (react__WEBPACK_IMPORTED_MODULE_1___namespace_cache || (react__WEBPACK_IMPORTED_MODULE_1___namespace_cache = __webpack_require__.t(react__WEBPACK_IMPORTED_MODULE_1__, 2)))[uSESKey];
+var useSyncExternalStore = realHook || (function (subscribe, getSnapshot, getServerSnapshot) {
+    var value = getSnapshot();
+    if (__DEV__ &&
+        !didWarnUncachedGetSnapshot &&
+        value !== getSnapshot()) {
+        didWarnUncachedGetSnapshot = true;
+        __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.error */ .kG.error('The result of getSnapshot should be cached to avoid an infinite loop');
+    }
+    var _a = react__WEBPACK_IMPORTED_MODULE_1__.useState({ inst: { value: value, getSnapshot: getSnapshot } }), inst = _a[0].inst, forceUpdate = _a[1];
+    if (_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .canUseLayoutEffect */ .JC) {
+        react__WEBPACK_IMPORTED_MODULE_1__.useLayoutEffect(function () {
+            Object.assign(inst, { value: value, getSnapshot: getSnapshot });
+            if (checkIfSnapshotChanged(inst)) {
+                forceUpdate({ inst: inst });
+            }
+        }, [subscribe, value, getSnapshot]);
+    }
+    else {
+        Object.assign(inst, { value: value, getSnapshot: getSnapshot });
+    }
+    react__WEBPACK_IMPORTED_MODULE_1__.useEffect(function () {
+        if (checkIfSnapshotChanged(inst)) {
+            forceUpdate({ inst: inst });
+        }
+        return subscribe(function handleStoreChange() {
+            if (checkIfSnapshotChanged(inst)) {
+                forceUpdate({ inst: inst });
+            }
+        });
+    }, [subscribe]);
+    return value;
+});
+function checkIfSnapshotChanged(_a) {
+    var value = _a.value, getSnapshot = _a.getSnapshot;
+    try {
+        return value !== getSnapshot();
+    }
+    catch (_b) {
+        return true;
+    }
+}
+//# sourceMappingURL=useSyncExternalStore.js.map
+
+/***/ }),
+
 /***/ 6640:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "$W": () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.$W),
 /* harmony export */   "Db": () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.Db),
 /* harmony export */   "E2": () => (/* reexport safe */ _parser_index_js__WEBPACK_IMPORTED_MODULE_5__.E2),
 /* harmony export */   "KZ": () => (/* reexport safe */ _context_index_js__WEBPACK_IMPORTED_MODULE_3__.K),
@@ -23139,7 +23669,7 @@ function parser(document) {
     var variables, type, name;
     __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!!document && !!document.kind, "Argument of ".concat(document, " passed to parser was not a valid GraphQL ") +
         "DocumentNode. You may need to use 'graphql-tag' or another method " +
-        "to convert your operation into a document") : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!!document && !!document.kind, 30);
+        "to convert your operation into a document") : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!!document && !!document.kind, 32);
     var fragments = [];
     var queries = [];
     var mutations = [];
@@ -23167,11 +23697,11 @@ function parser(document) {
     __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!fragments.length ||
         (queries.length || mutations.length || subscriptions.length), "Passing only a fragment to 'graphql' is not yet supported. " +
         "You must include a query, subscription or mutation as well") : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!fragments.length ||
-        (queries.length || mutations.length || subscriptions.length), 31);
+        (queries.length || mutations.length || subscriptions.length), 33);
     __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(queries.length + mutations.length + subscriptions.length <= 1, "react-apollo only supports a query, subscription, or a mutation per HOC. " +
         "".concat(document, " had ").concat(queries.length, " queries, ").concat(subscriptions.length, " ") +
         "subscriptions and ".concat(mutations.length, " mutations. ") +
-        "You can use 'compose' to join multiple operation types to a component") : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(queries.length + mutations.length + subscriptions.length <= 1, 32);
+        "You can use 'compose' to join multiple operation types to a component") : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(queries.length + mutations.length + subscriptions.length <= 1, 34);
     type = queries.length ? DocumentType.Query : DocumentType.Mutation;
     if (!queries.length && !mutations.length)
         type = DocumentType.Subscription;
@@ -23182,7 +23712,7 @@ function parser(document) {
             : subscriptions;
     __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(definitions.length === 1, "react-apollo only supports one definition per HOC. ".concat(document, " had ") +
         "".concat(definitions.length, " definitions. ") +
-        "You can use 'compose' to join multiple operation types to a component") : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(definitions.length === 1, 33);
+        "You can use 'compose' to join multiple operation types to a component") : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(definitions.length === 1, 35);
     var definition = definitions[0];
     variables = definition.variableDefinitions || [];
     if (definition.name && definition.name.kind === 'Name') {
@@ -23200,7 +23730,7 @@ function verifyDocumentType(document, type) {
     var requiredOperationName = operationName(type);
     var usedOperationName = operationName(operation.type);
     __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(operation.type === type, "Running a ".concat(requiredOperationName, " requires a graphql ") +
-        "".concat(requiredOperationName, ", but a ").concat(usedOperationName, " was used instead.")) : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(operation.type === type, 34);
+        "".concat(requiredOperationName, ", but a ").concat(usedOperationName, " was used instead.")) : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(operation.type === type, 36);
 }
 //# sourceMappingURL=index.js.map
 
@@ -23225,6 +23755,7 @@ function isNonEmptyArray(value) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "DN": () => (/* binding */ canUseAsyncIteratorSymbol),
 /* harmony export */   "JC": () => (/* binding */ canUseLayoutEffect),
 /* harmony export */   "aS": () => (/* binding */ canUseSymbol),
 /* harmony export */   "mr": () => (/* binding */ canUseWeakMap),
@@ -23238,6 +23769,7 @@ var canUseWeakMap = typeof WeakMap === 'function' &&
 var canUseWeakSet = typeof WeakSet === 'function';
 var canUseSymbol = typeof Symbol === 'function' &&
     typeof Symbol.for === 'function';
+var canUseAsyncIteratorSymbol = canUseSymbol && Symbol.asyncIterator;
 var canUseDOM = typeof (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .wY)(function () { return window.document.createElement; }) === "function";
 var usingJSDOM = (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .wY)(function () { return navigator.userAgent.indexOf("jsdom") >= 0; }) || false;
 var canUseLayoutEffect = canUseDOM && !usingJSDOM;
@@ -23531,6 +24063,45 @@ function isNonNullObject(obj) {
 
 /***/ }),
 
+/***/ 3613:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Lj": () => (/* binding */ isBlob),
+/* harmony export */   "Os": () => (/* binding */ isReadableStream),
+/* harmony export */   "QV": () => (/* binding */ isNodeReadableStream),
+/* harmony export */   "Qe": () => (/* binding */ isStreamableBlob),
+/* harmony export */   "Ss": () => (/* binding */ isNodeResponse),
+/* harmony export */   "sV": () => (/* binding */ isAsyncIterableIterator)
+/* harmony export */ });
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _canUse_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(320);
+}
+
+function isNodeResponse(value) {
+    return !!value.body;
+}
+function isReadableStream(value) {
+    return !!value.getReader;
+}
+function isAsyncIterableIterator(value) {
+    return !!(_canUse_js__WEBPACK_IMPORTED_MODULE_0__/* .canUseAsyncIteratorSymbol */ .DN &&
+        value[Symbol.asyncIterator]);
+}
+function isStreamableBlob(value) {
+    return !!value.stream;
+}
+function isBlob(value) {
+    return !!value.arrayBuffer;
+}
+function isNodeReadableStream(value) {
+    return !!value.pipe;
+}
+//# sourceMappingURL=responseIterator.js.map
+
+/***/ }),
+
 /***/ 846:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
@@ -23652,7 +24223,7 @@ function removeTemporaryGlobals() {
 
 
 function checkDEV() {
-    __DEV__ ? (0,invariant/* invariant */.kG)("boolean" === typeof DEV, DEV) : (0,invariant/* invariant */.kG)("boolean" === typeof DEV, 36);
+    __DEV__ ? (0,invariant/* invariant */.kG)("boolean" === typeof DEV, DEV) : (0,invariant/* invariant */.kG)("boolean" === typeof DEV, 38);
 }
 
 removeTemporaryGlobals();
@@ -23673,7 +24244,7 @@ checkDEV();
 /* harmony export */   "LZ": () => (/* binding */ shouldInclude),
 /* harmony export */   "mj": () => (/* binding */ hasClientExports)
 /* harmony export */ });
-/* unused harmony exports getDirectiveNames, getInclusionDirectives */
+/* unused harmony exports getDirectiveNames, hasAnyDirectives, hasAllDirectives, getInclusionDirectives */
 /* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7304);
@@ -23690,7 +24261,7 @@ function shouldInclude(_a, variables) {
         var evaledValue = false;
         if (ifArgument.value.kind === 'Variable') {
             evaledValue = variables && variables[ifArgument.value.name.value];
-            __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(evaledValue !== void 0, "Invalid variable referenced in @".concat(directive.name.value, " directive.")) : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(evaledValue !== void 0, 37);
+            __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(evaledValue !== void 0, "Invalid variable referenced in @".concat(directive.name.value, " directive.")) : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(evaledValue !== void 0, 39);
         }
         else {
             evaledValue = ifArgument.value.value;
@@ -23700,20 +24271,30 @@ function shouldInclude(_a, variables) {
 }
 function getDirectiveNames(root) {
     var names = [];
-    (0,graphql__WEBPACK_IMPORTED_MODULE_1__/* .visit */ .Vn)(root, {
+    visit(root, {
         Directive: function (node) {
             names.push(node.name.value);
         },
     });
     return names;
 }
-function hasDirectives(names, root) {
-    return getDirectiveNames(root).some(function (name) { return names.indexOf(name) > -1; });
+var hasAnyDirectives = function (names, root) { return hasDirectives(names, root, false); };
+var hasAllDirectives = function (names, root) { return hasDirectives(names, root, true); };
+function hasDirectives(names, root, all) {
+    var nameSet = new Set(names);
+    var uniqueCount = nameSet.size;
+    (0,graphql__WEBPACK_IMPORTED_MODULE_1__/* .visit */ .Vn)(root, {
+        Directive: function (node) {
+            if (nameSet.delete(node.name.value) &&
+                (!all || !nameSet.size)) {
+                return graphql__WEBPACK_IMPORTED_MODULE_1__/* .BREAK */ .$_;
+            }
+        },
+    });
+    return all ? !nameSet.size : nameSet.size < uniqueCount;
 }
 function hasClientExports(document) {
-    return (document &&
-        hasDirectives(['client'], document) &&
-        hasDirectives(['export'], document));
+    return document && hasDirectives(['client', 'export'], document, true);
 }
 function isInclusionDirective(_a) {
     var value = _a.name.value;
@@ -23727,13 +24308,13 @@ function getInclusionDirectives(directives) {
                 return;
             var directiveArguments = directive.arguments;
             var directiveName = directive.name.value;
-            __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(directiveArguments && directiveArguments.length === 1, "Incorrect number of arguments for the @".concat(directiveName, " directive.")) : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(directiveArguments && directiveArguments.length === 1, 38);
+            __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(directiveArguments && directiveArguments.length === 1, "Incorrect number of arguments for the @".concat(directiveName, " directive.")) : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(directiveArguments && directiveArguments.length === 1, 40);
             var ifArgument = directiveArguments[0];
-            __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(ifArgument.name && ifArgument.name.value === 'if', "Invalid argument for the @".concat(directiveName, " directive.")) : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(ifArgument.name && ifArgument.name.value === 'if', 39);
+            __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(ifArgument.name && ifArgument.name.value === 'if', "Invalid argument for the @".concat(directiveName, " directive.")) : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(ifArgument.name && ifArgument.name.value === 'if', 41);
             var ifValue = ifArgument.value;
             __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(ifValue &&
                 (ifValue.kind === 'Variable' || ifValue.kind === 'BooleanValue'), "Argument for the @".concat(directiveName, " directive must be a variable or a boolean value.")) : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(ifValue &&
-                (ifValue.kind === 'Variable' || ifValue.kind === 'BooleanValue'), 40);
+                (ifValue.kind === 'Variable' || ifValue.kind === 'BooleanValue'), 42);
             result.push({ directive: directive, ifArgument: ifArgument });
         });
     }
@@ -23764,14 +24345,14 @@ function getFragmentQueryDocument(document, fragmentName) {
     document.definitions.forEach(function (definition) {
         if (definition.kind === 'OperationDefinition') {
             throw __DEV__ ? new _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej("Found a ".concat(definition.operation, " operation").concat(definition.name ? " named '".concat(definition.name.value, "'") : '', ". ") +
-                'No operations are allowed when using a fragment as a query. Only fragments are allowed.') : new _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej(41);
+                'No operations are allowed when using a fragment as a query. Only fragments are allowed.') : new _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej(43);
         }
         if (definition.kind === 'FragmentDefinition') {
             fragments.push(definition);
         }
     });
     if (typeof actualFragmentName === 'undefined') {
-        __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragments.length === 1, "Found ".concat(fragments.length, " fragments. `fragmentName` must be provided when there is not exactly 1 fragment.")) : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragments.length === 1, 42);
+        __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragments.length === 1, "Found ".concat(fragments.length, " fragments. `fragmentName` must be provided when there is not exactly 1 fragment.")) : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragments.length === 1, 44);
         actualFragmentName = fragments[0].name.value;
     }
     var query = (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)({}, document), { definitions: (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__spreadArray */ .ev)([
@@ -23807,9 +24388,13 @@ function getFragmentFromSelection(selection, fragmentMap) {
         case 'InlineFragment':
             return selection;
         case 'FragmentSpread': {
-            var fragment = fragmentMap && fragmentMap[selection.name.value];
-            __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragment, "No fragment named ".concat(selection.name.value, ".")) : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragment, 43);
-            return fragment;
+            var fragmentName = selection.name.value;
+            if (typeof fragmentMap === "function") {
+                return fragmentMap(fragmentName);
+            }
+            var fragment = fragmentMap && fragmentMap[fragmentName];
+            __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragment, "No fragment named ".concat(fragmentName)) : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragment, 45);
+            return fragment || null;
         }
         default:
             return null;
@@ -23840,16 +24425,16 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 
 function checkDocument(doc) {
-    __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc && doc.kind === 'Document', "Expecting a parsed GraphQL document. Perhaps you need to wrap the query string in a \"gql\" tag? http://docs.apollostack.com/apollo-client/core.html#gql") : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc && doc.kind === 'Document', 44);
+    __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc && doc.kind === 'Document', "Expecting a parsed GraphQL document. Perhaps you need to wrap the query string in a \"gql\" tag? http://docs.apollostack.com/apollo-client/core.html#gql") : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc && doc.kind === 'Document', 46);
     var operations = doc.definitions
         .filter(function (d) { return d.kind !== 'FragmentDefinition'; })
         .map(function (definition) {
         if (definition.kind !== 'OperationDefinition') {
-            throw __DEV__ ? new _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej("Schema type definitions not allowed in queries. Found: \"".concat(definition.kind, "\"")) : new _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej(45);
+            throw __DEV__ ? new _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej("Schema type definitions not allowed in queries. Found: \"".concat(definition.kind, "\"")) : new _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej(47);
         }
         return definition;
     });
-    __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(operations.length <= 1, "Ambiguous GraphQL document: contains ".concat(operations.length, " operations")) : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(operations.length <= 1, 46);
+    __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(operations.length <= 1, "Ambiguous GraphQL document: contains ".concat(operations.length, " operations")) : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(operations.length <= 1, 48);
     return doc;
 }
 function getOperationDefinition(doc) {
@@ -23868,14 +24453,14 @@ function getFragmentDefinitions(doc) {
 }
 function getQueryDefinition(doc) {
     var queryDef = getOperationDefinition(doc);
-    __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(queryDef && queryDef.operation === 'query', 'Must contain a query definition.') : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(queryDef && queryDef.operation === 'query', 47);
+    __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(queryDef && queryDef.operation === 'query', 'Must contain a query definition.') : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(queryDef && queryDef.operation === 'query', 49);
     return queryDef;
 }
 function getFragmentDefinition(doc) {
-    __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc.kind === 'Document', "Expecting a parsed GraphQL document. Perhaps you need to wrap the query string in a \"gql\" tag? http://docs.apollostack.com/apollo-client/core.html#gql") : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc.kind === 'Document', 48);
-    __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc.definitions.length <= 1, 'Fragment must have exactly one definition.') : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc.definitions.length <= 1, 49);
+    __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc.kind === 'Document', "Expecting a parsed GraphQL document. Perhaps you need to wrap the query string in a \"gql\" tag? http://docs.apollostack.com/apollo-client/core.html#gql") : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc.kind === 'Document', 50);
+    __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc.definitions.length <= 1, 'Fragment must have exactly one definition.') : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc.definitions.length <= 1, 51);
     var fragmentDef = doc.definitions[0];
-    __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragmentDef.kind === 'FragmentDefinition', 'Must be a fragment definition.') : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragmentDef.kind === 'FragmentDefinition', 50);
+    __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragmentDef.kind === 'FragmentDefinition', 'Must be a fragment definition.') : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragmentDef.kind === 'FragmentDefinition', 52);
     return fragmentDef;
 }
 function getMainDefinition(queryDoc) {
@@ -23898,7 +24483,7 @@ function getMainDefinition(queryDoc) {
     if (fragmentDefinition) {
         return fragmentDefinition;
     }
-    throw __DEV__ ? new _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej('Expected a parsed GraphQL query with a query, mutation, subscription, or a fragment.') : new _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej(51);
+    throw __DEV__ ? new _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej('Expected a parsed GraphQL query with a query, mutation, subscription, or a fragment.') : new _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej(53);
 }
 function getDefaultValues(definition) {
     var defaultValues = Object.create(null);
@@ -24013,7 +24598,7 @@ function valueToObjectRepresentation(argObj, name, value, variables) {
     else {
         throw __DEV__ ? new _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej("The inline argument \"".concat(name.value, "\" of kind \"").concat(value.kind, "\"") +
             'is not supported. Use variables instead of inline arguments to ' +
-            'overcome this limitation.') : new _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej(52);
+            'overcome this limitation.') : new _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej(54);
     }
 }
 function storeKeyNameFromField(field, variables) {
@@ -24187,11 +24772,9 @@ var TYPENAME_FIELD = {
         value: '__typename',
     },
 };
-function isEmpty(op, fragments) {
-    return op.selectionSet.selections.every(function (selection) {
-        return selection.kind === 'FragmentSpread' &&
-            isEmpty(fragments[selection.name.value], fragments);
-    });
+function isEmpty(op, fragmentMap) {
+    return !op || op.selectionSet.selections.every(function (selection) { return selection.kind === 'FragmentSpread' &&
+        isEmpty(fragmentMap[selection.name.value], fragmentMap); });
 }
 function nullIfDocIsEmpty(doc) {
     return isEmpty((0,_getFromAST_js__WEBPACK_IMPORTED_MODULE_1__/* .getOperationDefinition */ .$H)(doc) || (0,_getFromAST_js__WEBPACK_IMPORTED_MODULE_1__/* .getFragmentDefinition */ .pD)(doc), (0,_fragments_js__WEBPACK_IMPORTED_MODULE_2__/* .createFragmentMap */ .F)((0,_getFromAST_js__WEBPACK_IMPORTED_MODULE_1__/* .getFragmentDefinitions */ .kU)(doc)))
