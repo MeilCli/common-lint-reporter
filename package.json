@@ -43,7 +43,7 @@
         "@octokit/graphql-schema": "^12.12.0",
         "@types/he": "^1.1.2",
         "@types/jest": "^28.1.8",
-        "@types/node": "^18.11.0",
+        "@types/node": "^18.11.2",
         "@typescript-eslint/eslint-plugin": "^5.40.1",
         "@typescript-eslint/parser": "^5.40.1",
         "eslint": "^8.25.0",
