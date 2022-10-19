@@ -15471,6 +15471,37 @@ export type ProjectV2SortByEdge = {
   node?: Maybe<ProjectV2SortBy>;
 };
 
+/** Represents a sort by field and direction. */
+export type ProjectV2SortByField = {
+  __typename?: 'ProjectV2SortByField';
+  /** The direction of the sorting. Possible values are ASC and DESC. */
+  direction: OrderDirection;
+  /** The field by which items are sorted. */
+  field: ProjectV2FieldConfiguration;
+};
+
+/** The connection type for ProjectV2SortByField. */
+export type ProjectV2SortByFieldConnection = {
+  __typename?: 'ProjectV2SortByFieldConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<ProjectV2SortByFieldEdge>>>;
+  /** A list of nodes. */
+  nodes?: Maybe<Array<Maybe<ProjectV2SortByField>>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of items in the connection. */
+  totalCount: Scalars['Int'];
+};
+
+/** An edge in a connection. */
+export type ProjectV2SortByFieldEdge = {
+  __typename?: 'ProjectV2SortByFieldEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node?: Maybe<ProjectV2SortByField>;
+};
+
 /** A view within a ProjectV2. */
 export type ProjectV2View = Node & {
   __typename?: 'ProjectV2View';
@@ -15498,12 +15529,22 @@ export type ProjectV2View = Node & {
   number: Scalars['Int'];
   /** The project that contains this view. */
   project: ProjectV2;
-  /** The view's sort-by config. */
+  /**
+   * The view's sort-by config.
+   * @deprecated The `ProjectV2View#sort_by` API is deprecated in favour of the more capable `ProjectV2View#sort_by_fields` API. Check out the `ProjectV2View#sort_by_fields` API as an example for the more capable alternative. Removal on 2023-04-01 UTC.
+   */
   sortBy?: Maybe<ProjectV2SortByConnection>;
+  /** The view's sort-by config. */
+  sortByFields?: Maybe<ProjectV2SortByFieldConnection>;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
-  /** The view's vertical-group-by field. */
+  /**
+   * The view's vertical-group-by field.
+   * @deprecated The `ProjectV2View#vertical_group_by` API is deprecated in favour of the more capable `ProjectV2View#vertical_group_by_fields` API. Check out the `ProjectV2View#vertical_group_by_fields` API as an example for the more capable alternative. Removal on 2023-04-01 UTC.
+   */
   verticalGroupBy?: Maybe<ProjectV2FieldConnection>;
+  /** The view's vertical-group-by field. */
+  verticalGroupByFields?: Maybe<ProjectV2FieldConfigurationConnection>;
   /**
    * The view's visible fields.
    * @deprecated The `ProjectV2View#visibleFields` API is deprecated in favour of the more capable `ProjectV2View#fields` API. Check out the `ProjectV2View#fields` API as an example for the more capable alternative. Removal on 2023-01-01 UTC.
@@ -15552,7 +15593,26 @@ export type ProjectV2ViewSortByArgs = {
 
 
 /** A view within a ProjectV2. */
+export type ProjectV2ViewSortByFieldsArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+};
+
+
+/** A view within a ProjectV2. */
 export type ProjectV2ViewVerticalGroupByArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<ProjectV2FieldOrder>;
+};
+
+
+/** A view within a ProjectV2. */
+export type ProjectV2ViewVerticalGroupByFieldsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
@@ -26993,6 +27053,9 @@ export type ResolversTypes = {
   ProjectV2SortBy: ResolverTypeWrapper<ProjectV2SortBy>;
   ProjectV2SortByConnection: ResolverTypeWrapper<ProjectV2SortByConnection>;
   ProjectV2SortByEdge: ResolverTypeWrapper<ProjectV2SortByEdge>;
+  ProjectV2SortByField: ResolverTypeWrapper<Omit<ProjectV2SortByField, 'field'> & { field: ResolversTypes['ProjectV2FieldConfiguration'] }>;
+  ProjectV2SortByFieldConnection: ResolverTypeWrapper<ProjectV2SortByFieldConnection>;
+  ProjectV2SortByFieldEdge: ResolverTypeWrapper<ProjectV2SortByFieldEdge>;
   ProjectV2View: ResolverTypeWrapper<ProjectV2View>;
   ProjectV2ViewConnection: ResolverTypeWrapper<ProjectV2ViewConnection>;
   ProjectV2ViewEdge: ResolverTypeWrapper<ProjectV2ViewEdge>;
@@ -28216,6 +28279,9 @@ export type ResolversParentTypes = {
   ProjectV2SortBy: ProjectV2SortBy;
   ProjectV2SortByConnection: ProjectV2SortByConnection;
   ProjectV2SortByEdge: ProjectV2SortByEdge;
+  ProjectV2SortByField: Omit<ProjectV2SortByField, 'field'> & { field: ResolversParentTypes['ProjectV2FieldConfiguration'] };
+  ProjectV2SortByFieldConnection: ProjectV2SortByFieldConnection;
+  ProjectV2SortByFieldEdge: ProjectV2SortByFieldEdge;
   ProjectV2View: ProjectV2View;
   ProjectV2ViewConnection: ProjectV2ViewConnection;
   ProjectV2ViewEdge: ProjectV2ViewEdge;
@@ -34002,6 +34068,26 @@ export type ProjectV2SortByEdgeResolvers<ContextType = any, ParentType extends R
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type ProjectV2SortByFieldResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProjectV2SortByField'] = ResolversParentTypes['ProjectV2SortByField']> = {
+  direction?: Resolver<ResolversTypes['OrderDirection'], ParentType, ContextType>;
+  field?: Resolver<ResolversTypes['ProjectV2FieldConfiguration'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ProjectV2SortByFieldConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProjectV2SortByFieldConnection'] = ResolversParentTypes['ProjectV2SortByFieldConnection']> = {
+  edges?: Resolver<Maybe<Array<Maybe<ResolversTypes['ProjectV2SortByFieldEdge']>>>, ParentType, ContextType>;
+  nodes?: Resolver<Maybe<Array<Maybe<ResolversTypes['ProjectV2SortByField']>>>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ProjectV2SortByFieldEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProjectV2SortByFieldEdge'] = ResolversParentTypes['ProjectV2SortByFieldEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['ProjectV2SortByField']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type ProjectV2ViewResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProjectV2View'] = ResolversParentTypes['ProjectV2View']> = {
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -34015,8 +34101,10 @@ export type ProjectV2ViewResolvers<ContextType = any, ParentType extends Resolve
   number?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   project?: Resolver<ResolversTypes['ProjectV2'], ParentType, ContextType>;
   sortBy?: Resolver<Maybe<ResolversTypes['ProjectV2SortByConnection']>, ParentType, ContextType, Partial<ProjectV2ViewSortByArgs>>;
+  sortByFields?: Resolver<Maybe<ResolversTypes['ProjectV2SortByFieldConnection']>, ParentType, ContextType, Partial<ProjectV2ViewSortByFieldsArgs>>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   verticalGroupBy?: Resolver<Maybe<ResolversTypes['ProjectV2FieldConnection']>, ParentType, ContextType, RequireFields<ProjectV2ViewVerticalGroupByArgs, 'orderBy'>>;
+  verticalGroupByFields?: Resolver<Maybe<ResolversTypes['ProjectV2FieldConfigurationConnection']>, ParentType, ContextType, RequireFields<ProjectV2ViewVerticalGroupByFieldsArgs, 'orderBy'>>;
   visibleFields?: Resolver<Maybe<ResolversTypes['ProjectV2FieldConnection']>, ParentType, ContextType, RequireFields<ProjectV2ViewVisibleFieldsArgs, 'orderBy'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -38258,6 +38346,9 @@ export type Resolvers<ContextType = any> = {
   ProjectV2SortBy?: ProjectV2SortByResolvers<ContextType>;
   ProjectV2SortByConnection?: ProjectV2SortByConnectionResolvers<ContextType>;
   ProjectV2SortByEdge?: ProjectV2SortByEdgeResolvers<ContextType>;
+  ProjectV2SortByField?: ProjectV2SortByFieldResolvers<ContextType>;
+  ProjectV2SortByFieldConnection?: ProjectV2SortByFieldConnectionResolvers<ContextType>;
+  ProjectV2SortByFieldEdge?: ProjectV2SortByFieldEdgeResolvers<ContextType>;
   ProjectV2View?: ProjectV2ViewResolvers<ContextType>;
   ProjectV2ViewConnection?: ProjectV2ViewConnectionResolvers<ContextType>;
   ProjectV2ViewEdge?: ProjectV2ViewEdgeResolvers<ContextType>;
