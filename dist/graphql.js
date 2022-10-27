@@ -1262,6 +1262,11 @@ var ProjectNextFieldType;
      */
     ProjectNextFieldType["Title"] = "TITLE";
     /**
+     * Tracked by
+     * @deprecated The `ProjectNext` API is deprecated in favour of the more capable `ProjectV2` API. Follow the ProjectV2 guide at https://github.blog/changelog/2022-06-23-the-new-github-issues-june-23rd-update/, to find a suitable replacement. Removal on 2023-01-01 UTC.
+     */
+    ProjectNextFieldType["TrackedBy"] = "TRACKED_BY";
+    /**
      * Tracks
      * @deprecated The `ProjectNext` API is deprecated in favour of the more capable `ProjectV2` API. Follow the ProjectV2 guide at https://github.blog/changelog/2022-06-23-the-new-github-issues-june-23rd-update/, to find a suitable replacement. Removal on 2023-01-01 UTC.
      */

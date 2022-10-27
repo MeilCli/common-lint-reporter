@@ -18584,7 +18584,7 @@ var ApolloLink = __webpack_require__(3581);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
 var execute = __webpack_require__(7037);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.7.0';
+var version = '3.7.1';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
@@ -20646,8 +20646,10 @@ var ObservableQuery = (function (_super) {
         }
         return result;
     };
-    ObservableQuery.prototype.isDifferentFromLastResult = function (newResult) {
-        return !this.last || !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(this.last.result, newResult);
+    ObservableQuery.prototype.isDifferentFromLastResult = function (newResult, variables) {
+        return (!this.last ||
+            !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(this.last.result, newResult) ||
+            (variables && !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(this.last.variables, variables)));
     };
     ObservableQuery.prototype.getLast = function (key, variablesMustMatch) {
         var last = this.last;
@@ -20957,7 +20959,7 @@ var ObservableQuery = (function (_super) {
     };
     ObservableQuery.prototype.reportResult = function (result, variables) {
         var lastError = this.getLastError();
-        if (lastError || this.isDifferentFromLastResult(result)) {
+        if (lastError || this.isDifferentFromLastResult(result, variables)) {
             if (lastError || !result.partial || this.options.returnPartialData) {
                 this.updateLastResult(result, variables);
             }
@@ -22786,13 +22788,11 @@ function useFragment_experimental(options) {
     var resultRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
     var latestDiff = cache.diff(diffOptions);
     return (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_4__/* .useSyncExternalStore */ .$)(function (forceUpdate) {
-        var immediate = true;
-        return cache.watch((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({}, diffOptions), { immediate: immediate, callback: function (diff) {
-                if (!immediate && !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(diff, latestDiff)) {
+        return cache.watch((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({}, diffOptions), { immediate: true, callback: function (diff) {
+                if (!(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(diff, latestDiff)) {
                     resultRef.current = diffToResult(latestDiff = diff);
                     forceUpdate();
                 }
-                immediate = false;
             } }));
     }, function () {
         var latestDiffToResult = diffToResult(latestDiff);
