@@ -15010,6 +15010,8 @@ export enum ProjectV2FieldType {
   Text = 'TEXT',
   /** Title */
   Title = 'TITLE',
+  /** Tracked by */
+  TrackedBy = 'TRACKED_BY',
   /** Tracks */
   Tracks = 'TRACKS'
 }

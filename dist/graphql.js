@@ -1358,6 +1358,8 @@ var ProjectV2FieldType;
     ProjectV2FieldType["Text"] = "TEXT";
     /** Title */
     ProjectV2FieldType["Title"] = "TITLE";
+    /** Tracked by */
+    ProjectV2FieldType["TrackedBy"] = "TRACKED_BY";
     /** Tracks */
     ProjectV2FieldType["Tracks"] = "TRACKS";
 })(ProjectV2FieldType = exports.ProjectV2FieldType || (exports.ProjectV2FieldType = {}));
