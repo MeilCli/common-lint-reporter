@@ -14445,6 +14445,11 @@ export enum ProjectNextFieldType {
    */
   Title = 'TITLE',
   /**
+   * Tracked by
+   * @deprecated The `ProjectNext` API is deprecated in favour of the more capable `ProjectV2` API. Follow the ProjectV2 guide at https://github.blog/changelog/2022-06-23-the-new-github-issues-june-23rd-update/, to find a suitable replacement. Removal on 2023-01-01 UTC.
+   */
+  TrackedBy = 'TRACKED_BY',
+  /**
    * Tracks
    * @deprecated The `ProjectNext` API is deprecated in favour of the more capable `ProjectV2` API. Follow the ProjectV2 guide at https://github.blog/changelog/2022-06-23-the-new-github-issues-june-23rd-update/, to find a suitable replacement. Removal on 2023-01-01 UTC.
    */
@@ -19400,6 +19405,8 @@ export type Repository = Node & PackageOwner & ProjectOwner & ProjectV2Recent & 
   forks: RepositoryConnection;
   /** The funding links for this repository */
   fundingLinks: Array<FundingLink>;
+  /** Are discussions available on this repository? */
+  hasDiscussionsEnabled: Scalars['Boolean'];
   /** Indicates if the repository has issues feature enabled. */
   hasIssuesEnabled: Scalars['Boolean'];
   /** Indicates if the repository has the Projects feature enabled. */
@@ -25154,6 +25161,8 @@ export type UpdateRepositoryInput = {
   clientMutationId?: InputMaybe<Scalars['String']>;
   /** A new description for the repository. Pass an empty string to erase the existing description. */
   description?: InputMaybe<Scalars['String']>;
+  /** Indicates if the repository should have the discussions feature enabled. */
+  hasDiscussionsEnabled?: InputMaybe<Scalars['Boolean']>;
   /** Indicates if the repository should have the issues feature enabled. */
   hasIssuesEnabled?: InputMaybe<Scalars['Boolean']>;
   /** Indicates if the repository should have the project boards feature enabled. */
@@ -35685,6 +35694,7 @@ export type RepositoryResolvers<ContextType = any, ParentType extends ResolversP
   forkingAllowed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   forks?: Resolver<ResolversTypes['RepositoryConnection'], ParentType, ContextType, RequireFields<RepositoryForksArgs, 'ownerAffiliations'>>;
   fundingLinks?: Resolver<Array<ResolversTypes['FundingLink']>, ParentType, ContextType>;
+  hasDiscussionsEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   hasIssuesEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   hasProjectsEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   hasWikiEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
