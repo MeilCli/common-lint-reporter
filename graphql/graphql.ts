@@ -1063,7 +1063,7 @@ export type BranchProtectionRule = Node & {
   pushAllowances: PushAllowanceConnection;
   /** The repository associated with this branch protection rule. */
   repository?: Maybe<Repository>;
-  /** Whether someone other than the person who last pushed to the branch must approve this pull request */
+  /** Whether the most recent push must be approved by someone other than the person who pushed it */
   requireLastPushApproval: Scalars['Boolean'];
   /** Number of approving reviews required to update matching branches. */
   requiredApprovingReviewCount?: Maybe<Scalars['Int']>;
@@ -3072,7 +3072,7 @@ export type CreateBranchProtectionRuleInput = {
   pushActorIds?: InputMaybe<Array<Scalars['ID']>>;
   /** The global relay id of the repository in which a new branch protection rule should be created in. */
   repositoryId: Scalars['ID'];
-  /** Whether someone other than the person who last pushed to the branch must approve this pull request */
+  /** Whether the most recent push must be approved by someone other than the person who pushed it */
   requireLastPushApproval?: InputMaybe<Scalars['Boolean']>;
   /** Number of approving reviews required to update matching branches. */
   requiredApprovingReviewCount?: InputMaybe<Scalars['Int']>;
@@ -12937,6 +12937,8 @@ export type OrganizationSponsorsActivitiesArgs = {
   last?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<SponsorsActivityOrder>;
   period?: InputMaybe<SponsorsActivityPeriod>;
+  since?: InputMaybe<Scalars['DateTime']>;
+  until?: InputMaybe<Scalars['DateTime']>;
 };
 
 
@@ -19475,7 +19477,7 @@ export type Repository = Node & PackageOwner & ProjectOwner & ProjectV2Recent & 
   forks: RepositoryConnection;
   /** The funding links for this repository */
   fundingLinks: Array<FundingLink>;
-  /** Are discussions available on this repository? */
+  /** Indicates if the repository has the Discussions feature enabled. */
   hasDiscussionsEnabled: Scalars['Boolean'];
   /** Indicates if the repository has issues feature enabled. */
   hasIssuesEnabled: Scalars['Boolean'];
@@ -20257,6 +20259,8 @@ export type RepositoryInfo = {
   descriptionHTML: Scalars['HTML'];
   /** Returns how many forks there are of this repository in the whole network. */
   forkCount: Scalars['Int'];
+  /** Indicates if the repository has the Discussions feature enabled. */
+  hasDiscussionsEnabled: Scalars['Boolean'];
   /** Indicates if the repository has issues feature enabled. */
   hasIssuesEnabled: Scalars['Boolean'];
   /** Indicates if the repository has the Projects feature enabled. */
@@ -21780,6 +21784,8 @@ export type SponsorableSponsorsActivitiesArgs = {
   last?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<SponsorsActivityOrder>;
   period?: InputMaybe<SponsorsActivityPeriod>;
+  since?: InputMaybe<Scalars['DateTime']>;
+  until?: InputMaybe<Scalars['DateTime']>;
 };
 
 
@@ -24131,7 +24137,7 @@ export type UpdateBranchProtectionRuleInput = {
   pattern?: InputMaybe<Scalars['String']>;
   /** A list of User, Team, or App IDs allowed to push to matching branches. */
   pushActorIds?: InputMaybe<Array<Scalars['ID']>>;
-  /** Whether someone other than the person who last pushed to the branch must approve this pull request */
+  /** Whether the most recent push must be approved by someone other than the person who pushed it */
   requireLastPushApproval?: InputMaybe<Scalars['Boolean']>;
   /** Number of approving reviews required to update matching branches. */
   requiredApprovingReviewCount?: InputMaybe<Scalars['Int']>;
@@ -25994,6 +26000,8 @@ export type UserSponsorsActivitiesArgs = {
   last?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<SponsorsActivityOrder>;
   period?: InputMaybe<SponsorsActivityPeriod>;
+  since?: InputMaybe<Scalars['DateTime']>;
+  until?: InputMaybe<Scalars['DateTime']>;
 };
 
 
@@ -36010,6 +36018,7 @@ export type RepositoryInfoResolvers<ContextType = any, ParentType extends Resolv
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   descriptionHTML?: Resolver<ResolversTypes['HTML'], ParentType, ContextType>;
   forkCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  hasDiscussionsEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   hasIssuesEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   hasProjectsEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   hasWikiEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
