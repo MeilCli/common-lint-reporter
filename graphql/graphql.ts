@@ -3398,6 +3398,8 @@ export type CreateProjectV2Input = {
   ownerId: Scalars['ID'];
   /** The repository to link the project to. */
   repositoryId?: InputMaybe<Scalars['ID']>;
+  /** The team to link the project to. The team will be granted read permissions. */
+  teamId?: InputMaybe<Scalars['ID']>;
   /** The title of the project. */
   title: Scalars['String'];
 };
@@ -9736,6 +9738,8 @@ export type Mutation = {
   startRepositoryMigration?: Maybe<StartRepositoryMigrationPayload>;
   /** Submits a pending pull request review. */
   submitPullRequestReview?: Maybe<SubmitPullRequestReviewPayload>;
+  /** Transfer an organization from one enterprise to another enterprise. */
+  transferEnterpriseOrganization?: Maybe<TransferEnterpriseOrganizationPayload>;
   /** Transfer an issue to a different repository */
   transferIssue?: Maybe<TransferIssuePayload>;
   /** Unarchives a ProjectV2Item */
@@ -10641,6 +10645,12 @@ export type MutationStartRepositoryMigrationArgs = {
 /** The root query for implementing GraphQL mutations. */
 export type MutationSubmitPullRequestReviewArgs = {
   input: SubmitPullRequestReviewInput;
+};
+
+
+/** The root query for implementing GraphQL mutations. */
+export type MutationTransferEnterpriseOrganizationArgs = {
+  input: TransferEnterpriseOrganizationInput;
 };
 
 
@@ -12971,6 +12981,7 @@ export type OrganizationSponsorsActivitiesArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
+  includeAsSponsor?: InputMaybe<Scalars['Boolean']>;
   last?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<SponsorsActivityOrder>;
   period?: InputMaybe<SponsorsActivityPeriod>;
@@ -13006,6 +13017,7 @@ export type OrganizationSponsorshipsAsSponsorArgs = {
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  maintainerLogins?: InputMaybe<Array<Scalars['String']>>;
   orderBy?: InputMaybe<SponsorshipOrder>;
 };
 
@@ -19675,7 +19687,10 @@ export type Repository = Node & PackageOwner & ProjectOwner & ProjectV2Recent & 
   squashMergeCommitMessage: SquashMergeCommitMessage;
   /** How the default commit title will be generated when squash merging a pull request. */
   squashMergeCommitTitle: SquashMergeCommitTitle;
-  /** Whether a squash merge commit can use the pull request title as default. */
+  /**
+   * Whether a squash merge commit can use the pull request title as default.
+   * @deprecated `squashPrTitleUsedAsDefault` will be removed. Use `Repository.squashMergeCommitTitle` instead. Removal on 2023-04-01 UTC.
+   */
   squashPrTitleUsedAsDefault: Scalars['Boolean'];
   /** The SSH URL to clone this repository */
   sshUrl: Scalars['GitSSHRemote'];
@@ -21832,6 +21847,7 @@ export type SponsorableSponsorsActivitiesArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
+  includeAsSponsor?: InputMaybe<Scalars['Boolean']>;
   last?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<SponsorsActivityOrder>;
   period?: InputMaybe<SponsorsActivityPeriod>;
@@ -21867,6 +21883,7 @@ export type SponsorableSponsorshipsAsSponsorArgs = {
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  maintainerLogins?: InputMaybe<Array<Scalars['String']>>;
   orderBy?: InputMaybe<SponsorshipOrder>;
 };
 
@@ -22021,6 +22038,8 @@ export type SponsorsListing = Node & {
   activeGoal?: Maybe<SponsorsGoal>;
   /** The name of the country or region with the maintainer's bank account or fiscal host. Will only return a value when queried by the maintainer themselves, or by an admin of the sponsorable organization. */
   billingCountryOrRegion?: Maybe<Scalars['String']>;
+  /** The email address used by GitHub to contact the sponsorable about their GitHub Sponsors profile. Will only return a value when queried by the maintainer themselves, or by an admin of the sponsorable organization. */
+  contactEmailAddress?: Maybe<Scalars['String']>;
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
   /** The HTTP path for the Sponsors dashboard for this Sponsors listing. */
@@ -22625,8 +22644,12 @@ export type Submodule = {
   gitUrl: Scalars['URI'];
   /** The name of the submodule in .gitmodules */
   name: Scalars['String'];
+  /** The name of the submodule in .gitmodules (Base64-encoded) */
+  nameRaw: Scalars['Base64String'];
   /** The path in the superproject that this submodule is located in */
   path: Scalars['String'];
+  /** The path in the superproject that this submodule is located in (Base64-encoded) */
+  pathRaw: Scalars['Base64String'];
   /** The commit revision of the subproject repository being tracked by the submodule */
   subprojectCommitOid?: Maybe<Scalars['GitObjectID']>;
 };
@@ -23723,6 +23746,25 @@ export enum TrackedIssueStates {
   Open = 'OPEN'
 }
 
+/** Autogenerated input type of TransferEnterpriseOrganization */
+export type TransferEnterpriseOrganizationInput = {
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The ID of the enterprise where the organization should be transferred. */
+  destinationEnterpriseId: Scalars['ID'];
+  /** The ID of the organization to transfer. */
+  organizationId: Scalars['ID'];
+};
+
+/** Autogenerated return type of TransferEnterpriseOrganization */
+export type TransferEnterpriseOrganizationPayload = {
+  __typename?: 'TransferEnterpriseOrganizationPayload';
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The organization for which a transfer was initiated. */
+  organization?: Maybe<Organization>;
+};
+
 /** Autogenerated input type of TransferIssue */
 export type TransferIssueInput = {
   /** A unique identifier for the client performing the mutation. */
@@ -23791,12 +23833,16 @@ export type TreeEntry = {
   mode: Scalars['Int'];
   /** Entry file name. */
   name: Scalars['String'];
+  /** Entry file name. (Base64-encoded) */
+  nameRaw: Scalars['Base64String'];
   /** Entry file object. */
   object?: Maybe<GitObject>;
   /** Entry file Git object ID. */
   oid: Scalars['GitObjectID'];
   /** The full path of the file. */
   path?: Maybe<Scalars['String']>;
+  /** The full path of the file. (Base64-encoded) */
+  pathRaw?: Maybe<Scalars['Base64String']>;
   /** The Repository the tree entry belongs to */
   repository: Repository;
   /** Entry byte size */
@@ -26073,6 +26119,7 @@ export type UserSponsorsActivitiesArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
+  includeAsSponsor?: InputMaybe<Scalars['Boolean']>;
   last?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<SponsorsActivityOrder>;
   period?: InputMaybe<SponsorsActivityPeriod>;
@@ -26108,6 +26155,7 @@ export type UserSponsorshipsAsSponsorArgs = {
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  maintainerLogins?: InputMaybe<Array<Scalars['String']>>;
   orderBy?: InputMaybe<SponsorshipOrder>;
 };
 
@@ -27762,6 +27810,8 @@ export type ResolversTypes = {
   TopicAuditEntryData: ResolversTypes['RepoAddTopicAuditEntry'] | ResolversTypes['RepoRemoveTopicAuditEntry'];
   TopicSuggestionDeclineReason: TopicSuggestionDeclineReason;
   TrackedIssueStates: TrackedIssueStates;
+  TransferEnterpriseOrganizationInput: TransferEnterpriseOrganizationInput;
+  TransferEnterpriseOrganizationPayload: ResolverTypeWrapper<TransferEnterpriseOrganizationPayload>;
   TransferIssueInput: TransferIssueInput;
   TransferIssuePayload: ResolverTypeWrapper<TransferIssuePayload>;
   TransferredEvent: ResolverTypeWrapper<TransferredEvent>;
@@ -28926,6 +28976,8 @@ export type ResolversParentTypes = {
   TextMatchHighlight: TextMatchHighlight;
   Topic: Topic;
   TopicAuditEntryData: ResolversParentTypes['RepoAddTopicAuditEntry'] | ResolversParentTypes['RepoRemoveTopicAuditEntry'];
+  TransferEnterpriseOrganizationInput: TransferEnterpriseOrganizationInput;
+  TransferEnterpriseOrganizationPayload: TransferEnterpriseOrganizationPayload;
   TransferIssueInput: TransferIssueInput;
   TransferIssuePayload: TransferIssuePayload;
   TransferredEvent: TransferredEvent;
@@ -32586,6 +32638,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   setUserInteractionLimit?: Resolver<Maybe<ResolversTypes['SetUserInteractionLimitPayload']>, ParentType, ContextType, RequireFields<MutationSetUserInteractionLimitArgs, 'input'>>;
   startRepositoryMigration?: Resolver<Maybe<ResolversTypes['StartRepositoryMigrationPayload']>, ParentType, ContextType, RequireFields<MutationStartRepositoryMigrationArgs, 'input'>>;
   submitPullRequestReview?: Resolver<Maybe<ResolversTypes['SubmitPullRequestReviewPayload']>, ParentType, ContextType, RequireFields<MutationSubmitPullRequestReviewArgs, 'input'>>;
+  transferEnterpriseOrganization?: Resolver<Maybe<ResolversTypes['TransferEnterpriseOrganizationPayload']>, ParentType, ContextType, RequireFields<MutationTransferEnterpriseOrganizationArgs, 'input'>>;
   transferIssue?: Resolver<Maybe<ResolversTypes['TransferIssuePayload']>, ParentType, ContextType, RequireFields<MutationTransferIssueArgs, 'input'>>;
   unarchiveProjectV2Item?: Resolver<Maybe<ResolversTypes['UnarchiveProjectV2ItemPayload']>, ParentType, ContextType, RequireFields<MutationUnarchiveProjectV2ItemArgs, 'input'>>;
   unarchiveRepository?: Resolver<Maybe<ResolversTypes['UnarchiveRepositoryPayload']>, ParentType, ContextType, RequireFields<MutationUnarchiveRepositoryArgs, 'input'>>;
@@ -33417,7 +33470,7 @@ export type OrganizationResolvers<ContextType = any, ParentType extends Resolver
   samlIdentityProvider?: Resolver<Maybe<ResolversTypes['OrganizationIdentityProvider']>, ParentType, ContextType>;
   sponsoring?: Resolver<ResolversTypes['SponsorConnection'], ParentType, ContextType, RequireFields<OrganizationSponsoringArgs, 'orderBy'>>;
   sponsors?: Resolver<ResolversTypes['SponsorConnection'], ParentType, ContextType, RequireFields<OrganizationSponsorsArgs, 'orderBy'>>;
-  sponsorsActivities?: Resolver<ResolversTypes['SponsorsActivityConnection'], ParentType, ContextType, RequireFields<OrganizationSponsorsActivitiesArgs, 'actions' | 'orderBy' | 'period'>>;
+  sponsorsActivities?: Resolver<ResolversTypes['SponsorsActivityConnection'], ParentType, ContextType, RequireFields<OrganizationSponsorsActivitiesArgs, 'actions' | 'includeAsSponsor' | 'orderBy' | 'period'>>;
   sponsorsListing?: Resolver<Maybe<ResolversTypes['SponsorsListing']>, ParentType, ContextType>;
   sponsorshipForViewerAsSponsor?: Resolver<Maybe<ResolversTypes['Sponsorship']>, ParentType, ContextType>;
   sponsorshipForViewerAsSponsorable?: Resolver<Maybe<ResolversTypes['Sponsorship']>, ParentType, ContextType>;
@@ -36682,7 +36735,7 @@ export type SponsorableResolvers<ContextType = any, ParentType extends Resolvers
   monthlyEstimatedSponsorsIncomeInCents?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   sponsoring?: Resolver<ResolversTypes['SponsorConnection'], ParentType, ContextType, RequireFields<SponsorableSponsoringArgs, 'orderBy'>>;
   sponsors?: Resolver<ResolversTypes['SponsorConnection'], ParentType, ContextType, RequireFields<SponsorableSponsorsArgs, 'orderBy'>>;
-  sponsorsActivities?: Resolver<ResolversTypes['SponsorsActivityConnection'], ParentType, ContextType, RequireFields<SponsorableSponsorsActivitiesArgs, 'actions' | 'orderBy' | 'period'>>;
+  sponsorsActivities?: Resolver<ResolversTypes['SponsorsActivityConnection'], ParentType, ContextType, RequireFields<SponsorableSponsorsActivitiesArgs, 'actions' | 'includeAsSponsor' | 'orderBy' | 'period'>>;
   sponsorsListing?: Resolver<Maybe<ResolversTypes['SponsorsListing']>, ParentType, ContextType>;
   sponsorshipForViewerAsSponsor?: Resolver<Maybe<ResolversTypes['Sponsorship']>, ParentType, ContextType>;
   sponsorshipForViewerAsSponsorable?: Resolver<Maybe<ResolversTypes['Sponsorship']>, ParentType, ContextType>;
@@ -36748,6 +36801,7 @@ export type SponsorsGoalResolvers<ContextType = any, ParentType extends Resolver
 export type SponsorsListingResolvers<ContextType = any, ParentType extends ResolversParentTypes['SponsorsListing'] = ResolversParentTypes['SponsorsListing']> = {
   activeGoal?: Resolver<Maybe<ResolversTypes['SponsorsGoal']>, ParentType, ContextType>;
   billingCountryOrRegion?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  contactEmailAddress?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   dashboardResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   dashboardUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
@@ -36986,7 +37040,9 @@ export type SubmoduleResolvers<ContextType = any, ParentType extends ResolversPa
   branch?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   gitUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  nameRaw?: Resolver<ResolversTypes['Base64String'], ParentType, ContextType>;
   path?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  pathRaw?: Resolver<ResolversTypes['Base64String'], ParentType, ContextType>;
   subprojectCommitOid?: Resolver<Maybe<ResolversTypes['GitObjectID']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -37419,6 +37475,12 @@ export type TopicAuditEntryDataResolvers<ContextType = any, ParentType extends R
   topicName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
 };
 
+export type TransferEnterpriseOrganizationPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['TransferEnterpriseOrganizationPayload'] = ResolversParentTypes['TransferEnterpriseOrganizationPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  organization?: Resolver<Maybe<ResolversTypes['Organization']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type TransferIssuePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['TransferIssuePayload'] = ResolversParentTypes['TransferIssuePayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   issue?: Resolver<Maybe<ResolversTypes['Issue']>, ParentType, ContextType>;
@@ -37452,9 +37514,11 @@ export type TreeEntryResolvers<ContextType = any, ParentType extends ResolversPa
   lineCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   mode?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  nameRaw?: Resolver<ResolversTypes['Base64String'], ParentType, ContextType>;
   object?: Resolver<Maybe<ResolversTypes['GitObject']>, ParentType, ContextType>;
   oid?: Resolver<ResolversTypes['GitObjectID'], ParentType, ContextType>;
   path?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  pathRaw?: Resolver<Maybe<ResolversTypes['Base64String']>, ParentType, ContextType>;
   repository?: Resolver<ResolversTypes['Repository'], ParentType, ContextType>;
   size?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   submodule?: Resolver<Maybe<ResolversTypes['Submodule']>, ParentType, ContextType>;
@@ -38045,7 +38109,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   savedReplies?: Resolver<Maybe<ResolversTypes['SavedReplyConnection']>, ParentType, ContextType, RequireFields<UserSavedRepliesArgs, 'orderBy'>>;
   sponsoring?: Resolver<ResolversTypes['SponsorConnection'], ParentType, ContextType, RequireFields<UserSponsoringArgs, 'orderBy'>>;
   sponsors?: Resolver<ResolversTypes['SponsorConnection'], ParentType, ContextType, RequireFields<UserSponsorsArgs, 'orderBy'>>;
-  sponsorsActivities?: Resolver<ResolversTypes['SponsorsActivityConnection'], ParentType, ContextType, RequireFields<UserSponsorsActivitiesArgs, 'actions' | 'orderBy' | 'period'>>;
+  sponsorsActivities?: Resolver<ResolversTypes['SponsorsActivityConnection'], ParentType, ContextType, RequireFields<UserSponsorsActivitiesArgs, 'actions' | 'includeAsSponsor' | 'orderBy' | 'period'>>;
   sponsorsListing?: Resolver<Maybe<ResolversTypes['SponsorsListing']>, ParentType, ContextType>;
   sponsorshipForViewerAsSponsor?: Resolver<Maybe<ResolversTypes['Sponsorship']>, ParentType, ContextType>;
   sponsorshipForViewerAsSponsorable?: Resolver<Maybe<ResolversTypes['Sponsorship']>, ParentType, ContextType>;
@@ -39027,6 +39091,7 @@ export type Resolvers<ContextType = any> = {
   TextMatchHighlight?: TextMatchHighlightResolvers<ContextType>;
   Topic?: TopicResolvers<ContextType>;
   TopicAuditEntryData?: TopicAuditEntryDataResolvers<ContextType>;
+  TransferEnterpriseOrganizationPayload?: TransferEnterpriseOrganizationPayloadResolvers<ContextType>;
   TransferIssuePayload?: TransferIssuePayloadResolvers<ContextType>;
   TransferredEvent?: TransferredEventResolvers<ContextType>;
   Tree?: TreeResolvers<ContextType>;
