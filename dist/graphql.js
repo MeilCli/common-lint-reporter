@@ -1843,6 +1843,8 @@ var RepositoryLockReason;
     RepositoryLockReason["Moving"] = "MOVING";
     /** The repository is locked due to a rename. */
     RepositoryLockReason["Rename"] = "RENAME";
+    /** The repository is locked due to a trade controls related reason. */
+    RepositoryLockReason["TradeRestriction"] = "TRADE_RESTRICTION";
 })(RepositoryLockReason = exports.RepositoryLockReason || (exports.RepositoryLockReason = {}));
 /** Possible directions in which to order a list of repository migrations when provided an `orderBy` argument. */
 var RepositoryMigrationOrderDirection;
