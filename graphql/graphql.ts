@@ -16237,6 +16237,8 @@ export type PullRequest = Assignable & Closable & Comment & Labelable & Lockable
   title: Scalars['String'];
   /** Identifies the pull request title rendered to HTML. */
   titleHTML: Scalars['HTML'];
+  /** Returns a count of how many comments this pull request has received. */
+  totalCommentsCount?: Maybe<Scalars['Int']>;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
   /** The HTTP URL for this pull request. */
@@ -34790,6 +34792,7 @@ export type PullRequestResolvers<ContextType = any, ParentType extends Resolvers
   timelineItems?: Resolver<ResolversTypes['PullRequestTimelineItemsConnection'], ParentType, ContextType, Partial<PullRequestTimelineItemsArgs>>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   titleHTML?: Resolver<ResolversTypes['HTML'], ParentType, ContextType>;
+  totalCommentsCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, Partial<PullRequestUserContentEditsArgs>>;
