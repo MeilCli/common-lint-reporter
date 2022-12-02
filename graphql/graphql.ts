@@ -22126,6 +22126,9 @@ export type SponsorsListingTiersArgs = {
   orderBy?: InputMaybe<SponsorsTierOrder>;
 };
 
+/** A record that can be featured on a GitHub Sponsors profile. */
+export type SponsorsListingFeatureableItem = Repository | User;
+
 /** A record that is promoted on a GitHub Sponsors profile. */
 export type SponsorsListingFeaturedItem = Node & {
   __typename?: 'SponsorsListingFeaturedItem';
@@ -22133,6 +22136,8 @@ export type SponsorsListingFeaturedItem = Node & {
   createdAt: Scalars['DateTime'];
   /** Will either be a description from the sponsorable maintainer about why they featured this item, or the item's description itself, such as a user's bio from their GitHub profile page. */
   description?: Maybe<Scalars['String']>;
+  /** The record that is featured on the GitHub Sponsors profile. */
+  featureable: SponsorsListingFeatureableItem;
   id: Scalars['ID'];
   /** The position of this featured item on the GitHub Sponsors profile with a lower position indicating higher precedence. Starts at 1. */
   position: Scalars['Int'];
@@ -27792,7 +27797,8 @@ export type ResolversTypes = {
   SponsorsGoal: ResolverTypeWrapper<SponsorsGoal>;
   SponsorsGoalKind: SponsorsGoalKind;
   SponsorsListing: ResolverTypeWrapper<SponsorsListing>;
-  SponsorsListingFeaturedItem: ResolverTypeWrapper<SponsorsListingFeaturedItem>;
+  SponsorsListingFeatureableItem: ResolversTypes['Repository'] | ResolversTypes['User'];
+  SponsorsListingFeaturedItem: ResolverTypeWrapper<Omit<SponsorsListingFeaturedItem, 'featureable'> & { featureable: ResolversTypes['SponsorsListingFeatureableItem'] }>;
   SponsorsListingFeaturedItemFeatureableType: SponsorsListingFeaturedItemFeatureableType;
   SponsorsTier: ResolverTypeWrapper<SponsorsTier>;
   SponsorsTierAdminInfo: ResolverTypeWrapper<SponsorsTierAdminInfo>;
@@ -28982,7 +28988,8 @@ export type ResolversParentTypes = {
   SponsorsActivityOrder: SponsorsActivityOrder;
   SponsorsGoal: SponsorsGoal;
   SponsorsListing: SponsorsListing;
-  SponsorsListingFeaturedItem: SponsorsListingFeaturedItem;
+  SponsorsListingFeatureableItem: ResolversParentTypes['Repository'] | ResolversParentTypes['User'];
+  SponsorsListingFeaturedItem: Omit<SponsorsListingFeaturedItem, 'featureable'> & { featureable: ResolversParentTypes['SponsorsListingFeatureableItem'] };
   SponsorsTier: SponsorsTier;
   SponsorsTierAdminInfo: SponsorsTierAdminInfo;
   SponsorsTierConnection: SponsorsTierConnection;
@@ -36904,9 +36911,14 @@ export type SponsorsListingResolvers<ContextType = any, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type SponsorsListingFeatureableItemResolvers<ContextType = any, ParentType extends ResolversParentTypes['SponsorsListingFeatureableItem'] = ResolversParentTypes['SponsorsListingFeatureableItem']> = {
+  __resolveType: TypeResolveFn<'Repository' | 'User', ParentType, ContextType>;
+};
+
 export type SponsorsListingFeaturedItemResolvers<ContextType = any, ParentType extends ResolversParentTypes['SponsorsListingFeaturedItem'] = ResolversParentTypes['SponsorsListingFeaturedItem']> = {
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  featureable?: Resolver<ResolversTypes['SponsorsListingFeatureableItem'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   position?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   sponsorsListing?: Resolver<ResolversTypes['SponsorsListing'], ParentType, ContextType>;
@@ -39130,6 +39142,7 @@ export type Resolvers<ContextType = any> = {
   SponsorsActivityEdge?: SponsorsActivityEdgeResolvers<ContextType>;
   SponsorsGoal?: SponsorsGoalResolvers<ContextType>;
   SponsorsListing?: SponsorsListingResolvers<ContextType>;
+  SponsorsListingFeatureableItem?: SponsorsListingFeatureableItemResolvers<ContextType>;
   SponsorsListingFeaturedItem?: SponsorsListingFeaturedItemResolvers<ContextType>;
   SponsorsTier?: SponsorsTierResolvers<ContextType>;
   SponsorsTierAdminInfo?: SponsorsTierAdminInfoResolvers<ContextType>;
