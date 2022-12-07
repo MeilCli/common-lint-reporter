@@ -18584,7 +18584,7 @@ var ApolloLink = __webpack_require__(3581);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
 var execute = __webpack_require__(7037);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.7.1';
+var version = '3.7.2';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
@@ -18810,8 +18810,6 @@ var Concast = (function (_super) {
 
 (0,subclassing/* fixObservableSubclass */.D)(Concast);
 //# sourceMappingURL=Concast.js.map
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/cloneDeep.js
-var cloneDeep = __webpack_require__(9487);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/arrays.js
 var arrays = __webpack_require__(1436);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/errors/index.js
@@ -19987,7 +19985,6 @@ var QueryManager = (function () {
     };
     QueryManager.prototype.getResultsFromLink = function (queryInfo, cacheWriteBehavior, options) {
         var requestId = queryInfo.lastRequestId = this.generateRequestId();
-        options = (0,cloneDeep/* cloneDeep */.X)(options);
         var linkDocument = this.cache.transformForLink(this.transform(queryInfo.document).document);
         return asyncMap(this.getObservableFromLink(linkDocument, options.context, options.variables), function (result) {
             var graphQLErrors = (0,arrays/* isNonEmptyArray */.O)(result.errors)
@@ -20299,7 +20296,7 @@ var ApolloClient = (function () {
         if (connectToDevTools && typeof window === 'object') {
             window.__APOLLO_CLIENT__ = this;
         }
-        if (!hasSuggestedDevtools && __DEV__) {
+        if (!hasSuggestedDevtools && connectToDevTools && __DEV__) {
             hasSuggestedDevtools = true;
             if (typeof window !== 'undefined' &&
                 window.document &&
@@ -21218,6 +21215,7 @@ var ApolloError = (function (_super) {
     function ApolloError(_a) {
         var graphQLErrors = _a.graphQLErrors, clientErrors = _a.clientErrors, networkError = _a.networkError, errorMessage = _a.errorMessage, extraInfo = _a.extraInfo;
         var _this = _super.call(this, errorMessage) || this;
+        _this.name = 'ApolloError';
         _this.graphQLErrors = graphQLErrors || [];
         _this.clientErrors = clientErrors || [];
         _this.networkError = networkError || null;
