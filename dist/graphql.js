@@ -1077,9 +1077,15 @@ var PackageType;
     PackageType["Docker"] = "DOCKER";
     /** A maven package. */
     PackageType["Maven"] = "MAVEN";
-    /** An npm package. */
+    /**
+     * An npm package.
+     * @deprecated NPM will be removed from this enum as this type will be migrated to only be used by the Packages REST API. Removal on 2022-11-21 UTC.
+     */
     PackageType["Npm"] = "NPM";
-    /** A nuget package. */
+    /**
+     * A nuget package.
+     * @deprecated NUGET will be removed from this enum as this type will be migrated to only be used by the Packages REST API. Removal on 2022-11-21 UTC.
+     */
     PackageType["Nuget"] = "NUGET";
     /** A python package. */
     PackageType["Pypi"] = "PYPI";
