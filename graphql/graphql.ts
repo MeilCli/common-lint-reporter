@@ -3485,6 +3485,8 @@ export type CreatePullRequestInput = {
    *
    */
   headRefName: Scalars['String'];
+  /** The Node ID of the head repository. */
+  headRepositoryId?: InputMaybe<Scalars['ID']>;
   /** Indicates whether maintainers can modify the pull request. */
   maintainerCanModify?: InputMaybe<Scalars['Boolean']>;
   /** The Node ID of the repository. */
