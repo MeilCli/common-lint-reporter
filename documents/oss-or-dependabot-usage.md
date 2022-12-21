@@ -1,4 +1,4 @@
-# Usage of oss or using dependabot repository
+# Usage of OSS or using dependabot
 `github-actions` token has not `write` permission at triggered by `pull_request` that created from forked repository or created by dependabot. This reason is for security
 
 So, such repository's `pull_request` workflow can not report lint result. In this case, you can use `workflow_run` workflow instead of the normal workflow

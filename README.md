@@ -66,7 +66,7 @@ jobs:
 
 ### Detail information
 - General
-  - [Usage of oss or using dependabot repository](documents/oss-or-dependabot-usage.md)
+  - [Usage of OSS or using dependabot](documents/oss-or-dependabot-usage.md)
   - [Report lint result](documents/report-lint-result.md)
 - Transformer
   - [androidlint](documents/transformer/androidlint.md)
