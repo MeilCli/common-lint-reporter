@@ -18563,7 +18563,7 @@ function broadcast(cache) {
 
 /***/ }),
 
-/***/ 2359:
+/***/ 5614:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -18584,17 +18584,14 @@ var ApolloLink = __webpack_require__(3581);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
 var execute = __webpack_require__(7037);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.7.2';
+var version = '3.7.3';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
 // EXTERNAL MODULE: ./node_modules/@wry/equality/lib/equality.esm.js
 var equality_esm = __webpack_require__(2152);
-;// CONCATENATED MODULE: ./node_modules/@apollo/client/utilities/common/incrementalResult.js
-function isExecutionPatchIncrementalResult(value) {
-    return !!value.incremental;
-}
-//# sourceMappingURL=incrementalResult.js.map
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/incrementalResult.js
+var incrementalResult = __webpack_require__(7280);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/cache/inmemory/object-canon.js
 var object_canon = __webpack_require__(900);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/canUse.js
@@ -18651,9 +18648,28 @@ function asyncMap(observable, mapFn, catchFn) {
     });
 }
 //# sourceMappingURL=asyncMap.js.map
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/arrays.js
+var arrays = __webpack_require__(1436);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/utilities/common/errorHandling.js
+
+
 function graphQLResultHasError(result) {
-    return (result.errors && result.errors.length > 0) || false;
+    var errors = getGraphQLErrorsFromResult(result);
+    return (0,arrays/* isNonEmptyArray */.O)(errors);
+}
+function getGraphQLErrorsFromResult(result) {
+    var graphQLErrors = (0,arrays/* isNonEmptyArray */.O)(result.errors)
+        ? result.errors.slice(0)
+        : [];
+    if ((0,incrementalResult/* isExecutionPatchIncrementalResult */.GG)(result) &&
+        (0,arrays/* isNonEmptyArray */.O)(result.incremental)) {
+        result.incremental.forEach(function (incrementalResult) {
+            if (incrementalResult.errors) {
+                graphQLErrors.push.apply(graphQLErrors, incrementalResult.errors);
+            }
+        });
+    }
+    return graphQLErrors;
 }
 //# sourceMappingURL=errorHandling.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/getFromAST.js
@@ -18810,8 +18826,6 @@ var Concast = (function (_super) {
 
 (0,subclassing/* fixObservableSubclass */.D)(Concast);
 //# sourceMappingURL=Concast.js.map
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/arrays.js
-var arrays = __webpack_require__(1436);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/errors/index.js
 var errors = __webpack_require__(990);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/core/ObservableQuery.js
@@ -19101,6 +19115,7 @@ var LocalState = (function () {
 
 
 
+
 ;
 var destructiveMethodCounts = new (canUse/* canUseWeakMap */.mr ? WeakMap : Map)();
 function wrapDestructiveCacheMethod(cache, methodName) {
@@ -19295,28 +19310,18 @@ var QueryInfo = (function () {
     };
     QueryInfo.prototype.markResult = function (result, document, options, cacheWriteBehavior) {
         var _this = this;
+        var merger = new mergeDeep/* DeepMerger */.w0();
         var graphQLErrors = (0,arrays/* isNonEmptyArray */.O)(result.errors)
             ? result.errors.slice(0)
             : [];
         this.reset();
         if ('incremental' in result && (0,arrays/* isNonEmptyArray */.O)(result.incremental)) {
-            var mergedData_1 = this.getDiff().result;
-            var merger_1 = new mergeDeep/* DeepMerger */.w0();
-            result.incremental.forEach(function (_a) {
-                var data = _a.data, path = _a.path, errors = _a.errors;
-                for (var i = path.length - 1; i >= 0; --i) {
-                    var key = path[i];
-                    var isNumericKey = !isNaN(+key);
-                    var parent_1 = isNumericKey ? [] : {};
-                    parent_1[key] = data;
-                    data = parent_1;
-                }
-                if (errors) {
-                    graphQLErrors.push.apply(graphQLErrors, errors);
-                }
-                mergedData_1 = merger_1.merge(mergedData_1, data);
-            });
-            result.data = mergedData_1;
+            var mergedData = (0,incrementalResult/* mergeIncrementalData */.mT)(this.getDiff().result, result);
+            result.data = mergedData;
+        }
+        else if ('hasNext' in result && result.hasNext) {
+            var diff = this.getDiff();
+            result.data = merger.merge(diff.result, result.data);
         }
         this.graphQLErrors = graphQLErrors;
         if (options.fetchPolicy === 'no-cache') {
@@ -19392,6 +19397,7 @@ function shouldWriteResult(result, errorPolicy) {
 }
 //# sourceMappingURL=QueryInfo.js.map
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/core/QueryManager.js
+
 
 
 
@@ -19487,7 +19493,7 @@ var QueryManager = (function () {
                                 return asyncMap(self.getObservableFromLink(mutation, (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, context), { optimisticResponse: optimisticResponse }), variables, false), function (result) {
                                     if (graphQLResultHasError(result) && errorPolicy === 'none') {
                                         throw new errors/* ApolloError */.c({
-                                            graphQLErrors: result.errors,
+                                            graphQLErrors: getGraphQLErrorsFromResult(result),
                                         });
                                     }
                                     if (mutationStoreValue) {
@@ -19521,7 +19527,9 @@ var QueryManager = (function () {
                                 }).subscribe({
                                     next: function (storeResult) {
                                         self.broadcastQueries();
-                                        resolve(storeResult);
+                                        if (!('hasNext' in storeResult) || storeResult.hasNext === false) {
+                                            resolve(storeResult);
+                                        }
                                     },
                                     error: function (err) {
                                         if (mutationStoreValue) {
@@ -19549,12 +19557,33 @@ var QueryManager = (function () {
         var cacheWrites = [];
         var skipCache = mutation.fetchPolicy === "no-cache";
         if (!skipCache && shouldWriteResult(result, mutation.errorPolicy)) {
-            cacheWrites.push({
-                result: result.data,
-                dataId: 'ROOT_MUTATION',
-                query: mutation.document,
-                variables: mutation.variables,
-            });
+            if (!(0,incrementalResult/* isExecutionPatchIncrementalResult */.GG)(result)) {
+                cacheWrites.push({
+                    result: result.data,
+                    dataId: 'ROOT_MUTATION',
+                    query: mutation.document,
+                    variables: mutation.variables,
+                });
+            }
+            if ((0,incrementalResult/* isExecutionPatchIncrementalResult */.GG)(result) && (0,arrays/* isNonEmptyArray */.O)(result.incremental)) {
+                var diff = cache.diff({
+                    id: "ROOT_MUTATION",
+                    query: this.transform(mutation.document).asQuery,
+                    variables: mutation.variables,
+                    optimistic: false,
+                    returnPartialData: true,
+                });
+                var mergedData = (0,incrementalResult/* mergeIncrementalData */.mT)(diff.result, result);
+                if (typeof mergedData !== 'undefined') {
+                    result.data = mergedData;
+                    cacheWrites.push({
+                        result: mergedData,
+                        dataId: 'ROOT_MUTATION',
+                        query: mutation.document,
+                        variables: mutation.variables,
+                    });
+                }
+            }
             var updateQueries_1 = mutation.updateQueries;
             if (updateQueries_1) {
                 this.queries.forEach(function (_a, queryId) {
@@ -19601,6 +19630,8 @@ var QueryManager = (function () {
                         cacheWrites.forEach(function (write) { return cache.write(write); });
                     }
                     var update = mutation.update;
+                    var isFinalResult = !(0,incrementalResult/* isExecutionPatchResult */.M0)(result) ||
+                        ((0,incrementalResult/* isExecutionPatchIncrementalResult */.GG)(result) && !result.hasNext);
                     if (update) {
                         if (!skipCache) {
                             var diff = cache.diff({
@@ -19610,16 +19641,24 @@ var QueryManager = (function () {
                                 optimistic: false,
                                 returnPartialData: true,
                             });
-                            if (diff.complete && !(isExecutionPatchIncrementalResult(result))) {
+                            if (diff.complete) {
                                 result = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, result), { data: diff.result });
+                                if ('incremental' in result) {
+                                    delete result.incremental;
+                                }
+                                if ('hasNext' in result) {
+                                    delete result.hasNext;
+                                }
                             }
                         }
-                        update(cache, result, {
-                            context: mutation.context,
-                            variables: mutation.variables,
-                        });
+                        if (isFinalResult) {
+                            update(cache, result, {
+                                context: mutation.context,
+                                variables: mutation.variables,
+                            });
+                        }
                     }
-                    if (!skipCache && !mutation.keepRootFields) {
+                    if (!skipCache && !mutation.keepRootFields && isFinalResult) {
                         cache.modify({
                             id: 'ROOT_MUTATION',
                             fields: function (value, _a) {
@@ -19987,17 +20026,8 @@ var QueryManager = (function () {
         var requestId = queryInfo.lastRequestId = this.generateRequestId();
         var linkDocument = this.cache.transformForLink(this.transform(queryInfo.document).document);
         return asyncMap(this.getObservableFromLink(linkDocument, options.context, options.variables), function (result) {
-            var graphQLErrors = (0,arrays/* isNonEmptyArray */.O)(result.errors)
-                ? result.errors.slice(0)
-                : [];
-            if ('incremental' in result && (0,arrays/* isNonEmptyArray */.O)(result.incremental)) {
-                result.incremental.forEach(function (incrementalResult) {
-                    if (incrementalResult.errors) {
-                        graphQLErrors.push.apply(graphQLErrors, incrementalResult.errors);
-                    }
-                });
-            }
-            var hasErrors = (0,arrays/* isNonEmptyArray */.O)(graphQLErrors);
+            var graphQLErrors = getGraphQLErrorsFromResult(result);
+            var hasErrors = graphQLErrors.length > 0;
             if (requestId >= queryInfo.lastRequestId) {
                 if (hasErrors && options.errorPolicy === "none") {
                     throw queryInfo.markError(new errors/* ApolloError */.c({
@@ -21070,7 +21100,7 @@ function logMissingFieldErrors(missing) {
 /* harmony export */ });
 /* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _ApolloClient_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2359);
+	/* harmony import */ var _ApolloClient_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5614);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _ApolloClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4012);
@@ -23869,6 +23899,57 @@ function filterInPlace(array, test, context) {
     return array;
 }
 //# sourceMappingURL=filterInPlace.js.map
+
+/***/ }),
+
+/***/ 7280:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "GG": () => (/* binding */ isExecutionPatchIncrementalResult),
+/* harmony export */   "M0": () => (/* binding */ isExecutionPatchResult),
+/* harmony export */   "mT": () => (/* binding */ mergeIncrementalData)
+/* harmony export */ });
+/* unused harmony export isExecutionPatchInitialResult */
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _arrays_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1436);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _mergeDeep_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(182);
+}
+
+
+function isExecutionPatchIncrementalResult(value) {
+    return "incremental" in value;
+}
+function isExecutionPatchInitialResult(value) {
+    return "hasNext" in value && "data" in value;
+}
+function isExecutionPatchResult(value) {
+    return (isExecutionPatchIncrementalResult(value) ||
+        isExecutionPatchInitialResult(value));
+}
+function mergeIncrementalData(prevResult, result) {
+    var mergedData = prevResult;
+    var merger = new _mergeDeep_js__WEBPACK_IMPORTED_MODULE_0__/* .DeepMerger */ .w0();
+    if (isExecutionPatchIncrementalResult(result) &&
+        (0,_arrays_js__WEBPACK_IMPORTED_MODULE_1__/* .isNonEmptyArray */ .O)(result.incremental)) {
+        result.incremental.forEach(function (_a) {
+            var data = _a.data, path = _a.path;
+            for (var i = path.length - 1; i >= 0; --i) {
+                var key = path[i];
+                var isNumericKey = !isNaN(+key);
+                var parent_1 = isNumericKey ? [] : {};
+                parent_1[key] = data;
+                data = parent_1;
+            }
+            mergedData = merger.merge(mergedData, data);
+        });
+    }
+    return mergedData;
+}
+//# sourceMappingURL=incrementalResult.js.map
 
 /***/ }),
 
