@@ -18612,7 +18612,7 @@ var ApolloLink = __webpack_require__(3581);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
 var execute = __webpack_require__(7037);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.7.3';
+var version = '3.7.4';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
@@ -22906,6 +22906,7 @@ var EAGER_METHODS = (/* runtime-dependent pure expression or super */ /^(33[45]|
     'subscribeToMore',
 ]) : null);
 function useLazyQuery(query, options) {
+    var abortControllersRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(new Set());
     var internalState = (0,_useQuery_js__WEBPACK_IMPORTED_MODULE_1__/* .useInternalState */ .A)((0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__/* .useApolloClient */ .x)(options && options.client), query);
     var execOptionsRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
     var merged = execOptionsRef.current
@@ -22936,14 +22937,28 @@ function useLazyQuery(query, options) {
         return eagerMethods;
     }, []);
     Object.assign(result, eagerMethods);
+    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+        return function () {
+            abortControllersRef.current.forEach(function (controller) {
+                controller.abort();
+            });
+        };
+    }, []);
     var execute = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (executeOptions) {
+        var controller = new AbortController();
+        abortControllersRef.current.add(controller);
         execOptionsRef.current = executeOptions ? (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)({}, executeOptions), { fetchPolicy: executeOptions.fetchPolicy || initialFetchPolicy }) : {
             fetchPolicy: initialFetchPolicy,
         };
         var promise = internalState
-            .asyncUpdate()
-            .then(function (queryResult) { return Object.assign(queryResult, eagerMethods); });
-        promise.catch(function () { });
+            .asyncUpdate(controller.signal)
+            .then(function (queryResult) {
+            abortControllersRef.current.delete(controller);
+            return Object.assign(queryResult, eagerMethods);
+        });
+        promise.catch(function () {
+            abortControllersRef.current.delete(controller);
+        });
         return promise;
     }, []);
     return [execute, result];
@@ -23018,7 +23033,7 @@ function useMutation(mutation, options) {
         var mutationId = ++ref.current.mutationId;
         var clientOptions = (0,_core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .mergeOptions */ .J)(baseOptions, executeOptions);
         return client.mutate(clientOptions).then(function (response) {
-            var _a, _b, _c;
+            var _a;
             var data = response.data, errors = response.errors;
             var error = errors && errors.length > 0
                 ? new _errors_index_js__WEBPACK_IMPORTED_MODULE_6__/* .ApolloError */ .c({ graphQLErrors: errors })
@@ -23036,11 +23051,11 @@ function useMutation(mutation, options) {
                     setResult(ref.current.result = result_1);
                 }
             }
-            (_b = (_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onCompleted) === null || _b === void 0 ? void 0 : _b.call(_a, response.data, clientOptions);
-            (_c = executeOptions.onCompleted) === null || _c === void 0 ? void 0 : _c.call(executeOptions, response.data, clientOptions);
+            var onCompleted = executeOptions.onCompleted || ((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onCompleted);
+            onCompleted === null || onCompleted === void 0 ? void 0 : onCompleted(response.data, clientOptions);
             return response;
         }).catch(function (error) {
-            var _a, _b, _c, _d;
+            var _a;
             if (mutationId === ref.current.mutationId &&
                 ref.current.isMounted) {
                 var result_2 = {
@@ -23054,9 +23069,9 @@ function useMutation(mutation, options) {
                     setResult(ref.current.result = result_2);
                 }
             }
-            if (((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onError) || clientOptions.onError) {
-                (_c = (_b = ref.current.options) === null || _b === void 0 ? void 0 : _b.onError) === null || _c === void 0 ? void 0 : _c.call(_b, error, clientOptions);
-                (_d = executeOptions.onError) === null || _d === void 0 ? void 0 : _d.call(executeOptions, error, clientOptions);
+            var onError = executeOptions.onError || ((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onError);
+            if (onError) {
+                onError(error, clientOptions);
                 return { data: void 0, errors: error };
             }
             throw error;
@@ -23164,11 +23179,19 @@ var InternalState = (function () {
     InternalState.prototype.forceUpdate = function () {
         __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.warn */ .kG.warn("Calling default no-op implementation of InternalState#forceUpdate");
     };
-    InternalState.prototype.asyncUpdate = function () {
+    InternalState.prototype.asyncUpdate = function (signal) {
         var _this = this;
-        return new Promise(function (resolve) {
+        return new Promise(function (resolve, reject) {
+            var watchQueryOptions = _this.watchQueryOptions;
+            var handleAborted = function () {
+                _this.asyncResolveFns.delete(resolve);
+                _this.optionsToIgnoreOnce.delete(watchQueryOptions);
+                signal.removeEventListener('abort', handleAborted);
+                reject(signal.reason);
+            };
             _this.asyncResolveFns.add(resolve);
-            _this.optionsToIgnoreOnce.add(_this.watchQueryOptions);
+            _this.optionsToIgnoreOnce.add(watchQueryOptions);
+            signal.addEventListener('abort', handleAborted);
             _this.forceUpdate();
         });
     };
@@ -23345,9 +23368,10 @@ var InternalState = (function () {
     InternalState.prototype.handleErrorOrCompleted = function (result) {
         var _this = this;
         if (!result.loading) {
+            var error_1 = this.toApolloError(result);
             Promise.resolve().then(function () {
-                if (result.error) {
-                    _this.onError(result.error);
+                if (error_1) {
+                    _this.onError(error_1);
                 }
                 else if (result.data) {
                     _this.onCompleted(result.data);
@@ -23356,6 +23380,11 @@ var InternalState = (function () {
                 __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.warn */ .kG.warn(error);
             });
         }
+    };
+    InternalState.prototype.toApolloError = function (result) {
+        return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_13__/* .isNonEmptyArray */ .O)(result.errors)
+            ? new _errors_index_js__WEBPACK_IMPORTED_MODULE_14__/* .ApolloError */ .c({ graphQLErrors: result.errors })
+            : result.error;
     };
     InternalState.prototype.getCurrentResult = function () {
         if (!this.result) {
