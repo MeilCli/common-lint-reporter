@@ -7939,7 +7939,8 @@ const defaultOptions = {
     cdataPropName: false,
     numberParseOptions: {
       hex: true,
-      leadingZeros: true
+      leadingZeros: true,
+      eNotation: false
     },
     tagValueProcessor: function(tagName, val) {
       return val;
@@ -18612,7 +18613,7 @@ var ApolloLink = __webpack_require__(3581);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
 var execute = __webpack_require__(7037);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.7.4';
+var version = '3.7.5';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
@@ -20218,6 +20219,11 @@ var QueryManager = (function () {
                     variables: variables,
                     onlyRunForcedResolvers: true,
                 }).then(function (resolved) { return fromData(resolved.data || void 0); });
+            }
+            if (errorPolicy === 'none' &&
+                networkStatus === core_networkStatus/* NetworkStatus.refetch */.I.refetch &&
+                Array.isArray(diff.missing)) {
+                return fromData(void 0);
             }
             return fromData(data);
         };
@@ -21833,6 +21839,7 @@ var createHttpLink = function (linkOptions) {
             options.method = 'GET';
         }
         if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_8__/* .hasDirectives */ .FS)(['defer'], operation.query)) {
+            options.headers = options.headers || {};
             options.headers.accept = "multipart/mixed; deferSpec=20220824, application/json";
         }
         if (options.method === 'GET') {
@@ -22466,7 +22473,9 @@ function selectHttpOptionsAndBodyInternal(operation, printer) {
         }
         http = (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)({}, http), config.http);
     });
-    options.headers = removeDuplicateHeaders(options.headers, http.preserveHeaderCase);
+    if (options.headers) {
+        options.headers = removeDuplicateHeaders(options.headers, http.preserveHeaderCase);
+    }
     var operationName = operation.operationName, extensions = operation.extensions, variables = operation.variables, query = operation.query;
     var body = { operationName: operationName, variables: variables };
     if (http.includeExtensions)
@@ -22843,20 +22852,21 @@ function useFragment_experimental(options) {
     var diffOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({}, rest), { id: typeof from === "string" ? from : cache.identify(from), query: cache["getFragmentDoc"](fragment, fragmentName), optimistic: optimistic });
     var resultRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
     var latestDiff = cache.diff(diffOptions);
-    return (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_4__/* .useSyncExternalStore */ .$)(function (forceUpdate) {
-        return cache.watch((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({}, diffOptions), { immediate: true, callback: function (diff) {
-                if (!(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(diff, latestDiff)) {
-                    resultRef.current = diffToResult(latestDiff = diff);
-                    forceUpdate();
-                }
-            } }));
-    }, function () {
+    var getSnapshot = function () {
         var latestDiffToResult = diffToResult(latestDiff);
         return resultRef.current &&
             (0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(resultRef.current.data, latestDiffToResult.data)
             ? resultRef.current
             : (resultRef.current = latestDiffToResult);
-    });
+    };
+    return (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_4__/* .useSyncExternalStore */ .$)(function (forceUpdate) {
+        return cache.watch((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({}, diffOptions), { immediate: true, callback: function (diff) {
+                if (!(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(diff, latestDiff)) {
+                    resultRef.current = diffToResult((latestDiff = diff));
+                    forceUpdate();
+                }
+            } }));
+    }, getSnapshot, getSnapshot);
 }
 function diffToResult(diff) {
     var result = {
