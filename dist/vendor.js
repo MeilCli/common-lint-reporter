@@ -18608,7 +18608,7 @@ var ApolloLink = __webpack_require__(3581);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
 var execute = __webpack_require__(7037);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.7.6';
+var version = '3.7.7';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
@@ -19154,6 +19154,9 @@ var LocalState = (function () {
             var variables, fieldName, aliasedFieldName, aliasUsed, defaultResult, resultPromise, resolverType, resolverMap, resolve;
             var _this = this;
             return (0,tslib_es6/* __generator */.Jh)(this, function (_a) {
+                if (!rootValue) {
+                    return [2, null];
+                }
                 variables = execContext.variables;
                 fieldName = field.name.value;
                 aliasedFieldName = (0,storeUtils/* resultKeyNameFromField */.u2)(field);
@@ -23024,13 +23027,13 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 }
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7294);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4012);
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4012);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useQuery_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1641);
+	/* harmony import */ var _useQuery_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1641);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6252);
+	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6252);
 }
 
 
@@ -23046,12 +23049,11 @@ var EAGER_METHODS = (/* runtime-dependent pure expression or super */ /^(33[45]|
     'subscribeToMore',
 ]) : null);
 function useLazyQuery(query, options) {
+    var _a;
     var abortControllersRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(new Set());
-    var internalState = (0,_useQuery_js__WEBPACK_IMPORTED_MODULE_1__/* .useInternalState */ .A)((0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__/* .useApolloClient */ .x)(options && options.client), query);
     var execOptionsRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
-    var merged = execOptionsRef.current
-        ? (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .mergeOptions */ .J)(options, execOptionsRef.current)
-        : options;
+    var merged = execOptionsRef.current ? (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .mergeOptions */ .J)(options, execOptionsRef.current) : options;
+    var internalState = (0,_useQuery_js__WEBPACK_IMPORTED_MODULE_2__/* .useInternalState */ .A)((0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .x)(options && options.client), (_a = merged === null || merged === void 0 ? void 0 : merged.query) !== null && _a !== void 0 ? _a : query);
     var useQueryResult = internalState.useQuery((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)({}, merged), { skip: !execOptionsRef.current }));
     var initialFetchPolicy = useQueryResult.observable.options.initialFetchPolicy ||
         internalState.getDefaultFetchPolicy();
