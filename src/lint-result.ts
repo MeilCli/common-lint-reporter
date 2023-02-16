@@ -4,7 +4,7 @@ import { Option } from "./option";
 
 export type LintResultLevel = "notice" | "warning" | "failure";
 
-export interface LintResult {
+export interface LintResult{
     path: string;
     rule: string;
     message: string;
