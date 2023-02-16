@@ -18611,7 +18611,7 @@ var ApolloLink = __webpack_require__(3581);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
 var execute = __webpack_require__(7037);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.7.7';
+var version = '3.7.8';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
@@ -18756,9 +18756,9 @@ var Concast = (function (_super) {
                 }
             },
             complete: function () {
-                var sub = _this.sub;
+                var _a = _this, sub = _a.sub, _b = _a.sources, sources = _b === void 0 ? [] : _b;
                 if (sub !== null) {
-                    var value = _this.sources.shift();
+                    var value = sources.shift();
                     if (!value) {
                         if (sub)
                             setTimeout(function () { return sub.unsubscribe(); });
