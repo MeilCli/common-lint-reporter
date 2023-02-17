@@ -1357,6 +1357,8 @@ var ProjectV2ViewLayout;
 (function (ProjectV2ViewLayout) {
     /** Board layout */
     ProjectV2ViewLayout["BoardLayout"] = "BOARD_LAYOUT";
+    /** Roadmap layout */
+    ProjectV2ViewLayout["RoadmapLayout"] = "ROADMAP_LAYOUT";
     /** Table layout */
     ProjectV2ViewLayout["TableLayout"] = "TABLE_LAYOUT";
 })(ProjectV2ViewLayout = exports.ProjectV2ViewLayout || (exports.ProjectV2ViewLayout = {}));
