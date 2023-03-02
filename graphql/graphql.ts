@@ -1012,6 +1012,8 @@ export type BranchProtectionRule = Node & {
   requireLastPushApproval: Scalars['Boolean'];
   /** Number of approving reviews required to update matching branches. */
   requiredApprovingReviewCount?: Maybe<Scalars['Int']>;
+  /** List of required deployment environments that must be deployed successfully to update matching branches */
+  requiredDeploymentEnvironments?: Maybe<Array<Maybe<Scalars['String']>>>;
   /** List of required status check contexts that must pass for commits to be accepted to matching branches. */
   requiredStatusCheckContexts?: Maybe<Array<Maybe<Scalars['String']>>>;
   /** List of required status checks that must pass for commits to be accepted to matching branches. */
@@ -1024,6 +1026,8 @@ export type BranchProtectionRule = Node & {
   requiresCommitSignatures: Scalars['Boolean'];
   /** Are conversations required to be resolved before merging. */
   requiresConversationResolution: Scalars['Boolean'];
+  /** Does this branch require deployment to specific environments before merging */
+  requiresDeployments: Scalars['Boolean'];
   /** Are merge commits prohibited from being pushed to this branch. */
   requiresLinearHistory: Scalars['Boolean'];
   /** Are status checks required to update matching branches. */
@@ -3072,6 +3076,8 @@ export type CreateBranchProtectionRuleInput = {
   requireLastPushApproval?: InputMaybe<Scalars['Boolean']>;
   /** Number of approving reviews required to update matching branches. */
   requiredApprovingReviewCount?: InputMaybe<Scalars['Int']>;
+  /** The list of required deployment environments */
+  requiredDeploymentEnvironments?: InputMaybe<Array<Scalars['String']>>;
   /** List of required status check contexts that must pass for commits to be accepted to matching branches. */
   requiredStatusCheckContexts?: InputMaybe<Array<Scalars['String']>>;
   /** The list of required status checks */
@@ -3084,6 +3090,8 @@ export type CreateBranchProtectionRuleInput = {
   requiresCommitSignatures?: InputMaybe<Scalars['Boolean']>;
   /** Are conversations required to be resolved before merging. */
   requiresConversationResolution?: InputMaybe<Scalars['Boolean']>;
+  /** Are successful deployments required before merging. */
+  requiresDeployments?: InputMaybe<Scalars['Boolean']>;
   /** Are merge commits prohibited from being pushed to this branch. */
   requiresLinearHistory?: InputMaybe<Scalars['Boolean']>;
   /** Are status checks required to update matching branches. */
@@ -24579,6 +24587,8 @@ export type UpdateBranchProtectionRuleInput = {
   requireLastPushApproval?: InputMaybe<Scalars['Boolean']>;
   /** Number of approving reviews required to update matching branches. */
   requiredApprovingReviewCount?: InputMaybe<Scalars['Int']>;
+  /** The list of required deployment environments */
+  requiredDeploymentEnvironments?: InputMaybe<Array<Scalars['String']>>;
   /** List of required status check contexts that must pass for commits to be accepted to matching branches. */
   requiredStatusCheckContexts?: InputMaybe<Array<Scalars['String']>>;
   /** The list of required status checks */
@@ -24591,6 +24601,8 @@ export type UpdateBranchProtectionRuleInput = {
   requiresCommitSignatures?: InputMaybe<Scalars['Boolean']>;
   /** Are conversations required to be resolved before merging. */
   requiresConversationResolution?: InputMaybe<Scalars['Boolean']>;
+  /** Are successful deployments required before merging. */
+  requiresDeployments?: InputMaybe<Scalars['Boolean']>;
   /** Are merge commits prohibited from being pushed to this branch. */
   requiresLinearHistory?: InputMaybe<Scalars['Boolean']>;
   /** Are status checks required to update matching branches. */
@@ -26680,6 +26692,8 @@ export type WorkflowRun = Node & UniformResourceLocatable & {
   databaseId?: Maybe<Scalars['Int']>;
   /** The log of deployment reviews */
   deploymentReviews: DeploymentReviewConnection;
+  /** The event that triggered the workflow run */
+  event: Scalars['String'];
   id: Scalars['ID'];
   /** The pending deployment requests of all check runs in this workflow run */
   pendingDeploymentRequests: DeploymentRequestConnection;
@@ -29772,12 +29786,14 @@ export type BranchProtectionRuleResolvers<ContextType = any, ParentType extends 
   repository?: Resolver<Maybe<ResolversTypes['Repository']>, ParentType, ContextType>;
   requireLastPushApproval?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   requiredApprovingReviewCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  requiredDeploymentEnvironments?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   requiredStatusCheckContexts?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   requiredStatusChecks?: Resolver<Maybe<Array<ResolversTypes['RequiredStatusCheckDescription']>>, ParentType, ContextType>;
   requiresApprovingReviews?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   requiresCodeOwnerReviews?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   requiresCommitSignatures?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   requiresConversationResolution?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  requiresDeployments?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   requiresLinearHistory?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   requiresStatusChecks?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   requiresStrictStatusChecks?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -38471,6 +38487,7 @@ export type WorkflowRunResolvers<ContextType = any, ParentType extends Resolvers
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   deploymentReviews?: Resolver<ResolversTypes['DeploymentReviewConnection'], ParentType, ContextType, Partial<WorkflowRunDeploymentReviewsArgs>>;
+  event?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   pendingDeploymentRequests?: Resolver<ResolversTypes['DeploymentRequestConnection'], ParentType, ContextType, Partial<WorkflowRunPendingDeploymentRequestsArgs>>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
