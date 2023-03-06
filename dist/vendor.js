@@ -18638,7 +18638,7 @@ var ApolloLink = __webpack_require__(3581);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
 var execute = __webpack_require__(7037);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.7.9';
+var version = '3.7.10';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
@@ -20625,12 +20625,18 @@ var ApolloClient = (function () {
         return this.cache.readFragment(options, optimistic);
     };
     ApolloClient.prototype.writeQuery = function (options) {
-        this.cache.writeQuery(options);
-        this.queryManager.broadcastQueries();
+        var ref = this.cache.writeQuery(options);
+        if (options.broadcast !== false) {
+            this.queryManager.broadcastQueries();
+        }
+        return ref;
     };
     ApolloClient.prototype.writeFragment = function (options) {
-        this.cache.writeFragment(options);
-        this.queryManager.broadcastQueries();
+        var ref = this.cache.writeFragment(options);
+        if (options.broadcast !== false) {
+            this.queryManager.broadcastQueries();
+        }
+        return ref;
     };
     ApolloClient.prototype.__actionHookForDevTools = function (cb) {
         this.devToolsHookCb = cb;
@@ -23191,8 +23197,9 @@ function useMutation(mutation, options) {
     }
     var execute = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (executeOptions) {
         if (executeOptions === void 0) { executeOptions = {}; }
-        var _a = ref.current, client = _a.client, options = _a.options, mutation = _a.mutation;
+        var _a = ref.current, options = _a.options, mutation = _a.mutation;
         var baseOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)({}, options), { mutation: mutation });
+        var client = executeOptions.client || ref.current.client;
         if (!ref.current.result.loading && !baseOptions.ignoreResults && ref.current.isMounted) {
             setResult(ref.current.result = {
                 loading: true,
@@ -24732,17 +24739,21 @@ function checkDocument(doc) {
 }
 function getOperationDefinition(doc) {
     checkDocument(doc);
-    return doc.definitions.filter(function (definition) { return definition.kind === 'OperationDefinition'; })[0];
+    return doc.definitions.filter(function (definition) {
+        return definition.kind === 'OperationDefinition';
+    })[0];
 }
 function getOperationName(doc) {
     return (doc.definitions
         .filter(function (definition) {
-        return definition.kind === 'OperationDefinition' && definition.name;
+        return definition.kind === 'OperationDefinition' && !!definition.name;
     })
         .map(function (x) { return x.name.value; })[0] || null);
 }
 function getFragmentDefinitions(doc) {
-    return doc.definitions.filter(function (definition) { return definition.kind === 'FragmentDefinition'; });
+    return doc.definitions.filter(function (definition) {
+        return definition.kind === 'FragmentDefinition';
+    });
 }
 function getQueryDefinition(doc) {
     var queryDef = getOperationDefinition(doc);
