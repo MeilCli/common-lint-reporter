@@ -6067,6 +6067,246 @@ legacyRestEndpointMethods.VERSION = VERSION;
 
 /***/ }),
 
+/***/ 8751:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "g7": () => (/* binding */ Slot)
+/* harmony export */ });
+/* unused harmony exports asyncFromGen, bind, noContext, setTimeout, wrapYieldingFiberMethods */
+// This currentContext variable will only be used if the makeSlotClass
+// function is called, which happens only if this is the first copy of the
+// @wry/context package to be imported.
+var currentContext = null;
+// This unique internal object is used to denote the absence of a value
+// for a given Slot, and is never exposed to outside code.
+var MISSING_VALUE = {};
+var idCounter = 1;
+// Although we can't do anything about the cost of duplicated code from
+// accidentally bundling multiple copies of the @wry/context package, we can
+// avoid creating the Slot class more than once using makeSlotClass.
+var makeSlotClass = function () { return /** @class */ (function () {
+    function Slot() {
+        // If you have a Slot object, you can find out its slot.id, but you cannot
+        // guess the slot.id of a Slot you don't have access to, thanks to the
+        // randomized suffix.
+        this.id = [
+            "slot",
+            idCounter++,
+            Date.now(),
+            Math.random().toString(36).slice(2),
+        ].join(":");
+    }
+    Slot.prototype.hasValue = function () {
+        for (var context_1 = currentContext; context_1; context_1 = context_1.parent) {
+            // We use the Slot object iself as a key to its value, which means the
+            // value cannot be obtained without a reference to the Slot object.
+            if (this.id in context_1.slots) {
+                var value = context_1.slots[this.id];
+                if (value === MISSING_VALUE)
+                    break;
+                if (context_1 !== currentContext) {
+                    // Cache the value in currentContext.slots so the next lookup will
+                    // be faster. This caching is safe because the tree of contexts and
+                    // the values of the slots are logically immutable.
+                    currentContext.slots[this.id] = value;
+                }
+                return true;
+            }
+        }
+        if (currentContext) {
+            // If a value was not found for this Slot, it's never going to be found
+            // no matter how many times we look it up, so we might as well cache
+            // the absence of the value, too.
+            currentContext.slots[this.id] = MISSING_VALUE;
+        }
+        return false;
+    };
+    Slot.prototype.getValue = function () {
+        if (this.hasValue()) {
+            return currentContext.slots[this.id];
+        }
+    };
+    Slot.prototype.withValue = function (value, callback, 
+    // Given the prevalence of arrow functions, specifying arguments is likely
+    // to be much more common than specifying `this`, hence this ordering:
+    args, thisArg) {
+        var _a;
+        var slots = (_a = {
+                __proto__: null
+            },
+            _a[this.id] = value,
+            _a);
+        var parent = currentContext;
+        currentContext = { parent: parent, slots: slots };
+        try {
+            // Function.prototype.apply allows the arguments array argument to be
+            // omitted or undefined, so args! is fine here.
+            return callback.apply(thisArg, args);
+        }
+        finally {
+            currentContext = parent;
+        }
+    };
+    // Capture the current context and wrap a callback function so that it
+    // reestablishes the captured context when called.
+    Slot.bind = function (callback) {
+        var context = currentContext;
+        return function () {
+            var saved = currentContext;
+            try {
+                currentContext = context;
+                return callback.apply(this, arguments);
+            }
+            finally {
+                currentContext = saved;
+            }
+        };
+    };
+    // Immediately run a callback function without any captured context.
+    Slot.noContext = function (callback, 
+    // Given the prevalence of arrow functions, specifying arguments is likely
+    // to be much more common than specifying `this`, hence this ordering:
+    args, thisArg) {
+        if (currentContext) {
+            var saved = currentContext;
+            try {
+                currentContext = null;
+                // Function.prototype.apply allows the arguments array argument to be
+                // omitted or undefined, so args! is fine here.
+                return callback.apply(thisArg, args);
+            }
+            finally {
+                currentContext = saved;
+            }
+        }
+        else {
+            return callback.apply(thisArg, args);
+        }
+    };
+    return Slot;
+}()); };
+function maybe(fn) {
+    try {
+        return fn();
+    }
+    catch (ignored) { }
+}
+// We store a single global implementation of the Slot class as a permanent
+// non-enumerable property of the globalThis object. This obfuscation does
+// nothing to prevent access to the Slot class, but at least it ensures the
+// implementation (i.e. currentContext) cannot be tampered with, and all copies
+// of the @wry/context package (hopefully just one) will share the same Slot
+// implementation. Since the first copy of the @wry/context package to be
+// imported wins, this technique imposes a steep cost for any future breaking
+// changes to the Slot class.
+var globalKey = "@wry/context:Slot";
+var host = 
+// Prefer globalThis when available.
+// https://github.com/benjamn/wryware/issues/347
+maybe(function () { return globalThis; }) ||
+    // Fall back to global, which works in Node.js and may be converted by some
+    // bundlers to the appropriate identifier (window, self, ...) depending on the
+    // bundling target. https://github.com/endojs/endo/issues/576#issuecomment-1178515224
+    maybe(function () { return global; }) ||
+    // Otherwise, use a dummy host that's local to this module. We used to fall
+    // back to using the Array constructor as a namespace, but that was flagged in
+    // https://github.com/benjamn/wryware/issues/347, and can be avoided.
+    Object.create(null);
+// Whichever globalHost we're using, make TypeScript happy about the additional
+// globalKey property.
+var globalHost = host;
+var Slot = globalHost[globalKey] ||
+    // Earlier versions of this package stored the globalKey property on the Array
+    // constructor, so we check there as well, to prevent Slot class duplication.
+    Array[globalKey] ||
+    (function (Slot) {
+        try {
+            Object.defineProperty(globalHost, globalKey, {
+                value: Slot,
+                enumerable: false,
+                writable: false,
+                // When it was possible for globalHost to be the Array constructor (a
+                // legacy Slot dedup strategy), it was important for the property to be
+                // configurable:true so it could be deleted. That does not seem to be as
+                // important when globalHost is the global object, but I don't want to
+                // cause similar problems again, and configurable:true seems safest.
+                // https://github.com/endojs/endo/issues/576#issuecomment-1178274008
+                configurable: true
+            });
+        }
+        finally {
+            return Slot;
+        }
+    })(makeSlotClass());
+
+var bind = Slot.bind, noContext = Slot.noContext;
+function setTimeoutWithContext(callback, delay) {
+    return setTimeout(bind(callback), delay);
+}
+// Turn any generator function into an async function (using yield instead
+// of await), with context automatically preserved across yields.
+function asyncFromGen(genFn) {
+    return function () {
+        var gen = genFn.apply(this, arguments);
+        var boundNext = bind(gen.next);
+        var boundThrow = bind(gen.throw);
+        return new Promise(function (resolve, reject) {
+            function invoke(method, argument) {
+                try {
+                    var result = method.call(gen, argument);
+                }
+                catch (error) {
+                    return reject(error);
+                }
+                var next = result.done ? resolve : invokeNext;
+                if (isPromiseLike(result.value)) {
+                    result.value.then(next, result.done ? reject : invokeThrow);
+                }
+                else {
+                    next(result.value);
+                }
+            }
+            var invokeNext = function (value) { return invoke(boundNext, value); };
+            var invokeThrow = function (error) { return invoke(boundThrow, error); };
+            invokeNext();
+        });
+    };
+}
+function isPromiseLike(value) {
+    return value && typeof value.then === "function";
+}
+// If you use the fibers npm package to implement coroutines in Node.js,
+// you should call this function at least once to ensure context management
+// remains coherent across any yields.
+var wrappedFibers = (/* unused pure expression or super */ null && ([]));
+function wrapYieldingFiberMethods(Fiber) {
+    // There can be only one implementation of Fiber per process, so this array
+    // should never grow longer than one element.
+    if (wrappedFibers.indexOf(Fiber) < 0) {
+        var wrap = function (obj, method) {
+            var fn = obj[method];
+            obj[method] = function () {
+                return noContext(fn, arguments, this);
+            };
+        };
+        // These methods can yield, according to
+        // https://github.com/laverdet/node-fibers/blob/ddebed9b8ae3883e57f822e2108e6943e5c8d2a8/fibers.js#L97-L100
+        wrap(Fiber, "yield");
+        wrap(Fiber.prototype, "run");
+        wrap(Fiber.prototype, "throwInto");
+        wrappedFibers.push(Fiber);
+    }
+    return Fiber;
+}
+
+
+//# sourceMappingURL=context.esm.js.map
+
+
+/***/ }),
+
 /***/ 2152:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -13959,223 +14199,17 @@ function onceStrict (fn) {
 
 /***/ }),
 
-/***/ 1361:
+/***/ 507:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  "dP": () => (/* binding */ dep),
-  "re": () => (/* binding */ wrap)
-});
-
-// UNUSED EXPORTS: KeyTrie, asyncFromGen, bindContext, defaultMakeCacheKey, noContext, setTimeout
-
-// EXTERNAL MODULE: ./node_modules/@wry/trie/lib/trie.esm.js
-var trie_esm = __webpack_require__(657);
-;// CONCATENATED MODULE: ./node_modules/@wry/context/lib/context.esm.js
-// This currentContext variable will only be used if the makeSlotClass
-// function is called, which happens only if this is the first copy of the
-// @wry/context package to be imported.
-var currentContext = null;
-// This unique internal object is used to denote the absence of a value
-// for a given Slot, and is never exposed to outside code.
-var MISSING_VALUE = {};
-var idCounter = 1;
-// Although we can't do anything about the cost of duplicated code from
-// accidentally bundling multiple copies of the @wry/context package, we can
-// avoid creating the Slot class more than once using makeSlotClass.
-var makeSlotClass = function () { return /** @class */ (function () {
-    function Slot() {
-        // If you have a Slot object, you can find out its slot.id, but you cannot
-        // guess the slot.id of a Slot you don't have access to, thanks to the
-        // randomized suffix.
-        this.id = [
-            "slot",
-            idCounter++,
-            Date.now(),
-            Math.random().toString(36).slice(2),
-        ].join(":");
-    }
-    Slot.prototype.hasValue = function () {
-        for (var context_1 = currentContext; context_1; context_1 = context_1.parent) {
-            // We use the Slot object iself as a key to its value, which means the
-            // value cannot be obtained without a reference to the Slot object.
-            if (this.id in context_1.slots) {
-                var value = context_1.slots[this.id];
-                if (value === MISSING_VALUE)
-                    break;
-                if (context_1 !== currentContext) {
-                    // Cache the value in currentContext.slots so the next lookup will
-                    // be faster. This caching is safe because the tree of contexts and
-                    // the values of the slots are logically immutable.
-                    currentContext.slots[this.id] = value;
-                }
-                return true;
-            }
-        }
-        if (currentContext) {
-            // If a value was not found for this Slot, it's never going to be found
-            // no matter how many times we look it up, so we might as well cache
-            // the absence of the value, too.
-            currentContext.slots[this.id] = MISSING_VALUE;
-        }
-        return false;
-    };
-    Slot.prototype.getValue = function () {
-        if (this.hasValue()) {
-            return currentContext.slots[this.id];
-        }
-    };
-    Slot.prototype.withValue = function (value, callback, 
-    // Given the prevalence of arrow functions, specifying arguments is likely
-    // to be much more common than specifying `this`, hence this ordering:
-    args, thisArg) {
-        var _a;
-        var slots = (_a = {
-                __proto__: null
-            },
-            _a[this.id] = value,
-            _a);
-        var parent = currentContext;
-        currentContext = { parent: parent, slots: slots };
-        try {
-            // Function.prototype.apply allows the arguments array argument to be
-            // omitted or undefined, so args! is fine here.
-            return callback.apply(thisArg, args);
-        }
-        finally {
-            currentContext = parent;
-        }
-    };
-    // Capture the current context and wrap a callback function so that it
-    // reestablishes the captured context when called.
-    Slot.bind = function (callback) {
-        var context = currentContext;
-        return function () {
-            var saved = currentContext;
-            try {
-                currentContext = context;
-                return callback.apply(this, arguments);
-            }
-            finally {
-                currentContext = saved;
-            }
-        };
-    };
-    // Immediately run a callback function without any captured context.
-    Slot.noContext = function (callback, 
-    // Given the prevalence of arrow functions, specifying arguments is likely
-    // to be much more common than specifying `this`, hence this ordering:
-    args, thisArg) {
-        if (currentContext) {
-            var saved = currentContext;
-            try {
-                currentContext = null;
-                // Function.prototype.apply allows the arguments array argument to be
-                // omitted or undefined, so args! is fine here.
-                return callback.apply(thisArg, args);
-            }
-            finally {
-                currentContext = saved;
-            }
-        }
-        else {
-            return callback.apply(thisArg, args);
-        }
-    };
-    return Slot;
-}()); };
-// We store a single global implementation of the Slot class as a permanent
-// non-enumerable symbol property of the Array constructor. This obfuscation
-// does nothing to prevent access to the Slot class, but at least it ensures
-// the implementation (i.e. currentContext) cannot be tampered with, and all
-// copies of the @wry/context package (hopefully just one) will share the
-// same Slot implementation. Since the first copy of the @wry/context package
-// to be imported wins, this technique imposes a very high cost for any
-// future breaking changes to the Slot class.
-var globalKey = "@wry/context:Slot";
-var host = Array;
-var Slot = host[globalKey] || function () {
-    var Slot = makeSlotClass();
-    try {
-        Object.defineProperty(host, globalKey, {
-            value: host[globalKey] = Slot,
-            enumerable: false,
-            writable: false,
-            configurable: false,
-        });
-    }
-    finally {
-        return Slot;
-    }
-}();
-
-var bind = Slot.bind, noContext = Slot.noContext;
-function setTimeoutWithContext(callback, delay) {
-    return setTimeout(bind(callback), delay);
-}
-// Turn any generator function into an async function (using yield instead
-// of await), with context automatically preserved across yields.
-function asyncFromGen(genFn) {
-    return function () {
-        var gen = genFn.apply(this, arguments);
-        var boundNext = bind(gen.next);
-        var boundThrow = bind(gen.throw);
-        return new Promise(function (resolve, reject) {
-            function invoke(method, argument) {
-                try {
-                    var result = method.call(gen, argument);
-                }
-                catch (error) {
-                    return reject(error);
-                }
-                var next = result.done ? resolve : invokeNext;
-                if (isPromiseLike(result.value)) {
-                    result.value.then(next, result.done ? reject : invokeThrow);
-                }
-                else {
-                    next(result.value);
-                }
-            }
-            var invokeNext = function (value) { return invoke(boundNext, value); };
-            var invokeThrow = function (error) { return invoke(boundThrow, error); };
-            invokeNext();
-        });
-    };
-}
-function isPromiseLike(value) {
-    return value && typeof value.then === "function";
-}
-// If you use the fibers npm package to implement coroutines in Node.js,
-// you should call this function at least once to ensure context management
-// remains coherent across any yields.
-var wrappedFibers = (/* unused pure expression or super */ null && ([]));
-function wrapYieldingFiberMethods(Fiber) {
-    // There can be only one implementation of Fiber per process, so this array
-    // should never grow longer than one element.
-    if (wrappedFibers.indexOf(Fiber) < 0) {
-        var wrap = function (obj, method) {
-            var fn = obj[method];
-            obj[method] = function () {
-                return noContext(fn, arguments, this);
-            };
-        };
-        // These methods can yield, according to
-        // https://github.com/laverdet/node-fibers/blob/ddebed9b8ae3883e57f822e2108e6943e5c8d2a8/fibers.js#L97-L100
-        wrap(Fiber, "yield");
-        wrap(Fiber.prototype, "run");
-        wrap(Fiber.prototype, "throwInto");
-        wrappedFibers.push(Fiber);
-    }
-    return Fiber;
-}
-
-
-//# sourceMappingURL=context.esm.js.map
-
-;// CONCATENATED MODULE: ./node_modules/optimism/lib/bundle.esm.js
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "dP": () => (/* binding */ dep),
+/* harmony export */   "re": () => (/* binding */ wrap)
+/* harmony export */ });
+/* unused harmony export defaultMakeCacheKey */
+/* harmony import */ var _wry_trie__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(657);
+/* harmony import */ var _wry_context__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(8751);
 
 
 
@@ -14267,10 +14301,10 @@ var Cache = /** @class */ (function () {
     return Cache;
 }());
 
-var parentEntrySlot = new Slot();
+var parentEntrySlot = new _wry_context__WEBPACK_IMPORTED_MODULE_1__/* .Slot */ .g7();
 
 var _a;
-var bundle_esm_hasOwnProperty = Object.prototype.hasOwnProperty;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
 var 
 // This Array.from polyfill is restricted to working with Set<any> for now,
 // but we can improve the polyfill and add other input types, as needed. Note
@@ -14578,7 +14612,7 @@ function maybeSubscribe(entry, args) {
 var EntryMethods = {
     setDirty: true,
     dispose: true,
-    forget: true,
+    forget: true, // Fully remove parent Entry from LRU cache and computation graph
 };
 function dep(options) {
     var depsByKey = new Map();
@@ -14601,7 +14635,7 @@ function dep(options) {
         var dep = depsByKey.get(key);
         if (dep) {
             var m_1 = (entryMethodName &&
-                bundle_esm_hasOwnProperty.call(EntryMethods, entryMethodName)) ? entryMethodName : "setDirty";
+                hasOwnProperty.call(EntryMethods, entryMethodName)) ? entryMethodName : "setDirty";
             // We have to use toArray(dep).forEach instead of dep.forEach, because
             // modifying a Set while iterating over it can cause elements in the Set
             // to be removed from the Set before they've been iterated over.
@@ -14614,7 +14648,7 @@ function dep(options) {
 }
 
 function makeDefaultMakeCacheKeyFunction() {
-    var keyTrie = new trie_esm/* Trie */.B(typeof WeakMap === "function");
+    var keyTrie = new _wry_trie__WEBPACK_IMPORTED_MODULE_0__/* .Trie */ .B(typeof WeakMap === "function");
     return function () {
         return keyTrie.lookupArray(arguments);
     };
@@ -15842,7 +15876,7 @@ function wrappy (fn, cb) {
 /* harmony export */   "R": () => (/* binding */ ApolloCache)
 /* harmony export */ });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(655);
-/* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1361);
+/* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(507);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3361);
 
 
@@ -16126,8 +16160,8 @@ __webpack_require__.d(__webpack_exports__, {
 var tslib_es6 = __webpack_require__(655);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/globals/index.js + 5 modules
 var globals = __webpack_require__(846);
-// EXTERNAL MODULE: ./node_modules/optimism/lib/bundle.esm.js + 1 modules
-var bundle_esm = __webpack_require__(1361);
+// EXTERNAL MODULE: ./node_modules/optimism/lib/bundle.esm.js
+var bundle_esm = __webpack_require__(507);
 // EXTERNAL MODULE: ./node_modules/@wry/equality/lib/equality.esm.js
 var equality_esm = __webpack_require__(2152);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/cache/core/cache.js
@@ -16913,8 +16947,8 @@ function stringifyForDisplay(value) {
     }).split(JSON.stringify(undefId)).join("<undefined>");
 }
 //# sourceMappingURL=stringifyForDisplay.js.map
-// EXTERNAL MODULE: ./node_modules/@apollo/client/cache/inmemory/reactiveVars.js + 1 modules
-var reactiveVars = __webpack_require__(4770);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/cache/inmemory/reactiveVars.js
+var reactiveVars = __webpack_require__(6438);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/cache/inmemory/key-extractor.js
 
 
@@ -18303,262 +18337,28 @@ function resetCanonicalStringify() {
 
 /***/ }),
 
-/***/ 4770:
+/***/ 6438:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  "ab": () => (/* binding */ cacheSlot),
-  "li": () => (/* binding */ forgetCache),
-  "QS": () => (/* binding */ makeVar),
-  "_v": () => (/* binding */ recallCache)
-});
-
-// EXTERNAL MODULE: ./node_modules/optimism/lib/bundle.esm.js + 1 modules
-var bundle_esm = __webpack_require__(1361);
-;// CONCATENATED MODULE: ./node_modules/@apollo/client/node_modules/@wry/context/lib/context.esm.js
-// This currentContext variable will only be used if the makeSlotClass
-// function is called, which happens only if this is the first copy of the
-// @wry/context package to be imported.
-var currentContext = null;
-// This unique internal object is used to denote the absence of a value
-// for a given Slot, and is never exposed to outside code.
-var MISSING_VALUE = {};
-var idCounter = 1;
-// Although we can't do anything about the cost of duplicated code from
-// accidentally bundling multiple copies of the @wry/context package, we can
-// avoid creating the Slot class more than once using makeSlotClass.
-var makeSlotClass = function () { return /** @class */ (function () {
-    function Slot() {
-        // If you have a Slot object, you can find out its slot.id, but you cannot
-        // guess the slot.id of a Slot you don't have access to, thanks to the
-        // randomized suffix.
-        this.id = [
-            "slot",
-            idCounter++,
-            Date.now(),
-            Math.random().toString(36).slice(2),
-        ].join(":");
-    }
-    Slot.prototype.hasValue = function () {
-        for (var context_1 = currentContext; context_1; context_1 = context_1.parent) {
-            // We use the Slot object iself as a key to its value, which means the
-            // value cannot be obtained without a reference to the Slot object.
-            if (this.id in context_1.slots) {
-                var value = context_1.slots[this.id];
-                if (value === MISSING_VALUE)
-                    break;
-                if (context_1 !== currentContext) {
-                    // Cache the value in currentContext.slots so the next lookup will
-                    // be faster. This caching is safe because the tree of contexts and
-                    // the values of the slots are logically immutable.
-                    currentContext.slots[this.id] = value;
-                }
-                return true;
-            }
-        }
-        if (currentContext) {
-            // If a value was not found for this Slot, it's never going to be found
-            // no matter how many times we look it up, so we might as well cache
-            // the absence of the value, too.
-            currentContext.slots[this.id] = MISSING_VALUE;
-        }
-        return false;
-    };
-    Slot.prototype.getValue = function () {
-        if (this.hasValue()) {
-            return currentContext.slots[this.id];
-        }
-    };
-    Slot.prototype.withValue = function (value, callback, 
-    // Given the prevalence of arrow functions, specifying arguments is likely
-    // to be much more common than specifying `this`, hence this ordering:
-    args, thisArg) {
-        var _a;
-        var slots = (_a = {
-                __proto__: null
-            },
-            _a[this.id] = value,
-            _a);
-        var parent = currentContext;
-        currentContext = { parent: parent, slots: slots };
-        try {
-            // Function.prototype.apply allows the arguments array argument to be
-            // omitted or undefined, so args! is fine here.
-            return callback.apply(thisArg, args);
-        }
-        finally {
-            currentContext = parent;
-        }
-    };
-    // Capture the current context and wrap a callback function so that it
-    // reestablishes the captured context when called.
-    Slot.bind = function (callback) {
-        var context = currentContext;
-        return function () {
-            var saved = currentContext;
-            try {
-                currentContext = context;
-                return callback.apply(this, arguments);
-            }
-            finally {
-                currentContext = saved;
-            }
-        };
-    };
-    // Immediately run a callback function without any captured context.
-    Slot.noContext = function (callback, 
-    // Given the prevalence of arrow functions, specifying arguments is likely
-    // to be much more common than specifying `this`, hence this ordering:
-    args, thisArg) {
-        if (currentContext) {
-            var saved = currentContext;
-            try {
-                currentContext = null;
-                // Function.prototype.apply allows the arguments array argument to be
-                // omitted or undefined, so args! is fine here.
-                return callback.apply(thisArg, args);
-            }
-            finally {
-                currentContext = saved;
-            }
-        }
-        else {
-            return callback.apply(thisArg, args);
-        }
-    };
-    return Slot;
-}()); };
-function maybe(fn) {
-    try {
-        return fn();
-    }
-    catch (ignored) { }
-}
-// We store a single global implementation of the Slot class as a permanent
-// non-enumerable property of the globalThis object. This obfuscation does
-// nothing to prevent access to the Slot class, but at least it ensures the
-// implementation (i.e. currentContext) cannot be tampered with, and all copies
-// of the @wry/context package (hopefully just one) will share the same Slot
-// implementation. Since the first copy of the @wry/context package to be
-// imported wins, this technique imposes a steep cost for any future breaking
-// changes to the Slot class.
-var globalKey = "@wry/context:Slot";
-var host = 
-// Prefer globalThis when available.
-// https://github.com/benjamn/wryware/issues/347
-maybe(function () { return globalThis; }) ||
-    // Fall back to global, which works in Node.js and may be converted by some
-    // bundlers to the appropriate identifier (window, self, ...) depending on the
-    // bundling target. https://github.com/endojs/endo/issues/576#issuecomment-1178515224
-    maybe(function () { return global; }) ||
-    // Otherwise, use a dummy host that's local to this module. We used to fall
-    // back to using the Array constructor as a namespace, but that was flagged in
-    // https://github.com/benjamn/wryware/issues/347, and can be avoided.
-    Object.create(null);
-// Whichever globalHost we're using, make TypeScript happy about the additional
-// globalKey property.
-var globalHost = host;
-var Slot = globalHost[globalKey] ||
-    // Earlier versions of this package stored the globalKey property on the Array
-    // constructor, so we check there as well, to prevent Slot class duplication.
-    Array[globalKey] ||
-    (function (Slot) {
-        try {
-            Object.defineProperty(globalHost, globalKey, {
-                value: Slot,
-                enumerable: false,
-                writable: false,
-                // When it was possible for globalHost to be the Array constructor (a
-                // legacy Slot dedup strategy), it was important for the property to be
-                // configurable:true so it could be deleted. That does not seem to be as
-                // important when globalHost is the global object, but I don't want to
-                // cause similar problems again, and configurable:true seems safest.
-                // https://github.com/endojs/endo/issues/576#issuecomment-1178274008
-                configurable: true
-            });
-        }
-        finally {
-            return Slot;
-        }
-    })(makeSlotClass());
-
-var bind = Slot.bind, noContext = Slot.noContext;
-function setTimeoutWithContext(callback, delay) {
-    return setTimeout(bind(callback), delay);
-}
-// Turn any generator function into an async function (using yield instead
-// of await), with context automatically preserved across yields.
-function asyncFromGen(genFn) {
-    return function () {
-        var gen = genFn.apply(this, arguments);
-        var boundNext = bind(gen.next);
-        var boundThrow = bind(gen.throw);
-        return new Promise(function (resolve, reject) {
-            function invoke(method, argument) {
-                try {
-                    var result = method.call(gen, argument);
-                }
-                catch (error) {
-                    return reject(error);
-                }
-                var next = result.done ? resolve : invokeNext;
-                if (isPromiseLike(result.value)) {
-                    result.value.then(next, result.done ? reject : invokeThrow);
-                }
-                else {
-                    next(result.value);
-                }
-            }
-            var invokeNext = function (value) { return invoke(boundNext, value); };
-            var invokeThrow = function (error) { return invoke(boundThrow, error); };
-            invokeNext();
-        });
-    };
-}
-function isPromiseLike(value) {
-    return value && typeof value.then === "function";
-}
-// If you use the fibers npm package to implement coroutines in Node.js,
-// you should call this function at least once to ensure context management
-// remains coherent across any yields.
-var wrappedFibers = (/* unused pure expression or super */ null && ([]));
-function wrapYieldingFiberMethods(Fiber) {
-    // There can be only one implementation of Fiber per process, so this array
-    // should never grow longer than one element.
-    if (wrappedFibers.indexOf(Fiber) < 0) {
-        var wrap = function (obj, method) {
-            var fn = obj[method];
-            obj[method] = function () {
-                return noContext(fn, arguments, this);
-            };
-        };
-        // These methods can yield, according to
-        // https://github.com/laverdet/node-fibers/blob/ddebed9b8ae3883e57f822e2108e6943e5c8d2a8/fibers.js#L97-L100
-        wrap(Fiber, "yield");
-        wrap(Fiber.prototype, "run");
-        wrap(Fiber.prototype, "throwInto");
-        wrappedFibers.push(Fiber);
-    }
-    return Fiber;
-}
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "QS": () => (/* binding */ makeVar),
+/* harmony export */   "_v": () => (/* binding */ recallCache),
+/* harmony export */   "ab": () => (/* binding */ cacheSlot),
+/* harmony export */   "li": () => (/* binding */ forgetCache)
+/* harmony export */ });
+/* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(507);
+/* harmony import */ var _wry_context__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(8751);
 
 
-//# sourceMappingURL=context.esm.js.map
-
-;// CONCATENATED MODULE: ./node_modules/@apollo/client/cache/inmemory/reactiveVars.js
-
-
-var cacheSlot = new Slot();
+var cacheSlot = new _wry_context__WEBPACK_IMPORTED_MODULE_1__/* .Slot */ .g7();
 var cacheInfoMap = new WeakMap();
 function getCacheInfo(cache) {
     var info = cacheInfoMap.get(cache);
     if (!info) {
         cacheInfoMap.set(cache, info = {
             vars: new Set,
-            dep: (0,bundle_esm/* dep */.dP)(),
+            dep: (0,optimism__WEBPACK_IMPORTED_MODULE_0__/* .dep */ .dP)(),
         });
     }
     return info;
@@ -18638,7 +18438,7 @@ var ApolloLink = __webpack_require__(3581);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
 var execute = __webpack_require__(7037);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.7.10';
+var version = '3.7.11';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
@@ -18881,7 +18681,7 @@ var Concast = (function (_super) {
 (0,subclassing/* fixObservableSubclass */.D)(Concast);
 //# sourceMappingURL=Concast.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/errors/index.js
-var errors = __webpack_require__(990);
+var client_errors = __webpack_require__(990);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/core/ObservableQuery.js
 var ObservableQuery = __webpack_require__(4780);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/core/networkStatus.js
@@ -18977,8 +18777,8 @@ function isTypeExtensionNode(node) {
 var mergeDeep = __webpack_require__(182);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/fragments.js
 var graphql_fragments = __webpack_require__(3361);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/cache/inmemory/reactiveVars.js + 1 modules
-var reactiveVars = __webpack_require__(4770);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/cache/inmemory/reactiveVars.js
+var reactiveVars = __webpack_require__(6438);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/core/LocalState.js
 
 
@@ -19599,6 +19399,7 @@ function shouldWriteResult(result, errorPolicy) {
 
 
 
+
 var QueryManager_hasOwnProperty = Object.prototype.hasOwnProperty;
 var QueryManager = (function () {
     function QueryManager(_a) {
@@ -19681,7 +19482,7 @@ var QueryManager = (function () {
                         return [2, new Promise(function (resolve, reject) {
                                 return asyncMap(self.getObservableFromLink(mutation, (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, context), { optimisticResponse: optimisticResponse }), variables, false), function (result) {
                                     if (graphQLResultHasError(result) && errorPolicy === 'none') {
-                                        throw new errors/* ApolloError */.c({
+                                        throw new client_errors/* ApolloError */.cA({
                                             graphQLErrors: getGraphQLErrorsFromResult(result),
                                         });
                                     }
@@ -19729,7 +19530,7 @@ var QueryManager = (function () {
                                             self.cache.removeOptimistic(mutationId);
                                         }
                                         self.broadcastQueries();
-                                        reject(err instanceof errors/* ApolloError */.c ? err : new errors/* ApolloError */.c({
+                                        reject(err instanceof client_errors/* ApolloError */.cA ? err : new client_errors/* ApolloError */.cA({
                                             networkError: err,
                                         }));
                                     },
@@ -20115,10 +19916,17 @@ var QueryManager = (function () {
                     }
                     _this.broadcastQueries();
                 }
-                if (graphQLResultHasError(result)) {
-                    throw new errors/* ApolloError */.c({
-                        graphQLErrors: result.errors,
-                    });
+                var hasErrors = graphQLResultHasError(result);
+                var hasProtocolErrors = (0,client_errors/* graphQLResultHasProtocolErrors */.ls)(result);
+                if (hasErrors || hasProtocolErrors) {
+                    var errors = {};
+                    if (hasErrors) {
+                        errors.graphQLErrors = result.errors;
+                    }
+                    if (hasProtocolErrors) {
+                        errors.protocolErrors = result.extensions[client_errors/* PROTOCOL_ERRORS_SYMBOL */.YG];
+                    }
+                    throw new client_errors/* ApolloError */.cA(errors);
                 }
                 return result;
             });
@@ -20222,7 +20030,7 @@ var QueryManager = (function () {
             var hasErrors = graphQLErrors.length > 0;
             if (requestId >= queryInfo.lastRequestId) {
                 if (hasErrors && options.errorPolicy === "none") {
-                    throw queryInfo.markError(new errors/* ApolloError */.c({
+                    throw queryInfo.markError(new client_errors/* ApolloError */.cA({
                         graphQLErrors: graphQLErrors,
                     }));
                 }
@@ -20240,9 +20048,9 @@ var QueryManager = (function () {
             }
             return aqr;
         }, function (networkError) {
-            var error = (0,errors/* isApolloError */.M)(networkError)
+            var error = (0,client_errors/* isApolloError */.MS)(networkError)
                 ? networkError
-                : new errors/* ApolloError */.c({ networkError: networkError });
+                : new client_errors/* ApolloError */.cA({ networkError: networkError });
             if (requestId >= queryInfo.lastRequestId) {
                 queryInfo.markError(error);
             }
@@ -20250,6 +20058,9 @@ var QueryManager = (function () {
         });
     };
     QueryManager.prototype.fetchQueryObservable = function (queryId, options, networkStatus) {
+        return this.fetchConcastWithInfo(queryId, options, networkStatus).concast;
+    };
+    QueryManager.prototype.fetchConcastWithInfo = function (queryId, options, networkStatus) {
         var _this = this;
         if (networkStatus === void 0) { networkStatus = core_networkStatus/* NetworkStatus.loading */.I.loading; }
         var query = this.transform(options.query).document;
@@ -20268,24 +20079,36 @@ var QueryManager = (function () {
         });
         var fromVariables = function (variables) {
             normalized.variables = variables;
-            var concastSources = _this.fetchQueryByPolicy(queryInfo, normalized, networkStatus);
+            var sourcesWithInfo = _this.fetchQueryByPolicy(queryInfo, normalized, networkStatus);
             if (normalized.fetchPolicy !== "standby" &&
-                concastSources.length > 0 &&
+                sourcesWithInfo.sources.length > 0 &&
                 queryInfo.observableQuery) {
                 queryInfo.observableQuery["applyNextFetchPolicy"]("after-fetch", options);
             }
-            return concastSources;
+            return sourcesWithInfo;
         };
         var cleanupCancelFn = function () { return _this.fetchCancelFns.delete(queryId); };
         this.fetchCancelFns.set(queryId, function (reason) {
             cleanupCancelFn();
             setTimeout(function () { return concast.cancel(reason); });
         });
-        var concast = new Concast(this.transform(normalized.query).hasClientExports
-            ? this.localState.addExportedVariables(normalized.query, normalized.variables, normalized.context).then(fromVariables)
-            : fromVariables(normalized.variables));
+        var concast, containsDataFromLink;
+        if (this.transform(normalized.query).hasClientExports) {
+            concast = new Concast(this.localState
+                .addExportedVariables(normalized.query, normalized.variables, normalized.context)
+                .then(fromVariables).then(function (sourcesWithInfo) { return sourcesWithInfo.sources; }));
+            containsDataFromLink = true;
+        }
+        else {
+            var sourcesWithInfo = fromVariables(normalized.variables);
+            containsDataFromLink = sourcesWithInfo.fromLink;
+            concast = new Concast(sourcesWithInfo.sources);
+        }
         concast.promise.then(cleanupCancelFn, cleanupCancelFn);
-        return concast;
+        return {
+            concast: concast,
+            fromLink: containsDataFromLink,
+        };
     };
     QueryManager.prototype.refetchQueries = function (_a) {
         var _this = this;
@@ -20409,54 +20232,40 @@ var QueryManager = (function () {
             case "cache-first": {
                 var diff = readCache();
                 if (diff.complete) {
-                    return [
-                        resultsFromCache(diff, queryInfo.markReady()),
-                    ];
+                    return { fromLink: false, sources: [resultsFromCache(diff, queryInfo.markReady())] };
                 }
                 if (returnPartialData || shouldNotify) {
-                    return [
-                        resultsFromCache(diff),
-                        resultsFromLink(),
-                    ];
+                    return { fromLink: true, sources: [resultsFromCache(diff), resultsFromLink()] };
                 }
-                return [
-                    resultsFromLink(),
-                ];
+                return { fromLink: true, sources: [resultsFromLink()] };
             }
             case "cache-and-network": {
                 var diff = readCache();
                 if (diff.complete || returnPartialData || shouldNotify) {
-                    return [
-                        resultsFromCache(diff),
-                        resultsFromLink(),
-                    ];
+                    return { fromLink: true, sources: [resultsFromCache(diff), resultsFromLink()] };
                 }
-                return [
-                    resultsFromLink(),
-                ];
+                return { fromLink: true, sources: [resultsFromLink()] };
             }
             case "cache-only":
-                return [
-                    resultsFromCache(readCache(), queryInfo.markReady()),
-                ];
+                return { fromLink: false, sources: [resultsFromCache(readCache(), queryInfo.markReady())] };
             case "network-only":
                 if (shouldNotify) {
-                    return [
-                        resultsFromCache(readCache()),
-                        resultsFromLink(),
-                    ];
+                    return { fromLink: true, sources: [resultsFromCache(readCache()), resultsFromLink()] };
                 }
-                return [resultsFromLink()];
+                return { fromLink: true, sources: [resultsFromLink()] };
             case "no-cache":
                 if (shouldNotify) {
-                    return [
-                        resultsFromCache(queryInfo.getDiff()),
-                        resultsFromLink(),
-                    ];
+                    return {
+                        fromLink: true,
+                        sources: [
+                            resultsFromCache(queryInfo.getDiff()),
+                            resultsFromLink(),
+                        ],
+                    };
                 }
-                return [resultsFromLink()];
+                return { fromLink: true, sources: [resultsFromLink()] };
             case "standby":
-                return [];
+                return { fromLink: false, sources: [] };
         }
     };
     QueryManager.prototype.getQuery = function (queryId) {
@@ -21085,7 +20894,7 @@ var ObservableQuery = (function (_super) {
     };
     ObservableQuery.prototype.fetch = function (options, newNetworkStatus) {
         this.queryManager.setObservableQuery(this);
-        return this.queryManager.fetchQueryObservable(this.queryId, options, newNetworkStatus);
+        return this.queryManager['fetchConcastWithInfo'](this.queryId, options, newNetworkStatus);
     };
     ObservableQuery.prototype.updatePolling = function () {
         var _this = this;
@@ -21139,7 +20948,7 @@ var ObservableQuery = (function (_super) {
         }
         return this.last;
     };
-    ObservableQuery.prototype.reobserve = function (newOptions, newNetworkStatus) {
+    ObservableQuery.prototype.reobserveAsConcast = function (newOptions, newNetworkStatus) {
         var _this = this;
         this.isTornDown = false;
         var useDisposableConcast = newNetworkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.refetch */ .I.refetch ||
@@ -21165,7 +20974,7 @@ var ObservableQuery = (function (_super) {
             }
         }
         var variables = options.variables && (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, options.variables);
-        var concast = this.fetch(options, newNetworkStatus);
+        var _a = this.fetch(options, newNetworkStatus), concast = _a.concast, fromLink = _a.fromLink;
         var observer = {
             next: function (result) {
                 _this.reportResult(result, variables);
@@ -21174,7 +20983,7 @@ var ObservableQuery = (function (_super) {
                 _this.reportError(error, variables);
             },
         };
-        if (!useDisposableConcast) {
+        if (!useDisposableConcast && fromLink) {
             if (this.concast && this.observer) {
                 this.concast.removeObserver(this.observer);
             }
@@ -21182,7 +20991,10 @@ var ObservableQuery = (function (_super) {
             this.observer = observer;
         }
         concast.addObserver(observer);
-        return concast.promise;
+        return concast;
+    };
+    ObservableQuery.prototype.reobserve = function (newOptions, newNetworkStatus) {
+        return this.reobserveAsConcast(newOptions, newNetworkStatus).promise;
     };
     ObservableQuery.prototype.observe = function () {
         this.reportResult(this.getCurrentResult(false), this.variables);
@@ -21267,7 +21079,7 @@ function logMissingFieldErrors(missing) {
 /* harmony export */   "J9": () => (/* reexport safe */ graphql_tag__WEBPACK_IMPORTED_MODULE_21__.disableExperimentalFragmentVariables),
 /* harmony export */   "JH": () => (/* reexport safe */ _ApolloClient_js__WEBPACK_IMPORTED_MODULE_2__.J),
 /* harmony export */   "LQ": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.LQ),
-/* harmony export */   "MS": () => (/* reexport safe */ _errors_index_js__WEBPACK_IMPORTED_MODULE_5__.M),
+/* harmony export */   "MS": () => (/* reexport safe */ _errors_index_js__WEBPACK_IMPORTED_MODULE_5__.MS),
 /* harmony export */   "PW": () => (/* reexport safe */ _link_utils_index_js__WEBPACK_IMPORTED_MODULE_17__.P),
 /* harmony export */   "Ps": () => (/* reexport safe */ graphql_tag__WEBPACK_IMPORTED_MODULE_21__.gql),
 /* harmony export */   "QS": () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_11__.QS),
@@ -21279,7 +21091,7 @@ function logMissingFieldErrors(missing) {
 /* harmony export */   "Vl": () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_12__.Vl),
 /* harmony export */   "Yk": () => (/* reexport safe */ _utilities_index_js__WEBPACK_IMPORTED_MODULE_19__.Yk),
 /* harmony export */   "_t": () => (/* reexport safe */ graphql_tag__WEBPACK_IMPORTED_MODULE_21__.disableFragmentWarnings),
-/* harmony export */   "cA": () => (/* reexport safe */ _errors_index_js__WEBPACK_IMPORTED_MODULE_5__.c),
+/* harmony export */   "cA": () => (/* reexport safe */ _errors_index_js__WEBPACK_IMPORTED_MODULE_5__.cA),
 /* harmony export */   "cS": () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_12__.cS),
 /* harmony export */   "dO": () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.dO),
 /* harmony export */   "fe": () => (/* reexport safe */ _ApolloClient_js__WEBPACK_IMPORTED_MODULE_1__.f),
@@ -21333,7 +21145,7 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(9641);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(4770);
+	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(6438);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _link_core_index_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(6148);
@@ -21413,43 +21225,43 @@ function isNetworkRequestInFlight(networkStatus) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "M": () => (/* binding */ isApolloError),
-/* harmony export */   "c": () => (/* binding */ ApolloError)
+/* harmony export */   "MS": () => (/* binding */ isApolloError),
+/* harmony export */   "YG": () => (/* binding */ PROTOCOL_ERRORS_SYMBOL),
+/* harmony export */   "cA": () => (/* binding */ ApolloError),
+/* harmony export */   "ls": () => (/* binding */ graphQLResultHasProtocolErrors)
 /* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(655);
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(655);
 /* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1436);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3154);
 
 
 
+var PROTOCOL_ERRORS_SYMBOL = Symbol();
+function graphQLResultHasProtocolErrors(result) {
+    if (result.extensions) {
+        return Array.isArray(result.extensions[PROTOCOL_ERRORS_SYMBOL]);
+    }
+    return false;
+}
 function isApolloError(err) {
     return err.hasOwnProperty('graphQLErrors');
 }
 var generateErrorMessage = function (err) {
-    var message = '';
-    if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .isNonEmptyArray */ .O)(err.graphQLErrors) || (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .isNonEmptyArray */ .O)(err.clientErrors)) {
-        var errors = (err.graphQLErrors || [])
-            .concat(err.clientErrors || []);
-        errors.forEach(function (error) {
-            var errorMessage = error
-                ? error.message
-                : 'Error message not found.';
-            message += "".concat(errorMessage, "\n");
-        });
-    }
-    if (err.networkError) {
-        message += "".concat(err.networkError.message, "\n");
-    }
-    message = message.replace(/\n$/, '');
-    return message;
+    var errors = (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__spreadArray */ .ev)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__spreadArray */ .ev)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__spreadArray */ .ev)([], err.graphQLErrors, true), err.clientErrors, true), err.protocolErrors, true);
+    if (err.networkError)
+        errors.push(err.networkError);
+    return errors
+        .map(function (err) { return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .isNonNullObject */ .s)(err) && err.message || 'Error message not found.'; })
+        .join('\n');
 };
 var ApolloError = (function (_super) {
-    (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__extends */ .ZT)(ApolloError, _super);
+    (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__extends */ .ZT)(ApolloError, _super);
     function ApolloError(_a) {
-        var graphQLErrors = _a.graphQLErrors, clientErrors = _a.clientErrors, networkError = _a.networkError, errorMessage = _a.errorMessage, extraInfo = _a.extraInfo;
+        var graphQLErrors = _a.graphQLErrors, protocolErrors = _a.protocolErrors, clientErrors = _a.clientErrors, networkError = _a.networkError, errorMessage = _a.errorMessage, extraInfo = _a.extraInfo;
         var _this = _super.call(this, errorMessage) || this;
         _this.name = 'ApolloError';
         _this.graphQLErrors = graphQLErrors || [];
+        _this.protocolErrors = protocolErrors || [];
         _this.clientErrors = clientErrors || [];
         _this.networkError = networkError || null;
         _this.message = errorMessage || generateErrorMessage(_this);
@@ -21900,19 +21712,19 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(3581);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(9065);
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(9065);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(8216);
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(8216);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _serializeFetchParameter_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(5049);
+	/* harmony import */ var _serializeFetchParameter_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(5049);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _selectURI_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1037);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(4805);
+	/* harmony import */ var _parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(4805);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _checkFetcher_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(3178);
@@ -21924,11 +21736,15 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _createSignalIfSupported_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(7388);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _rewriteURIForGET_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(8663);
+	/* harmony import */ var _rewriteURIForGET_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(8663);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(6261);
+	/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(6261);
 }
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(6765);
+}
+
 
 
 
@@ -22003,30 +21819,45 @@ var createHttpLink = function (linkOptions) {
         var definitionIsMutation = function (d) {
             return d.kind === 'OperationDefinition' && d.operation === 'mutation';
         };
+        var definitionIsSubscription = function (d) {
+            return d.kind === 'OperationDefinition' && d.operation === 'subscription';
+        };
+        var isSubscription = definitionIsSubscription((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_8__/* .getMainDefinition */ .p$)(operation.query));
+        var hasDefer = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_9__/* .hasDirectives */ .FS)(['defer'], operation.query);
         if (useGETForQueries &&
             !operation.query.definitions.some(definitionIsMutation)) {
             options.method = 'GET';
         }
-        if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_8__/* .hasDirectives */ .FS)(['defer'], operation.query)) {
+        if (hasDefer || isSubscription) {
             options.headers = options.headers || {};
-            options.headers.accept = "multipart/mixed; deferSpec=20220824, application/json";
+            var acceptHeader = "multipart/mixed;";
+            if (isSubscription && hasDefer) {
+                __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.warn */ .kG.warn("Multipart-subscriptions do not support @defer");
+            }
+            if (isSubscription) {
+                acceptHeader += 'boundary=graphql;subscriptionSpec=1.0,application/json';
+            }
+            else if (hasDefer) {
+                acceptHeader += 'deferSpec=20220824,application/json';
+            }
+            options.headers.accept = acceptHeader;
         }
         if (options.method === 'GET') {
-            var _d = (0,_rewriteURIForGET_js__WEBPACK_IMPORTED_MODULE_9__/* .rewriteURIForGET */ .H)(chosenURI, body), newURI = _d.newURI, parseError = _d.parseError;
+            var _d = (0,_rewriteURIForGET_js__WEBPACK_IMPORTED_MODULE_10__/* .rewriteURIForGET */ .H)(chosenURI, body), newURI = _d.newURI, parseError = _d.parseError;
             if (parseError) {
-                return (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_10__/* .fromError */ .Q)(parseError);
+                return (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_11__/* .fromError */ .Q)(parseError);
             }
             chosenURI = newURI;
         }
         else {
             try {
-                options.body = (0,_serializeFetchParameter_js__WEBPACK_IMPORTED_MODULE_11__/* .serializeFetchParameter */ .g)(body, 'Payload');
+                options.body = (0,_serializeFetchParameter_js__WEBPACK_IMPORTED_MODULE_12__/* .serializeFetchParameter */ .g)(body, 'Payload');
             }
             catch (parseError) {
-                return (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_10__/* .fromError */ .Q)(parseError);
+                return (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_11__/* .fromError */ .Q)(parseError);
             }
         }
-        return new _utilities_index_js__WEBPACK_IMPORTED_MODULE_12__/* .Observable */ .y(function (observer) {
+        return new _utilities_index_js__WEBPACK_IMPORTED_MODULE_13__/* .Observable */ .y(function (observer) {
             var currentFetch = preferredFetch || (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .wY)(function () { return fetch; }) || backupFetch;
             currentFetch(chosenURI, options)
                 .then(function (response) {
@@ -22034,13 +21865,13 @@ var createHttpLink = function (linkOptions) {
                 operation.setContext({ response: response });
                 var ctype = (_a = response.headers) === null || _a === void 0 ? void 0 : _a.get('content-type');
                 if (ctype !== null && /^multipart\/mixed/i.test(ctype)) {
-                    return (0,_parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_13__/* .readMultipartBody */ .TF)(response, observer);
+                    return (0,_parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_14__/* .readMultipartBody */ .TF)(response, observer);
                 }
                 else {
-                    return (0,_parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_13__/* .readJsonBody */ .Wm)(response, operation, observer);
+                    return (0,_parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_14__/* .readJsonBody */ .Wm)(response, operation, observer);
                 }
             })
-                .catch(function (err) { return (0,_parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_13__/* .handleError */ .S3)(err, observer); });
+                .catch(function (err) { return (0,_parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_14__/* .handleError */ .S3)(err, observer); });
             return function () {
                 if (controller)
                     controller.abort();
@@ -22325,25 +22156,33 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _responseIterator_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6395);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2782);
+	/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(2782);
 }
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _errors_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(990);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utilities_common_incrementalResult_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7280);
+}
+
+
 
 
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 function readMultipartBody(response, observer) {
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     return (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__awaiter */ .mG)(this, void 0, void 0, function () {
-        var decoder, contentType, delimiter, boundaryVal, boundary, buffer, iterator, running, _d, value, done, chunk, bi, message, i, headers, contentType_1, body, result;
-        var _e;
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__generator */ .Jh)(this, function (_f) {
-            switch (_f.label) {
+        var decoder, contentType, delimiter, boundaryVal, boundary, buffer, iterator, running, _e, value, done, chunk, bi, message, i, headers, contentType_1, body, result, next;
+        var _f, _g;
+        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__generator */ .Jh)(this, function (_h) {
+            switch (_h.label) {
                 case 0:
                     if (TextDecoder === undefined) {
                         throw new Error("TextDecoder must be defined in the environment: please import a polyfill.");
                     }
                     decoder = new TextDecoder("utf-8");
-                    contentType = (_a = response.headers) === null || _a === void 0 ? void 0 : _a.get('content-type');
+                    contentType = (_a = response.headers) === null || _a === void 0 ? void 0 : _a.get("content-type");
                     delimiter = "boundary=";
                     boundaryVal = (contentType === null || contentType === void 0 ? void 0 : contentType.includes(delimiter))
                         ? contentType === null || contentType === void 0 ? void 0 : contentType.substring((contentType === null || contentType === void 0 ? void 0 : contentType.indexOf(delimiter)) + delimiter.length).replace(/['"]/g, "").replace(/\;(.*)/gm, "").trim()
@@ -22352,22 +22191,22 @@ function readMultipartBody(response, observer) {
                     buffer = "";
                     iterator = (0,_responseIterator_js__WEBPACK_IMPORTED_MODULE_1__/* .responseIterator */ .k)(response);
                     running = true;
-                    _f.label = 1;
+                    _h.label = 1;
                 case 1:
                     if (!running) return [3, 3];
                     return [4, iterator.next()];
                 case 2:
-                    _d = _f.sent(), value = _d.value, done = _d.done;
+                    _e = _h.sent(), value = _e.value, done = _e.done;
                     chunk = typeof value === "string" ? value : decoder.decode(value);
                     running = !done;
                     buffer += chunk;
                     bi = buffer.indexOf(boundary);
                     while (bi > -1) {
                         message = void 0;
-                        _e = [
+                        _f = [
                             buffer.slice(0, bi),
                             buffer.slice(bi + boundary.length),
-                        ], message = _e[0], buffer = _e[1];
+                        ], message = _f[0], buffer = _f[1];
                         if (message.trim()) {
                             i = message.indexOf("\r\n\r\n");
                             headers = parseHeaders(message.slice(0, i));
@@ -22382,8 +22221,21 @@ function readMultipartBody(response, observer) {
                                 if (Object.keys(result).length > 1 ||
                                     "data" in result ||
                                     "incremental" in result ||
-                                    "errors" in result) {
-                                    (_b = observer.next) === null || _b === void 0 ? void 0 : _b.call(observer, result);
+                                    "errors" in result ||
+                                    "payload" in result) {
+                                    if ((0,_utilities_common_incrementalResult_js__WEBPACK_IMPORTED_MODULE_2__/* .isApolloPayloadResult */ .yU)(result)) {
+                                        next = {};
+                                        if ("payload" in result) {
+                                            next = (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)({}, result.payload);
+                                        }
+                                        if ("errors" in result) {
+                                            next = (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)({}, next), { extensions: (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)({}, ("extensions" in next ? next.extensions : null)), (_g = {}, _g[_errors_index_js__WEBPACK_IMPORTED_MODULE_3__/* .PROTOCOL_ERRORS_SYMBOL */ .YG] = result.errors, _g)) });
+                                        }
+                                        (_b = observer.next) === null || _b === void 0 ? void 0 : _b.call(observer, next);
+                                    }
+                                    else {
+                                        (_c = observer.next) === null || _c === void 0 ? void 0 : _c.call(observer, result);
+                                    }
                                 }
                             }
                             catch (err) {
@@ -22394,7 +22246,7 @@ function readMultipartBody(response, observer) {
                     }
                     return [3, 1];
                 case 3:
-                    (_c = observer.complete) === null || _c === void 0 ? void 0 : _c.call(observer);
+                    (_d = observer.complete) === null || _d === void 0 ? void 0 : _d.call(observer);
                     return [2];
             }
         });
@@ -22422,7 +22274,7 @@ function parseJsonBody(response, bodyText) {
                 return bodyText;
             }
         };
-        (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_2__/* .throwServerError */ .P)(response, getResult(), "Response not successful: Received status code ".concat(response.status));
+        (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_4__/* .throwServerError */ .P)(response, getResult(), "Response not successful: Received status code ".concat(response.status));
     }
     try {
         return JSON.parse(bodyText);
@@ -22461,12 +22313,12 @@ function parseAndCheckHttpResponse(operations) {
             .then(function (bodyText) { return parseJsonBody(response, bodyText); })
             .then(function (result) {
             if (response.status >= 300) {
-                (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_2__/* .throwServerError */ .P)(response, result, "Response not successful: Received status code ".concat(response.status));
+                (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_4__/* .throwServerError */ .P)(response, result, "Response not successful: Received status code ".concat(response.status));
             }
             if (!Array.isArray(result) &&
                 !hasOwnProperty.call(result, "data") &&
                 !hasOwnProperty.call(result, "errors")) {
-                (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_2__/* .throwServerError */ .P)(response, result, "Server response was missing for query '".concat(Array.isArray(operations)
+                (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_4__/* .throwServerError */ .P)(response, result, "Server response was missing for query '".concat(Array.isArray(operations)
                     ? operations.map(function (op) { return op.operationName; })
                     : operations.operationName, "'."));
             }
@@ -23086,10 +22938,14 @@ var EAGER_METHODS = (/* runtime-dependent pure expression or super */ /^(33[45]|
 ]) : null);
 function useLazyQuery(query, options) {
     var _a;
-    var abortControllersRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(new Set());
     var execOptionsRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
+    var optionsRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
+    var queryRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
     var merged = execOptionsRef.current ? (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .mergeOptions */ .J)(options, execOptionsRef.current) : options;
-    var internalState = (0,_useQuery_js__WEBPACK_IMPORTED_MODULE_2__/* .useInternalState */ .A)((0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .x)(options && options.client), (_a = merged === null || merged === void 0 ? void 0 : merged.query) !== null && _a !== void 0 ? _a : query);
+    var document = (_a = merged === null || merged === void 0 ? void 0 : merged.query) !== null && _a !== void 0 ? _a : query;
+    optionsRef.current = merged;
+    queryRef.current = document;
+    var internalState = (0,_useQuery_js__WEBPACK_IMPORTED_MODULE_2__/* .useInternalState */ .A)((0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .x)(options && options.client), document);
     var useQueryResult = internalState.useQuery((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)({}, merged), { skip: !execOptionsRef.current }));
     var initialFetchPolicy = useQueryResult.observable.options.initialFetchPolicy ||
         internalState.getDefaultFetchPolicy();
@@ -23115,28 +22971,15 @@ function useLazyQuery(query, options) {
         return eagerMethods;
     }, []);
     Object.assign(result, eagerMethods);
-    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
-        return function () {
-            abortControllersRef.current.forEach(function (controller) {
-                controller.abort();
-            });
-        };
-    }, []);
     var execute = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (executeOptions) {
-        var controller = new AbortController();
-        abortControllersRef.current.add(controller);
         execOptionsRef.current = executeOptions ? (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)({}, executeOptions), { fetchPolicy: executeOptions.fetchPolicy || initialFetchPolicy }) : {
             fetchPolicy: initialFetchPolicy,
         };
+        var options = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .mergeOptions */ .J)(optionsRef.current, (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)({ query: queryRef.current }, execOptionsRef.current));
         var promise = internalState
-            .asyncUpdate(controller.signal)
-            .then(function (queryResult) {
-            abortControllersRef.current.delete(controller);
-            return Object.assign(queryResult, eagerMethods);
-        });
-        promise.catch(function () {
-            abortControllersRef.current.delete(controller);
-        });
+            .executeQuery((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)({}, options), { skip: false }))
+            .then(function (queryResult) { return Object.assign(queryResult, eagerMethods); });
+        promise.catch(function () { });
         return promise;
     }, []);
     return [execute, result];
@@ -23215,7 +23058,7 @@ function useMutation(mutation, options) {
             var _a;
             var data = response.data, errors = response.errors;
             var error = errors && errors.length > 0
-                ? new _errors_index_js__WEBPACK_IMPORTED_MODULE_6__/* .ApolloError */ .c({ graphQLErrors: errors })
+                ? new _errors_index_js__WEBPACK_IMPORTED_MODULE_6__/* .ApolloError */ .cA({ graphQLErrors: errors })
                 : void 0;
             if (mutationId === ref.current.mutationId &&
                 !clientOptions.ignoreResults) {
@@ -23289,13 +23132,13 @@ function useMutation(mutation, options) {
 /* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(4012);
 /* harmony import */ var _context_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(5317);
 /* harmony import */ var _errors_index_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(990);
-/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(1644);
+/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1644);
 /* harmony import */ var _parser_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(4692);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6252);
 }
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(320);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8702);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(8702);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(320);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(3712);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(1436);
 
@@ -23333,21 +23176,19 @@ var InternalState = (function () {
     function InternalState(client, query, previous) {
         this.client = client;
         this.query = query;
-        this.asyncResolveFns = new Set();
-        this.optionsToIgnoreOnce = new (_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .canUseWeakSet */ .sy ? WeakSet : Set)();
-        this.ssrDisabledResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .maybeDeepFreeze */ .J)({
+        this.ssrDisabledResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .maybeDeepFreeze */ .J)({
             loading: true,
             data: void 0,
             error: void 0,
-            networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_6__/* .NetworkStatus.loading */ .I.loading,
+            networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus.loading */ .I.loading,
         });
-        this.skipStandbyResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .maybeDeepFreeze */ .J)({
+        this.skipStandbyResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .maybeDeepFreeze */ .J)({
             loading: false,
             data: void 0,
             error: void 0,
-            networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_6__/* .NetworkStatus.ready */ .I.ready,
+            networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus.ready */ .I.ready,
         });
-        this.toQueryResultCache = new (_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .canUseWeakMap */ .mr ? WeakMap : Map)();
+        this.toQueryResultCache = new (_utilities_index_js__WEBPACK_IMPORTED_MODULE_6__/* .canUseWeakMap */ .mr ? WeakMap : Map)();
         (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_7__/* .verifyDocumentType */ .Vp)(query, _parser_index_js__WEBPACK_IMPORTED_MODULE_7__/* .DocumentType.Query */ .n_.Query);
         var previousResult = previous && previous.result;
         var previousData = previousResult && previousResult.data;
@@ -23358,20 +23199,30 @@ var InternalState = (function () {
     InternalState.prototype.forceUpdate = function () {
         __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.warn */ .kG.warn("Calling default no-op implementation of InternalState#forceUpdate");
     };
-    InternalState.prototype.asyncUpdate = function (signal) {
+    InternalState.prototype.executeQuery = function (options) {
         var _this = this;
-        return new Promise(function (resolve, reject) {
-            var watchQueryOptions = _this.watchQueryOptions;
-            var handleAborted = function () {
-                _this.asyncResolveFns.delete(resolve);
-                _this.optionsToIgnoreOnce.delete(watchQueryOptions);
-                signal.removeEventListener('abort', handleAborted);
-                reject(signal.reason);
-            };
-            _this.asyncResolveFns.add(resolve);
-            _this.optionsToIgnoreOnce.add(watchQueryOptions);
-            signal.addEventListener('abort', handleAborted);
-            _this.forceUpdate();
+        var _a;
+        if (options.query) {
+            Object.assign(this, { query: options.query });
+        }
+        this.watchQueryOptions = this.createWatchQueryOptions(this.queryHookOptions = options);
+        var concast = this.observable.reobserveAsConcast(this.getObsQueryOptions());
+        this.previousData = ((_a = this.result) === null || _a === void 0 ? void 0 : _a.data) || this.previousData;
+        this.result = void 0;
+        this.forceUpdate();
+        return new Promise(function (resolve) {
+            var result;
+            concast.subscribe({
+                next: function (value) {
+                    result = value;
+                },
+                error: function () {
+                    resolve(_this.toQueryResult(_this.observable.getCurrentResult()));
+                },
+                complete: function () {
+                    resolve(_this.toQueryResult(result));
+                }
+            });
         });
     };
     InternalState.prototype.useQuery = function (options) {
@@ -23415,34 +23266,27 @@ var InternalState = (function () {
                         data: (previousResult && previousResult.data),
                         error: error,
                         loading: false,
-                        networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_6__/* .NetworkStatus.error */ .I.error,
+                        networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus.error */ .I.error,
                     });
                 }
             };
             var subscription = obsQuery.subscribe(onNext, onError);
-            return function () { return subscription.unsubscribe(); };
+            return function () { return setTimeout(function () { return subscription.unsubscribe(); }); };
         }, [
             obsQuery,
             this.renderPromises,
             this.client.disableNetworkFetches,
         ]), function () { return _this.getCurrentResult(); }, function () { return _this.getCurrentResult(); });
         this.unsafeHandlePartialRefetch(result);
-        var queryResult = this.toQueryResult(result);
-        if (!queryResult.loading && this.asyncResolveFns.size) {
-            this.asyncResolveFns.forEach(function (resolve) { return resolve(queryResult); });
-            this.asyncResolveFns.clear();
-        }
-        return queryResult;
+        return this.toQueryResult(result);
     };
     InternalState.prototype.useOptions = function (options) {
         var _a;
         var watchQueryOptions = this.createWatchQueryOptions(this.queryHookOptions = options);
         var currentWatchQueryOptions = this.watchQueryOptions;
-        if (this.optionsToIgnoreOnce.has(currentWatchQueryOptions) ||
-            !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .D)(watchQueryOptions, currentWatchQueryOptions)) {
+        if (!(0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .D)(watchQueryOptions, currentWatchQueryOptions)) {
             this.watchQueryOptions = watchQueryOptions;
             if (currentWatchQueryOptions && this.observable) {
-                this.optionsToIgnoreOnce.delete(currentWatchQueryOptions);
                 this.observable.reobserve(this.getObsQueryOptions());
                 this.previousData = ((_a = this.result) === null || _a === void 0 ? void 0 : _a.data) || this.previousData;
                 this.result = void 0;
@@ -23562,7 +23406,7 @@ var InternalState = (function () {
     };
     InternalState.prototype.toApolloError = function (result) {
         return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_13__/* .isNonEmptyArray */ .O)(result.errors)
-            ? new _errors_index_js__WEBPACK_IMPORTED_MODULE_14__/* .ApolloError */ .c({ graphQLErrors: result.errors })
+            ? new _errors_index_js__WEBPACK_IMPORTED_MODULE_14__/* .ApolloError */ .cA({ graphQLErrors: result.errors })
             : result.error;
     };
     InternalState.prototype.getCurrentResult = function () {
@@ -23578,7 +23422,7 @@ var InternalState = (function () {
         var data = result.data, partial = result.partial, resultWithoutPartial = (0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__rest */ ._T)(result, ["data", "partial"]);
         this.toQueryResultCache.set(result, queryResult = (0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__assign */ .pi)({ data: data }, resultWithoutPartial), this.obsQueryFields), { client: this.client, observable: this.observable, variables: this.observable.variables, called: !this.queryHookOptions.skip, previousData: this.previousData }));
         if (!queryResult.error && (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_13__/* .isNonEmptyArray */ .O)(result.errors)) {
-            queryResult.error = new _errors_index_js__WEBPACK_IMPORTED_MODULE_14__/* .ApolloError */ .c({ graphQLErrors: result.errors });
+            queryResult.error = new _errors_index_js__WEBPACK_IMPORTED_MODULE_14__/* .ApolloError */ .cA({ graphQLErrors: result.errors });
         }
         return queryResult;
     };
@@ -23590,7 +23434,7 @@ var InternalState = (function () {
             this.observable.options.fetchPolicy !== 'cache-only') {
             Object.assign(result, {
                 loading: true,
-                networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_6__/* .NetworkStatus.refetch */ .I.refetch,
+                networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus.refetch */ .I.refetch,
             });
             this.observable.refetch();
         }
@@ -24126,15 +23970,20 @@ function compact() {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "GG": () => (/* binding */ isExecutionPatchIncrementalResult),
 /* harmony export */   "M0": () => (/* binding */ isExecutionPatchResult),
-/* harmony export */   "mT": () => (/* binding */ mergeIncrementalData)
+/* harmony export */   "mT": () => (/* binding */ mergeIncrementalData),
+/* harmony export */   "yU": () => (/* binding */ isApolloPayloadResult)
 /* harmony export */ });
 /* unused harmony export isExecutionPatchInitialResult */
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _arrays_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1436);
+	/* harmony import */ var _objects_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3154);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _mergeDeep_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(182);
+	/* harmony import */ var _arrays_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1436);
 }
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _mergeDeep_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(182);
+}
+
 
 
 function isExecutionPatchIncrementalResult(value) {
@@ -24147,11 +23996,14 @@ function isExecutionPatchResult(value) {
     return (isExecutionPatchIncrementalResult(value) ||
         isExecutionPatchInitialResult(value));
 }
+function isApolloPayloadResult(value) {
+    return (0,_objects_js__WEBPACK_IMPORTED_MODULE_0__/* .isNonNullObject */ .s)(value) && "payload" in value;
+}
 function mergeIncrementalData(prevResult, result) {
     var mergedData = prevResult;
-    var merger = new _mergeDeep_js__WEBPACK_IMPORTED_MODULE_0__/* .DeepMerger */ .w0();
+    var merger = new _mergeDeep_js__WEBPACK_IMPORTED_MODULE_1__/* .DeepMerger */ .w0();
     if (isExecutionPatchIncrementalResult(result) &&
-        (0,_arrays_js__WEBPACK_IMPORTED_MODULE_1__/* .isNonEmptyArray */ .O)(result.incremental)) {
+        (0,_arrays_js__WEBPACK_IMPORTED_MODULE_2__/* .isNonEmptyArray */ .O)(result.incremental)) {
         result.incremental.forEach(function (_a) {
             var data = _a.data, path = _a.path;
             for (var i = path.length - 1; i >= 0; --i) {
