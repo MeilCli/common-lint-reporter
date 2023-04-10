@@ -7675,6 +7675,7 @@ const defaultOptions = {
   stopNodes: [],
   // transformTagName: false,
   // transformAttributeName: false,
+  oneListGroup: false
 };
 
 function Builder(options) {
@@ -7745,6 +7746,7 @@ Builder.prototype.j2x = function(jObj, level) {
     } else if (Array.isArray(jObj[key])) {
       //repeated nodes
       const arrLen = jObj[key].length;
+      let listTagVal = "";
       for (let j = 0; j < arrLen; j++) {
         const item = jObj[key][j];
         if (typeof item === 'undefined') {
@@ -7754,11 +7756,19 @@ Builder.prototype.j2x = function(jObj, level) {
           else val += this.indentate(level) + '<' + key + '/' + this.tagEndChar;
           // val += this.indentate(level) + '<' + key + '/' + this.tagEndChar;
         } else if (typeof item === 'object') {
-          val += this.processTextOrObjNode(item, key, level)
+          if(this.options.oneListGroup ){
+            listTagVal += this.j2x(item, level + 1).val;
+          }else{
+            listTagVal += this.processTextOrObjNode(item, key, level)
+          }
         } else {
-          val += this.buildTextValNode(item, key, '', level);
+          listTagVal += this.buildTextValNode(item, key, '', level);
         }
       }
+      if(this.options.oneListGroup){
+        listTagVal = this.buildObjectNode(listTagVal, key, '', level);
+      }
+      val += listTagVal;
     } else {
       //nested node
       if (this.options.attributesGroupName && key === this.options.attributesGroupName) {
@@ -8219,6 +8229,10 @@ const defaultOptions = {
     ignorePiTags: false,
     transformTagName: false,
     transformAttributeName: false,
+    updateTag: function(tagName, jPath, attrs){
+      return tagName
+    },
+    // skipEmptyListItem: false
 };
    
 const buildOptions = function(options) {
@@ -8286,6 +8300,7 @@ class OrderedObjParser{
     this.replaceEntitiesValue = replaceEntitiesValue;
     this.readStopNodeData = readStopNodeData;
     this.saveTextToParentTag = saveTextToParentTag;
+    this.addChild = addChild;
   }
 
 }
@@ -8357,7 +8372,7 @@ function resolveNameSpace(tagname) {
 //const attrsRegx = new RegExp("([\\w\\-\\.\\:]+)\\s*=\\s*(['\"])((.|\n)*?)\\2","gm");
 const attrsRegx = new RegExp('([^\\s=]+)\\s*(=\\s*([\'"])([\\s\\S]*?)\\3)?', 'gm');
 
-function buildAttributesMap(attrStr, jPath) {
+function buildAttributesMap(attrStr, jPath, tagName) {
   if (!this.options.ignoreAttributes && typeof attrStr === 'string') {
     // attrStr = attrStr.replace(/\r?\n/g, ' ');
     //attrStr = attrStr || attrStr.trim();
@@ -8407,7 +8422,7 @@ function buildAttributesMap(attrStr, jPath) {
       attrCollection[this.options.attributesGroupName] = attrs;
       return attrCollection;
     }
-    return attrs;
+    return attrs
   }
 }
 
@@ -8443,7 +8458,7 @@ const parseXml = function(xmlData) {
 
         jPath = jPath.substr(0, jPath.lastIndexOf("."));
         
-        currentNode = this.tagsNodeStack.pop();//avoid recurssion, set the parent tag scope
+        currentNode = this.tagsNodeStack.pop();//avoid recursion, set the parent tag scope
         textData = "";
         i = closeIndex;
       } else if( xmlData[i+1] === '?') {
@@ -8460,9 +8475,9 @@ const parseXml = function(xmlData) {
           childNode.add(this.options.textNodeName, "");
           
           if(tagData.tagName !== tagData.tagExp && tagData.attrExpPresent){
-            childNode[":@"] = this.buildAttributesMap(tagData.tagExp, jPath);
+            childNode[":@"] = this.buildAttributesMap(tagData.tagExp, jPath, tagData.tagName);
           }
-          currentNode.addChild(childNode);
+          this.addChild(currentNode, childNode, jPath)
 
         }
 
@@ -8550,7 +8565,7 @@ const parseXml = function(xmlData) {
 
           const childNode = new xmlNode(tagName);
           if(tagName !== tagExp && attrExpPresent){
-            childNode[":@"] = this.buildAttributesMap(tagExp, jPath);
+            childNode[":@"] = this.buildAttributesMap(tagExp, jPath, tagName);
           }
           if(tagContent) {
             tagContent = this.parseTextData(tagContent, tagName, jPath, true, attrExpPresent, true, true);
@@ -8559,7 +8574,7 @@ const parseXml = function(xmlData) {
           jPath = jPath.substr(0, jPath.lastIndexOf("."));
           childNode.add(this.options.textNodeName, tagContent);
           
-          currentNode.addChild(childNode);
+          this.addChild(currentNode, childNode, jPath)
         }else{
   //selfClosing tag
           if(tagExp.length > 0 && tagExp.lastIndexOf("/") === tagExp.length - 1){
@@ -8576,10 +8591,10 @@ const parseXml = function(xmlData) {
 
             const childNode = new xmlNode(tagName);
             if(tagName !== tagExp && attrExpPresent){
-              childNode[":@"] = this.buildAttributesMap(tagExp, jPath);
+              childNode[":@"] = this.buildAttributesMap(tagExp, jPath, tagName);
             }
             jPath = jPath.substr(0, jPath.lastIndexOf("."));
-            currentNode.addChild(childNode);
+            this.addChild(currentNode, childNode, jPath)
           }
     //opening tag
           else{
@@ -8587,9 +8602,9 @@ const parseXml = function(xmlData) {
             this.tagsNodeStack.push(currentNode);
             
             if(tagName !== tagExp && attrExpPresent){
-              childNode[":@"] = this.buildAttributesMap(tagExp, jPath);
+              childNode[":@"] = this.buildAttributesMap(tagExp, jPath, tagName);
             }
-            currentNode.addChild(childNode);
+            this.addChild(currentNode, childNode, jPath)
             currentNode = childNode;
           }
           textData = "";
@@ -8601,6 +8616,17 @@ const parseXml = function(xmlData) {
     }
   }
   return xmlObj.child;
+}
+
+function addChild(currentNode, childNode, jPath){
+  const result = this.options.updateTag(childNode.tagname, jPath, childNode[":@"])
+  if(result === false){
+  }else if(typeof result === "string"){
+    childNode.tagname = result
+    currentNode.addChild(childNode);
+  }else{
+    currentNode.addChild(childNode);
+  }
 }
 
 const replaceEntitiesValue = function(val){
@@ -8659,7 +8685,7 @@ function isItStopNode(stopNodes, jPath, currentTagName){
 }
 
 /**
- * Returns the tag Expression and where it is ending handling single-dobule quotes situation
+ * Returns the tag Expression and where it is ending handling single-double quotes situation
  * @param {string} xmlData 
  * @param {number} i starting index
  * @returns 
@@ -8967,8 +8993,20 @@ function assignAttributes(obj, attrMap, jpath, options){
 }
 
 function isLeafTag(obj, options){
+  const { textNodeName } = options;
   const propCount = Object.keys(obj).length;
-  if( propCount === 0 || (propCount === 1 && obj[options.textNodeName]) ) return true;
+  
+  if (propCount === 0) {
+    return true;
+  }
+
+  if (
+    propCount === 1 &&
+    (obj[textNodeName] || typeof obj[textNodeName] === "boolean" || obj[textNodeName] === 0)
+  ) {
+    return true;
+  }
+
   return false;
 }
 exports.prettify = prettify;
