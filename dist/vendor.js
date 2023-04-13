@@ -18476,7 +18476,7 @@ var ApolloLink = __webpack_require__(3581);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
 var execute = __webpack_require__(7037);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.7.11';
+var version = '3.7.12';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
@@ -22209,12 +22209,12 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 function readMultipartBody(response, observer) {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e;
     return (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__awaiter */ .mG)(this, void 0, void 0, function () {
-        var decoder, contentType, delimiter, boundaryVal, boundary, buffer, iterator, running, _e, value, done, chunk, bi, message, i, headers, contentType_1, body, result, next;
-        var _f, _g;
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__generator */ .Jh)(this, function (_h) {
-            switch (_h.label) {
+        var decoder, contentType, delimiter, boundaryVal, boundary, buffer, iterator, running, _f, value, done, chunk, bi, message, i, headers, contentType_1, body, result, next;
+        var _g, _h;
+        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__generator */ .Jh)(this, function (_j) {
+            switch (_j.label) {
                 case 0:
                     if (TextDecoder === undefined) {
                         throw new Error("TextDecoder must be defined in the environment: please import a polyfill.");
@@ -22229,22 +22229,22 @@ function readMultipartBody(response, observer) {
                     buffer = "";
                     iterator = (0,_responseIterator_js__WEBPACK_IMPORTED_MODULE_1__/* .responseIterator */ .k)(response);
                     running = true;
-                    _h.label = 1;
+                    _j.label = 1;
                 case 1:
                     if (!running) return [3, 3];
                     return [4, iterator.next()];
                 case 2:
-                    _e = _h.sent(), value = _e.value, done = _e.done;
+                    _f = _j.sent(), value = _f.value, done = _f.done;
                     chunk = typeof value === "string" ? value : decoder.decode(value);
                     running = !done;
                     buffer += chunk;
                     bi = buffer.indexOf(boundary);
                     while (bi > -1) {
                         message = void 0;
-                        _f = [
+                        _g = [
                             buffer.slice(0, bi),
                             buffer.slice(bi + boundary.length),
-                        ], message = _f[0], buffer = _f[1];
+                        ], message = _g[0], buffer = _g[1];
                         if (message.trim()) {
                             i = message.indexOf("\r\n\r\n");
                             headers = parseHeaders(message.slice(0, i));
@@ -22267,13 +22267,18 @@ function readMultipartBody(response, observer) {
                                             next = (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)({}, result.payload);
                                         }
                                         if ("errors" in result) {
-                                            next = (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)({}, next), { extensions: (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)({}, ("extensions" in next ? next.extensions : null)), (_g = {}, _g[_errors_index_js__WEBPACK_IMPORTED_MODULE_3__/* .PROTOCOL_ERRORS_SYMBOL */ .YG] = result.errors, _g)) });
+                                            next = (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)({}, next), { extensions: (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)({}, ("extensions" in next ? next.extensions : null)), (_h = {}, _h[_errors_index_js__WEBPACK_IMPORTED_MODULE_3__/* .PROTOCOL_ERRORS_SYMBOL */ .YG] = result.errors, _h)) });
                                         }
                                         (_b = observer.next) === null || _b === void 0 ? void 0 : _b.call(observer, next);
                                     }
                                     else {
                                         (_c = observer.next) === null || _c === void 0 ? void 0 : _c.call(observer, result);
                                     }
+                                }
+                                else if (Object.keys(result).length === 1 &&
+                                    "hasNext" in result &&
+                                    !result.hasNext) {
+                                    (_d = observer.complete) === null || _d === void 0 ? void 0 : _d.call(observer);
                                 }
                             }
                             catch (err) {
@@ -22284,7 +22289,7 @@ function readMultipartBody(response, observer) {
                     }
                     return [3, 1];
                 case 3:
-                    (_d = observer.complete) === null || _d === void 0 ? void 0 : _d.call(observer);
+                    (_e = observer.complete) === null || _e === void 0 ? void 0 : _e.call(observer);
                     return [2];
             }
         });
