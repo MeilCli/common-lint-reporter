@@ -13389,6 +13389,7 @@ export type OrganizationTeamsArgs = {
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   ldapMapped?: InputMaybe<Scalars['Boolean']>;
+  notificationSetting?: InputMaybe<TeamNotificationSetting>;
   orderBy?: InputMaybe<TeamOrder>;
   privacy?: InputMaybe<TeamPrivacy>;
   query?: InputMaybe<Scalars['String']>;
@@ -19462,6 +19463,8 @@ export type Repository = Node & PackageOwner & ProjectOwner & ProjectV2Recent & 
   __typename?: 'Repository';
   /** Whether or not a pull request head branch that is behind its base branch can always be updated even if it is not required to be up to date before merging. */
   allowUpdateBranch: Scalars['Boolean'];
+  /** Identifies the date and time when the repository was archived. */
+  archivedAt?: Maybe<Scalars['DateTime']>;
   /** A list of users that can be assigned to issues in this repository. */
   assignableUsers: UserConnection;
   /** Whether or not Auto-merge can be enabled on pull requests in this repository. */
@@ -19627,7 +19630,7 @@ export type Repository = Node & PackageOwner & ProjectOwner & ProjectV2Recent & 
   pullRequestTemplates?: Maybe<Array<PullRequestTemplate>>;
   /** A list of pull requests that have been opened in the repository. */
   pullRequests: PullRequestConnection;
-  /** Identifies when the repository was last pushed to. */
+  /** Identifies the date and time when the repository was last pushed to. */
   pushedAt?: Maybe<Scalars['DateTime']>;
   /** Whether or not rebase-merging is enabled on this repository. */
   rebaseMergeAllowed: Scalars['Boolean'];
@@ -20279,6 +20282,8 @@ export type RepositoryEdge = {
 
 /** A subset of repository info. */
 export type RepositoryInfo = {
+  /** Identifies the date and time when the repository was archived. */
+  archivedAt?: Maybe<Scalars['DateTime']>;
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
   /** The description of the repository. */
@@ -20325,7 +20330,7 @@ export type RepositoryInfo = {
   openGraphImageUrl: Scalars['URI'];
   /** The User owner of the repository. */
   owner: RepositoryOwner;
-  /** Identifies when the repository was last pushed to. */
+  /** Identifies the date and time when the repository was last pushed to. */
   pushedAt?: Maybe<Scalars['DateTime']>;
   /** The HTTP path for this repository */
   resourcePath: Scalars['URI'];
@@ -20778,11 +20783,6 @@ export type RepositoryVulnerabilityAlert = Node & RepositoryNode & {
   dismissedAt?: Maybe<Scalars['DateTime']>;
   /** The user who dismissed the alert */
   dismisser?: Maybe<User>;
-  /**
-   * The reason the alert was marked as fixed.
-   * @deprecated The `fixReason` field is being removed. You can still use `fixedAt` and `dismissReason`. Removal on 2023-04-01 UTC.
-   */
-  fixReason?: Maybe<Scalars['String']>;
   /** When was the alert fixed? */
   fixedAt?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
@@ -23454,6 +23454,8 @@ export type Team = MemberStatusable & Node & Subscribable & {
   newTeamResourcePath: Scalars['URI'];
   /** The HTTP URL creating a new team */
   newTeamUrl: Scalars['URI'];
+  /** The notification setting that the team has set. */
+  notificationSetting: TeamNotificationSetting;
   /** The organization that owns this team. */
   organization: Organization;
   /** The parent team of the team. */
@@ -24119,6 +24121,14 @@ export enum TeamMembershipType {
   ChildTeam = 'CHILD_TEAM',
   /** Includes only immediate members of the team. */
   Immediate = 'IMMEDIATE'
+}
+
+/** The possible team notification values. */
+export enum TeamNotificationSetting {
+  /** No one will receive notifications. */
+  NotificationsDisabled = 'NOTIFICATIONS_DISABLED',
+  /** Everyone will receive notifications when the team is @mentioned. */
+  NotificationsEnabled = 'NOTIFICATIONS_ENABLED'
 }
 
 /** Ways in which team connections can be ordered. */
@@ -28472,6 +28482,7 @@ export type ResolversTypes = {
   TeamMemberOrderField: TeamMemberOrderField;
   TeamMemberRole: TeamMemberRole;
   TeamMembershipType: TeamMembershipType;
+  TeamNotificationSetting: TeamNotificationSetting;
   TeamOrder: TeamOrder;
   TeamOrderField: TeamOrderField;
   TeamPrivacy: TeamPrivacy;
@@ -36687,6 +36698,7 @@ export type RepoRemoveTopicAuditEntryResolvers<ContextType = any, ParentType ext
 
 export type RepositoryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Repository'] = ResolversParentTypes['Repository']> = {
   allowUpdateBranch?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  archivedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   assignableUsers?: Resolver<ResolversTypes['UserConnection'], ParentType, ContextType, Partial<RepositoryAssignableUsersArgs>>;
   autoMergeAllowed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   branchProtectionRules?: Resolver<ResolversTypes['BranchProtectionRuleConnection'], ParentType, ContextType, Partial<RepositoryBranchProtectionRulesArgs>>;
@@ -36886,6 +36898,7 @@ export type RepositoryEdgeResolvers<ContextType = any, ParentType extends Resolv
 
 export type RepositoryInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['RepositoryInfo'] = ResolversParentTypes['RepositoryInfo']> = {
   __resolveType: TypeResolveFn<'Repository', ParentType, ContextType>;
+  archivedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   descriptionHTML?: Resolver<ResolversTypes['HTML'], ParentType, ContextType>;
@@ -37074,7 +37087,6 @@ export type RepositoryVulnerabilityAlertResolvers<ContextType = any, ParentType 
   dismissReason?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   dismissedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   dismisser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
-  fixReason?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   fixedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   number?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -37912,6 +37924,7 @@ export type TeamResolvers<ContextType = any, ParentType extends ResolversParentT
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   newTeamResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   newTeamUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
+  notificationSetting?: Resolver<ResolversTypes['TeamNotificationSetting'], ParentType, ContextType>;
   organization?: Resolver<ResolversTypes['Organization'], ParentType, ContextType>;
   parentTeam?: Resolver<Maybe<ResolversTypes['Team']>, ParentType, ContextType>;
   privacy?: Resolver<ResolversTypes['TeamPrivacy'], ParentType, ContextType>;
