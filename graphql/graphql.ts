@@ -1047,6 +1047,31 @@ export type BotAvatarUrlArgs = {
 /** Types which can be actors for `BranchActorAllowance` objects. */
 export type BranchActorAllowanceActor = App | Team | User;
 
+/** Parameters to be used for the branch_name_pattern rule */
+export type BranchNamePatternParameters = {
+  __typename?: 'BranchNamePatternParameters';
+  /** How this rule will appear to users. */
+  name: Scalars['String'];
+  /** If true, the rule will fail if the pattern matches. */
+  negate: Scalars['Boolean'];
+  /** The operator to use for matching. */
+  operator?: Maybe<Scalars['String']>;
+  /** The pattern to match with. */
+  pattern?: Maybe<Scalars['String']>;
+};
+
+/** Parameters to be used for the branch_name_pattern rule */
+export type BranchNamePatternParametersInput = {
+  /** How this rule will appear to users. */
+  name?: InputMaybe<Scalars['String']>;
+  /** If true, the rule will fail if the pattern matches. */
+  negate?: InputMaybe<Scalars['Boolean']>;
+  /** The operator to use for matching. */
+  operator: Scalars['String'];
+  /** The pattern to match with. */
+  pattern: Scalars['String'];
+};
+
 /** A branch protection rule. */
 export type BranchProtectionRule = Node & {
   __typename?: 'BranchProtectionRule';
@@ -1236,6 +1261,9 @@ export type BulkSponsorship = {
   /** The username of the user or organization who is receiving the sponsorship. Required if sponsorableId is not given. */
   sponsorableLogin?: InputMaybe<Scalars['String']>;
 };
+
+/** Types that can represent a repository ruleset bypass actor. */
+export type BypassActor = App | Team;
 
 /** A user, team, or app who has the ability to bypass a force push requirement on a protected branch. */
 export type BypassForcePushAllowance = Node & {
@@ -2403,6 +2431,31 @@ export type CommitAuthor = {
   id?: InputMaybe<Scalars['ID']>;
 };
 
+/** Parameters to be used for the commit_author_email_pattern rule */
+export type CommitAuthorEmailPatternParameters = {
+  __typename?: 'CommitAuthorEmailPatternParameters';
+  /** How this rule will appear to users. */
+  name: Scalars['String'];
+  /** If true, the rule will fail if the pattern matches. */
+  negate: Scalars['Boolean'];
+  /** The operator to use for matching. */
+  operator?: Maybe<Scalars['String']>;
+  /** The pattern to match with. */
+  pattern?: Maybe<Scalars['String']>;
+};
+
+/** Parameters to be used for the commit_author_email_pattern rule */
+export type CommitAuthorEmailPatternParametersInput = {
+  /** How this rule will appear to users. */
+  name?: InputMaybe<Scalars['String']>;
+  /** If true, the rule will fail if the pattern matches. */
+  negate?: InputMaybe<Scalars['Boolean']>;
+  /** The operator to use for matching. */
+  operator: Scalars['String'];
+  /** The pattern to match with. */
+  pattern: Scalars['String'];
+};
+
 /** Represents a comment on a given Commit. */
 export type CommitComment = Comment & Deletable & Minimizable & Node & Reactable & RepositoryNode & Updatable & UpdatableComment & {
   __typename?: 'CommitComment';
@@ -2618,6 +2671,31 @@ export type CommitMessage = {
   headline: Scalars['String'];
 };
 
+/** Parameters to be used for the commit_message_pattern rule */
+export type CommitMessagePatternParameters = {
+  __typename?: 'CommitMessagePatternParameters';
+  /** How this rule will appear to users. */
+  name: Scalars['String'];
+  /** If true, the rule will fail if the pattern matches. */
+  negate: Scalars['Boolean'];
+  /** The operator to use for matching. */
+  operator?: Maybe<Scalars['String']>;
+  /** The pattern to match with. */
+  pattern?: Maybe<Scalars['String']>;
+};
+
+/** Parameters to be used for the commit_message_pattern rule */
+export type CommitMessagePatternParametersInput = {
+  /** How this rule will appear to users. */
+  name?: InputMaybe<Scalars['String']>;
+  /** If true, the rule will fail if the pattern matches. */
+  negate?: InputMaybe<Scalars['Boolean']>;
+  /** The operator to use for matching. */
+  operator: Scalars['String'];
+  /** The pattern to match with. */
+  pattern: Scalars['String'];
+};
+
 /**
  * A git ref for a commit to be appended to.
  *
@@ -2650,6 +2728,31 @@ export type CommittableBranch = {
   id?: InputMaybe<Scalars['ID']>;
   /** The nameWithOwner of the repository to commit to. */
   repositoryNameWithOwner?: InputMaybe<Scalars['String']>;
+};
+
+/** Parameters to be used for the committer_email_pattern rule */
+export type CommitterEmailPatternParameters = {
+  __typename?: 'CommitterEmailPatternParameters';
+  /** How this rule will appear to users. */
+  name: Scalars['String'];
+  /** If true, the rule will fail if the pattern matches. */
+  negate: Scalars['Boolean'];
+  /** The operator to use for matching. */
+  operator?: Maybe<Scalars['String']>;
+  /** The pattern to match with. */
+  pattern?: Maybe<Scalars['String']>;
+};
+
+/** Parameters to be used for the committer_email_pattern rule */
+export type CommitterEmailPatternParametersInput = {
+  /** How this rule will appear to users. */
+  name?: InputMaybe<Scalars['String']>;
+  /** If true, the rule will fail if the pattern matches. */
+  negate?: InputMaybe<Scalars['Boolean']>;
+  /** The operator to use for matching. */
+  operator: Scalars['String'];
+  /** The pattern to match with. */
+  pattern: Scalars['String'];
 };
 
 /** Represents a comparison between two commit revisions. */
@@ -3645,6 +3748,37 @@ export type CreateRepositoryPayload = {
   repository?: Maybe<Repository>;
 };
 
+/** Autogenerated input type of CreateRepositoryRuleset */
+export type CreateRepositoryRulesetInput = {
+  /** A list of Team or App IDs allowed to bypass rules in this ruleset. */
+  bypassActorIds?: InputMaybe<Array<Scalars['ID']>>;
+  /** The bypass mode for this ruleset */
+  bypassMode?: InputMaybe<RuleBypassMode>;
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The set of conditions for this ruleset */
+  conditions: RepositoryRuleConditionsInput;
+  /** The enforcement level for this ruleset */
+  enforcement: RuleEnforcement;
+  /** The name of the ruleset. */
+  name: Scalars['String'];
+  /** The list of rules for this ruleset */
+  rules?: InputMaybe<Array<RepositoryRuleInput>>;
+  /** The global relay id of the source in which a new ruleset should be created in. */
+  sourceId: Scalars['ID'];
+  /** The target of the ruleset. */
+  target?: InputMaybe<RepositoryRulesetTarget>;
+};
+
+/** Autogenerated return type of CreateRepositoryRuleset */
+export type CreateRepositoryRulesetPayload = {
+  __typename?: 'CreateRepositoryRulesetPayload';
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The newly created Ruleset. */
+  ruleset?: Maybe<RepositoryRuleset>;
+};
+
 /** Autogenerated input type of CreateSponsorsListing */
 export type CreateSponsorsListingInput = {
   /** The country or region where the sponsorable's bank account is located. Required if fiscalHostLogin is not specified, ignored when fiscalHostLogin is specified. */
@@ -4442,6 +4576,21 @@ export type DeleteRefInput = {
 /** Autogenerated return type of DeleteRef */
 export type DeleteRefPayload = {
   __typename?: 'DeleteRefPayload';
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: Maybe<Scalars['String']>;
+};
+
+/** Autogenerated input type of DeleteRepositoryRuleset */
+export type DeleteRepositoryRulesetInput = {
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The global relay id of the repository ruleset to be deleted. */
+  repositoryRulesetId: Scalars['ID'];
+};
+
+/** Autogenerated return type of DeleteRepositoryRuleset */
+export type DeleteRepositoryRulesetPayload = {
+  __typename?: 'DeleteRepositoryRulesetPayload';
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: Maybe<Scalars['String']>;
 };
@@ -10086,6 +10235,8 @@ export type Mutation = {
   createRef?: Maybe<CreateRefPayload>;
   /** Create a new repository. */
   createRepository?: Maybe<CreateRepositoryPayload>;
+  /** Create a repository ruleset */
+  createRepositoryRuleset?: Maybe<CreateRepositoryRulesetPayload>;
   /** Create a GitHub Sponsors profile to allow others to sponsor you or your organization. */
   createSponsorsListing?: Maybe<CreateSponsorsListingPayload>;
   /** Create a new payment tier for your GitHub Sponsors profile. */
@@ -10138,6 +10289,8 @@ export type Mutation = {
   deletePullRequestReviewComment?: Maybe<DeletePullRequestReviewCommentPayload>;
   /** Delete a Git Ref. */
   deleteRef?: Maybe<DeleteRefPayload>;
+  /** Delete a repository ruleset */
+  deleteRepositoryRuleset?: Maybe<DeleteRepositoryRulesetPayload>;
   /** Deletes a team discussion. */
   deleteTeamDiscussion?: Maybe<DeleteTeamDiscussionPayload>;
   /** Deletes a team discussion comment. */
@@ -10376,6 +10529,8 @@ export type Mutation = {
   updateRef?: Maybe<UpdateRefPayload>;
   /** Update information about a repository. */
   updateRepository?: Maybe<UpdateRepositoryPayload>;
+  /** Update a repository ruleset */
+  updateRepositoryRuleset?: Maybe<UpdateRepositoryRulesetPayload>;
   /** Sets whether contributors are required to sign off on web-based commits for a repository. */
   updateRepositoryWebCommitSignoffSetting?: Maybe<UpdateRepositoryWebCommitSignoffSettingPayload>;
   /** Change visibility of your sponsorship and opt in or out of email updates from the maintainer. */
@@ -10732,6 +10887,12 @@ export type MutationCreateRepositoryArgs = {
 
 
 /** The root query for implementing GraphQL mutations. */
+export type MutationCreateRepositoryRulesetArgs = {
+  input: CreateRepositoryRulesetInput;
+};
+
+
+/** The root query for implementing GraphQL mutations. */
 export type MutationCreateSponsorsListingArgs = {
   input: CreateSponsorsListingInput;
 };
@@ -10884,6 +11045,12 @@ export type MutationDeletePullRequestReviewCommentArgs = {
 /** The root query for implementing GraphQL mutations. */
 export type MutationDeleteRefArgs = {
   input: DeleteRefInput;
+};
+
+
+/** The root query for implementing GraphQL mutations. */
+export type MutationDeleteRepositoryRulesetArgs = {
+  input: DeleteRepositoryRulesetInput;
 };
 
 
@@ -11598,6 +11765,12 @@ export type MutationUpdateRefArgs = {
 /** The root query for implementing GraphQL mutations. */
 export type MutationUpdateRepositoryArgs = {
   input: UpdateRepositoryInput;
+};
+
+
+/** The root query for implementing GraphQL mutations. */
+export type MutationUpdateRepositoryRulesetArgs = {
+  input: UpdateRepositoryRulesetInput;
 };
 
 
@@ -13226,6 +13399,8 @@ export type Organization = Actor & AnnouncementBanner & MemberStatusable & Node 
   requiresTwoFactorAuthentication?: Maybe<Scalars['Boolean']>;
   /** The HTTP path for this organization. */
   resourcePath: Scalars['URI'];
+  /** A list of rulesets for this organization. */
+  rulesets?: Maybe<RepositoryRulesetConnection>;
   /** The Organization's SAML identity providers */
   samlIdentityProvider?: Maybe<OrganizationIdentityProvider>;
   /** List of users and organizations this entity is sponsoring. */
@@ -13520,6 +13695,16 @@ export type OrganizationRepositoryMigrationsArgs = {
   orderBy?: InputMaybe<RepositoryMigrationOrder>;
   repositoryName?: InputMaybe<Scalars['String']>;
   state?: InputMaybe<MigrationState>;
+};
+
+
+/** An account on GitHub, with one or more owners, that has repositories, members and teams. */
+export type OrganizationRulesetsArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  includeParents?: InputMaybe<Scalars['Boolean']>;
+  last?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -16792,6 +16977,35 @@ export enum PullRequestOrderField {
   UpdatedAt = 'UPDATED_AT'
 }
 
+/** Parameters to be used for the pull_request rule */
+export type PullRequestParameters = {
+  __typename?: 'PullRequestParameters';
+  /** New, reviewable commits pushed will dismiss previous pull request review approvals. */
+  dismissStaleReviewsOnPush?: Maybe<Scalars['Boolean']>;
+  /** Require an approving review in pull requests that modify files that have a designated code owner. */
+  requireCodeOwnerReview?: Maybe<Scalars['Boolean']>;
+  /** Whether the most recent reviewable push must be approved by someone other than the person who pushed it. */
+  requireLastPushApproval?: Maybe<Scalars['Boolean']>;
+  /** The number of approving reviews that are required before a pull request can be merged. */
+  requiredApprovingReviewCount?: Maybe<Scalars['Int']>;
+  /** All conversations on code must be resolved before a pull request can be merged. */
+  requiredReviewThreadResolution?: Maybe<Scalars['Boolean']>;
+};
+
+/** Parameters to be used for the pull_request rule */
+export type PullRequestParametersInput = {
+  /** New, reviewable commits pushed will dismiss previous pull request review approvals. */
+  dismissStaleReviewsOnPush: Scalars['Boolean'];
+  /** Require an approving review in pull requests that modify files that have a designated code owner. */
+  requireCodeOwnerReview: Scalars['Boolean'];
+  /** Whether the most recent reviewable push must be approved by someone other than the person who pushed it. */
+  requireLastPushApproval: Scalars['Boolean'];
+  /** The number of approving reviews that are required before a pull request can be merged. */
+  requiredApprovingReviewCount: Scalars['Int'];
+  /** All conversations on code must be resolved before a pull request can be merged. */
+  requiredReviewThreadResolution: Scalars['Boolean'];
+};
+
 /** A review object for a given pull request. */
 export type PullRequestReview = Comment & Deletable & Node & Reactable & RepositoryNode & Updatable & UpdatableComment & {
   __typename?: 'PullRequestReview';
@@ -18047,6 +18261,23 @@ export type RefEdge = {
   cursor: Scalars['String'];
   /** The item at the end of the edge. */
   node?: Maybe<Ref>;
+};
+
+/** Parameters to be used for the ref_name condition */
+export type RefNameConditionTarget = {
+  __typename?: 'RefNameConditionTarget';
+  /** Array of ref names or patterns to exclude. The condition will not pass if any of these patterns match. */
+  exclude?: Maybe<Array<Scalars['String']>>;
+  /** Array of ref names or patterns to include. One of these patterns must match for the condition to pass. Also accepts `~DEFAULT_BRANCH` to include the default branch or `~ALL` to include all branches. */
+  include?: Maybe<Array<Scalars['String']>>;
+};
+
+/** Parameters to be used for the ref_name condition */
+export type RefNameConditionTargetInput = {
+  /** Array of ref names or patterns to exclude. The condition will not pass if any of these patterns match. */
+  exclude: Array<Scalars['String']>;
+  /** Array of ref names or patterns to include. One of these patterns must match for the condition to pass. Also accepts `~DEFAULT_BRANCH` to include the default branch or `~ALL` to include all branches. */
+  include: Array<Scalars['String']>;
 };
 
 /** Ways in which lists of git refs can be ordered upon return. */
@@ -19901,6 +20132,8 @@ export type Repository = Node & PackageOwner & ProjectOwner & ProjectV2Recent & 
   repositoryTopics: RepositoryTopicConnection;
   /** The HTTP path for this repository */
   resourcePath: Scalars['URI'];
+  /** A list of rulesets for this repository. */
+  rulesets?: Maybe<RepositoryRulesetConnection>;
   /** The security policy URL. */
   securityPolicyUrl?: Maybe<Scalars['URI']>;
   /** A description of the repository, rendered to HTML without any links in it. */
@@ -20327,6 +20560,16 @@ export type RepositoryRepositoryTopicsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+};
+
+
+/** A repository contains the content for a project. */
+export type RepositoryRulesetsArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  includeParents?: InputMaybe<Scalars['Boolean']>;
   last?: InputMaybe<Scalars['Int']>;
 };
 
@@ -20794,6 +21037,27 @@ export enum RepositoryMigrationOrderField {
   CreatedAt = 'CREATED_AT'
 }
 
+/** Parameters to be used for the repository_name condition */
+export type RepositoryNameConditionTarget = {
+  __typename?: 'RepositoryNameConditionTarget';
+  /** Array of repository names or patterns to exclude. The condition will not pass if any of these patterns match. */
+  exclude?: Maybe<Array<Scalars['String']>>;
+  /** Array of repository names or patterns to include. One of these patterns must match for the condition to pass. Also accepts `~ALL` to include all repositories. */
+  include?: Maybe<Array<Scalars['String']>>;
+  /** Target changes that match these patterns will be prevented except by those with bypass permissions. */
+  protected: Scalars['Boolean'];
+};
+
+/** Parameters to be used for the repository_name condition */
+export type RepositoryNameConditionTargetInput = {
+  /** Array of repository names or patterns to exclude. The condition will not pass if any of these patterns match. */
+  exclude: Array<Scalars['String']>;
+  /** Array of repository names or patterns to include. One of these patterns must match for the condition to pass. Also accepts `~ALL` to include all repositories. */
+  include: Array<Scalars['String']>;
+  /** Target changes that match these patterns will be prevented except by those with bypass permissions. */
+  protected?: InputMaybe<Scalars['Boolean']>;
+};
+
 /** Represents a object that belongs to a repository. */
 export type RepositoryNode = {
   /** The repository associated with this node. */
@@ -20887,6 +21151,202 @@ export enum RepositoryPrivacy {
   Private = 'PRIVATE',
   /** Public */
   Public = 'PUBLIC'
+}
+
+/** A repository rule. */
+export type RepositoryRule = Node & {
+  __typename?: 'RepositoryRule';
+  id: Scalars['ID'];
+  /** The parameters for this rule. */
+  parameters?: Maybe<RuleParameters>;
+  /** The type of rule. */
+  type: RepositoryRuleType;
+};
+
+/** Set of conditions that determine if a ruleset will evaluate */
+export type RepositoryRuleConditions = {
+  __typename?: 'RepositoryRuleConditions';
+  /** Configuration for the ref_name condition */
+  refName?: Maybe<RefNameConditionTarget>;
+  /** Configuration for the repository_name condition */
+  repositoryName?: Maybe<RepositoryNameConditionTarget>;
+};
+
+/** Specifies the conditions required for a ruleset to evaluate */
+export type RepositoryRuleConditionsInput = {
+  /** Configuration for the ref_name condition */
+  refName?: InputMaybe<RefNameConditionTargetInput>;
+  /** Configuration for the repository_name condition */
+  repositoryName?: InputMaybe<RepositoryNameConditionTargetInput>;
+};
+
+/** The connection type for RepositoryRule. */
+export type RepositoryRuleConnection = {
+  __typename?: 'RepositoryRuleConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<RepositoryRuleEdge>>>;
+  /** A list of nodes. */
+  nodes?: Maybe<Array<Maybe<RepositoryRule>>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of items in the connection. */
+  totalCount: Scalars['Int'];
+};
+
+/** An edge in a connection. */
+export type RepositoryRuleEdge = {
+  __typename?: 'RepositoryRuleEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node?: Maybe<RepositoryRule>;
+};
+
+/** Specifies the attributes for a new or updated rule. */
+export type RepositoryRuleInput = {
+  /** Optional ID of this rule when updating */
+  id?: InputMaybe<Scalars['ID']>;
+  /** The parameters for the rule. */
+  parameters?: InputMaybe<RuleParametersInput>;
+  /** The type of rule to create. */
+  type: RepositoryRuleType;
+};
+
+/** The rule types supported in rulesets */
+export enum RepositoryRuleType {
+  /** Branch name pattern */
+  BranchNamePattern = 'BRANCH_NAME_PATTERN',
+  /** Committer email pattern */
+  CommitterEmailPattern = 'COMMITTER_EMAIL_PATTERN',
+  /** Commit author email pattern */
+  CommitAuthorEmailPattern = 'COMMIT_AUTHOR_EMAIL_PATTERN',
+  /** Commit message pattern */
+  CommitMessagePattern = 'COMMIT_MESSAGE_PATTERN',
+  /** Creation */
+  Creation = 'CREATION',
+  /** Deletion */
+  Deletion = 'DELETION',
+  /** Non fast forward */
+  NonFastForward = 'NON_FAST_FORWARD',
+  /** Pull request */
+  PullRequest = 'PULL_REQUEST',
+  /** Required deployments */
+  RequiredDeployments = 'REQUIRED_DEPLOYMENTS',
+  /** Required linear history */
+  RequiredLinearHistory = 'REQUIRED_LINEAR_HISTORY',
+  /** Required signatures */
+  RequiredSignatures = 'REQUIRED_SIGNATURES',
+  /** Required status checks */
+  RequiredStatusChecks = 'REQUIRED_STATUS_CHECKS',
+  /** Tag name pattern */
+  TagNamePattern = 'TAG_NAME_PATTERN',
+  /** Update */
+  Update = 'UPDATE'
+}
+
+/** A repository ruleset. */
+export type RepositoryRuleset = Node & {
+  __typename?: 'RepositoryRuleset';
+  /** The actors that can bypass this ruleset */
+  bypassActors?: Maybe<RepositoryRulesetBypassActorConnection>;
+  /** The bypass mode of this ruleset */
+  bypassMode: RuleBypassMode;
+  /** The set of conditions that must evaluate to true for this ruleset to apply */
+  conditions: RepositoryRuleConditions;
+  /** Identifies the primary key from the database. */
+  databaseId?: Maybe<Scalars['Int']>;
+  /** The enforcement level of this ruleset */
+  enforcement: RuleEnforcement;
+  id: Scalars['ID'];
+  /** Name of the ruleset. */
+  name: Scalars['String'];
+  /** List of rules. */
+  rules?: Maybe<RepositoryRuleConnection>;
+  /** Source of ruleset. */
+  source: RuleSource;
+  /** Target of the ruleset. */
+  target?: Maybe<RepositoryRulesetTarget>;
+};
+
+
+/** A repository ruleset. */
+export type RepositoryRulesetBypassActorsArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+};
+
+
+/** A repository ruleset. */
+export type RepositoryRulesetRulesArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  type?: InputMaybe<RepositoryRuleType>;
+};
+
+/** A team or app that has the ability to bypass a rules defined on a ruleset */
+export type RepositoryRulesetBypassActor = Node & {
+  __typename?: 'RepositoryRulesetBypassActor';
+  /** The actor that can bypass rules. */
+  actor?: Maybe<BypassActor>;
+  id: Scalars['ID'];
+  /** Identifies the ruleset associated with the allowed actor */
+  repositoryRuleset?: Maybe<RepositoryRuleset>;
+};
+
+/** The connection type for RepositoryRulesetBypassActor. */
+export type RepositoryRulesetBypassActorConnection = {
+  __typename?: 'RepositoryRulesetBypassActorConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<RepositoryRulesetBypassActorEdge>>>;
+  /** A list of nodes. */
+  nodes?: Maybe<Array<Maybe<RepositoryRulesetBypassActor>>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of items in the connection. */
+  totalCount: Scalars['Int'];
+};
+
+/** An edge in a connection. */
+export type RepositoryRulesetBypassActorEdge = {
+  __typename?: 'RepositoryRulesetBypassActorEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node?: Maybe<RepositoryRulesetBypassActor>;
+};
+
+/** The connection type for RepositoryRuleset. */
+export type RepositoryRulesetConnection = {
+  __typename?: 'RepositoryRulesetConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<RepositoryRulesetEdge>>>;
+  /** A list of nodes. */
+  nodes?: Maybe<Array<Maybe<RepositoryRuleset>>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of items in the connection. */
+  totalCount: Scalars['Int'];
+};
+
+/** An edge in a connection. */
+export type RepositoryRulesetEdge = {
+  __typename?: 'RepositoryRulesetEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node?: Maybe<RepositoryRuleset>;
+};
+
+/** The targets supported for rulesets */
+export enum RepositoryRulesetTarget {
+  /** Branch */
+  Branch = 'BRANCH',
+  /** Tag */
+  Tag = 'TAG'
 }
 
 /** A repository-topic connects a repository to a topic. */
@@ -21186,6 +21646,19 @@ export type RequirableByPullRequestIsRequiredArgs = {
   pullRequestNumber?: InputMaybe<Scalars['Int']>;
 };
 
+/** Parameters to be used for the required_deployments rule */
+export type RequiredDeploymentsParameters = {
+  __typename?: 'RequiredDeploymentsParameters';
+  /** The environments that must be successfully deployed to before branches can be merged. */
+  requiredDeploymentEnvironments?: Maybe<Array<Scalars['String']>>;
+};
+
+/** Parameters to be used for the required_deployments rule */
+export type RequiredDeploymentsParametersInput = {
+  /** The environments that must be successfully deployed to before branches can be merged. */
+  requiredDeploymentEnvironments: Array<Scalars['String']>;
+};
+
 /** Represents a required status check for a protected branch, but not any specific run of that check. */
 export type RequiredStatusCheckDescription = {
   __typename?: 'RequiredStatusCheckDescription';
@@ -21201,6 +21674,23 @@ export type RequiredStatusCheckInput = {
   appId?: InputMaybe<Scalars['ID']>;
   /** Status check context that must pass for commits to be accepted to the matching branch. */
   context: Scalars['String'];
+};
+
+/** Parameters to be used for the required_status_checks rule */
+export type RequiredStatusChecksParameters = {
+  __typename?: 'RequiredStatusChecksParameters';
+  /** Status checks that are required. */
+  requiredStatusChecks?: Maybe<Array<StatusCheckConfiguration>>;
+  /** Whether pull requests targeting a matching branch must be tested with the latest code. This setting will not take effect unless at least one status check is enabled. */
+  strictRequiredStatusChecksPolicy?: Maybe<Scalars['Boolean']>;
+};
+
+/** Parameters to be used for the required_status_checks rule */
+export type RequiredStatusChecksParametersInput = {
+  /** Status checks that are required. */
+  requiredStatusChecks: Array<StatusCheckConfigurationInput>;
+  /** Whether pull requests targeting a matching branch must be tested with the latest code. This setting will not take effect unless at least one status check is enabled. */
+  strictRequiredStatusChecksPolicy: Scalars['Boolean'];
 };
 
 /** Autogenerated input type of RerequestCheckSuite */
@@ -21504,6 +21994,54 @@ export enum RoleInOrganization {
   /** A user who is unaffiliated with the organization. */
   Unaffiliated = 'UNAFFILIATED'
 }
+
+/** The bypass mode for a rule or ruleset. */
+export enum RuleBypassMode {
+  /** Bypassing is disabled */
+  None = 'NONE',
+  /** Those with bypass permission at the organization level can bypass */
+  Organization = 'ORGANIZATION',
+  /** Those with bypass permission at the repository level can bypass */
+  Repository = 'REPOSITORY'
+}
+
+/** The level of enforcement for a rule or ruleset. */
+export enum RuleEnforcement {
+  /** Rules will be enforced */
+  Active = 'ACTIVE',
+  /** Do not evaluate or enforce rules */
+  Disabled = 'DISABLED',
+  /** Allow admins to test rules before enforcing them. Admins can view insights on the Rule Insights page (`evaluate` is only available with GitHub Enterprise). */
+  Evaluate = 'EVALUATE'
+}
+
+/** Types which can be parameters for `RepositoryRule` objects. */
+export type RuleParameters = BranchNamePatternParameters | CommitAuthorEmailPatternParameters | CommitMessagePatternParameters | CommitterEmailPatternParameters | PullRequestParameters | RequiredDeploymentsParameters | RequiredStatusChecksParameters | TagNamePatternParameters | UpdateParameters;
+
+/** Specifies the parameters for a `RepositoryRule` object. Only one of the fields should be specified. */
+export type RuleParametersInput = {
+  /** Parameters used for the `branch_name_pattern` rule type */
+  branchNamePattern?: InputMaybe<BranchNamePatternParametersInput>;
+  /** Parameters used for the `commit_author_email_pattern` rule type */
+  commitAuthorEmailPattern?: InputMaybe<CommitAuthorEmailPatternParametersInput>;
+  /** Parameters used for the `commit_message_pattern` rule type */
+  commitMessagePattern?: InputMaybe<CommitMessagePatternParametersInput>;
+  /** Parameters used for the `committer_email_pattern` rule type */
+  committerEmailPattern?: InputMaybe<CommitterEmailPatternParametersInput>;
+  /** Parameters used for the `pull_request` rule type */
+  pullRequest?: InputMaybe<PullRequestParametersInput>;
+  /** Parameters used for the `required_deployments` rule type */
+  requiredDeployments?: InputMaybe<RequiredDeploymentsParametersInput>;
+  /** Parameters used for the `required_status_checks` rule type */
+  requiredStatusChecks?: InputMaybe<RequiredStatusChecksParametersInput>;
+  /** Parameters used for the `tag_name_pattern` rule type */
+  tagNamePattern?: InputMaybe<TagNamePatternParametersInput>;
+  /** Parameters used for the `update` rule type */
+  update?: InputMaybe<UpdateParametersInput>;
+};
+
+/** Types which can have `RepositoryRule` objects. */
+export type RuleSource = Organization | Repository;
 
 /** The possible digest algorithms used to sign SAML requests for an identity provider. */
 export enum SamlDigestAlgorithm {
@@ -23412,6 +23950,23 @@ export type StatusContextArgs = {
   name: Scalars['String'];
 };
 
+/** Required status check */
+export type StatusCheckConfiguration = {
+  __typename?: 'StatusCheckConfiguration';
+  /** The status check context name that must be present on the commit. */
+  context?: Maybe<Scalars['String']>;
+  /** The optional integration ID that this status check must originate from. */
+  integrationId: Scalars['Int'];
+};
+
+/** Required status check */
+export type StatusCheckConfigurationInput = {
+  /** The status check context name that must be present on the commit. */
+  context: Scalars['String'];
+  /** The optional integration ID that this status check must originate from. */
+  integrationId?: InputMaybe<Scalars['Int']>;
+};
+
 /** Represents the rollup for both the check runs and status for a commit. */
 export type StatusCheckRollup = Node & {
   __typename?: 'StatusCheckRollup';
@@ -23671,6 +24226,31 @@ export type Tag = GitObject & Node & {
   tagger?: Maybe<GitActor>;
   /** The Git object the tag points to. */
   target: GitObject;
+};
+
+/** Parameters to be used for the tag_name_pattern rule */
+export type TagNamePatternParameters = {
+  __typename?: 'TagNamePatternParameters';
+  /** How this rule will appear to users. */
+  name: Scalars['String'];
+  /** If true, the rule will fail if the pattern matches. */
+  negate: Scalars['Boolean'];
+  /** The operator to use for matching. */
+  operator?: Maybe<Scalars['String']>;
+  /** The pattern to match with. */
+  pattern?: Maybe<Scalars['String']>;
+};
+
+/** Parameters to be used for the tag_name_pattern rule */
+export type TagNamePatternParametersInput = {
+  /** How this rule will appear to users. */
+  name?: InputMaybe<Scalars['String']>;
+  /** If true, the rule will fail if the pattern matches. */
+  negate?: InputMaybe<Scalars['Boolean']>;
+  /** The operator to use for matching. */
+  operator: Scalars['String'];
+  /** The pattern to match with. */
+  pattern: Scalars['String'];
 };
 
 /** A team of users in an organization. */
@@ -25907,6 +26487,19 @@ export type UpdateOrganizationWebCommitSignoffSettingPayload = {
   organization?: Maybe<Organization>;
 };
 
+/** Parameters to be used for the update rule */
+export type UpdateParameters = {
+  __typename?: 'UpdateParameters';
+  /** Branch can pull changes from its upstream repository */
+  updateAllowsFetchAndMerge?: Maybe<Scalars['Boolean']>;
+};
+
+/** Parameters to be used for the update rule */
+export type UpdateParametersInput = {
+  /** Branch can pull changes from its upstream repository */
+  updateAllowsFetchAndMerge: Scalars['Boolean'];
+};
+
 /** Autogenerated input type of UpdateProjectCard */
 export type UpdateProjectCardInput = {
   /** A unique identifier for the client performing the mutation. */
@@ -26225,6 +26818,37 @@ export type UpdateRepositoryPayload = {
   clientMutationId?: Maybe<Scalars['String']>;
   /** The updated repository. */
   repository?: Maybe<Repository>;
+};
+
+/** Autogenerated input type of UpdateRepositoryRuleset */
+export type UpdateRepositoryRulesetInput = {
+  /** A list of Team or App IDs allowed to bypass rules in this ruleset. */
+  bypassActorIds?: InputMaybe<Array<Scalars['ID']>>;
+  /** The bypass mode for this ruleset */
+  bypassMode?: InputMaybe<RuleBypassMode>;
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The list of conditions for this ruleset */
+  conditions?: InputMaybe<RepositoryRuleConditionsInput>;
+  /** The enforcement level for this ruleset */
+  enforcement?: InputMaybe<RuleEnforcement>;
+  /** The name of the ruleset. */
+  name?: InputMaybe<Scalars['String']>;
+  /** The global relay id of the repository ruleset to be updated. */
+  repositoryRulesetId: Scalars['ID'];
+  /** The list of rules for this ruleset */
+  rules?: InputMaybe<Array<RepositoryRuleInput>>;
+  /** The target of the ruleset. */
+  target?: InputMaybe<RepositoryRulesetTarget>;
+};
+
+/** Autogenerated return type of UpdateRepositoryRuleset */
+export type UpdateRepositoryRulesetPayload = {
+  __typename?: 'UpdateRepositoryRulesetPayload';
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The newly created Ruleset. */
+  ruleset?: Maybe<RepositoryRuleset>;
 };
 
 /** Autogenerated input type of UpdateRepositoryWebCommitSignoffSetting */
@@ -27482,6 +28106,7 @@ export type ResolversUnionTypes = {
   Assignee: ( Bot ) | ( Mannequin ) | ( Organization ) | ( User );
   AuditEntryActor: ( Bot ) | ( Organization ) | ( User );
   BranchActorAllowanceActor: ( App ) | ( Team ) | ( User );
+  BypassActor: ( App ) | ( Team );
   Claimable: ( Mannequin ) | ( User );
   Closer: ( Commit ) | ( PullRequest );
   CreatedIssueOrRestrictedContribution: ( CreatedIssueContribution ) | ( RestrictedContribution );
@@ -27511,6 +28136,8 @@ export type ResolversUnionTypes = {
   RenamedTitleSubject: ( Issue ) | ( PullRequest );
   RequestedReviewer: ( Mannequin ) | ( Team ) | ( User );
   ReviewDismissalAllowanceActor: ( App ) | ( Team ) | ( User );
+  RuleParameters: ( BranchNamePatternParameters ) | ( CommitAuthorEmailPatternParameters ) | ( CommitMessagePatternParameters ) | ( CommitterEmailPatternParameters ) | ( PullRequestParameters ) | ( RequiredDeploymentsParameters ) | ( RequiredStatusChecksParameters ) | ( TagNamePatternParameters ) | ( UpdateParameters );
+  RuleSource: ( Organization ) | ( Omit<Repository, 'issueOrPullRequest'> & { issueOrPullRequest?: Maybe<ResolversTypes['IssueOrPullRequest']> } );
   SearchResultItem: ( App ) | ( Discussion ) | ( Issue ) | ( MarketplaceListing ) | ( Organization ) | ( PullRequest ) | ( Omit<Repository, 'issueOrPullRequest'> & { issueOrPullRequest?: Maybe<ResolversTypes['IssueOrPullRequest']> } ) | ( User );
   Sponsor: ( Organization ) | ( User );
   SponsorableItem: ( Organization ) | ( User );
@@ -27524,6 +28151,7 @@ export type ResolversUnionParentTypes = {
   Assignee: ( Bot ) | ( Mannequin ) | ( Organization ) | ( User );
   AuditEntryActor: ( Bot ) | ( Organization ) | ( User );
   BranchActorAllowanceActor: ( App ) | ( Team ) | ( User );
+  BypassActor: ( App ) | ( Team );
   Claimable: ( Mannequin ) | ( User );
   Closer: ( Commit ) | ( PullRequest );
   CreatedIssueOrRestrictedContribution: ( CreatedIssueContribution ) | ( RestrictedContribution );
@@ -27553,6 +28181,8 @@ export type ResolversUnionParentTypes = {
   RenamedTitleSubject: ( Issue ) | ( PullRequest );
   RequestedReviewer: ( Mannequin ) | ( Team ) | ( User );
   ReviewDismissalAllowanceActor: ( App ) | ( Team ) | ( User );
+  RuleParameters: ( BranchNamePatternParameters ) | ( CommitAuthorEmailPatternParameters ) | ( CommitMessagePatternParameters ) | ( CommitterEmailPatternParameters ) | ( PullRequestParameters ) | ( RequiredDeploymentsParameters ) | ( RequiredStatusChecksParameters ) | ( TagNamePatternParameters ) | ( UpdateParameters );
+  RuleSource: ( Organization ) | ( Omit<Repository, 'issueOrPullRequest'> & { issueOrPullRequest?: Maybe<ResolversParentTypes['IssueOrPullRequest']> } );
   SearchResultItem: ( App ) | ( Discussion ) | ( Issue ) | ( MarketplaceListing ) | ( Organization ) | ( PullRequest ) | ( Omit<Repository, 'issueOrPullRequest'> & { issueOrPullRequest?: Maybe<ResolversParentTypes['IssueOrPullRequest']> } ) | ( User );
   Sponsor: ( Organization ) | ( User );
   SponsorableItem: ( Organization ) | ( User );
@@ -27645,6 +28275,8 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Bot: ResolverTypeWrapper<Bot>;
   BranchActorAllowanceActor: ResolverTypeWrapper<ResolversUnionTypes['BranchActorAllowanceActor']>;
+  BranchNamePatternParameters: ResolverTypeWrapper<BranchNamePatternParameters>;
+  BranchNamePatternParametersInput: BranchNamePatternParametersInput;
   BranchProtectionRule: ResolverTypeWrapper<BranchProtectionRule>;
   BranchProtectionRuleConflict: ResolverTypeWrapper<BranchProtectionRuleConflict>;
   BranchProtectionRuleConflictConnection: ResolverTypeWrapper<BranchProtectionRuleConflictConnection>;
@@ -27652,6 +28284,7 @@ export type ResolversTypes = {
   BranchProtectionRuleConnection: ResolverTypeWrapper<BranchProtectionRuleConnection>;
   BranchProtectionRuleEdge: ResolverTypeWrapper<BranchProtectionRuleEdge>;
   BulkSponsorship: BulkSponsorship;
+  BypassActor: ResolverTypeWrapper<ResolversUnionTypes['BypassActor']>;
   BypassForcePushAllowance: ResolverTypeWrapper<Omit<BypassForcePushAllowance, 'actor'> & { actor?: Maybe<ResolversTypes['BranchActorAllowanceActor']> }>;
   BypassForcePushAllowanceConnection: ResolverTypeWrapper<BypassForcePushAllowanceConnection>;
   BypassForcePushAllowanceEdge: ResolverTypeWrapper<BypassForcePushAllowanceEdge>;
@@ -27722,6 +28355,8 @@ export type ResolversTypes = {
   CommentDeletedEvent: ResolverTypeWrapper<CommentDeletedEvent>;
   Commit: ResolverTypeWrapper<Commit>;
   CommitAuthor: CommitAuthor;
+  CommitAuthorEmailPatternParameters: ResolverTypeWrapper<CommitAuthorEmailPatternParameters>;
+  CommitAuthorEmailPatternParametersInput: CommitAuthorEmailPatternParametersInput;
   CommitComment: ResolverTypeWrapper<CommitComment>;
   CommitCommentConnection: ResolverTypeWrapper<CommitCommentConnection>;
   CommitCommentEdge: ResolverTypeWrapper<CommitCommentEdge>;
@@ -27733,7 +28368,11 @@ export type ResolversTypes = {
   CommitEdge: ResolverTypeWrapper<CommitEdge>;
   CommitHistoryConnection: ResolverTypeWrapper<CommitHistoryConnection>;
   CommitMessage: CommitMessage;
+  CommitMessagePatternParameters: ResolverTypeWrapper<CommitMessagePatternParameters>;
+  CommitMessagePatternParametersInput: CommitMessagePatternParametersInput;
   CommittableBranch: CommittableBranch;
+  CommitterEmailPatternParameters: ResolverTypeWrapper<CommitterEmailPatternParameters>;
+  CommitterEmailPatternParametersInput: CommitterEmailPatternParametersInput;
   Comparison: ResolverTypeWrapper<Comparison>;
   ComparisonCommitConnection: ResolverTypeWrapper<ComparisonCommitConnection>;
   ComparisonStatus: ComparisonStatus;
@@ -27791,6 +28430,8 @@ export type ResolversTypes = {
   CreateRefPayload: ResolverTypeWrapper<CreateRefPayload>;
   CreateRepositoryInput: CreateRepositoryInput;
   CreateRepositoryPayload: ResolverTypeWrapper<CreateRepositoryPayload>;
+  CreateRepositoryRulesetInput: CreateRepositoryRulesetInput;
+  CreateRepositoryRulesetPayload: ResolverTypeWrapper<CreateRepositoryRulesetPayload>;
   CreateSponsorsListingInput: CreateSponsorsListingInput;
   CreateSponsorsListingPayload: ResolverTypeWrapper<CreateSponsorsListingPayload>;
   CreateSponsorsTierInput: CreateSponsorsTierInput;
@@ -27866,6 +28507,8 @@ export type ResolversTypes = {
   DeletePullRequestReviewPayload: ResolverTypeWrapper<DeletePullRequestReviewPayload>;
   DeleteRefInput: DeleteRefInput;
   DeleteRefPayload: ResolverTypeWrapper<DeleteRefPayload>;
+  DeleteRepositoryRulesetInput: DeleteRepositoryRulesetInput;
+  DeleteRepositoryRulesetPayload: ResolverTypeWrapper<DeleteRepositoryRulesetPayload>;
   DeleteTeamDiscussionCommentInput: DeleteTeamDiscussionCommentInput;
   DeleteTeamDiscussionCommentPayload: ResolverTypeWrapper<DeleteTeamDiscussionCommentPayload>;
   DeleteTeamDiscussionInput: DeleteTeamDiscussionInput;
@@ -28181,7 +28824,7 @@ export type ResolversTypes = {
   MoveProjectColumnPayload: ResolverTypeWrapper<MoveProjectColumnPayload>;
   MovedColumnsInProjectEvent: ResolverTypeWrapper<MovedColumnsInProjectEvent>;
   Mutation: ResolverTypeWrapper<{}>;
-  Node: ResolversTypes['AddedToMergeQueueEvent'] | ResolversTypes['AddedToProjectEvent'] | ResolversTypes['App'] | ResolversTypes['AssignedEvent'] | ResolversTypes['AutoMergeDisabledEvent'] | ResolversTypes['AutoMergeEnabledEvent'] | ResolversTypes['AutoRebaseEnabledEvent'] | ResolversTypes['AutoSquashEnabledEvent'] | ResolversTypes['AutomaticBaseChangeFailedEvent'] | ResolversTypes['AutomaticBaseChangeSucceededEvent'] | ResolversTypes['BaseRefChangedEvent'] | ResolversTypes['BaseRefDeletedEvent'] | ResolversTypes['BaseRefForcePushedEvent'] | ResolversTypes['Blob'] | ResolversTypes['Bot'] | ResolversTypes['BranchProtectionRule'] | ResolversTypes['BypassForcePushAllowance'] | ResolversTypes['BypassPullRequestAllowance'] | ResolversTypes['CWE'] | ResolversTypes['CheckRun'] | ResolversTypes['CheckSuite'] | ResolversTypes['ClosedEvent'] | ResolversTypes['CodeOfConduct'] | ResolversTypes['CommentDeletedEvent'] | ResolversTypes['Commit'] | ResolversTypes['CommitComment'] | ResolversTypes['CommitCommentThread'] | ResolversTypes['Comparison'] | ResolversTypes['ConnectedEvent'] | ResolversTypes['ConvertToDraftEvent'] | ResolversTypes['ConvertedNoteToIssueEvent'] | ResolversTypes['ConvertedToDiscussionEvent'] | ResolversTypes['CrossReferencedEvent'] | ResolversTypes['DemilestonedEvent'] | ResolversTypes['DeployKey'] | ResolversTypes['DeployedEvent'] | ResolversTypes['Deployment'] | ResolversTypes['DeploymentEnvironmentChangedEvent'] | ResolversTypes['DeploymentReview'] | ResolversTypes['DeploymentStatus'] | ResolversTypes['DisconnectedEvent'] | ResolversTypes['Discussion'] | ResolversTypes['DiscussionCategory'] | ResolversTypes['DiscussionComment'] | ResolversTypes['DiscussionPoll'] | ResolversTypes['DiscussionPollOption'] | ResolversTypes['DraftIssue'] | ResolversTypes['Enterprise'] | ResolversTypes['EnterpriseAdministratorInvitation'] | ResolversTypes['EnterpriseIdentityProvider'] | ResolversTypes['EnterpriseRepositoryInfo'] | ResolversTypes['EnterpriseServerInstallation'] | ResolversTypes['EnterpriseServerUserAccount'] | ResolversTypes['EnterpriseServerUserAccountEmail'] | ResolversTypes['EnterpriseServerUserAccountsUpload'] | ResolversTypes['EnterpriseUserAccount'] | ResolversTypes['Environment'] | ResolversTypes['ExternalIdentity'] | ResolversTypes['Gist'] | ResolversTypes['GistComment'] | ResolversTypes['HeadRefDeletedEvent'] | ResolversTypes['HeadRefForcePushedEvent'] | ResolversTypes['HeadRefRestoredEvent'] | ResolversTypes['IpAllowListEntry'] | ResolversTypes['Issue'] | ResolversTypes['IssueComment'] | ResolversTypes['Label'] | ResolversTypes['LabeledEvent'] | ResolversTypes['Language'] | ResolversTypes['License'] | ResolversTypes['LinkedBranch'] | ResolversTypes['LockedEvent'] | ResolversTypes['Mannequin'] | ResolversTypes['MarkedAsDuplicateEvent'] | ResolversTypes['MarketplaceCategory'] | ResolversTypes['MarketplaceListing'] | ResolversTypes['MembersCanDeleteReposClearAuditEntry'] | ResolversTypes['MembersCanDeleteReposDisableAuditEntry'] | ResolversTypes['MembersCanDeleteReposEnableAuditEntry'] | ResolversTypes['MentionedEvent'] | ResolversTypes['MergeQueue'] | ResolversTypes['MergeQueueEntry'] | ResolversTypes['MergedEvent'] | ResolversTypes['MigrationSource'] | ResolversTypes['Milestone'] | ResolversTypes['MilestonedEvent'] | ResolversTypes['MovedColumnsInProjectEvent'] | ResolversTypes['OIDCProvider'] | ResolversTypes['OauthApplicationCreateAuditEntry'] | ResolversTypes['OrgAddBillingManagerAuditEntry'] | ResolversTypes['OrgAddMemberAuditEntry'] | ResolversTypes['OrgBlockUserAuditEntry'] | ResolversTypes['OrgConfigDisableCollaboratorsOnlyAuditEntry'] | ResolversTypes['OrgConfigEnableCollaboratorsOnlyAuditEntry'] | ResolversTypes['OrgCreateAuditEntry'] | ResolversTypes['OrgDisableOauthAppRestrictionsAuditEntry'] | ResolversTypes['OrgDisableSamlAuditEntry'] | ResolversTypes['OrgDisableTwoFactorRequirementAuditEntry'] | ResolversTypes['OrgEnableOauthAppRestrictionsAuditEntry'] | ResolversTypes['OrgEnableSamlAuditEntry'] | ResolversTypes['OrgEnableTwoFactorRequirementAuditEntry'] | ResolversTypes['OrgInviteMemberAuditEntry'] | ResolversTypes['OrgInviteToBusinessAuditEntry'] | ResolversTypes['OrgOauthAppAccessApprovedAuditEntry'] | ResolversTypes['OrgOauthAppAccessDeniedAuditEntry'] | ResolversTypes['OrgOauthAppAccessRequestedAuditEntry'] | ResolversTypes['OrgRemoveBillingManagerAuditEntry'] | ResolversTypes['OrgRemoveMemberAuditEntry'] | ResolversTypes['OrgRemoveOutsideCollaboratorAuditEntry'] | ResolversTypes['OrgRestoreMemberAuditEntry'] | ResolversTypes['OrgUnblockUserAuditEntry'] | ResolversTypes['OrgUpdateDefaultRepositoryPermissionAuditEntry'] | ResolversTypes['OrgUpdateMemberAuditEntry'] | ResolversTypes['OrgUpdateMemberRepositoryCreationPermissionAuditEntry'] | ResolversTypes['OrgUpdateMemberRepositoryInvitationPermissionAuditEntry'] | ResolversTypes['Organization'] | ResolversTypes['OrganizationIdentityProvider'] | ResolversTypes['OrganizationInvitation'] | ResolversTypes['OrganizationMigration'] | ResolversTypes['Package'] | ResolversTypes['PackageFile'] | ResolversTypes['PackageTag'] | ResolversTypes['PackageVersion'] | ResolversTypes['PinnedDiscussion'] | ResolversTypes['PinnedEvent'] | ResolversTypes['PinnedIssue'] | ResolversTypes['PrivateRepositoryForkingDisableAuditEntry'] | ResolversTypes['PrivateRepositoryForkingEnableAuditEntry'] | ResolversTypes['Project'] | ResolversTypes['ProjectCard'] | ResolversTypes['ProjectColumn'] | ResolversTypes['ProjectV2'] | ResolversTypes['ProjectV2Field'] | ResolversTypes['ProjectV2Item'] | ResolversTypes['ProjectV2ItemFieldDateValue'] | ResolversTypes['ProjectV2ItemFieldIterationValue'] | ResolversTypes['ProjectV2ItemFieldNumberValue'] | ResolversTypes['ProjectV2ItemFieldSingleSelectValue'] | ResolversTypes['ProjectV2ItemFieldTextValue'] | ResolversTypes['ProjectV2IterationField'] | ResolversTypes['ProjectV2SingleSelectField'] | ResolversTypes['ProjectV2View'] | ResolversTypes['ProjectV2Workflow'] | ResolversTypes['PublicKey'] | ResolversTypes['PullRequest'] | ResolversTypes['PullRequestCommit'] | ResolversTypes['PullRequestCommitCommentThread'] | ResolversTypes['PullRequestReview'] | ResolversTypes['PullRequestReviewComment'] | ResolversTypes['PullRequestReviewThread'] | ResolversTypes['PullRequestThread'] | ResolversTypes['Push'] | ResolversTypes['PushAllowance'] | ResolversTypes['Reaction'] | ResolversTypes['ReadyForReviewEvent'] | ResolversTypes['Ref'] | ResolversTypes['ReferencedEvent'] | ResolversTypes['Release'] | ResolversTypes['ReleaseAsset'] | ResolversTypes['RemovedFromMergeQueueEvent'] | ResolversTypes['RemovedFromProjectEvent'] | ResolversTypes['RenamedTitleEvent'] | ResolversTypes['ReopenedEvent'] | ResolversTypes['RepoAccessAuditEntry'] | ResolversTypes['RepoAddMemberAuditEntry'] | ResolversTypes['RepoAddTopicAuditEntry'] | ResolversTypes['RepoArchivedAuditEntry'] | ResolversTypes['RepoChangeMergeSettingAuditEntry'] | ResolversTypes['RepoConfigDisableAnonymousGitAccessAuditEntry'] | ResolversTypes['RepoConfigDisableCollaboratorsOnlyAuditEntry'] | ResolversTypes['RepoConfigDisableContributorsOnlyAuditEntry'] | ResolversTypes['RepoConfigDisableSockpuppetDisallowedAuditEntry'] | ResolversTypes['RepoConfigEnableAnonymousGitAccessAuditEntry'] | ResolversTypes['RepoConfigEnableCollaboratorsOnlyAuditEntry'] | ResolversTypes['RepoConfigEnableContributorsOnlyAuditEntry'] | ResolversTypes['RepoConfigEnableSockpuppetDisallowedAuditEntry'] | ResolversTypes['RepoConfigLockAnonymousGitAccessAuditEntry'] | ResolversTypes['RepoConfigUnlockAnonymousGitAccessAuditEntry'] | ResolversTypes['RepoCreateAuditEntry'] | ResolversTypes['RepoDestroyAuditEntry'] | ResolversTypes['RepoRemoveMemberAuditEntry'] | ResolversTypes['RepoRemoveTopicAuditEntry'] | ResolversTypes['Repository'] | ResolversTypes['RepositoryInvitation'] | ResolversTypes['RepositoryMigration'] | ResolversTypes['RepositoryTopic'] | ResolversTypes['RepositoryVisibilityChangeDisableAuditEntry'] | ResolversTypes['RepositoryVisibilityChangeEnableAuditEntry'] | ResolversTypes['RepositoryVulnerabilityAlert'] | ResolversTypes['ReviewDismissalAllowance'] | ResolversTypes['ReviewDismissedEvent'] | ResolversTypes['ReviewRequest'] | ResolversTypes['ReviewRequestRemovedEvent'] | ResolversTypes['ReviewRequestedEvent'] | ResolversTypes['SavedReply'] | ResolversTypes['SecurityAdvisory'] | ResolversTypes['SponsorsActivity'] | ResolversTypes['SponsorsListing'] | ResolversTypes['SponsorsListingFeaturedItem'] | ResolversTypes['SponsorsTier'] | ResolversTypes['Sponsorship'] | ResolversTypes['SponsorshipNewsletter'] | ResolversTypes['Status'] | ResolversTypes['StatusCheckRollup'] | ResolversTypes['StatusContext'] | ResolversTypes['SubscribedEvent'] | ResolversTypes['Tag'] | ResolversTypes['Team'] | ResolversTypes['TeamAddMemberAuditEntry'] | ResolversTypes['TeamAddRepositoryAuditEntry'] | ResolversTypes['TeamChangeParentTeamAuditEntry'] | ResolversTypes['TeamDiscussion'] | ResolversTypes['TeamDiscussionComment'] | ResolversTypes['TeamRemoveMemberAuditEntry'] | ResolversTypes['TeamRemoveRepositoryAuditEntry'] | ResolversTypes['Topic'] | ResolversTypes['TransferredEvent'] | ResolversTypes['Tree'] | ResolversTypes['UnassignedEvent'] | ResolversTypes['UnlabeledEvent'] | ResolversTypes['UnlockedEvent'] | ResolversTypes['UnmarkedAsDuplicateEvent'] | ResolversTypes['UnpinnedEvent'] | ResolversTypes['UnsubscribedEvent'] | ResolversTypes['User'] | ResolversTypes['UserBlockedEvent'] | ResolversTypes['UserContentEdit'] | ResolversTypes['UserStatus'] | ResolversTypes['VerifiableDomain'] | ResolversTypes['Workflow'] | ResolversTypes['WorkflowRun'];
+  Node: ResolversTypes['AddedToMergeQueueEvent'] | ResolversTypes['AddedToProjectEvent'] | ResolversTypes['App'] | ResolversTypes['AssignedEvent'] | ResolversTypes['AutoMergeDisabledEvent'] | ResolversTypes['AutoMergeEnabledEvent'] | ResolversTypes['AutoRebaseEnabledEvent'] | ResolversTypes['AutoSquashEnabledEvent'] | ResolversTypes['AutomaticBaseChangeFailedEvent'] | ResolversTypes['AutomaticBaseChangeSucceededEvent'] | ResolversTypes['BaseRefChangedEvent'] | ResolversTypes['BaseRefDeletedEvent'] | ResolversTypes['BaseRefForcePushedEvent'] | ResolversTypes['Blob'] | ResolversTypes['Bot'] | ResolversTypes['BranchProtectionRule'] | ResolversTypes['BypassForcePushAllowance'] | ResolversTypes['BypassPullRequestAllowance'] | ResolversTypes['CWE'] | ResolversTypes['CheckRun'] | ResolversTypes['CheckSuite'] | ResolversTypes['ClosedEvent'] | ResolversTypes['CodeOfConduct'] | ResolversTypes['CommentDeletedEvent'] | ResolversTypes['Commit'] | ResolversTypes['CommitComment'] | ResolversTypes['CommitCommentThread'] | ResolversTypes['Comparison'] | ResolversTypes['ConnectedEvent'] | ResolversTypes['ConvertToDraftEvent'] | ResolversTypes['ConvertedNoteToIssueEvent'] | ResolversTypes['ConvertedToDiscussionEvent'] | ResolversTypes['CrossReferencedEvent'] | ResolversTypes['DemilestonedEvent'] | ResolversTypes['DeployKey'] | ResolversTypes['DeployedEvent'] | ResolversTypes['Deployment'] | ResolversTypes['DeploymentEnvironmentChangedEvent'] | ResolversTypes['DeploymentReview'] | ResolversTypes['DeploymentStatus'] | ResolversTypes['DisconnectedEvent'] | ResolversTypes['Discussion'] | ResolversTypes['DiscussionCategory'] | ResolversTypes['DiscussionComment'] | ResolversTypes['DiscussionPoll'] | ResolversTypes['DiscussionPollOption'] | ResolversTypes['DraftIssue'] | ResolversTypes['Enterprise'] | ResolversTypes['EnterpriseAdministratorInvitation'] | ResolversTypes['EnterpriseIdentityProvider'] | ResolversTypes['EnterpriseRepositoryInfo'] | ResolversTypes['EnterpriseServerInstallation'] | ResolversTypes['EnterpriseServerUserAccount'] | ResolversTypes['EnterpriseServerUserAccountEmail'] | ResolversTypes['EnterpriseServerUserAccountsUpload'] | ResolversTypes['EnterpriseUserAccount'] | ResolversTypes['Environment'] | ResolversTypes['ExternalIdentity'] | ResolversTypes['Gist'] | ResolversTypes['GistComment'] | ResolversTypes['HeadRefDeletedEvent'] | ResolversTypes['HeadRefForcePushedEvent'] | ResolversTypes['HeadRefRestoredEvent'] | ResolversTypes['IpAllowListEntry'] | ResolversTypes['Issue'] | ResolversTypes['IssueComment'] | ResolversTypes['Label'] | ResolversTypes['LabeledEvent'] | ResolversTypes['Language'] | ResolversTypes['License'] | ResolversTypes['LinkedBranch'] | ResolversTypes['LockedEvent'] | ResolversTypes['Mannequin'] | ResolversTypes['MarkedAsDuplicateEvent'] | ResolversTypes['MarketplaceCategory'] | ResolversTypes['MarketplaceListing'] | ResolversTypes['MembersCanDeleteReposClearAuditEntry'] | ResolversTypes['MembersCanDeleteReposDisableAuditEntry'] | ResolversTypes['MembersCanDeleteReposEnableAuditEntry'] | ResolversTypes['MentionedEvent'] | ResolversTypes['MergeQueue'] | ResolversTypes['MergeQueueEntry'] | ResolversTypes['MergedEvent'] | ResolversTypes['MigrationSource'] | ResolversTypes['Milestone'] | ResolversTypes['MilestonedEvent'] | ResolversTypes['MovedColumnsInProjectEvent'] | ResolversTypes['OIDCProvider'] | ResolversTypes['OauthApplicationCreateAuditEntry'] | ResolversTypes['OrgAddBillingManagerAuditEntry'] | ResolversTypes['OrgAddMemberAuditEntry'] | ResolversTypes['OrgBlockUserAuditEntry'] | ResolversTypes['OrgConfigDisableCollaboratorsOnlyAuditEntry'] | ResolversTypes['OrgConfigEnableCollaboratorsOnlyAuditEntry'] | ResolversTypes['OrgCreateAuditEntry'] | ResolversTypes['OrgDisableOauthAppRestrictionsAuditEntry'] | ResolversTypes['OrgDisableSamlAuditEntry'] | ResolversTypes['OrgDisableTwoFactorRequirementAuditEntry'] | ResolversTypes['OrgEnableOauthAppRestrictionsAuditEntry'] | ResolversTypes['OrgEnableSamlAuditEntry'] | ResolversTypes['OrgEnableTwoFactorRequirementAuditEntry'] | ResolversTypes['OrgInviteMemberAuditEntry'] | ResolversTypes['OrgInviteToBusinessAuditEntry'] | ResolversTypes['OrgOauthAppAccessApprovedAuditEntry'] | ResolversTypes['OrgOauthAppAccessDeniedAuditEntry'] | ResolversTypes['OrgOauthAppAccessRequestedAuditEntry'] | ResolversTypes['OrgRemoveBillingManagerAuditEntry'] | ResolversTypes['OrgRemoveMemberAuditEntry'] | ResolversTypes['OrgRemoveOutsideCollaboratorAuditEntry'] | ResolversTypes['OrgRestoreMemberAuditEntry'] | ResolversTypes['OrgUnblockUserAuditEntry'] | ResolversTypes['OrgUpdateDefaultRepositoryPermissionAuditEntry'] | ResolversTypes['OrgUpdateMemberAuditEntry'] | ResolversTypes['OrgUpdateMemberRepositoryCreationPermissionAuditEntry'] | ResolversTypes['OrgUpdateMemberRepositoryInvitationPermissionAuditEntry'] | ResolversTypes['Organization'] | ResolversTypes['OrganizationIdentityProvider'] | ResolversTypes['OrganizationInvitation'] | ResolversTypes['OrganizationMigration'] | ResolversTypes['Package'] | ResolversTypes['PackageFile'] | ResolversTypes['PackageTag'] | ResolversTypes['PackageVersion'] | ResolversTypes['PinnedDiscussion'] | ResolversTypes['PinnedEvent'] | ResolversTypes['PinnedIssue'] | ResolversTypes['PrivateRepositoryForkingDisableAuditEntry'] | ResolversTypes['PrivateRepositoryForkingEnableAuditEntry'] | ResolversTypes['Project'] | ResolversTypes['ProjectCard'] | ResolversTypes['ProjectColumn'] | ResolversTypes['ProjectV2'] | ResolversTypes['ProjectV2Field'] | ResolversTypes['ProjectV2Item'] | ResolversTypes['ProjectV2ItemFieldDateValue'] | ResolversTypes['ProjectV2ItemFieldIterationValue'] | ResolversTypes['ProjectV2ItemFieldNumberValue'] | ResolversTypes['ProjectV2ItemFieldSingleSelectValue'] | ResolversTypes['ProjectV2ItemFieldTextValue'] | ResolversTypes['ProjectV2IterationField'] | ResolversTypes['ProjectV2SingleSelectField'] | ResolversTypes['ProjectV2View'] | ResolversTypes['ProjectV2Workflow'] | ResolversTypes['PublicKey'] | ResolversTypes['PullRequest'] | ResolversTypes['PullRequestCommit'] | ResolversTypes['PullRequestCommitCommentThread'] | ResolversTypes['PullRequestReview'] | ResolversTypes['PullRequestReviewComment'] | ResolversTypes['PullRequestReviewThread'] | ResolversTypes['PullRequestThread'] | ResolversTypes['Push'] | ResolversTypes['PushAllowance'] | ResolversTypes['Reaction'] | ResolversTypes['ReadyForReviewEvent'] | ResolversTypes['Ref'] | ResolversTypes['ReferencedEvent'] | ResolversTypes['Release'] | ResolversTypes['ReleaseAsset'] | ResolversTypes['RemovedFromMergeQueueEvent'] | ResolversTypes['RemovedFromProjectEvent'] | ResolversTypes['RenamedTitleEvent'] | ResolversTypes['ReopenedEvent'] | ResolversTypes['RepoAccessAuditEntry'] | ResolversTypes['RepoAddMemberAuditEntry'] | ResolversTypes['RepoAddTopicAuditEntry'] | ResolversTypes['RepoArchivedAuditEntry'] | ResolversTypes['RepoChangeMergeSettingAuditEntry'] | ResolversTypes['RepoConfigDisableAnonymousGitAccessAuditEntry'] | ResolversTypes['RepoConfigDisableCollaboratorsOnlyAuditEntry'] | ResolversTypes['RepoConfigDisableContributorsOnlyAuditEntry'] | ResolversTypes['RepoConfigDisableSockpuppetDisallowedAuditEntry'] | ResolversTypes['RepoConfigEnableAnonymousGitAccessAuditEntry'] | ResolversTypes['RepoConfigEnableCollaboratorsOnlyAuditEntry'] | ResolversTypes['RepoConfigEnableContributorsOnlyAuditEntry'] | ResolversTypes['RepoConfigEnableSockpuppetDisallowedAuditEntry'] | ResolversTypes['RepoConfigLockAnonymousGitAccessAuditEntry'] | ResolversTypes['RepoConfigUnlockAnonymousGitAccessAuditEntry'] | ResolversTypes['RepoCreateAuditEntry'] | ResolversTypes['RepoDestroyAuditEntry'] | ResolversTypes['RepoRemoveMemberAuditEntry'] | ResolversTypes['RepoRemoveTopicAuditEntry'] | ResolversTypes['Repository'] | ResolversTypes['RepositoryInvitation'] | ResolversTypes['RepositoryMigration'] | ResolversTypes['RepositoryRule'] | ResolversTypes['RepositoryRuleset'] | ResolversTypes['RepositoryRulesetBypassActor'] | ResolversTypes['RepositoryTopic'] | ResolversTypes['RepositoryVisibilityChangeDisableAuditEntry'] | ResolversTypes['RepositoryVisibilityChangeEnableAuditEntry'] | ResolversTypes['RepositoryVulnerabilityAlert'] | ResolversTypes['ReviewDismissalAllowance'] | ResolversTypes['ReviewDismissedEvent'] | ResolversTypes['ReviewRequest'] | ResolversTypes['ReviewRequestRemovedEvent'] | ResolversTypes['ReviewRequestedEvent'] | ResolversTypes['SavedReply'] | ResolversTypes['SecurityAdvisory'] | ResolversTypes['SponsorsActivity'] | ResolversTypes['SponsorsListing'] | ResolversTypes['SponsorsListingFeaturedItem'] | ResolversTypes['SponsorsTier'] | ResolversTypes['Sponsorship'] | ResolversTypes['SponsorshipNewsletter'] | ResolversTypes['Status'] | ResolversTypes['StatusCheckRollup'] | ResolversTypes['StatusContext'] | ResolversTypes['SubscribedEvent'] | ResolversTypes['Tag'] | ResolversTypes['Team'] | ResolversTypes['TeamAddMemberAuditEntry'] | ResolversTypes['TeamAddRepositoryAuditEntry'] | ResolversTypes['TeamChangeParentTeamAuditEntry'] | ResolversTypes['TeamDiscussion'] | ResolversTypes['TeamDiscussionComment'] | ResolversTypes['TeamRemoveMemberAuditEntry'] | ResolversTypes['TeamRemoveRepositoryAuditEntry'] | ResolversTypes['Topic'] | ResolversTypes['TransferredEvent'] | ResolversTypes['Tree'] | ResolversTypes['UnassignedEvent'] | ResolversTypes['UnlabeledEvent'] | ResolversTypes['UnlockedEvent'] | ResolversTypes['UnmarkedAsDuplicateEvent'] | ResolversTypes['UnpinnedEvent'] | ResolversTypes['UnsubscribedEvent'] | ResolversTypes['User'] | ResolversTypes['UserBlockedEvent'] | ResolversTypes['UserContentEdit'] | ResolversTypes['UserStatus'] | ResolversTypes['VerifiableDomain'] | ResolversTypes['Workflow'] | ResolversTypes['WorkflowRun'];
   NotificationRestrictionSettingValue: NotificationRestrictionSettingValue;
   OIDCProvider: ResolverTypeWrapper<OidcProvider>;
   OIDCProviderType: OidcProviderType;
@@ -28410,6 +29053,8 @@ export type ResolversTypes = {
   PullRequestMergeMethod: PullRequestMergeMethod;
   PullRequestOrder: PullRequestOrder;
   PullRequestOrderField: PullRequestOrderField;
+  PullRequestParameters: ResolverTypeWrapper<PullRequestParameters>;
+  PullRequestParametersInput: PullRequestParametersInput;
   PullRequestReview: ResolverTypeWrapper<PullRequestReview>;
   PullRequestReviewComment: ResolverTypeWrapper<PullRequestReviewComment>;
   PullRequestReviewCommentConnection: ResolverTypeWrapper<PullRequestReviewCommentConnection>;
@@ -28461,6 +29106,8 @@ export type ResolversTypes = {
   Ref: ResolverTypeWrapper<Ref>;
   RefConnection: ResolverTypeWrapper<RefConnection>;
   RefEdge: ResolverTypeWrapper<RefEdge>;
+  RefNameConditionTarget: ResolverTypeWrapper<RefNameConditionTarget>;
+  RefNameConditionTargetInput: RefNameConditionTargetInput;
   RefOrder: RefOrder;
   RefOrderField: RefOrderField;
   RefUpdateRule: ResolverTypeWrapper<RefUpdateRule>;
@@ -28570,12 +29217,28 @@ export type ResolversTypes = {
   RepositoryMigrationOrder: RepositoryMigrationOrder;
   RepositoryMigrationOrderDirection: RepositoryMigrationOrderDirection;
   RepositoryMigrationOrderField: RepositoryMigrationOrderField;
+  RepositoryNameConditionTarget: ResolverTypeWrapper<RepositoryNameConditionTarget>;
+  RepositoryNameConditionTargetInput: RepositoryNameConditionTargetInput;
   RepositoryNode: ResolversTypes['CommitComment'] | ResolversTypes['CommitCommentThread'] | ResolversTypes['DependabotUpdate'] | ResolversTypes['Discussion'] | ResolversTypes['DiscussionCategory'] | ResolversTypes['Issue'] | ResolversTypes['IssueComment'] | ResolversTypes['PinnedDiscussion'] | ResolversTypes['PullRequest'] | ResolversTypes['PullRequestCommitCommentThread'] | ResolversTypes['PullRequestReview'] | ResolversTypes['PullRequestReviewComment'] | ResolversTypes['RepositoryVulnerabilityAlert'];
   RepositoryOrder: RepositoryOrder;
   RepositoryOrderField: RepositoryOrderField;
   RepositoryOwner: ResolversTypes['Organization'] | ResolversTypes['User'];
   RepositoryPermission: RepositoryPermission;
   RepositoryPrivacy: RepositoryPrivacy;
+  RepositoryRule: ResolverTypeWrapper<Omit<RepositoryRule, 'parameters'> & { parameters?: Maybe<ResolversTypes['RuleParameters']> }>;
+  RepositoryRuleConditions: ResolverTypeWrapper<RepositoryRuleConditions>;
+  RepositoryRuleConditionsInput: RepositoryRuleConditionsInput;
+  RepositoryRuleConnection: ResolverTypeWrapper<RepositoryRuleConnection>;
+  RepositoryRuleEdge: ResolverTypeWrapper<RepositoryRuleEdge>;
+  RepositoryRuleInput: RepositoryRuleInput;
+  RepositoryRuleType: RepositoryRuleType;
+  RepositoryRuleset: ResolverTypeWrapper<Omit<RepositoryRuleset, 'source'> & { source: ResolversTypes['RuleSource'] }>;
+  RepositoryRulesetBypassActor: ResolverTypeWrapper<Omit<RepositoryRulesetBypassActor, 'actor'> & { actor?: Maybe<ResolversTypes['BypassActor']> }>;
+  RepositoryRulesetBypassActorConnection: ResolverTypeWrapper<RepositoryRulesetBypassActorConnection>;
+  RepositoryRulesetBypassActorEdge: ResolverTypeWrapper<RepositoryRulesetBypassActorEdge>;
+  RepositoryRulesetConnection: ResolverTypeWrapper<RepositoryRulesetConnection>;
+  RepositoryRulesetEdge: ResolverTypeWrapper<RepositoryRulesetEdge>;
+  RepositoryRulesetTarget: RepositoryRulesetTarget;
   RepositoryTopic: ResolverTypeWrapper<RepositoryTopic>;
   RepositoryTopicConnection: ResolverTypeWrapper<RepositoryTopicConnection>;
   RepositoryTopicEdge: ResolverTypeWrapper<RepositoryTopicEdge>;
@@ -28594,8 +29257,12 @@ export type ResolversTypes = {
   RequestedReviewerConnection: ResolverTypeWrapper<Omit<RequestedReviewerConnection, 'nodes'> & { nodes?: Maybe<Array<Maybe<ResolversTypes['RequestedReviewer']>>> }>;
   RequestedReviewerEdge: ResolverTypeWrapper<Omit<RequestedReviewerEdge, 'node'> & { node?: Maybe<ResolversTypes['RequestedReviewer']> }>;
   RequirableByPullRequest: ResolversTypes['CheckRun'] | ResolversTypes['StatusContext'];
+  RequiredDeploymentsParameters: ResolverTypeWrapper<RequiredDeploymentsParameters>;
+  RequiredDeploymentsParametersInput: RequiredDeploymentsParametersInput;
   RequiredStatusCheckDescription: ResolverTypeWrapper<RequiredStatusCheckDescription>;
   RequiredStatusCheckInput: RequiredStatusCheckInput;
+  RequiredStatusChecksParameters: ResolverTypeWrapper<RequiredStatusChecksParameters>;
+  RequiredStatusChecksParametersInput: RequiredStatusChecksParametersInput;
   RerequestCheckSuiteInput: RerequestCheckSuiteInput;
   RerequestCheckSuitePayload: ResolverTypeWrapper<RerequestCheckSuitePayload>;
   ResolveReviewThreadInput: ResolveReviewThreadInput;
@@ -28621,6 +29288,11 @@ export type ResolversTypes = {
   RevokeMigratorRoleInput: RevokeMigratorRoleInput;
   RevokeMigratorRolePayload: ResolverTypeWrapper<RevokeMigratorRolePayload>;
   RoleInOrganization: RoleInOrganization;
+  RuleBypassMode: RuleBypassMode;
+  RuleEnforcement: RuleEnforcement;
+  RuleParameters: ResolverTypeWrapper<ResolversUnionTypes['RuleParameters']>;
+  RuleParametersInput: RuleParametersInput;
+  RuleSource: ResolverTypeWrapper<ResolversUnionTypes['RuleSource']>;
   SamlDigestAlgorithm: SamlDigestAlgorithm;
   SamlSignatureAlgorithm: SamlSignatureAlgorithm;
   SavedReply: ResolverTypeWrapper<SavedReply>;
@@ -28721,6 +29393,8 @@ export type ResolversTypes = {
   StartRepositoryMigrationInput: StartRepositoryMigrationInput;
   StartRepositoryMigrationPayload: ResolverTypeWrapper<StartRepositoryMigrationPayload>;
   Status: ResolverTypeWrapper<Status>;
+  StatusCheckConfiguration: ResolverTypeWrapper<StatusCheckConfiguration>;
+  StatusCheckConfigurationInput: StatusCheckConfigurationInput;
   StatusCheckRollup: ResolverTypeWrapper<StatusCheckRollup>;
   StatusCheckRollupContext: ResolverTypeWrapper<ResolversUnionTypes['StatusCheckRollupContext']>;
   StatusCheckRollupContextConnection: ResolverTypeWrapper<Omit<StatusCheckRollupContextConnection, 'nodes'> & { nodes?: Maybe<Array<Maybe<ResolversTypes['StatusCheckRollupContext']>>> }>;
@@ -28740,6 +29414,8 @@ export type ResolversTypes = {
   SubscriptionState: SubscriptionState;
   SuggestedReviewer: ResolverTypeWrapper<SuggestedReviewer>;
   Tag: ResolverTypeWrapper<Tag>;
+  TagNamePatternParameters: ResolverTypeWrapper<TagNamePatternParameters>;
+  TagNamePatternParametersInput: TagNamePatternParametersInput;
   Team: ResolverTypeWrapper<Team>;
   TeamAddMemberAuditEntry: ResolverTypeWrapper<Omit<TeamAddMemberAuditEntry, 'actor'> & { actor?: Maybe<ResolversTypes['AuditEntryActor']> }>;
   TeamAddRepositoryAuditEntry: ResolverTypeWrapper<Omit<TeamAddRepositoryAuditEntry, 'actor'> & { actor?: Maybe<ResolversTypes['AuditEntryActor']> }>;
@@ -28888,6 +29564,8 @@ export type ResolversTypes = {
   UpdateOrganizationAllowPrivateRepositoryForkingSettingPayload: ResolverTypeWrapper<UpdateOrganizationAllowPrivateRepositoryForkingSettingPayload>;
   UpdateOrganizationWebCommitSignoffSettingInput: UpdateOrganizationWebCommitSignoffSettingInput;
   UpdateOrganizationWebCommitSignoffSettingPayload: ResolverTypeWrapper<UpdateOrganizationWebCommitSignoffSettingPayload>;
+  UpdateParameters: ResolverTypeWrapper<UpdateParameters>;
+  UpdateParametersInput: UpdateParametersInput;
   UpdateProjectCardInput: UpdateProjectCardInput;
   UpdateProjectCardPayload: ResolverTypeWrapper<UpdateProjectCardPayload>;
   UpdateProjectColumnInput: UpdateProjectColumnInput;
@@ -28914,6 +29592,8 @@ export type ResolversTypes = {
   UpdateRefPayload: ResolverTypeWrapper<UpdateRefPayload>;
   UpdateRepositoryInput: UpdateRepositoryInput;
   UpdateRepositoryPayload: ResolverTypeWrapper<UpdateRepositoryPayload>;
+  UpdateRepositoryRulesetInput: UpdateRepositoryRulesetInput;
+  UpdateRepositoryRulesetPayload: ResolverTypeWrapper<UpdateRepositoryRulesetPayload>;
   UpdateRepositoryWebCommitSignoffSettingInput: UpdateRepositoryWebCommitSignoffSettingInput;
   UpdateRepositoryWebCommitSignoffSettingPayload: ResolverTypeWrapper<UpdateRepositoryWebCommitSignoffSettingPayload>;
   UpdateSponsorshipPreferencesInput: UpdateSponsorshipPreferencesInput;
@@ -29044,6 +29724,8 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   Bot: Bot;
   BranchActorAllowanceActor: ResolversUnionParentTypes['BranchActorAllowanceActor'];
+  BranchNamePatternParameters: BranchNamePatternParameters;
+  BranchNamePatternParametersInput: BranchNamePatternParametersInput;
   BranchProtectionRule: BranchProtectionRule;
   BranchProtectionRuleConflict: BranchProtectionRuleConflict;
   BranchProtectionRuleConflictConnection: BranchProtectionRuleConflictConnection;
@@ -29051,6 +29733,7 @@ export type ResolversParentTypes = {
   BranchProtectionRuleConnection: BranchProtectionRuleConnection;
   BranchProtectionRuleEdge: BranchProtectionRuleEdge;
   BulkSponsorship: BulkSponsorship;
+  BypassActor: ResolversUnionParentTypes['BypassActor'];
   BypassForcePushAllowance: Omit<BypassForcePushAllowance, 'actor'> & { actor?: Maybe<ResolversParentTypes['BranchActorAllowanceActor']> };
   BypassForcePushAllowanceConnection: BypassForcePushAllowanceConnection;
   BypassForcePushAllowanceEdge: BypassForcePushAllowanceEdge;
@@ -29113,6 +29796,8 @@ export type ResolversParentTypes = {
   CommentDeletedEvent: CommentDeletedEvent;
   Commit: Commit;
   CommitAuthor: CommitAuthor;
+  CommitAuthorEmailPatternParameters: CommitAuthorEmailPatternParameters;
+  CommitAuthorEmailPatternParametersInput: CommitAuthorEmailPatternParametersInput;
   CommitComment: CommitComment;
   CommitCommentConnection: CommitCommentConnection;
   CommitCommentEdge: CommitCommentEdge;
@@ -29123,7 +29808,11 @@ export type ResolversParentTypes = {
   CommitEdge: CommitEdge;
   CommitHistoryConnection: CommitHistoryConnection;
   CommitMessage: CommitMessage;
+  CommitMessagePatternParameters: CommitMessagePatternParameters;
+  CommitMessagePatternParametersInput: CommitMessagePatternParametersInput;
   CommittableBranch: CommittableBranch;
+  CommitterEmailPatternParameters: CommitterEmailPatternParameters;
+  CommitterEmailPatternParametersInput: CommitterEmailPatternParametersInput;
   Comparison: Comparison;
   ComparisonCommitConnection: ComparisonCommitConnection;
   ConnectedEvent: Omit<ConnectedEvent, 'source' | 'subject'> & { source: ResolversParentTypes['ReferencedSubject'], subject: ResolversParentTypes['ReferencedSubject'] };
@@ -29179,6 +29868,8 @@ export type ResolversParentTypes = {
   CreateRefPayload: CreateRefPayload;
   CreateRepositoryInput: CreateRepositoryInput;
   CreateRepositoryPayload: CreateRepositoryPayload;
+  CreateRepositoryRulesetInput: CreateRepositoryRulesetInput;
+  CreateRepositoryRulesetPayload: CreateRepositoryRulesetPayload;
   CreateSponsorsListingInput: CreateSponsorsListingInput;
   CreateSponsorsListingPayload: CreateSponsorsListingPayload;
   CreateSponsorsTierInput: CreateSponsorsTierInput;
@@ -29253,6 +29944,8 @@ export type ResolversParentTypes = {
   DeletePullRequestReviewPayload: DeletePullRequestReviewPayload;
   DeleteRefInput: DeleteRefInput;
   DeleteRefPayload: DeleteRefPayload;
+  DeleteRepositoryRulesetInput: DeleteRepositoryRulesetInput;
+  DeleteRepositoryRulesetPayload: DeleteRepositoryRulesetPayload;
   DeleteTeamDiscussionCommentInput: DeleteTeamDiscussionCommentInput;
   DeleteTeamDiscussionCommentPayload: DeleteTeamDiscussionCommentPayload;
   DeleteTeamDiscussionInput: DeleteTeamDiscussionInput;
@@ -29511,7 +30204,7 @@ export type ResolversParentTypes = {
   MoveProjectColumnPayload: MoveProjectColumnPayload;
   MovedColumnsInProjectEvent: MovedColumnsInProjectEvent;
   Mutation: {};
-  Node: ResolversParentTypes['AddedToMergeQueueEvent'] | ResolversParentTypes['AddedToProjectEvent'] | ResolversParentTypes['App'] | ResolversParentTypes['AssignedEvent'] | ResolversParentTypes['AutoMergeDisabledEvent'] | ResolversParentTypes['AutoMergeEnabledEvent'] | ResolversParentTypes['AutoRebaseEnabledEvent'] | ResolversParentTypes['AutoSquashEnabledEvent'] | ResolversParentTypes['AutomaticBaseChangeFailedEvent'] | ResolversParentTypes['AutomaticBaseChangeSucceededEvent'] | ResolversParentTypes['BaseRefChangedEvent'] | ResolversParentTypes['BaseRefDeletedEvent'] | ResolversParentTypes['BaseRefForcePushedEvent'] | ResolversParentTypes['Blob'] | ResolversParentTypes['Bot'] | ResolversParentTypes['BranchProtectionRule'] | ResolversParentTypes['BypassForcePushAllowance'] | ResolversParentTypes['BypassPullRequestAllowance'] | ResolversParentTypes['CWE'] | ResolversParentTypes['CheckRun'] | ResolversParentTypes['CheckSuite'] | ResolversParentTypes['ClosedEvent'] | ResolversParentTypes['CodeOfConduct'] | ResolversParentTypes['CommentDeletedEvent'] | ResolversParentTypes['Commit'] | ResolversParentTypes['CommitComment'] | ResolversParentTypes['CommitCommentThread'] | ResolversParentTypes['Comparison'] | ResolversParentTypes['ConnectedEvent'] | ResolversParentTypes['ConvertToDraftEvent'] | ResolversParentTypes['ConvertedNoteToIssueEvent'] | ResolversParentTypes['ConvertedToDiscussionEvent'] | ResolversParentTypes['CrossReferencedEvent'] | ResolversParentTypes['DemilestonedEvent'] | ResolversParentTypes['DeployKey'] | ResolversParentTypes['DeployedEvent'] | ResolversParentTypes['Deployment'] | ResolversParentTypes['DeploymentEnvironmentChangedEvent'] | ResolversParentTypes['DeploymentReview'] | ResolversParentTypes['DeploymentStatus'] | ResolversParentTypes['DisconnectedEvent'] | ResolversParentTypes['Discussion'] | ResolversParentTypes['DiscussionCategory'] | ResolversParentTypes['DiscussionComment'] | ResolversParentTypes['DiscussionPoll'] | ResolversParentTypes['DiscussionPollOption'] | ResolversParentTypes['DraftIssue'] | ResolversParentTypes['Enterprise'] | ResolversParentTypes['EnterpriseAdministratorInvitation'] | ResolversParentTypes['EnterpriseIdentityProvider'] | ResolversParentTypes['EnterpriseRepositoryInfo'] | ResolversParentTypes['EnterpriseServerInstallation'] | ResolversParentTypes['EnterpriseServerUserAccount'] | ResolversParentTypes['EnterpriseServerUserAccountEmail'] | ResolversParentTypes['EnterpriseServerUserAccountsUpload'] | ResolversParentTypes['EnterpriseUserAccount'] | ResolversParentTypes['Environment'] | ResolversParentTypes['ExternalIdentity'] | ResolversParentTypes['Gist'] | ResolversParentTypes['GistComment'] | ResolversParentTypes['HeadRefDeletedEvent'] | ResolversParentTypes['HeadRefForcePushedEvent'] | ResolversParentTypes['HeadRefRestoredEvent'] | ResolversParentTypes['IpAllowListEntry'] | ResolversParentTypes['Issue'] | ResolversParentTypes['IssueComment'] | ResolversParentTypes['Label'] | ResolversParentTypes['LabeledEvent'] | ResolversParentTypes['Language'] | ResolversParentTypes['License'] | ResolversParentTypes['LinkedBranch'] | ResolversParentTypes['LockedEvent'] | ResolversParentTypes['Mannequin'] | ResolversParentTypes['MarkedAsDuplicateEvent'] | ResolversParentTypes['MarketplaceCategory'] | ResolversParentTypes['MarketplaceListing'] | ResolversParentTypes['MembersCanDeleteReposClearAuditEntry'] | ResolversParentTypes['MembersCanDeleteReposDisableAuditEntry'] | ResolversParentTypes['MembersCanDeleteReposEnableAuditEntry'] | ResolversParentTypes['MentionedEvent'] | ResolversParentTypes['MergeQueue'] | ResolversParentTypes['MergeQueueEntry'] | ResolversParentTypes['MergedEvent'] | ResolversParentTypes['MigrationSource'] | ResolversParentTypes['Milestone'] | ResolversParentTypes['MilestonedEvent'] | ResolversParentTypes['MovedColumnsInProjectEvent'] | ResolversParentTypes['OIDCProvider'] | ResolversParentTypes['OauthApplicationCreateAuditEntry'] | ResolversParentTypes['OrgAddBillingManagerAuditEntry'] | ResolversParentTypes['OrgAddMemberAuditEntry'] | ResolversParentTypes['OrgBlockUserAuditEntry'] | ResolversParentTypes['OrgConfigDisableCollaboratorsOnlyAuditEntry'] | ResolversParentTypes['OrgConfigEnableCollaboratorsOnlyAuditEntry'] | ResolversParentTypes['OrgCreateAuditEntry'] | ResolversParentTypes['OrgDisableOauthAppRestrictionsAuditEntry'] | ResolversParentTypes['OrgDisableSamlAuditEntry'] | ResolversParentTypes['OrgDisableTwoFactorRequirementAuditEntry'] | ResolversParentTypes['OrgEnableOauthAppRestrictionsAuditEntry'] | ResolversParentTypes['OrgEnableSamlAuditEntry'] | ResolversParentTypes['OrgEnableTwoFactorRequirementAuditEntry'] | ResolversParentTypes['OrgInviteMemberAuditEntry'] | ResolversParentTypes['OrgInviteToBusinessAuditEntry'] | ResolversParentTypes['OrgOauthAppAccessApprovedAuditEntry'] | ResolversParentTypes['OrgOauthAppAccessDeniedAuditEntry'] | ResolversParentTypes['OrgOauthAppAccessRequestedAuditEntry'] | ResolversParentTypes['OrgRemoveBillingManagerAuditEntry'] | ResolversParentTypes['OrgRemoveMemberAuditEntry'] | ResolversParentTypes['OrgRemoveOutsideCollaboratorAuditEntry'] | ResolversParentTypes['OrgRestoreMemberAuditEntry'] | ResolversParentTypes['OrgUnblockUserAuditEntry'] | ResolversParentTypes['OrgUpdateDefaultRepositoryPermissionAuditEntry'] | ResolversParentTypes['OrgUpdateMemberAuditEntry'] | ResolversParentTypes['OrgUpdateMemberRepositoryCreationPermissionAuditEntry'] | ResolversParentTypes['OrgUpdateMemberRepositoryInvitationPermissionAuditEntry'] | ResolversParentTypes['Organization'] | ResolversParentTypes['OrganizationIdentityProvider'] | ResolversParentTypes['OrganizationInvitation'] | ResolversParentTypes['OrganizationMigration'] | ResolversParentTypes['Package'] | ResolversParentTypes['PackageFile'] | ResolversParentTypes['PackageTag'] | ResolversParentTypes['PackageVersion'] | ResolversParentTypes['PinnedDiscussion'] | ResolversParentTypes['PinnedEvent'] | ResolversParentTypes['PinnedIssue'] | ResolversParentTypes['PrivateRepositoryForkingDisableAuditEntry'] | ResolversParentTypes['PrivateRepositoryForkingEnableAuditEntry'] | ResolversParentTypes['Project'] | ResolversParentTypes['ProjectCard'] | ResolversParentTypes['ProjectColumn'] | ResolversParentTypes['ProjectV2'] | ResolversParentTypes['ProjectV2Field'] | ResolversParentTypes['ProjectV2Item'] | ResolversParentTypes['ProjectV2ItemFieldDateValue'] | ResolversParentTypes['ProjectV2ItemFieldIterationValue'] | ResolversParentTypes['ProjectV2ItemFieldNumberValue'] | ResolversParentTypes['ProjectV2ItemFieldSingleSelectValue'] | ResolversParentTypes['ProjectV2ItemFieldTextValue'] | ResolversParentTypes['ProjectV2IterationField'] | ResolversParentTypes['ProjectV2SingleSelectField'] | ResolversParentTypes['ProjectV2View'] | ResolversParentTypes['ProjectV2Workflow'] | ResolversParentTypes['PublicKey'] | ResolversParentTypes['PullRequest'] | ResolversParentTypes['PullRequestCommit'] | ResolversParentTypes['PullRequestCommitCommentThread'] | ResolversParentTypes['PullRequestReview'] | ResolversParentTypes['PullRequestReviewComment'] | ResolversParentTypes['PullRequestReviewThread'] | ResolversParentTypes['PullRequestThread'] | ResolversParentTypes['Push'] | ResolversParentTypes['PushAllowance'] | ResolversParentTypes['Reaction'] | ResolversParentTypes['ReadyForReviewEvent'] | ResolversParentTypes['Ref'] | ResolversParentTypes['ReferencedEvent'] | ResolversParentTypes['Release'] | ResolversParentTypes['ReleaseAsset'] | ResolversParentTypes['RemovedFromMergeQueueEvent'] | ResolversParentTypes['RemovedFromProjectEvent'] | ResolversParentTypes['RenamedTitleEvent'] | ResolversParentTypes['ReopenedEvent'] | ResolversParentTypes['RepoAccessAuditEntry'] | ResolversParentTypes['RepoAddMemberAuditEntry'] | ResolversParentTypes['RepoAddTopicAuditEntry'] | ResolversParentTypes['RepoArchivedAuditEntry'] | ResolversParentTypes['RepoChangeMergeSettingAuditEntry'] | ResolversParentTypes['RepoConfigDisableAnonymousGitAccessAuditEntry'] | ResolversParentTypes['RepoConfigDisableCollaboratorsOnlyAuditEntry'] | ResolversParentTypes['RepoConfigDisableContributorsOnlyAuditEntry'] | ResolversParentTypes['RepoConfigDisableSockpuppetDisallowedAuditEntry'] | ResolversParentTypes['RepoConfigEnableAnonymousGitAccessAuditEntry'] | ResolversParentTypes['RepoConfigEnableCollaboratorsOnlyAuditEntry'] | ResolversParentTypes['RepoConfigEnableContributorsOnlyAuditEntry'] | ResolversParentTypes['RepoConfigEnableSockpuppetDisallowedAuditEntry'] | ResolversParentTypes['RepoConfigLockAnonymousGitAccessAuditEntry'] | ResolversParentTypes['RepoConfigUnlockAnonymousGitAccessAuditEntry'] | ResolversParentTypes['RepoCreateAuditEntry'] | ResolversParentTypes['RepoDestroyAuditEntry'] | ResolversParentTypes['RepoRemoveMemberAuditEntry'] | ResolversParentTypes['RepoRemoveTopicAuditEntry'] | ResolversParentTypes['Repository'] | ResolversParentTypes['RepositoryInvitation'] | ResolversParentTypes['RepositoryMigration'] | ResolversParentTypes['RepositoryTopic'] | ResolversParentTypes['RepositoryVisibilityChangeDisableAuditEntry'] | ResolversParentTypes['RepositoryVisibilityChangeEnableAuditEntry'] | ResolversParentTypes['RepositoryVulnerabilityAlert'] | ResolversParentTypes['ReviewDismissalAllowance'] | ResolversParentTypes['ReviewDismissedEvent'] | ResolversParentTypes['ReviewRequest'] | ResolversParentTypes['ReviewRequestRemovedEvent'] | ResolversParentTypes['ReviewRequestedEvent'] | ResolversParentTypes['SavedReply'] | ResolversParentTypes['SecurityAdvisory'] | ResolversParentTypes['SponsorsActivity'] | ResolversParentTypes['SponsorsListing'] | ResolversParentTypes['SponsorsListingFeaturedItem'] | ResolversParentTypes['SponsorsTier'] | ResolversParentTypes['Sponsorship'] | ResolversParentTypes['SponsorshipNewsletter'] | ResolversParentTypes['Status'] | ResolversParentTypes['StatusCheckRollup'] | ResolversParentTypes['StatusContext'] | ResolversParentTypes['SubscribedEvent'] | ResolversParentTypes['Tag'] | ResolversParentTypes['Team'] | ResolversParentTypes['TeamAddMemberAuditEntry'] | ResolversParentTypes['TeamAddRepositoryAuditEntry'] | ResolversParentTypes['TeamChangeParentTeamAuditEntry'] | ResolversParentTypes['TeamDiscussion'] | ResolversParentTypes['TeamDiscussionComment'] | ResolversParentTypes['TeamRemoveMemberAuditEntry'] | ResolversParentTypes['TeamRemoveRepositoryAuditEntry'] | ResolversParentTypes['Topic'] | ResolversParentTypes['TransferredEvent'] | ResolversParentTypes['Tree'] | ResolversParentTypes['UnassignedEvent'] | ResolversParentTypes['UnlabeledEvent'] | ResolversParentTypes['UnlockedEvent'] | ResolversParentTypes['UnmarkedAsDuplicateEvent'] | ResolversParentTypes['UnpinnedEvent'] | ResolversParentTypes['UnsubscribedEvent'] | ResolversParentTypes['User'] | ResolversParentTypes['UserBlockedEvent'] | ResolversParentTypes['UserContentEdit'] | ResolversParentTypes['UserStatus'] | ResolversParentTypes['VerifiableDomain'] | ResolversParentTypes['Workflow'] | ResolversParentTypes['WorkflowRun'];
+  Node: ResolversParentTypes['AddedToMergeQueueEvent'] | ResolversParentTypes['AddedToProjectEvent'] | ResolversParentTypes['App'] | ResolversParentTypes['AssignedEvent'] | ResolversParentTypes['AutoMergeDisabledEvent'] | ResolversParentTypes['AutoMergeEnabledEvent'] | ResolversParentTypes['AutoRebaseEnabledEvent'] | ResolversParentTypes['AutoSquashEnabledEvent'] | ResolversParentTypes['AutomaticBaseChangeFailedEvent'] | ResolversParentTypes['AutomaticBaseChangeSucceededEvent'] | ResolversParentTypes['BaseRefChangedEvent'] | ResolversParentTypes['BaseRefDeletedEvent'] | ResolversParentTypes['BaseRefForcePushedEvent'] | ResolversParentTypes['Blob'] | ResolversParentTypes['Bot'] | ResolversParentTypes['BranchProtectionRule'] | ResolversParentTypes['BypassForcePushAllowance'] | ResolversParentTypes['BypassPullRequestAllowance'] | ResolversParentTypes['CWE'] | ResolversParentTypes['CheckRun'] | ResolversParentTypes['CheckSuite'] | ResolversParentTypes['ClosedEvent'] | ResolversParentTypes['CodeOfConduct'] | ResolversParentTypes['CommentDeletedEvent'] | ResolversParentTypes['Commit'] | ResolversParentTypes['CommitComment'] | ResolversParentTypes['CommitCommentThread'] | ResolversParentTypes['Comparison'] | ResolversParentTypes['ConnectedEvent'] | ResolversParentTypes['ConvertToDraftEvent'] | ResolversParentTypes['ConvertedNoteToIssueEvent'] | ResolversParentTypes['ConvertedToDiscussionEvent'] | ResolversParentTypes['CrossReferencedEvent'] | ResolversParentTypes['DemilestonedEvent'] | ResolversParentTypes['DeployKey'] | ResolversParentTypes['DeployedEvent'] | ResolversParentTypes['Deployment'] | ResolversParentTypes['DeploymentEnvironmentChangedEvent'] | ResolversParentTypes['DeploymentReview'] | ResolversParentTypes['DeploymentStatus'] | ResolversParentTypes['DisconnectedEvent'] | ResolversParentTypes['Discussion'] | ResolversParentTypes['DiscussionCategory'] | ResolversParentTypes['DiscussionComment'] | ResolversParentTypes['DiscussionPoll'] | ResolversParentTypes['DiscussionPollOption'] | ResolversParentTypes['DraftIssue'] | ResolversParentTypes['Enterprise'] | ResolversParentTypes['EnterpriseAdministratorInvitation'] | ResolversParentTypes['EnterpriseIdentityProvider'] | ResolversParentTypes['EnterpriseRepositoryInfo'] | ResolversParentTypes['EnterpriseServerInstallation'] | ResolversParentTypes['EnterpriseServerUserAccount'] | ResolversParentTypes['EnterpriseServerUserAccountEmail'] | ResolversParentTypes['EnterpriseServerUserAccountsUpload'] | ResolversParentTypes['EnterpriseUserAccount'] | ResolversParentTypes['Environment'] | ResolversParentTypes['ExternalIdentity'] | ResolversParentTypes['Gist'] | ResolversParentTypes['GistComment'] | ResolversParentTypes['HeadRefDeletedEvent'] | ResolversParentTypes['HeadRefForcePushedEvent'] | ResolversParentTypes['HeadRefRestoredEvent'] | ResolversParentTypes['IpAllowListEntry'] | ResolversParentTypes['Issue'] | ResolversParentTypes['IssueComment'] | ResolversParentTypes['Label'] | ResolversParentTypes['LabeledEvent'] | ResolversParentTypes['Language'] | ResolversParentTypes['License'] | ResolversParentTypes['LinkedBranch'] | ResolversParentTypes['LockedEvent'] | ResolversParentTypes['Mannequin'] | ResolversParentTypes['MarkedAsDuplicateEvent'] | ResolversParentTypes['MarketplaceCategory'] | ResolversParentTypes['MarketplaceListing'] | ResolversParentTypes['MembersCanDeleteReposClearAuditEntry'] | ResolversParentTypes['MembersCanDeleteReposDisableAuditEntry'] | ResolversParentTypes['MembersCanDeleteReposEnableAuditEntry'] | ResolversParentTypes['MentionedEvent'] | ResolversParentTypes['MergeQueue'] | ResolversParentTypes['MergeQueueEntry'] | ResolversParentTypes['MergedEvent'] | ResolversParentTypes['MigrationSource'] | ResolversParentTypes['Milestone'] | ResolversParentTypes['MilestonedEvent'] | ResolversParentTypes['MovedColumnsInProjectEvent'] | ResolversParentTypes['OIDCProvider'] | ResolversParentTypes['OauthApplicationCreateAuditEntry'] | ResolversParentTypes['OrgAddBillingManagerAuditEntry'] | ResolversParentTypes['OrgAddMemberAuditEntry'] | ResolversParentTypes['OrgBlockUserAuditEntry'] | ResolversParentTypes['OrgConfigDisableCollaboratorsOnlyAuditEntry'] | ResolversParentTypes['OrgConfigEnableCollaboratorsOnlyAuditEntry'] | ResolversParentTypes['OrgCreateAuditEntry'] | ResolversParentTypes['OrgDisableOauthAppRestrictionsAuditEntry'] | ResolversParentTypes['OrgDisableSamlAuditEntry'] | ResolversParentTypes['OrgDisableTwoFactorRequirementAuditEntry'] | ResolversParentTypes['OrgEnableOauthAppRestrictionsAuditEntry'] | ResolversParentTypes['OrgEnableSamlAuditEntry'] | ResolversParentTypes['OrgEnableTwoFactorRequirementAuditEntry'] | ResolversParentTypes['OrgInviteMemberAuditEntry'] | ResolversParentTypes['OrgInviteToBusinessAuditEntry'] | ResolversParentTypes['OrgOauthAppAccessApprovedAuditEntry'] | ResolversParentTypes['OrgOauthAppAccessDeniedAuditEntry'] | ResolversParentTypes['OrgOauthAppAccessRequestedAuditEntry'] | ResolversParentTypes['OrgRemoveBillingManagerAuditEntry'] | ResolversParentTypes['OrgRemoveMemberAuditEntry'] | ResolversParentTypes['OrgRemoveOutsideCollaboratorAuditEntry'] | ResolversParentTypes['OrgRestoreMemberAuditEntry'] | ResolversParentTypes['OrgUnblockUserAuditEntry'] | ResolversParentTypes['OrgUpdateDefaultRepositoryPermissionAuditEntry'] | ResolversParentTypes['OrgUpdateMemberAuditEntry'] | ResolversParentTypes['OrgUpdateMemberRepositoryCreationPermissionAuditEntry'] | ResolversParentTypes['OrgUpdateMemberRepositoryInvitationPermissionAuditEntry'] | ResolversParentTypes['Organization'] | ResolversParentTypes['OrganizationIdentityProvider'] | ResolversParentTypes['OrganizationInvitation'] | ResolversParentTypes['OrganizationMigration'] | ResolversParentTypes['Package'] | ResolversParentTypes['PackageFile'] | ResolversParentTypes['PackageTag'] | ResolversParentTypes['PackageVersion'] | ResolversParentTypes['PinnedDiscussion'] | ResolversParentTypes['PinnedEvent'] | ResolversParentTypes['PinnedIssue'] | ResolversParentTypes['PrivateRepositoryForkingDisableAuditEntry'] | ResolversParentTypes['PrivateRepositoryForkingEnableAuditEntry'] | ResolversParentTypes['Project'] | ResolversParentTypes['ProjectCard'] | ResolversParentTypes['ProjectColumn'] | ResolversParentTypes['ProjectV2'] | ResolversParentTypes['ProjectV2Field'] | ResolversParentTypes['ProjectV2Item'] | ResolversParentTypes['ProjectV2ItemFieldDateValue'] | ResolversParentTypes['ProjectV2ItemFieldIterationValue'] | ResolversParentTypes['ProjectV2ItemFieldNumberValue'] | ResolversParentTypes['ProjectV2ItemFieldSingleSelectValue'] | ResolversParentTypes['ProjectV2ItemFieldTextValue'] | ResolversParentTypes['ProjectV2IterationField'] | ResolversParentTypes['ProjectV2SingleSelectField'] | ResolversParentTypes['ProjectV2View'] | ResolversParentTypes['ProjectV2Workflow'] | ResolversParentTypes['PublicKey'] | ResolversParentTypes['PullRequest'] | ResolversParentTypes['PullRequestCommit'] | ResolversParentTypes['PullRequestCommitCommentThread'] | ResolversParentTypes['PullRequestReview'] | ResolversParentTypes['PullRequestReviewComment'] | ResolversParentTypes['PullRequestReviewThread'] | ResolversParentTypes['PullRequestThread'] | ResolversParentTypes['Push'] | ResolversParentTypes['PushAllowance'] | ResolversParentTypes['Reaction'] | ResolversParentTypes['ReadyForReviewEvent'] | ResolversParentTypes['Ref'] | ResolversParentTypes['ReferencedEvent'] | ResolversParentTypes['Release'] | ResolversParentTypes['ReleaseAsset'] | ResolversParentTypes['RemovedFromMergeQueueEvent'] | ResolversParentTypes['RemovedFromProjectEvent'] | ResolversParentTypes['RenamedTitleEvent'] | ResolversParentTypes['ReopenedEvent'] | ResolversParentTypes['RepoAccessAuditEntry'] | ResolversParentTypes['RepoAddMemberAuditEntry'] | ResolversParentTypes['RepoAddTopicAuditEntry'] | ResolversParentTypes['RepoArchivedAuditEntry'] | ResolversParentTypes['RepoChangeMergeSettingAuditEntry'] | ResolversParentTypes['RepoConfigDisableAnonymousGitAccessAuditEntry'] | ResolversParentTypes['RepoConfigDisableCollaboratorsOnlyAuditEntry'] | ResolversParentTypes['RepoConfigDisableContributorsOnlyAuditEntry'] | ResolversParentTypes['RepoConfigDisableSockpuppetDisallowedAuditEntry'] | ResolversParentTypes['RepoConfigEnableAnonymousGitAccessAuditEntry'] | ResolversParentTypes['RepoConfigEnableCollaboratorsOnlyAuditEntry'] | ResolversParentTypes['RepoConfigEnableContributorsOnlyAuditEntry'] | ResolversParentTypes['RepoConfigEnableSockpuppetDisallowedAuditEntry'] | ResolversParentTypes['RepoConfigLockAnonymousGitAccessAuditEntry'] | ResolversParentTypes['RepoConfigUnlockAnonymousGitAccessAuditEntry'] | ResolversParentTypes['RepoCreateAuditEntry'] | ResolversParentTypes['RepoDestroyAuditEntry'] | ResolversParentTypes['RepoRemoveMemberAuditEntry'] | ResolversParentTypes['RepoRemoveTopicAuditEntry'] | ResolversParentTypes['Repository'] | ResolversParentTypes['RepositoryInvitation'] | ResolversParentTypes['RepositoryMigration'] | ResolversParentTypes['RepositoryRule'] | ResolversParentTypes['RepositoryRuleset'] | ResolversParentTypes['RepositoryRulesetBypassActor'] | ResolversParentTypes['RepositoryTopic'] | ResolversParentTypes['RepositoryVisibilityChangeDisableAuditEntry'] | ResolversParentTypes['RepositoryVisibilityChangeEnableAuditEntry'] | ResolversParentTypes['RepositoryVulnerabilityAlert'] | ResolversParentTypes['ReviewDismissalAllowance'] | ResolversParentTypes['ReviewDismissedEvent'] | ResolversParentTypes['ReviewRequest'] | ResolversParentTypes['ReviewRequestRemovedEvent'] | ResolversParentTypes['ReviewRequestedEvent'] | ResolversParentTypes['SavedReply'] | ResolversParentTypes['SecurityAdvisory'] | ResolversParentTypes['SponsorsActivity'] | ResolversParentTypes['SponsorsListing'] | ResolversParentTypes['SponsorsListingFeaturedItem'] | ResolversParentTypes['SponsorsTier'] | ResolversParentTypes['Sponsorship'] | ResolversParentTypes['SponsorshipNewsletter'] | ResolversParentTypes['Status'] | ResolversParentTypes['StatusCheckRollup'] | ResolversParentTypes['StatusContext'] | ResolversParentTypes['SubscribedEvent'] | ResolversParentTypes['Tag'] | ResolversParentTypes['Team'] | ResolversParentTypes['TeamAddMemberAuditEntry'] | ResolversParentTypes['TeamAddRepositoryAuditEntry'] | ResolversParentTypes['TeamChangeParentTeamAuditEntry'] | ResolversParentTypes['TeamDiscussion'] | ResolversParentTypes['TeamDiscussionComment'] | ResolversParentTypes['TeamRemoveMemberAuditEntry'] | ResolversParentTypes['TeamRemoveRepositoryAuditEntry'] | ResolversParentTypes['Topic'] | ResolversParentTypes['TransferredEvent'] | ResolversParentTypes['Tree'] | ResolversParentTypes['UnassignedEvent'] | ResolversParentTypes['UnlabeledEvent'] | ResolversParentTypes['UnlockedEvent'] | ResolversParentTypes['UnmarkedAsDuplicateEvent'] | ResolversParentTypes['UnpinnedEvent'] | ResolversParentTypes['UnsubscribedEvent'] | ResolversParentTypes['User'] | ResolversParentTypes['UserBlockedEvent'] | ResolversParentTypes['UserContentEdit'] | ResolversParentTypes['UserStatus'] | ResolversParentTypes['VerifiableDomain'] | ResolversParentTypes['Workflow'] | ResolversParentTypes['WorkflowRun'];
   OIDCProvider: OidcProvider;
   OauthApplicationAuditEntryData: ResolversParentTypes['OauthApplicationCreateAuditEntry'] | ResolversParentTypes['OrgOauthAppAccessApprovedAuditEntry'] | ResolversParentTypes['OrgOauthAppAccessDeniedAuditEntry'] | ResolversParentTypes['OrgOauthAppAccessRequestedAuditEntry'];
   OauthApplicationCreateAuditEntry: Omit<OauthApplicationCreateAuditEntry, 'actor'> & { actor?: Maybe<ResolversParentTypes['AuditEntryActor']> };
@@ -29689,6 +30382,8 @@ export type ResolversParentTypes = {
   PullRequestContributionsByRepository: PullRequestContributionsByRepository;
   PullRequestEdge: PullRequestEdge;
   PullRequestOrder: PullRequestOrder;
+  PullRequestParameters: PullRequestParameters;
+  PullRequestParametersInput: PullRequestParametersInput;
   PullRequestReview: PullRequestReview;
   PullRequestReviewComment: PullRequestReviewComment;
   PullRequestReviewCommentConnection: PullRequestReviewCommentConnection;
@@ -29730,6 +30425,8 @@ export type ResolversParentTypes = {
   Ref: Ref;
   RefConnection: RefConnection;
   RefEdge: RefEdge;
+  RefNameConditionTarget: RefNameConditionTarget;
+  RefNameConditionTargetInput: RefNameConditionTargetInput;
   RefOrder: RefOrder;
   RefUpdateRule: RefUpdateRule;
   ReferencedEvent: Omit<ReferencedEvent, 'subject'> & { subject: ResolversParentTypes['ReferencedSubject'] };
@@ -29820,9 +30517,23 @@ export type ResolversParentTypes = {
   RepositoryMigrationConnection: RepositoryMigrationConnection;
   RepositoryMigrationEdge: RepositoryMigrationEdge;
   RepositoryMigrationOrder: RepositoryMigrationOrder;
+  RepositoryNameConditionTarget: RepositoryNameConditionTarget;
+  RepositoryNameConditionTargetInput: RepositoryNameConditionTargetInput;
   RepositoryNode: ResolversParentTypes['CommitComment'] | ResolversParentTypes['CommitCommentThread'] | ResolversParentTypes['DependabotUpdate'] | ResolversParentTypes['Discussion'] | ResolversParentTypes['DiscussionCategory'] | ResolversParentTypes['Issue'] | ResolversParentTypes['IssueComment'] | ResolversParentTypes['PinnedDiscussion'] | ResolversParentTypes['PullRequest'] | ResolversParentTypes['PullRequestCommitCommentThread'] | ResolversParentTypes['PullRequestReview'] | ResolversParentTypes['PullRequestReviewComment'] | ResolversParentTypes['RepositoryVulnerabilityAlert'];
   RepositoryOrder: RepositoryOrder;
   RepositoryOwner: ResolversParentTypes['Organization'] | ResolversParentTypes['User'];
+  RepositoryRule: Omit<RepositoryRule, 'parameters'> & { parameters?: Maybe<ResolversParentTypes['RuleParameters']> };
+  RepositoryRuleConditions: RepositoryRuleConditions;
+  RepositoryRuleConditionsInput: RepositoryRuleConditionsInput;
+  RepositoryRuleConnection: RepositoryRuleConnection;
+  RepositoryRuleEdge: RepositoryRuleEdge;
+  RepositoryRuleInput: RepositoryRuleInput;
+  RepositoryRuleset: Omit<RepositoryRuleset, 'source'> & { source: ResolversParentTypes['RuleSource'] };
+  RepositoryRulesetBypassActor: Omit<RepositoryRulesetBypassActor, 'actor'> & { actor?: Maybe<ResolversParentTypes['BypassActor']> };
+  RepositoryRulesetBypassActorConnection: RepositoryRulesetBypassActorConnection;
+  RepositoryRulesetBypassActorEdge: RepositoryRulesetBypassActorEdge;
+  RepositoryRulesetConnection: RepositoryRulesetConnection;
+  RepositoryRulesetEdge: RepositoryRulesetEdge;
   RepositoryTopic: RepositoryTopic;
   RepositoryTopicConnection: RepositoryTopicConnection;
   RepositoryTopicEdge: RepositoryTopicEdge;
@@ -29837,8 +30548,12 @@ export type ResolversParentTypes = {
   RequestedReviewerConnection: Omit<RequestedReviewerConnection, 'nodes'> & { nodes?: Maybe<Array<Maybe<ResolversParentTypes['RequestedReviewer']>>> };
   RequestedReviewerEdge: Omit<RequestedReviewerEdge, 'node'> & { node?: Maybe<ResolversParentTypes['RequestedReviewer']> };
   RequirableByPullRequest: ResolversParentTypes['CheckRun'] | ResolversParentTypes['StatusContext'];
+  RequiredDeploymentsParameters: RequiredDeploymentsParameters;
+  RequiredDeploymentsParametersInput: RequiredDeploymentsParametersInput;
   RequiredStatusCheckDescription: RequiredStatusCheckDescription;
   RequiredStatusCheckInput: RequiredStatusCheckInput;
+  RequiredStatusChecksParameters: RequiredStatusChecksParameters;
+  RequiredStatusChecksParametersInput: RequiredStatusChecksParametersInput;
   RerequestCheckSuiteInput: RerequestCheckSuiteInput;
   RerequestCheckSuitePayload: RerequestCheckSuitePayload;
   ResolveReviewThreadInput: ResolveReviewThreadInput;
@@ -29863,6 +30578,9 @@ export type ResolversParentTypes = {
   RevokeEnterpriseOrganizationsMigratorRolePayload: RevokeEnterpriseOrganizationsMigratorRolePayload;
   RevokeMigratorRoleInput: RevokeMigratorRoleInput;
   RevokeMigratorRolePayload: RevokeMigratorRolePayload;
+  RuleParameters: ResolversUnionParentTypes['RuleParameters'];
+  RuleParametersInput: RuleParametersInput;
+  RuleSource: ResolversUnionParentTypes['RuleSource'];
   SavedReply: SavedReply;
   SavedReplyConnection: SavedReplyConnection;
   SavedReplyEdge: SavedReplyEdge;
@@ -29937,6 +30655,8 @@ export type ResolversParentTypes = {
   StartRepositoryMigrationInput: StartRepositoryMigrationInput;
   StartRepositoryMigrationPayload: StartRepositoryMigrationPayload;
   Status: Status;
+  StatusCheckConfiguration: StatusCheckConfiguration;
+  StatusCheckConfigurationInput: StatusCheckConfigurationInput;
   StatusCheckRollup: StatusCheckRollup;
   StatusCheckRollupContext: ResolversUnionParentTypes['StatusCheckRollupContext'];
   StatusCheckRollupContextConnection: Omit<StatusCheckRollupContextConnection, 'nodes'> & { nodes?: Maybe<Array<Maybe<ResolversParentTypes['StatusCheckRollupContext']>>> };
@@ -29954,6 +30674,8 @@ export type ResolversParentTypes = {
   SubscribedEvent: SubscribedEvent;
   SuggestedReviewer: SuggestedReviewer;
   Tag: Tag;
+  TagNamePatternParameters: TagNamePatternParameters;
+  TagNamePatternParametersInput: TagNamePatternParametersInput;
   Team: Team;
   TeamAddMemberAuditEntry: Omit<TeamAddMemberAuditEntry, 'actor'> & { actor?: Maybe<ResolversParentTypes['AuditEntryActor']> };
   TeamAddRepositoryAuditEntry: Omit<TeamAddRepositoryAuditEntry, 'actor'> & { actor?: Maybe<ResolversParentTypes['AuditEntryActor']> };
@@ -30090,6 +30812,8 @@ export type ResolversParentTypes = {
   UpdateOrganizationAllowPrivateRepositoryForkingSettingPayload: UpdateOrganizationAllowPrivateRepositoryForkingSettingPayload;
   UpdateOrganizationWebCommitSignoffSettingInput: UpdateOrganizationWebCommitSignoffSettingInput;
   UpdateOrganizationWebCommitSignoffSettingPayload: UpdateOrganizationWebCommitSignoffSettingPayload;
+  UpdateParameters: UpdateParameters;
+  UpdateParametersInput: UpdateParametersInput;
   UpdateProjectCardInput: UpdateProjectCardInput;
   UpdateProjectCardPayload: UpdateProjectCardPayload;
   UpdateProjectColumnInput: UpdateProjectColumnInput;
@@ -30116,6 +30840,8 @@ export type ResolversParentTypes = {
   UpdateRefPayload: UpdateRefPayload;
   UpdateRepositoryInput: UpdateRepositoryInput;
   UpdateRepositoryPayload: UpdateRepositoryPayload;
+  UpdateRepositoryRulesetInput: UpdateRepositoryRulesetInput;
+  UpdateRepositoryRulesetPayload: UpdateRepositoryRulesetPayload;
   UpdateRepositoryWebCommitSignoffSettingInput: UpdateRepositoryWebCommitSignoffSettingInput;
   UpdateRepositoryWebCommitSignoffSettingPayload: UpdateRepositoryWebCommitSignoffSettingPayload;
   UpdateSponsorshipPreferencesInput: UpdateSponsorshipPreferencesInput;
@@ -30572,6 +31298,14 @@ export type BranchActorAllowanceActorResolvers<ContextType = any, ParentType ext
   __resolveType: TypeResolveFn<'App' | 'Team' | 'User', ParentType, ContextType>;
 };
 
+export type BranchNamePatternParametersResolvers<ContextType = any, ParentType extends ResolversParentTypes['BranchNamePatternParameters'] = ResolversParentTypes['BranchNamePatternParameters']> = {
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  negate?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  operator?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  pattern?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type BranchProtectionRuleResolvers<ContextType = any, ParentType extends ResolversParentTypes['BranchProtectionRule'] = ResolversParentTypes['BranchProtectionRule']> = {
   allowsDeletions?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   allowsForcePushes?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -30642,6 +31376,10 @@ export type BranchProtectionRuleEdgeResolvers<ContextType = any, ParentType exte
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   node?: Resolver<Maybe<ResolversTypes['BranchProtectionRule']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BypassActorResolvers<ContextType = any, ParentType extends ResolversParentTypes['BypassActor'] = ResolversParentTypes['BypassActor']> = {
+  __resolveType: TypeResolveFn<'App' | 'Team', ParentType, ContextType>;
 };
 
 export type BypassForcePushAllowanceResolvers<ContextType = any, ParentType extends ResolversParentTypes['BypassForcePushAllowance'] = ResolversParentTypes['BypassForcePushAllowance']> = {
@@ -31036,6 +31774,14 @@ export type CommitResolvers<ContextType = any, ParentType extends ResolversParen
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CommitAuthorEmailPatternParametersResolvers<ContextType = any, ParentType extends ResolversParentTypes['CommitAuthorEmailPatternParameters'] = ResolversParentTypes['CommitAuthorEmailPatternParameters']> = {
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  negate?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  operator?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  pattern?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type CommitCommentResolvers<ContextType = any, ParentType extends ResolversParentTypes['CommitComment'] = ResolversParentTypes['CommitComment']> = {
   author?: Resolver<Maybe<ResolversTypes['Actor']>, ParentType, ContextType>;
   authorAssociation?: Resolver<ResolversTypes['CommentAuthorAssociation'], ParentType, ContextType>;
@@ -31122,6 +31868,22 @@ export type CommitHistoryConnectionResolvers<ContextType = any, ParentType exten
   nodes?: Resolver<Maybe<Array<Maybe<ResolversTypes['Commit']>>>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CommitMessagePatternParametersResolvers<ContextType = any, ParentType extends ResolversParentTypes['CommitMessagePatternParameters'] = ResolversParentTypes['CommitMessagePatternParameters']> = {
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  negate?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  operator?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  pattern?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CommitterEmailPatternParametersResolvers<ContextType = any, ParentType extends ResolversParentTypes['CommitterEmailPatternParameters'] = ResolversParentTypes['CommitterEmailPatternParameters']> = {
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  negate?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  operator?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  pattern?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -31391,6 +32153,12 @@ export type CreateRefPayloadResolvers<ContextType = any, ParentType extends Reso
 export type CreateRepositoryPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateRepositoryPayload'] = ResolversParentTypes['CreateRepositoryPayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   repository?: Resolver<Maybe<ResolversTypes['Repository']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CreateRepositoryRulesetPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateRepositoryRulesetPayload'] = ResolversParentTypes['CreateRepositoryRulesetPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  ruleset?: Resolver<Maybe<ResolversTypes['RepositoryRuleset']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -31707,6 +32475,11 @@ export type DeletePullRequestReviewPayloadResolvers<ContextType = any, ParentTyp
 };
 
 export type DeleteRefPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteRefPayload'] = ResolversParentTypes['DeleteRefPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteRepositoryRulesetPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteRepositoryRulesetPayload'] = ResolversParentTypes['DeleteRepositoryRulesetPayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -33762,6 +34535,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createPullRequest?: Resolver<Maybe<ResolversTypes['CreatePullRequestPayload']>, ParentType, ContextType, RequireFields<MutationCreatePullRequestArgs, 'input'>>;
   createRef?: Resolver<Maybe<ResolversTypes['CreateRefPayload']>, ParentType, ContextType, RequireFields<MutationCreateRefArgs, 'input'>>;
   createRepository?: Resolver<Maybe<ResolversTypes['CreateRepositoryPayload']>, ParentType, ContextType, RequireFields<MutationCreateRepositoryArgs, 'input'>>;
+  createRepositoryRuleset?: Resolver<Maybe<ResolversTypes['CreateRepositoryRulesetPayload']>, ParentType, ContextType, RequireFields<MutationCreateRepositoryRulesetArgs, 'input'>>;
   createSponsorsListing?: Resolver<Maybe<ResolversTypes['CreateSponsorsListingPayload']>, ParentType, ContextType, RequireFields<MutationCreateSponsorsListingArgs, 'input'>>;
   createSponsorsTier?: Resolver<Maybe<ResolversTypes['CreateSponsorsTierPayload']>, ParentType, ContextType, RequireFields<MutationCreateSponsorsTierArgs, 'input'>>;
   createSponsorship?: Resolver<Maybe<ResolversTypes['CreateSponsorshipPayload']>, ParentType, ContextType, RequireFields<MutationCreateSponsorshipArgs, 'input'>>;
@@ -33788,6 +34562,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deletePullRequestReview?: Resolver<Maybe<ResolversTypes['DeletePullRequestReviewPayload']>, ParentType, ContextType, RequireFields<MutationDeletePullRequestReviewArgs, 'input'>>;
   deletePullRequestReviewComment?: Resolver<Maybe<ResolversTypes['DeletePullRequestReviewCommentPayload']>, ParentType, ContextType, RequireFields<MutationDeletePullRequestReviewCommentArgs, 'input'>>;
   deleteRef?: Resolver<Maybe<ResolversTypes['DeleteRefPayload']>, ParentType, ContextType, RequireFields<MutationDeleteRefArgs, 'input'>>;
+  deleteRepositoryRuleset?: Resolver<Maybe<ResolversTypes['DeleteRepositoryRulesetPayload']>, ParentType, ContextType, RequireFields<MutationDeleteRepositoryRulesetArgs, 'input'>>;
   deleteTeamDiscussion?: Resolver<Maybe<ResolversTypes['DeleteTeamDiscussionPayload']>, ParentType, ContextType, RequireFields<MutationDeleteTeamDiscussionArgs, 'input'>>;
   deleteTeamDiscussionComment?: Resolver<Maybe<ResolversTypes['DeleteTeamDiscussionCommentPayload']>, ParentType, ContextType, RequireFields<MutationDeleteTeamDiscussionCommentArgs, 'input'>>;
   deleteVerifiableDomain?: Resolver<Maybe<ResolversTypes['DeleteVerifiableDomainPayload']>, ParentType, ContextType, RequireFields<MutationDeleteVerifiableDomainArgs, 'input'>>;
@@ -33907,6 +34682,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updatePullRequestReviewComment?: Resolver<Maybe<ResolversTypes['UpdatePullRequestReviewCommentPayload']>, ParentType, ContextType, RequireFields<MutationUpdatePullRequestReviewCommentArgs, 'input'>>;
   updateRef?: Resolver<Maybe<ResolversTypes['UpdateRefPayload']>, ParentType, ContextType, RequireFields<MutationUpdateRefArgs, 'input'>>;
   updateRepository?: Resolver<Maybe<ResolversTypes['UpdateRepositoryPayload']>, ParentType, ContextType, RequireFields<MutationUpdateRepositoryArgs, 'input'>>;
+  updateRepositoryRuleset?: Resolver<Maybe<ResolversTypes['UpdateRepositoryRulesetPayload']>, ParentType, ContextType, RequireFields<MutationUpdateRepositoryRulesetArgs, 'input'>>;
   updateRepositoryWebCommitSignoffSetting?: Resolver<Maybe<ResolversTypes['UpdateRepositoryWebCommitSignoffSettingPayload']>, ParentType, ContextType, RequireFields<MutationUpdateRepositoryWebCommitSignoffSettingArgs, 'input'>>;
   updateSponsorshipPreferences?: Resolver<Maybe<ResolversTypes['UpdateSponsorshipPreferencesPayload']>, ParentType, ContextType, RequireFields<MutationUpdateSponsorshipPreferencesArgs, 'input'>>;
   updateSubscription?: Resolver<Maybe<ResolversTypes['UpdateSubscriptionPayload']>, ParentType, ContextType, RequireFields<MutationUpdateSubscriptionArgs, 'input'>>;
@@ -33918,7 +34694,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'AddedToMergeQueueEvent' | 'AddedToProjectEvent' | 'App' | 'AssignedEvent' | 'AutoMergeDisabledEvent' | 'AutoMergeEnabledEvent' | 'AutoRebaseEnabledEvent' | 'AutoSquashEnabledEvent' | 'AutomaticBaseChangeFailedEvent' | 'AutomaticBaseChangeSucceededEvent' | 'BaseRefChangedEvent' | 'BaseRefDeletedEvent' | 'BaseRefForcePushedEvent' | 'Blob' | 'Bot' | 'BranchProtectionRule' | 'BypassForcePushAllowance' | 'BypassPullRequestAllowance' | 'CWE' | 'CheckRun' | 'CheckSuite' | 'ClosedEvent' | 'CodeOfConduct' | 'CommentDeletedEvent' | 'Commit' | 'CommitComment' | 'CommitCommentThread' | 'Comparison' | 'ConnectedEvent' | 'ConvertToDraftEvent' | 'ConvertedNoteToIssueEvent' | 'ConvertedToDiscussionEvent' | 'CrossReferencedEvent' | 'DemilestonedEvent' | 'DeployKey' | 'DeployedEvent' | 'Deployment' | 'DeploymentEnvironmentChangedEvent' | 'DeploymentReview' | 'DeploymentStatus' | 'DisconnectedEvent' | 'Discussion' | 'DiscussionCategory' | 'DiscussionComment' | 'DiscussionPoll' | 'DiscussionPollOption' | 'DraftIssue' | 'Enterprise' | 'EnterpriseAdministratorInvitation' | 'EnterpriseIdentityProvider' | 'EnterpriseRepositoryInfo' | 'EnterpriseServerInstallation' | 'EnterpriseServerUserAccount' | 'EnterpriseServerUserAccountEmail' | 'EnterpriseServerUserAccountsUpload' | 'EnterpriseUserAccount' | 'Environment' | 'ExternalIdentity' | 'Gist' | 'GistComment' | 'HeadRefDeletedEvent' | 'HeadRefForcePushedEvent' | 'HeadRefRestoredEvent' | 'IpAllowListEntry' | 'Issue' | 'IssueComment' | 'Label' | 'LabeledEvent' | 'Language' | 'License' | 'LinkedBranch' | 'LockedEvent' | 'Mannequin' | 'MarkedAsDuplicateEvent' | 'MarketplaceCategory' | 'MarketplaceListing' | 'MembersCanDeleteReposClearAuditEntry' | 'MembersCanDeleteReposDisableAuditEntry' | 'MembersCanDeleteReposEnableAuditEntry' | 'MentionedEvent' | 'MergeQueue' | 'MergeQueueEntry' | 'MergedEvent' | 'MigrationSource' | 'Milestone' | 'MilestonedEvent' | 'MovedColumnsInProjectEvent' | 'OIDCProvider' | 'OauthApplicationCreateAuditEntry' | 'OrgAddBillingManagerAuditEntry' | 'OrgAddMemberAuditEntry' | 'OrgBlockUserAuditEntry' | 'OrgConfigDisableCollaboratorsOnlyAuditEntry' | 'OrgConfigEnableCollaboratorsOnlyAuditEntry' | 'OrgCreateAuditEntry' | 'OrgDisableOauthAppRestrictionsAuditEntry' | 'OrgDisableSamlAuditEntry' | 'OrgDisableTwoFactorRequirementAuditEntry' | 'OrgEnableOauthAppRestrictionsAuditEntry' | 'OrgEnableSamlAuditEntry' | 'OrgEnableTwoFactorRequirementAuditEntry' | 'OrgInviteMemberAuditEntry' | 'OrgInviteToBusinessAuditEntry' | 'OrgOauthAppAccessApprovedAuditEntry' | 'OrgOauthAppAccessDeniedAuditEntry' | 'OrgOauthAppAccessRequestedAuditEntry' | 'OrgRemoveBillingManagerAuditEntry' | 'OrgRemoveMemberAuditEntry' | 'OrgRemoveOutsideCollaboratorAuditEntry' | 'OrgRestoreMemberAuditEntry' | 'OrgUnblockUserAuditEntry' | 'OrgUpdateDefaultRepositoryPermissionAuditEntry' | 'OrgUpdateMemberAuditEntry' | 'OrgUpdateMemberRepositoryCreationPermissionAuditEntry' | 'OrgUpdateMemberRepositoryInvitationPermissionAuditEntry' | 'Organization' | 'OrganizationIdentityProvider' | 'OrganizationInvitation' | 'OrganizationMigration' | 'Package' | 'PackageFile' | 'PackageTag' | 'PackageVersion' | 'PinnedDiscussion' | 'PinnedEvent' | 'PinnedIssue' | 'PrivateRepositoryForkingDisableAuditEntry' | 'PrivateRepositoryForkingEnableAuditEntry' | 'Project' | 'ProjectCard' | 'ProjectColumn' | 'ProjectV2' | 'ProjectV2Field' | 'ProjectV2Item' | 'ProjectV2ItemFieldDateValue' | 'ProjectV2ItemFieldIterationValue' | 'ProjectV2ItemFieldNumberValue' | 'ProjectV2ItemFieldSingleSelectValue' | 'ProjectV2ItemFieldTextValue' | 'ProjectV2IterationField' | 'ProjectV2SingleSelectField' | 'ProjectV2View' | 'ProjectV2Workflow' | 'PublicKey' | 'PullRequest' | 'PullRequestCommit' | 'PullRequestCommitCommentThread' | 'PullRequestReview' | 'PullRequestReviewComment' | 'PullRequestReviewThread' | 'PullRequestThread' | 'Push' | 'PushAllowance' | 'Reaction' | 'ReadyForReviewEvent' | 'Ref' | 'ReferencedEvent' | 'Release' | 'ReleaseAsset' | 'RemovedFromMergeQueueEvent' | 'RemovedFromProjectEvent' | 'RenamedTitleEvent' | 'ReopenedEvent' | 'RepoAccessAuditEntry' | 'RepoAddMemberAuditEntry' | 'RepoAddTopicAuditEntry' | 'RepoArchivedAuditEntry' | 'RepoChangeMergeSettingAuditEntry' | 'RepoConfigDisableAnonymousGitAccessAuditEntry' | 'RepoConfigDisableCollaboratorsOnlyAuditEntry' | 'RepoConfigDisableContributorsOnlyAuditEntry' | 'RepoConfigDisableSockpuppetDisallowedAuditEntry' | 'RepoConfigEnableAnonymousGitAccessAuditEntry' | 'RepoConfigEnableCollaboratorsOnlyAuditEntry' | 'RepoConfigEnableContributorsOnlyAuditEntry' | 'RepoConfigEnableSockpuppetDisallowedAuditEntry' | 'RepoConfigLockAnonymousGitAccessAuditEntry' | 'RepoConfigUnlockAnonymousGitAccessAuditEntry' | 'RepoCreateAuditEntry' | 'RepoDestroyAuditEntry' | 'RepoRemoveMemberAuditEntry' | 'RepoRemoveTopicAuditEntry' | 'Repository' | 'RepositoryInvitation' | 'RepositoryMigration' | 'RepositoryTopic' | 'RepositoryVisibilityChangeDisableAuditEntry' | 'RepositoryVisibilityChangeEnableAuditEntry' | 'RepositoryVulnerabilityAlert' | 'ReviewDismissalAllowance' | 'ReviewDismissedEvent' | 'ReviewRequest' | 'ReviewRequestRemovedEvent' | 'ReviewRequestedEvent' | 'SavedReply' | 'SecurityAdvisory' | 'SponsorsActivity' | 'SponsorsListing' | 'SponsorsListingFeaturedItem' | 'SponsorsTier' | 'Sponsorship' | 'SponsorshipNewsletter' | 'Status' | 'StatusCheckRollup' | 'StatusContext' | 'SubscribedEvent' | 'Tag' | 'Team' | 'TeamAddMemberAuditEntry' | 'TeamAddRepositoryAuditEntry' | 'TeamChangeParentTeamAuditEntry' | 'TeamDiscussion' | 'TeamDiscussionComment' | 'TeamRemoveMemberAuditEntry' | 'TeamRemoveRepositoryAuditEntry' | 'Topic' | 'TransferredEvent' | 'Tree' | 'UnassignedEvent' | 'UnlabeledEvent' | 'UnlockedEvent' | 'UnmarkedAsDuplicateEvent' | 'UnpinnedEvent' | 'UnsubscribedEvent' | 'User' | 'UserBlockedEvent' | 'UserContentEdit' | 'UserStatus' | 'VerifiableDomain' | 'Workflow' | 'WorkflowRun', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'AddedToMergeQueueEvent' | 'AddedToProjectEvent' | 'App' | 'AssignedEvent' | 'AutoMergeDisabledEvent' | 'AutoMergeEnabledEvent' | 'AutoRebaseEnabledEvent' | 'AutoSquashEnabledEvent' | 'AutomaticBaseChangeFailedEvent' | 'AutomaticBaseChangeSucceededEvent' | 'BaseRefChangedEvent' | 'BaseRefDeletedEvent' | 'BaseRefForcePushedEvent' | 'Blob' | 'Bot' | 'BranchProtectionRule' | 'BypassForcePushAllowance' | 'BypassPullRequestAllowance' | 'CWE' | 'CheckRun' | 'CheckSuite' | 'ClosedEvent' | 'CodeOfConduct' | 'CommentDeletedEvent' | 'Commit' | 'CommitComment' | 'CommitCommentThread' | 'Comparison' | 'ConnectedEvent' | 'ConvertToDraftEvent' | 'ConvertedNoteToIssueEvent' | 'ConvertedToDiscussionEvent' | 'CrossReferencedEvent' | 'DemilestonedEvent' | 'DeployKey' | 'DeployedEvent' | 'Deployment' | 'DeploymentEnvironmentChangedEvent' | 'DeploymentReview' | 'DeploymentStatus' | 'DisconnectedEvent' | 'Discussion' | 'DiscussionCategory' | 'DiscussionComment' | 'DiscussionPoll' | 'DiscussionPollOption' | 'DraftIssue' | 'Enterprise' | 'EnterpriseAdministratorInvitation' | 'EnterpriseIdentityProvider' | 'EnterpriseRepositoryInfo' | 'EnterpriseServerInstallation' | 'EnterpriseServerUserAccount' | 'EnterpriseServerUserAccountEmail' | 'EnterpriseServerUserAccountsUpload' | 'EnterpriseUserAccount' | 'Environment' | 'ExternalIdentity' | 'Gist' | 'GistComment' | 'HeadRefDeletedEvent' | 'HeadRefForcePushedEvent' | 'HeadRefRestoredEvent' | 'IpAllowListEntry' | 'Issue' | 'IssueComment' | 'Label' | 'LabeledEvent' | 'Language' | 'License' | 'LinkedBranch' | 'LockedEvent' | 'Mannequin' | 'MarkedAsDuplicateEvent' | 'MarketplaceCategory' | 'MarketplaceListing' | 'MembersCanDeleteReposClearAuditEntry' | 'MembersCanDeleteReposDisableAuditEntry' | 'MembersCanDeleteReposEnableAuditEntry' | 'MentionedEvent' | 'MergeQueue' | 'MergeQueueEntry' | 'MergedEvent' | 'MigrationSource' | 'Milestone' | 'MilestonedEvent' | 'MovedColumnsInProjectEvent' | 'OIDCProvider' | 'OauthApplicationCreateAuditEntry' | 'OrgAddBillingManagerAuditEntry' | 'OrgAddMemberAuditEntry' | 'OrgBlockUserAuditEntry' | 'OrgConfigDisableCollaboratorsOnlyAuditEntry' | 'OrgConfigEnableCollaboratorsOnlyAuditEntry' | 'OrgCreateAuditEntry' | 'OrgDisableOauthAppRestrictionsAuditEntry' | 'OrgDisableSamlAuditEntry' | 'OrgDisableTwoFactorRequirementAuditEntry' | 'OrgEnableOauthAppRestrictionsAuditEntry' | 'OrgEnableSamlAuditEntry' | 'OrgEnableTwoFactorRequirementAuditEntry' | 'OrgInviteMemberAuditEntry' | 'OrgInviteToBusinessAuditEntry' | 'OrgOauthAppAccessApprovedAuditEntry' | 'OrgOauthAppAccessDeniedAuditEntry' | 'OrgOauthAppAccessRequestedAuditEntry' | 'OrgRemoveBillingManagerAuditEntry' | 'OrgRemoveMemberAuditEntry' | 'OrgRemoveOutsideCollaboratorAuditEntry' | 'OrgRestoreMemberAuditEntry' | 'OrgUnblockUserAuditEntry' | 'OrgUpdateDefaultRepositoryPermissionAuditEntry' | 'OrgUpdateMemberAuditEntry' | 'OrgUpdateMemberRepositoryCreationPermissionAuditEntry' | 'OrgUpdateMemberRepositoryInvitationPermissionAuditEntry' | 'Organization' | 'OrganizationIdentityProvider' | 'OrganizationInvitation' | 'OrganizationMigration' | 'Package' | 'PackageFile' | 'PackageTag' | 'PackageVersion' | 'PinnedDiscussion' | 'PinnedEvent' | 'PinnedIssue' | 'PrivateRepositoryForkingDisableAuditEntry' | 'PrivateRepositoryForkingEnableAuditEntry' | 'Project' | 'ProjectCard' | 'ProjectColumn' | 'ProjectV2' | 'ProjectV2Field' | 'ProjectV2Item' | 'ProjectV2ItemFieldDateValue' | 'ProjectV2ItemFieldIterationValue' | 'ProjectV2ItemFieldNumberValue' | 'ProjectV2ItemFieldSingleSelectValue' | 'ProjectV2ItemFieldTextValue' | 'ProjectV2IterationField' | 'ProjectV2SingleSelectField' | 'ProjectV2View' | 'ProjectV2Workflow' | 'PublicKey' | 'PullRequest' | 'PullRequestCommit' | 'PullRequestCommitCommentThread' | 'PullRequestReview' | 'PullRequestReviewComment' | 'PullRequestReviewThread' | 'PullRequestThread' | 'Push' | 'PushAllowance' | 'Reaction' | 'ReadyForReviewEvent' | 'Ref' | 'ReferencedEvent' | 'Release' | 'ReleaseAsset' | 'RemovedFromMergeQueueEvent' | 'RemovedFromProjectEvent' | 'RenamedTitleEvent' | 'ReopenedEvent' | 'RepoAccessAuditEntry' | 'RepoAddMemberAuditEntry' | 'RepoAddTopicAuditEntry' | 'RepoArchivedAuditEntry' | 'RepoChangeMergeSettingAuditEntry' | 'RepoConfigDisableAnonymousGitAccessAuditEntry' | 'RepoConfigDisableCollaboratorsOnlyAuditEntry' | 'RepoConfigDisableContributorsOnlyAuditEntry' | 'RepoConfigDisableSockpuppetDisallowedAuditEntry' | 'RepoConfigEnableAnonymousGitAccessAuditEntry' | 'RepoConfigEnableCollaboratorsOnlyAuditEntry' | 'RepoConfigEnableContributorsOnlyAuditEntry' | 'RepoConfigEnableSockpuppetDisallowedAuditEntry' | 'RepoConfigLockAnonymousGitAccessAuditEntry' | 'RepoConfigUnlockAnonymousGitAccessAuditEntry' | 'RepoCreateAuditEntry' | 'RepoDestroyAuditEntry' | 'RepoRemoveMemberAuditEntry' | 'RepoRemoveTopicAuditEntry' | 'Repository' | 'RepositoryInvitation' | 'RepositoryMigration' | 'RepositoryRule' | 'RepositoryRuleset' | 'RepositoryRulesetBypassActor' | 'RepositoryTopic' | 'RepositoryVisibilityChangeDisableAuditEntry' | 'RepositoryVisibilityChangeEnableAuditEntry' | 'RepositoryVulnerabilityAlert' | 'ReviewDismissalAllowance' | 'ReviewDismissedEvent' | 'ReviewRequest' | 'ReviewRequestRemovedEvent' | 'ReviewRequestedEvent' | 'SavedReply' | 'SecurityAdvisory' | 'SponsorsActivity' | 'SponsorsListing' | 'SponsorsListingFeaturedItem' | 'SponsorsTier' | 'Sponsorship' | 'SponsorshipNewsletter' | 'Status' | 'StatusCheckRollup' | 'StatusContext' | 'SubscribedEvent' | 'Tag' | 'Team' | 'TeamAddMemberAuditEntry' | 'TeamAddRepositoryAuditEntry' | 'TeamChangeParentTeamAuditEntry' | 'TeamDiscussion' | 'TeamDiscussionComment' | 'TeamRemoveMemberAuditEntry' | 'TeamRemoveRepositoryAuditEntry' | 'Topic' | 'TransferredEvent' | 'Tree' | 'UnassignedEvent' | 'UnlabeledEvent' | 'UnlockedEvent' | 'UnmarkedAsDuplicateEvent' | 'UnpinnedEvent' | 'UnsubscribedEvent' | 'User' | 'UserBlockedEvent' | 'UserContentEdit' | 'UserStatus' | 'VerifiableDomain' | 'Workflow' | 'WorkflowRun', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
@@ -34675,6 +35451,7 @@ export type OrganizationResolvers<ContextType = any, ParentType extends Resolver
   repositoryMigrations?: Resolver<ResolversTypes['RepositoryMigrationConnection'], ParentType, ContextType, RequireFields<OrganizationRepositoryMigrationsArgs, 'orderBy'>>;
   requiresTwoFactorAuthentication?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
+  rulesets?: Resolver<Maybe<ResolversTypes['RepositoryRulesetConnection']>, ParentType, ContextType, RequireFields<OrganizationRulesetsArgs, 'includeParents'>>;
   samlIdentityProvider?: Resolver<Maybe<ResolversTypes['OrganizationIdentityProvider']>, ParentType, ContextType>;
   sponsoring?: Resolver<ResolversTypes['SponsorConnection'], ParentType, ContextType, RequireFields<OrganizationSponsoringArgs, 'orderBy'>>;
   sponsors?: Resolver<ResolversTypes['SponsorConnection'], ParentType, ContextType, RequireFields<OrganizationSponsorsArgs, 'orderBy'>>;
@@ -35903,6 +36680,15 @@ export type PullRequestEdgeResolvers<ContextType = any, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type PullRequestParametersResolvers<ContextType = any, ParentType extends ResolversParentTypes['PullRequestParameters'] = ResolversParentTypes['PullRequestParameters']> = {
+  dismissStaleReviewsOnPush?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  requireCodeOwnerReview?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  requireLastPushApproval?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  requiredApprovingReviewCount?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  requiredReviewThreadResolution?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type PullRequestReviewResolvers<ContextType = any, ParentType extends ResolversParentTypes['PullRequestReview'] = ResolversParentTypes['PullRequestReview']> = {
   author?: Resolver<Maybe<ResolversTypes['Actor']>, ParentType, ContextType>;
   authorAssociation?: Resolver<ResolversTypes['CommentAuthorAssociation'], ParentType, ContextType>;
@@ -36319,6 +37105,12 @@ export type RefConnectionResolvers<ContextType = any, ParentType extends Resolve
 export type RefEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['RefEdge'] = ResolversParentTypes['RefEdge']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   node?: Resolver<Maybe<ResolversTypes['Ref']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RefNameConditionTargetResolvers<ContextType = any, ParentType extends ResolversParentTypes['RefNameConditionTarget'] = ResolversParentTypes['RefNameConditionTarget']> = {
+  exclude?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  include?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -37183,6 +37975,7 @@ export type RepositoryResolvers<ContextType = any, ParentType extends ResolversP
   releases?: Resolver<ResolversTypes['ReleaseConnection'], ParentType, ContextType, Partial<RepositoryReleasesArgs>>;
   repositoryTopics?: Resolver<ResolversTypes['RepositoryTopicConnection'], ParentType, ContextType, Partial<RepositoryRepositoryTopicsArgs>>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
+  rulesets?: Resolver<Maybe<ResolversTypes['RepositoryRulesetConnection']>, ParentType, ContextType, RequireFields<RepositoryRulesetsArgs, 'includeParents'>>;
   securityPolicyUrl?: Resolver<Maybe<ResolversTypes['URI']>, ParentType, ContextType>;
   shortDescriptionHTML?: Resolver<ResolversTypes['HTML'], ParentType, ContextType, RequireFields<RepositoryShortDescriptionHtmlArgs, 'limit'>>;
   squashMergeAllowed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -37383,6 +38176,13 @@ export type RepositoryMigrationEdgeResolvers<ContextType = any, ParentType exten
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type RepositoryNameConditionTargetResolvers<ContextType = any, ParentType extends ResolversParentTypes['RepositoryNameConditionTarget'] = ResolversParentTypes['RepositoryNameConditionTarget']> = {
+  exclude?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  include?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  protected?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type RepositoryNodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['RepositoryNode'] = ResolversParentTypes['RepositoryNode']> = {
   __resolveType: TypeResolveFn<'CommitComment' | 'CommitCommentThread' | 'DependabotUpdate' | 'Discussion' | 'DiscussionCategory' | 'Issue' | 'IssueComment' | 'PinnedDiscussion' | 'PullRequest' | 'PullRequestCommitCommentThread' | 'PullRequestReview' | 'PullRequestReviewComment' | 'RepositoryVulnerabilityAlert', ParentType, ContextType>;
   repository?: Resolver<ResolversTypes['Repository'], ParentType, ContextType>;
@@ -37397,6 +38197,82 @@ export type RepositoryOwnerResolvers<ContextType = any, ParentType extends Resol
   repository?: Resolver<Maybe<ResolversTypes['Repository']>, ParentType, ContextType, RequireFields<RepositoryOwnerRepositoryArgs, 'followRenames' | 'name'>>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
+};
+
+export type RepositoryRuleResolvers<ContextType = any, ParentType extends ResolversParentTypes['RepositoryRule'] = ResolversParentTypes['RepositoryRule']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  parameters?: Resolver<Maybe<ResolversTypes['RuleParameters']>, ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['RepositoryRuleType'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RepositoryRuleConditionsResolvers<ContextType = any, ParentType extends ResolversParentTypes['RepositoryRuleConditions'] = ResolversParentTypes['RepositoryRuleConditions']> = {
+  refName?: Resolver<Maybe<ResolversTypes['RefNameConditionTarget']>, ParentType, ContextType>;
+  repositoryName?: Resolver<Maybe<ResolversTypes['RepositoryNameConditionTarget']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RepositoryRuleConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['RepositoryRuleConnection'] = ResolversParentTypes['RepositoryRuleConnection']> = {
+  edges?: Resolver<Maybe<Array<Maybe<ResolversTypes['RepositoryRuleEdge']>>>, ParentType, ContextType>;
+  nodes?: Resolver<Maybe<Array<Maybe<ResolversTypes['RepositoryRule']>>>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RepositoryRuleEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['RepositoryRuleEdge'] = ResolversParentTypes['RepositoryRuleEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['RepositoryRule']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RepositoryRulesetResolvers<ContextType = any, ParentType extends ResolversParentTypes['RepositoryRuleset'] = ResolversParentTypes['RepositoryRuleset']> = {
+  bypassActors?: Resolver<Maybe<ResolversTypes['RepositoryRulesetBypassActorConnection']>, ParentType, ContextType, Partial<RepositoryRulesetBypassActorsArgs>>;
+  bypassMode?: Resolver<ResolversTypes['RuleBypassMode'], ParentType, ContextType>;
+  conditions?: Resolver<ResolversTypes['RepositoryRuleConditions'], ParentType, ContextType>;
+  databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  enforcement?: Resolver<ResolversTypes['RuleEnforcement'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  rules?: Resolver<Maybe<ResolversTypes['RepositoryRuleConnection']>, ParentType, ContextType, Partial<RepositoryRulesetRulesArgs>>;
+  source?: Resolver<ResolversTypes['RuleSource'], ParentType, ContextType>;
+  target?: Resolver<Maybe<ResolversTypes['RepositoryRulesetTarget']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RepositoryRulesetBypassActorResolvers<ContextType = any, ParentType extends ResolversParentTypes['RepositoryRulesetBypassActor'] = ResolversParentTypes['RepositoryRulesetBypassActor']> = {
+  actor?: Resolver<Maybe<ResolversTypes['BypassActor']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  repositoryRuleset?: Resolver<Maybe<ResolversTypes['RepositoryRuleset']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RepositoryRulesetBypassActorConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['RepositoryRulesetBypassActorConnection'] = ResolversParentTypes['RepositoryRulesetBypassActorConnection']> = {
+  edges?: Resolver<Maybe<Array<Maybe<ResolversTypes['RepositoryRulesetBypassActorEdge']>>>, ParentType, ContextType>;
+  nodes?: Resolver<Maybe<Array<Maybe<ResolversTypes['RepositoryRulesetBypassActor']>>>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RepositoryRulesetBypassActorEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['RepositoryRulesetBypassActorEdge'] = ResolversParentTypes['RepositoryRulesetBypassActorEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['RepositoryRulesetBypassActor']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RepositoryRulesetConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['RepositoryRulesetConnection'] = ResolversParentTypes['RepositoryRulesetConnection']> = {
+  edges?: Resolver<Maybe<Array<Maybe<ResolversTypes['RepositoryRulesetEdge']>>>, ParentType, ContextType>;
+  nodes?: Resolver<Maybe<Array<Maybe<ResolversTypes['RepositoryRuleset']>>>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RepositoryRulesetEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['RepositoryRulesetEdge'] = ResolversParentTypes['RepositoryRulesetEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['RepositoryRuleset']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type RepositoryTopicResolvers<ContextType = any, ParentType extends ResolversParentTypes['RepositoryTopic'] = ResolversParentTypes['RepositoryTopic']> = {
@@ -37538,9 +38414,20 @@ export type RequirableByPullRequestResolvers<ContextType = any, ParentType exten
   isRequired?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, Partial<RequirableByPullRequestIsRequiredArgs>>;
 };
 
+export type RequiredDeploymentsParametersResolvers<ContextType = any, ParentType extends ResolversParentTypes['RequiredDeploymentsParameters'] = ResolversParentTypes['RequiredDeploymentsParameters']> = {
+  requiredDeploymentEnvironments?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type RequiredStatusCheckDescriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['RequiredStatusCheckDescription'] = ResolversParentTypes['RequiredStatusCheckDescription']> = {
   app?: Resolver<Maybe<ResolversTypes['App']>, ParentType, ContextType>;
   context?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RequiredStatusChecksParametersResolvers<ContextType = any, ParentType extends ResolversParentTypes['RequiredStatusChecksParameters'] = ResolversParentTypes['RequiredStatusChecksParameters']> = {
+  requiredStatusChecks?: Resolver<Maybe<Array<ResolversTypes['StatusCheckConfiguration']>>, ParentType, ContextType>;
+  strictRequiredStatusChecksPolicy?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -37677,6 +38564,14 @@ export type RevokeMigratorRolePayloadResolvers<ContextType = any, ParentType ext
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   success?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RuleParametersResolvers<ContextType = any, ParentType extends ResolversParentTypes['RuleParameters'] = ResolversParentTypes['RuleParameters']> = {
+  __resolveType: TypeResolveFn<'BranchNamePatternParameters' | 'CommitAuthorEmailPatternParameters' | 'CommitMessagePatternParameters' | 'CommitterEmailPatternParameters' | 'PullRequestParameters' | 'RequiredDeploymentsParameters' | 'RequiredStatusChecksParameters' | 'TagNamePatternParameters' | 'UpdateParameters', ParentType, ContextType>;
+};
+
+export type RuleSourceResolvers<ContextType = any, ParentType extends ResolversParentTypes['RuleSource'] = ResolversParentTypes['RuleSource']> = {
+  __resolveType: TypeResolveFn<'Organization' | 'Repository', ParentType, ContextType>;
 };
 
 export type SavedReplyResolvers<ContextType = any, ParentType extends ResolversParentTypes['SavedReply'] = ResolversParentTypes['SavedReply']> = {
@@ -38168,6 +39063,12 @@ export type StatusResolvers<ContextType = any, ParentType extends ResolversParen
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type StatusCheckConfigurationResolvers<ContextType = any, ParentType extends ResolversParentTypes['StatusCheckConfiguration'] = ResolversParentTypes['StatusCheckConfiguration']> = {
+  context?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  integrationId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type StatusCheckRollupResolvers<ContextType = any, ParentType extends ResolversParentTypes['StatusCheckRollup'] = ResolversParentTypes['StatusCheckRollup']> = {
   commit?: Resolver<Maybe<ResolversTypes['Commit']>, ParentType, ContextType>;
   contexts?: Resolver<ResolversTypes['StatusCheckRollupContextConnection'], ParentType, ContextType, Partial<StatusCheckRollupContextsArgs>>;
@@ -38292,6 +39193,14 @@ export type TagResolvers<ContextType = any, ParentType extends ResolversParentTy
   repository?: Resolver<ResolversTypes['Repository'], ParentType, ContextType>;
   tagger?: Resolver<Maybe<ResolversTypes['GitActor']>, ParentType, ContextType>;
   target?: Resolver<ResolversTypes['GitObject'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TagNamePatternParametersResolvers<ContextType = any, ParentType extends ResolversParentTypes['TagNamePatternParameters'] = ResolversParentTypes['TagNamePatternParameters']> = {
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  negate?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  operator?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  pattern?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -39098,6 +40007,11 @@ export type UpdateOrganizationWebCommitSignoffSettingPayloadResolvers<ContextTyp
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UpdateParametersResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateParameters'] = ResolversParentTypes['UpdateParameters']> = {
+  updateAllowsFetchAndMerge?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type UpdateProjectCardPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateProjectCardPayload'] = ResolversParentTypes['UpdateProjectCardPayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   projectCard?: Resolver<Maybe<ResolversTypes['ProjectCard']>, ParentType, ContextType>;
@@ -39174,6 +40088,12 @@ export type UpdateRefPayloadResolvers<ContextType = any, ParentType extends Reso
 export type UpdateRepositoryPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateRepositoryPayload'] = ResolversParentTypes['UpdateRepositoryPayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   repository?: Resolver<Maybe<ResolversTypes['Repository']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpdateRepositoryRulesetPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateRepositoryRulesetPayload'] = ResolversParentTypes['UpdateRepositoryRulesetPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  ruleset?: Resolver<Maybe<ResolversTypes['RepositoryRuleset']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -39555,12 +40475,14 @@ export type Resolvers<ContextType = any> = {
   Blob?: BlobResolvers<ContextType>;
   Bot?: BotResolvers<ContextType>;
   BranchActorAllowanceActor?: BranchActorAllowanceActorResolvers<ContextType>;
+  BranchNamePatternParameters?: BranchNamePatternParametersResolvers<ContextType>;
   BranchProtectionRule?: BranchProtectionRuleResolvers<ContextType>;
   BranchProtectionRuleConflict?: BranchProtectionRuleConflictResolvers<ContextType>;
   BranchProtectionRuleConflictConnection?: BranchProtectionRuleConflictConnectionResolvers<ContextType>;
   BranchProtectionRuleConflictEdge?: BranchProtectionRuleConflictEdgeResolvers<ContextType>;
   BranchProtectionRuleConnection?: BranchProtectionRuleConnectionResolvers<ContextType>;
   BranchProtectionRuleEdge?: BranchProtectionRuleEdgeResolvers<ContextType>;
+  BypassActor?: BypassActorResolvers<ContextType>;
   BypassForcePushAllowance?: BypassForcePushAllowanceResolvers<ContextType>;
   BypassForcePushAllowanceConnection?: BypassForcePushAllowanceConnectionResolvers<ContextType>;
   BypassForcePushAllowanceEdge?: BypassForcePushAllowanceEdgeResolvers<ContextType>;
@@ -39604,6 +40526,7 @@ export type Resolvers<ContextType = any> = {
   Comment?: CommentResolvers<ContextType>;
   CommentDeletedEvent?: CommentDeletedEventResolvers<ContextType>;
   Commit?: CommitResolvers<ContextType>;
+  CommitAuthorEmailPatternParameters?: CommitAuthorEmailPatternParametersResolvers<ContextType>;
   CommitComment?: CommitCommentResolvers<ContextType>;
   CommitCommentConnection?: CommitCommentConnectionResolvers<ContextType>;
   CommitCommentEdge?: CommitCommentEdgeResolvers<ContextType>;
@@ -39612,6 +40535,8 @@ export type Resolvers<ContextType = any> = {
   CommitContributionsByRepository?: CommitContributionsByRepositoryResolvers<ContextType>;
   CommitEdge?: CommitEdgeResolvers<ContextType>;
   CommitHistoryConnection?: CommitHistoryConnectionResolvers<ContextType>;
+  CommitMessagePatternParameters?: CommitMessagePatternParametersResolvers<ContextType>;
+  CommitterEmailPatternParameters?: CommitterEmailPatternParametersResolvers<ContextType>;
   Comparison?: ComparisonResolvers<ContextType>;
   ComparisonCommitConnection?: ComparisonCommitConnectionResolvers<ContextType>;
   ConnectedEvent?: ConnectedEventResolvers<ContextType>;
@@ -39645,6 +40570,7 @@ export type Resolvers<ContextType = any> = {
   CreatePullRequestPayload?: CreatePullRequestPayloadResolvers<ContextType>;
   CreateRefPayload?: CreateRefPayloadResolvers<ContextType>;
   CreateRepositoryPayload?: CreateRepositoryPayloadResolvers<ContextType>;
+  CreateRepositoryRulesetPayload?: CreateRepositoryRulesetPayloadResolvers<ContextType>;
   CreateSponsorsListingPayload?: CreateSponsorsListingPayloadResolvers<ContextType>;
   CreateSponsorsTierPayload?: CreateSponsorsTierPayloadResolvers<ContextType>;
   CreateSponsorshipPayload?: CreateSponsorshipPayloadResolvers<ContextType>;
@@ -39693,6 +40619,7 @@ export type Resolvers<ContextType = any> = {
   DeletePullRequestReviewCommentPayload?: DeletePullRequestReviewCommentPayloadResolvers<ContextType>;
   DeletePullRequestReviewPayload?: DeletePullRequestReviewPayloadResolvers<ContextType>;
   DeleteRefPayload?: DeleteRefPayloadResolvers<ContextType>;
+  DeleteRepositoryRulesetPayload?: DeleteRepositoryRulesetPayloadResolvers<ContextType>;
   DeleteTeamDiscussionCommentPayload?: DeleteTeamDiscussionCommentPayloadResolvers<ContextType>;
   DeleteTeamDiscussionPayload?: DeleteTeamDiscussionPayloadResolvers<ContextType>;
   DeleteVerifiableDomainPayload?: DeleteVerifiableDomainPayloadResolvers<ContextType>;
@@ -40059,6 +40986,7 @@ export type Resolvers<ContextType = any> = {
   PullRequestConnection?: PullRequestConnectionResolvers<ContextType>;
   PullRequestContributionsByRepository?: PullRequestContributionsByRepositoryResolvers<ContextType>;
   PullRequestEdge?: PullRequestEdgeResolvers<ContextType>;
+  PullRequestParameters?: PullRequestParametersResolvers<ContextType>;
   PullRequestReview?: PullRequestReviewResolvers<ContextType>;
   PullRequestReviewComment?: PullRequestReviewCommentResolvers<ContextType>;
   PullRequestReviewCommentConnection?: PullRequestReviewCommentConnectionResolvers<ContextType>;
@@ -40099,6 +41027,7 @@ export type Resolvers<ContextType = any> = {
   Ref?: RefResolvers<ContextType>;
   RefConnection?: RefConnectionResolvers<ContextType>;
   RefEdge?: RefEdgeResolvers<ContextType>;
+  RefNameConditionTarget?: RefNameConditionTargetResolvers<ContextType>;
   RefUpdateRule?: RefUpdateRuleResolvers<ContextType>;
   ReferencedEvent?: ReferencedEventResolvers<ContextType>;
   ReferencedSubject?: ReferencedSubjectResolvers<ContextType>;
@@ -40168,8 +41097,19 @@ export type Resolvers<ContextType = any> = {
   RepositoryMigration?: RepositoryMigrationResolvers<ContextType>;
   RepositoryMigrationConnection?: RepositoryMigrationConnectionResolvers<ContextType>;
   RepositoryMigrationEdge?: RepositoryMigrationEdgeResolvers<ContextType>;
+  RepositoryNameConditionTarget?: RepositoryNameConditionTargetResolvers<ContextType>;
   RepositoryNode?: RepositoryNodeResolvers<ContextType>;
   RepositoryOwner?: RepositoryOwnerResolvers<ContextType>;
+  RepositoryRule?: RepositoryRuleResolvers<ContextType>;
+  RepositoryRuleConditions?: RepositoryRuleConditionsResolvers<ContextType>;
+  RepositoryRuleConnection?: RepositoryRuleConnectionResolvers<ContextType>;
+  RepositoryRuleEdge?: RepositoryRuleEdgeResolvers<ContextType>;
+  RepositoryRuleset?: RepositoryRulesetResolvers<ContextType>;
+  RepositoryRulesetBypassActor?: RepositoryRulesetBypassActorResolvers<ContextType>;
+  RepositoryRulesetBypassActorConnection?: RepositoryRulesetBypassActorConnectionResolvers<ContextType>;
+  RepositoryRulesetBypassActorEdge?: RepositoryRulesetBypassActorEdgeResolvers<ContextType>;
+  RepositoryRulesetConnection?: RepositoryRulesetConnectionResolvers<ContextType>;
+  RepositoryRulesetEdge?: RepositoryRulesetEdgeResolvers<ContextType>;
   RepositoryTopic?: RepositoryTopicResolvers<ContextType>;
   RepositoryTopicConnection?: RepositoryTopicConnectionResolvers<ContextType>;
   RepositoryTopicEdge?: RepositoryTopicEdgeResolvers<ContextType>;
@@ -40183,7 +41123,9 @@ export type Resolvers<ContextType = any> = {
   RequestedReviewerConnection?: RequestedReviewerConnectionResolvers<ContextType>;
   RequestedReviewerEdge?: RequestedReviewerEdgeResolvers<ContextType>;
   RequirableByPullRequest?: RequirableByPullRequestResolvers<ContextType>;
+  RequiredDeploymentsParameters?: RequiredDeploymentsParametersResolvers<ContextType>;
   RequiredStatusCheckDescription?: RequiredStatusCheckDescriptionResolvers<ContextType>;
+  RequiredStatusChecksParameters?: RequiredStatusChecksParametersResolvers<ContextType>;
   RerequestCheckSuitePayload?: RerequestCheckSuitePayloadResolvers<ContextType>;
   ResolveReviewThreadPayload?: ResolveReviewThreadPayloadResolvers<ContextType>;
   RestrictedContribution?: RestrictedContributionResolvers<ContextType>;
@@ -40202,6 +41144,8 @@ export type Resolvers<ContextType = any> = {
   ReviewStatusHovercardContext?: ReviewStatusHovercardContextResolvers<ContextType>;
   RevokeEnterpriseOrganizationsMigratorRolePayload?: RevokeEnterpriseOrganizationsMigratorRolePayloadResolvers<ContextType>;
   RevokeMigratorRolePayload?: RevokeMigratorRolePayloadResolvers<ContextType>;
+  RuleParameters?: RuleParametersResolvers<ContextType>;
+  RuleSource?: RuleSourceResolvers<ContextType>;
   SavedReply?: SavedReplyResolvers<ContextType>;
   SavedReplyConnection?: SavedReplyConnectionResolvers<ContextType>;
   SavedReplyEdge?: SavedReplyEdgeResolvers<ContextType>;
@@ -40259,6 +41203,7 @@ export type Resolvers<ContextType = any> = {
   StartOrganizationMigrationPayload?: StartOrganizationMigrationPayloadResolvers<ContextType>;
   StartRepositoryMigrationPayload?: StartRepositoryMigrationPayloadResolvers<ContextType>;
   Status?: StatusResolvers<ContextType>;
+  StatusCheckConfiguration?: StatusCheckConfigurationResolvers<ContextType>;
   StatusCheckRollup?: StatusCheckRollupResolvers<ContextType>;
   StatusCheckRollupContext?: StatusCheckRollupContextResolvers<ContextType>;
   StatusCheckRollupContextConnection?: StatusCheckRollupContextConnectionResolvers<ContextType>;
@@ -40274,6 +41219,7 @@ export type Resolvers<ContextType = any> = {
   SubscribedEvent?: SubscribedEventResolvers<ContextType>;
   SuggestedReviewer?: SuggestedReviewerResolvers<ContextType>;
   Tag?: TagResolvers<ContextType>;
+  TagNamePatternParameters?: TagNamePatternParametersResolvers<ContextType>;
   Team?: TeamResolvers<ContextType>;
   TeamAddMemberAuditEntry?: TeamAddMemberAuditEntryResolvers<ContextType>;
   TeamAddRepositoryAuditEntry?: TeamAddRepositoryAuditEntryResolvers<ContextType>;
@@ -40358,6 +41304,7 @@ export type Resolvers<ContextType = any> = {
   UpdateNotificationRestrictionSettingPayload?: UpdateNotificationRestrictionSettingPayloadResolvers<ContextType>;
   UpdateOrganizationAllowPrivateRepositoryForkingSettingPayload?: UpdateOrganizationAllowPrivateRepositoryForkingSettingPayloadResolvers<ContextType>;
   UpdateOrganizationWebCommitSignoffSettingPayload?: UpdateOrganizationWebCommitSignoffSettingPayloadResolvers<ContextType>;
+  UpdateParameters?: UpdateParametersResolvers<ContextType>;
   UpdateProjectCardPayload?: UpdateProjectCardPayloadResolvers<ContextType>;
   UpdateProjectColumnPayload?: UpdateProjectColumnPayloadResolvers<ContextType>;
   UpdateProjectPayload?: UpdateProjectPayloadResolvers<ContextType>;
@@ -40371,6 +41318,7 @@ export type Resolvers<ContextType = any> = {
   UpdatePullRequestReviewPayload?: UpdatePullRequestReviewPayloadResolvers<ContextType>;
   UpdateRefPayload?: UpdateRefPayloadResolvers<ContextType>;
   UpdateRepositoryPayload?: UpdateRepositoryPayloadResolvers<ContextType>;
+  UpdateRepositoryRulesetPayload?: UpdateRepositoryRulesetPayloadResolvers<ContextType>;
   UpdateRepositoryWebCommitSignoffSettingPayload?: UpdateRepositoryWebCommitSignoffSettingPayloadResolvers<ContextType>;
   UpdateSponsorshipPreferencesPayload?: UpdateSponsorshipPreferencesPayloadResolvers<ContextType>;
   UpdateSubscriptionPayload?: UpdateSubscriptionPayloadResolvers<ContextType>;
@@ -40726,7 +41674,7 @@ export type GetCheckRunAnnotationsQueryVariables = Exact<{
 }>;
 
 
-export type GetCheckRunAnnotationsQuery = { __typename?: 'Query', node?: { __typename: 'AddedToMergeQueueEvent' } | { __typename: 'AddedToProjectEvent' } | { __typename: 'App' } | { __typename: 'AssignedEvent' } | { __typename: 'AutoMergeDisabledEvent' } | { __typename: 'AutoMergeEnabledEvent' } | { __typename: 'AutoRebaseEnabledEvent' } | { __typename: 'AutoSquashEnabledEvent' } | { __typename: 'AutomaticBaseChangeFailedEvent' } | { __typename: 'AutomaticBaseChangeSucceededEvent' } | { __typename: 'BaseRefChangedEvent' } | { __typename: 'BaseRefDeletedEvent' } | { __typename: 'BaseRefForcePushedEvent' } | { __typename: 'Blob' } | { __typename: 'Bot' } | { __typename: 'BranchProtectionRule' } | { __typename: 'BypassForcePushAllowance' } | { __typename: 'BypassPullRequestAllowance' } | { __typename: 'CWE' } | { __typename: 'CheckRun', id: string, annotations?: { __typename?: 'CheckAnnotationConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, nodes?: Array<{ __typename?: 'CheckAnnotation', path: string, message: string, title?: string | null, annotationLevel?: CheckAnnotationLevel | null, location: { __typename?: 'CheckAnnotationSpan', start: { __typename?: 'CheckAnnotationPosition', line: number, column?: number | null }, end: { __typename?: 'CheckAnnotationPosition', line: number, column?: number | null } } } | null> | null } | null } | { __typename: 'CheckSuite' } | { __typename: 'ClosedEvent' } | { __typename: 'CodeOfConduct' } | { __typename: 'CommentDeletedEvent' } | { __typename: 'Commit' } | { __typename: 'CommitComment' } | { __typename: 'CommitCommentThread' } | { __typename: 'Comparison' } | { __typename: 'ConnectedEvent' } | { __typename: 'ConvertToDraftEvent' } | { __typename: 'ConvertedNoteToIssueEvent' } | { __typename: 'ConvertedToDiscussionEvent' } | { __typename: 'CrossReferencedEvent' } | { __typename: 'DemilestonedEvent' } | { __typename: 'DeployKey' } | { __typename: 'DeployedEvent' } | { __typename: 'Deployment' } | { __typename: 'DeploymentEnvironmentChangedEvent' } | { __typename: 'DeploymentReview' } | { __typename: 'DeploymentStatus' } | { __typename: 'DisconnectedEvent' } | { __typename: 'Discussion' } | { __typename: 'DiscussionCategory' } | { __typename: 'DiscussionComment' } | { __typename: 'DiscussionPoll' } | { __typename: 'DiscussionPollOption' } | { __typename: 'DraftIssue' } | { __typename: 'Enterprise' } | { __typename: 'EnterpriseAdministratorInvitation' } | { __typename: 'EnterpriseIdentityProvider' } | { __typename: 'EnterpriseRepositoryInfo' } | { __typename: 'EnterpriseServerInstallation' } | { __typename: 'EnterpriseServerUserAccount' } | { __typename: 'EnterpriseServerUserAccountEmail' } | { __typename: 'EnterpriseServerUserAccountsUpload' } | { __typename: 'EnterpriseUserAccount' } | { __typename: 'Environment' } | { __typename: 'ExternalIdentity' } | { __typename: 'Gist' } | { __typename: 'GistComment' } | { __typename: 'HeadRefDeletedEvent' } | { __typename: 'HeadRefForcePushedEvent' } | { __typename: 'HeadRefRestoredEvent' } | { __typename: 'IpAllowListEntry' } | { __typename: 'Issue' } | { __typename: 'IssueComment' } | { __typename: 'Label' } | { __typename: 'LabeledEvent' } | { __typename: 'Language' } | { __typename: 'License' } | { __typename: 'LinkedBranch' } | { __typename: 'LockedEvent' } | { __typename: 'Mannequin' } | { __typename: 'MarkedAsDuplicateEvent' } | { __typename: 'MarketplaceCategory' } | { __typename: 'MarketplaceListing' } | { __typename: 'MembersCanDeleteReposClearAuditEntry' } | { __typename: 'MembersCanDeleteReposDisableAuditEntry' } | { __typename: 'MembersCanDeleteReposEnableAuditEntry' } | { __typename: 'MentionedEvent' } | { __typename: 'MergeQueue' } | { __typename: 'MergeQueueEntry' } | { __typename: 'MergedEvent' } | { __typename: 'MigrationSource' } | { __typename: 'Milestone' } | { __typename: 'MilestonedEvent' } | { __typename: 'MovedColumnsInProjectEvent' } | { __typename: 'OIDCProvider' } | { __typename: 'OauthApplicationCreateAuditEntry' } | { __typename: 'OrgAddBillingManagerAuditEntry' } | { __typename: 'OrgAddMemberAuditEntry' } | { __typename: 'OrgBlockUserAuditEntry' } | { __typename: 'OrgConfigDisableCollaboratorsOnlyAuditEntry' } | { __typename: 'OrgConfigEnableCollaboratorsOnlyAuditEntry' } | { __typename: 'OrgCreateAuditEntry' } | { __typename: 'OrgDisableOauthAppRestrictionsAuditEntry' } | { __typename: 'OrgDisableSamlAuditEntry' } | { __typename: 'OrgDisableTwoFactorRequirementAuditEntry' } | { __typename: 'OrgEnableOauthAppRestrictionsAuditEntry' } | { __typename: 'OrgEnableSamlAuditEntry' } | { __typename: 'OrgEnableTwoFactorRequirementAuditEntry' } | { __typename: 'OrgInviteMemberAuditEntry' } | { __typename: 'OrgInviteToBusinessAuditEntry' } | { __typename: 'OrgOauthAppAccessApprovedAuditEntry' } | { __typename: 'OrgOauthAppAccessDeniedAuditEntry' } | { __typename: 'OrgOauthAppAccessRequestedAuditEntry' } | { __typename: 'OrgRemoveBillingManagerAuditEntry' } | { __typename: 'OrgRemoveMemberAuditEntry' } | { __typename: 'OrgRemoveOutsideCollaboratorAuditEntry' } | { __typename: 'OrgRestoreMemberAuditEntry' } | { __typename: 'OrgUnblockUserAuditEntry' } | { __typename: 'OrgUpdateDefaultRepositoryPermissionAuditEntry' } | { __typename: 'OrgUpdateMemberAuditEntry' } | { __typename: 'OrgUpdateMemberRepositoryCreationPermissionAuditEntry' } | { __typename: 'OrgUpdateMemberRepositoryInvitationPermissionAuditEntry' } | { __typename: 'Organization' } | { __typename: 'OrganizationIdentityProvider' } | { __typename: 'OrganizationInvitation' } | { __typename: 'OrganizationMigration' } | { __typename: 'Package' } | { __typename: 'PackageFile' } | { __typename: 'PackageTag' } | { __typename: 'PackageVersion' } | { __typename: 'PinnedDiscussion' } | { __typename: 'PinnedEvent' } | { __typename: 'PinnedIssue' } | { __typename: 'PrivateRepositoryForkingDisableAuditEntry' } | { __typename: 'PrivateRepositoryForkingEnableAuditEntry' } | { __typename: 'Project' } | { __typename: 'ProjectCard' } | { __typename: 'ProjectColumn' } | { __typename: 'ProjectV2' } | { __typename: 'ProjectV2Field' } | { __typename: 'ProjectV2Item' } | { __typename: 'ProjectV2ItemFieldDateValue' } | { __typename: 'ProjectV2ItemFieldIterationValue' } | { __typename: 'ProjectV2ItemFieldNumberValue' } | { __typename: 'ProjectV2ItemFieldSingleSelectValue' } | { __typename: 'ProjectV2ItemFieldTextValue' } | { __typename: 'ProjectV2IterationField' } | { __typename: 'ProjectV2SingleSelectField' } | { __typename: 'ProjectV2View' } | { __typename: 'ProjectV2Workflow' } | { __typename: 'PublicKey' } | { __typename: 'PullRequest' } | { __typename: 'PullRequestCommit' } | { __typename: 'PullRequestCommitCommentThread' } | { __typename: 'PullRequestReview' } | { __typename: 'PullRequestReviewComment' } | { __typename: 'PullRequestReviewThread' } | { __typename: 'PullRequestThread' } | { __typename: 'Push' } | { __typename: 'PushAllowance' } | { __typename: 'Reaction' } | { __typename: 'ReadyForReviewEvent' } | { __typename: 'Ref' } | { __typename: 'ReferencedEvent' } | { __typename: 'Release' } | { __typename: 'ReleaseAsset' } | { __typename: 'RemovedFromMergeQueueEvent' } | { __typename: 'RemovedFromProjectEvent' } | { __typename: 'RenamedTitleEvent' } | { __typename: 'ReopenedEvent' } | { __typename: 'RepoAccessAuditEntry' } | { __typename: 'RepoAddMemberAuditEntry' } | { __typename: 'RepoAddTopicAuditEntry' } | { __typename: 'RepoArchivedAuditEntry' } | { __typename: 'RepoChangeMergeSettingAuditEntry' } | { __typename: 'RepoConfigDisableAnonymousGitAccessAuditEntry' } | { __typename: 'RepoConfigDisableCollaboratorsOnlyAuditEntry' } | { __typename: 'RepoConfigDisableContributorsOnlyAuditEntry' } | { __typename: 'RepoConfigDisableSockpuppetDisallowedAuditEntry' } | { __typename: 'RepoConfigEnableAnonymousGitAccessAuditEntry' } | { __typename: 'RepoConfigEnableCollaboratorsOnlyAuditEntry' } | { __typename: 'RepoConfigEnableContributorsOnlyAuditEntry' } | { __typename: 'RepoConfigEnableSockpuppetDisallowedAuditEntry' } | { __typename: 'RepoConfigLockAnonymousGitAccessAuditEntry' } | { __typename: 'RepoConfigUnlockAnonymousGitAccessAuditEntry' } | { __typename: 'RepoCreateAuditEntry' } | { __typename: 'RepoDestroyAuditEntry' } | { __typename: 'RepoRemoveMemberAuditEntry' } | { __typename: 'RepoRemoveTopicAuditEntry' } | { __typename: 'Repository' } | { __typename: 'RepositoryInvitation' } | { __typename: 'RepositoryMigration' } | { __typename: 'RepositoryTopic' } | { __typename: 'RepositoryVisibilityChangeDisableAuditEntry' } | { __typename: 'RepositoryVisibilityChangeEnableAuditEntry' } | { __typename: 'RepositoryVulnerabilityAlert' } | { __typename: 'ReviewDismissalAllowance' } | { __typename: 'ReviewDismissedEvent' } | { __typename: 'ReviewRequest' } | { __typename: 'ReviewRequestRemovedEvent' } | { __typename: 'ReviewRequestedEvent' } | { __typename: 'SavedReply' } | { __typename: 'SecurityAdvisory' } | { __typename: 'SponsorsActivity' } | { __typename: 'SponsorsListing' } | { __typename: 'SponsorsListingFeaturedItem' } | { __typename: 'SponsorsTier' } | { __typename: 'Sponsorship' } | { __typename: 'SponsorshipNewsletter' } | { __typename: 'Status' } | { __typename: 'StatusCheckRollup' } | { __typename: 'StatusContext' } | { __typename: 'SubscribedEvent' } | { __typename: 'Tag' } | { __typename: 'Team' } | { __typename: 'TeamAddMemberAuditEntry' } | { __typename: 'TeamAddRepositoryAuditEntry' } | { __typename: 'TeamChangeParentTeamAuditEntry' } | { __typename: 'TeamDiscussion' } | { __typename: 'TeamDiscussionComment' } | { __typename: 'TeamRemoveMemberAuditEntry' } | { __typename: 'TeamRemoveRepositoryAuditEntry' } | { __typename: 'Topic' } | { __typename: 'TransferredEvent' } | { __typename: 'Tree' } | { __typename: 'UnassignedEvent' } | { __typename: 'UnlabeledEvent' } | { __typename: 'UnlockedEvent' } | { __typename: 'UnmarkedAsDuplicateEvent' } | { __typename: 'UnpinnedEvent' } | { __typename: 'UnsubscribedEvent' } | { __typename: 'User' } | { __typename: 'UserBlockedEvent' } | { __typename: 'UserContentEdit' } | { __typename: 'UserStatus' } | { __typename: 'VerifiableDomain' } | { __typename: 'Workflow' } | { __typename: 'WorkflowRun' } | null };
+export type GetCheckRunAnnotationsQuery = { __typename?: 'Query', node?: { __typename: 'AddedToMergeQueueEvent' } | { __typename: 'AddedToProjectEvent' } | { __typename: 'App' } | { __typename: 'AssignedEvent' } | { __typename: 'AutoMergeDisabledEvent' } | { __typename: 'AutoMergeEnabledEvent' } | { __typename: 'AutoRebaseEnabledEvent' } | { __typename: 'AutoSquashEnabledEvent' } | { __typename: 'AutomaticBaseChangeFailedEvent' } | { __typename: 'AutomaticBaseChangeSucceededEvent' } | { __typename: 'BaseRefChangedEvent' } | { __typename: 'BaseRefDeletedEvent' } | { __typename: 'BaseRefForcePushedEvent' } | { __typename: 'Blob' } | { __typename: 'Bot' } | { __typename: 'BranchProtectionRule' } | { __typename: 'BypassForcePushAllowance' } | { __typename: 'BypassPullRequestAllowance' } | { __typename: 'CWE' } | { __typename: 'CheckRun', id: string, annotations?: { __typename?: 'CheckAnnotationConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: string | null }, nodes?: Array<{ __typename?: 'CheckAnnotation', path: string, message: string, title?: string | null, annotationLevel?: CheckAnnotationLevel | null, location: { __typename?: 'CheckAnnotationSpan', start: { __typename?: 'CheckAnnotationPosition', line: number, column?: number | null }, end: { __typename?: 'CheckAnnotationPosition', line: number, column?: number | null } } } | null> | null } | null } | { __typename: 'CheckSuite' } | { __typename: 'ClosedEvent' } | { __typename: 'CodeOfConduct' } | { __typename: 'CommentDeletedEvent' } | { __typename: 'Commit' } | { __typename: 'CommitComment' } | { __typename: 'CommitCommentThread' } | { __typename: 'Comparison' } | { __typename: 'ConnectedEvent' } | { __typename: 'ConvertToDraftEvent' } | { __typename: 'ConvertedNoteToIssueEvent' } | { __typename: 'ConvertedToDiscussionEvent' } | { __typename: 'CrossReferencedEvent' } | { __typename: 'DemilestonedEvent' } | { __typename: 'DeployKey' } | { __typename: 'DeployedEvent' } | { __typename: 'Deployment' } | { __typename: 'DeploymentEnvironmentChangedEvent' } | { __typename: 'DeploymentReview' } | { __typename: 'DeploymentStatus' } | { __typename: 'DisconnectedEvent' } | { __typename: 'Discussion' } | { __typename: 'DiscussionCategory' } | { __typename: 'DiscussionComment' } | { __typename: 'DiscussionPoll' } | { __typename: 'DiscussionPollOption' } | { __typename: 'DraftIssue' } | { __typename: 'Enterprise' } | { __typename: 'EnterpriseAdministratorInvitation' } | { __typename: 'EnterpriseIdentityProvider' } | { __typename: 'EnterpriseRepositoryInfo' } | { __typename: 'EnterpriseServerInstallation' } | { __typename: 'EnterpriseServerUserAccount' } | { __typename: 'EnterpriseServerUserAccountEmail' } | { __typename: 'EnterpriseServerUserAccountsUpload' } | { __typename: 'EnterpriseUserAccount' } | { __typename: 'Environment' } | { __typename: 'ExternalIdentity' } | { __typename: 'Gist' } | { __typename: 'GistComment' } | { __typename: 'HeadRefDeletedEvent' } | { __typename: 'HeadRefForcePushedEvent' } | { __typename: 'HeadRefRestoredEvent' } | { __typename: 'IpAllowListEntry' } | { __typename: 'Issue' } | { __typename: 'IssueComment' } | { __typename: 'Label' } | { __typename: 'LabeledEvent' } | { __typename: 'Language' } | { __typename: 'License' } | { __typename: 'LinkedBranch' } | { __typename: 'LockedEvent' } | { __typename: 'Mannequin' } | { __typename: 'MarkedAsDuplicateEvent' } | { __typename: 'MarketplaceCategory' } | { __typename: 'MarketplaceListing' } | { __typename: 'MembersCanDeleteReposClearAuditEntry' } | { __typename: 'MembersCanDeleteReposDisableAuditEntry' } | { __typename: 'MembersCanDeleteReposEnableAuditEntry' } | { __typename: 'MentionedEvent' } | { __typename: 'MergeQueue' } | { __typename: 'MergeQueueEntry' } | { __typename: 'MergedEvent' } | { __typename: 'MigrationSource' } | { __typename: 'Milestone' } | { __typename: 'MilestonedEvent' } | { __typename: 'MovedColumnsInProjectEvent' } | { __typename: 'OIDCProvider' } | { __typename: 'OauthApplicationCreateAuditEntry' } | { __typename: 'OrgAddBillingManagerAuditEntry' } | { __typename: 'OrgAddMemberAuditEntry' } | { __typename: 'OrgBlockUserAuditEntry' } | { __typename: 'OrgConfigDisableCollaboratorsOnlyAuditEntry' } | { __typename: 'OrgConfigEnableCollaboratorsOnlyAuditEntry' } | { __typename: 'OrgCreateAuditEntry' } | { __typename: 'OrgDisableOauthAppRestrictionsAuditEntry' } | { __typename: 'OrgDisableSamlAuditEntry' } | { __typename: 'OrgDisableTwoFactorRequirementAuditEntry' } | { __typename: 'OrgEnableOauthAppRestrictionsAuditEntry' } | { __typename: 'OrgEnableSamlAuditEntry' } | { __typename: 'OrgEnableTwoFactorRequirementAuditEntry' } | { __typename: 'OrgInviteMemberAuditEntry' } | { __typename: 'OrgInviteToBusinessAuditEntry' } | { __typename: 'OrgOauthAppAccessApprovedAuditEntry' } | { __typename: 'OrgOauthAppAccessDeniedAuditEntry' } | { __typename: 'OrgOauthAppAccessRequestedAuditEntry' } | { __typename: 'OrgRemoveBillingManagerAuditEntry' } | { __typename: 'OrgRemoveMemberAuditEntry' } | { __typename: 'OrgRemoveOutsideCollaboratorAuditEntry' } | { __typename: 'OrgRestoreMemberAuditEntry' } | { __typename: 'OrgUnblockUserAuditEntry' } | { __typename: 'OrgUpdateDefaultRepositoryPermissionAuditEntry' } | { __typename: 'OrgUpdateMemberAuditEntry' } | { __typename: 'OrgUpdateMemberRepositoryCreationPermissionAuditEntry' } | { __typename: 'OrgUpdateMemberRepositoryInvitationPermissionAuditEntry' } | { __typename: 'Organization' } | { __typename: 'OrganizationIdentityProvider' } | { __typename: 'OrganizationInvitation' } | { __typename: 'OrganizationMigration' } | { __typename: 'Package' } | { __typename: 'PackageFile' } | { __typename: 'PackageTag' } | { __typename: 'PackageVersion' } | { __typename: 'PinnedDiscussion' } | { __typename: 'PinnedEvent' } | { __typename: 'PinnedIssue' } | { __typename: 'PrivateRepositoryForkingDisableAuditEntry' } | { __typename: 'PrivateRepositoryForkingEnableAuditEntry' } | { __typename: 'Project' } | { __typename: 'ProjectCard' } | { __typename: 'ProjectColumn' } | { __typename: 'ProjectV2' } | { __typename: 'ProjectV2Field' } | { __typename: 'ProjectV2Item' } | { __typename: 'ProjectV2ItemFieldDateValue' } | { __typename: 'ProjectV2ItemFieldIterationValue' } | { __typename: 'ProjectV2ItemFieldNumberValue' } | { __typename: 'ProjectV2ItemFieldSingleSelectValue' } | { __typename: 'ProjectV2ItemFieldTextValue' } | { __typename: 'ProjectV2IterationField' } | { __typename: 'ProjectV2SingleSelectField' } | { __typename: 'ProjectV2View' } | { __typename: 'ProjectV2Workflow' } | { __typename: 'PublicKey' } | { __typename: 'PullRequest' } | { __typename: 'PullRequestCommit' } | { __typename: 'PullRequestCommitCommentThread' } | { __typename: 'PullRequestReview' } | { __typename: 'PullRequestReviewComment' } | { __typename: 'PullRequestReviewThread' } | { __typename: 'PullRequestThread' } | { __typename: 'Push' } | { __typename: 'PushAllowance' } | { __typename: 'Reaction' } | { __typename: 'ReadyForReviewEvent' } | { __typename: 'Ref' } | { __typename: 'ReferencedEvent' } | { __typename: 'Release' } | { __typename: 'ReleaseAsset' } | { __typename: 'RemovedFromMergeQueueEvent' } | { __typename: 'RemovedFromProjectEvent' } | { __typename: 'RenamedTitleEvent' } | { __typename: 'ReopenedEvent' } | { __typename: 'RepoAccessAuditEntry' } | { __typename: 'RepoAddMemberAuditEntry' } | { __typename: 'RepoAddTopicAuditEntry' } | { __typename: 'RepoArchivedAuditEntry' } | { __typename: 'RepoChangeMergeSettingAuditEntry' } | { __typename: 'RepoConfigDisableAnonymousGitAccessAuditEntry' } | { __typename: 'RepoConfigDisableCollaboratorsOnlyAuditEntry' } | { __typename: 'RepoConfigDisableContributorsOnlyAuditEntry' } | { __typename: 'RepoConfigDisableSockpuppetDisallowedAuditEntry' } | { __typename: 'RepoConfigEnableAnonymousGitAccessAuditEntry' } | { __typename: 'RepoConfigEnableCollaboratorsOnlyAuditEntry' } | { __typename: 'RepoConfigEnableContributorsOnlyAuditEntry' } | { __typename: 'RepoConfigEnableSockpuppetDisallowedAuditEntry' } | { __typename: 'RepoConfigLockAnonymousGitAccessAuditEntry' } | { __typename: 'RepoConfigUnlockAnonymousGitAccessAuditEntry' } | { __typename: 'RepoCreateAuditEntry' } | { __typename: 'RepoDestroyAuditEntry' } | { __typename: 'RepoRemoveMemberAuditEntry' } | { __typename: 'RepoRemoveTopicAuditEntry' } | { __typename: 'Repository' } | { __typename: 'RepositoryInvitation' } | { __typename: 'RepositoryMigration' } | { __typename: 'RepositoryRule' } | { __typename: 'RepositoryRuleset' } | { __typename: 'RepositoryRulesetBypassActor' } | { __typename: 'RepositoryTopic' } | { __typename: 'RepositoryVisibilityChangeDisableAuditEntry' } | { __typename: 'RepositoryVisibilityChangeEnableAuditEntry' } | { __typename: 'RepositoryVulnerabilityAlert' } | { __typename: 'ReviewDismissalAllowance' } | { __typename: 'ReviewDismissedEvent' } | { __typename: 'ReviewRequest' } | { __typename: 'ReviewRequestRemovedEvent' } | { __typename: 'ReviewRequestedEvent' } | { __typename: 'SavedReply' } | { __typename: 'SecurityAdvisory' } | { __typename: 'SponsorsActivity' } | { __typename: 'SponsorsListing' } | { __typename: 'SponsorsListingFeaturedItem' } | { __typename: 'SponsorsTier' } | { __typename: 'Sponsorship' } | { __typename: 'SponsorshipNewsletter' } | { __typename: 'Status' } | { __typename: 'StatusCheckRollup' } | { __typename: 'StatusContext' } | { __typename: 'SubscribedEvent' } | { __typename: 'Tag' } | { __typename: 'Team' } | { __typename: 'TeamAddMemberAuditEntry' } | { __typename: 'TeamAddRepositoryAuditEntry' } | { __typename: 'TeamChangeParentTeamAuditEntry' } | { __typename: 'TeamDiscussion' } | { __typename: 'TeamDiscussionComment' } | { __typename: 'TeamRemoveMemberAuditEntry' } | { __typename: 'TeamRemoveRepositoryAuditEntry' } | { __typename: 'Topic' } | { __typename: 'TransferredEvent' } | { __typename: 'Tree' } | { __typename: 'UnassignedEvent' } | { __typename: 'UnlabeledEvent' } | { __typename: 'UnlockedEvent' } | { __typename: 'UnmarkedAsDuplicateEvent' } | { __typename: 'UnpinnedEvent' } | { __typename: 'UnsubscribedEvent' } | { __typename: 'User' } | { __typename: 'UserBlockedEvent' } | { __typename: 'UserContentEdit' } | { __typename: 'UserStatus' } | { __typename: 'VerifiableDomain' } | { __typename: 'Workflow' } | { __typename: 'WorkflowRun' } | null };
 
 export type GetCommitStatusAndCheckRunQueryVariables = Exact<{
   owner: Scalars['String'];
