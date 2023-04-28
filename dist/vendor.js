@@ -18487,7 +18487,7 @@ var ApolloLink = __webpack_require__(3581);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
 var execute = __webpack_require__(7037);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.7.12';
+var version = '3.7.13';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
@@ -23634,9 +23634,13 @@ function useSubscription(subscription, options) {
         if (!observable) {
             return;
         }
+        var subscriptionStopped = false;
         var subscription = observable.subscribe({
             next: function (fetchResult) {
                 var _a, _b;
+                if (subscriptionStopped) {
+                    return;
+                }
                 var result = {
                     loading: false,
                     data: fetchResult.data,
@@ -23659,26 +23663,34 @@ function useSubscription(subscription, options) {
             },
             error: function (error) {
                 var _a, _b;
-                setResult({
-                    loading: false,
-                    data: void 0,
-                    error: error,
-                    variables: options === null || options === void 0 ? void 0 : options.variables,
-                });
-                (_b = (_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onError) === null || _b === void 0 ? void 0 : _b.call(_a, error);
+                if (!subscriptionStopped) {
+                    setResult({
+                        loading: false,
+                        data: void 0,
+                        error: error,
+                        variables: options === null || options === void 0 ? void 0 : options.variables,
+                    });
+                    (_b = (_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onError) === null || _b === void 0 ? void 0 : _b.call(_a, error);
+                }
+                ;
             },
             complete: function () {
                 var _a, _b;
-                if ((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onComplete) {
-                    ref.current.options.onComplete();
-                }
-                else if ((_b = ref.current.options) === null || _b === void 0 ? void 0 : _b.onSubscriptionComplete) {
-                    ref.current.options.onSubscriptionComplete();
+                if (!subscriptionStopped) {
+                    if ((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onComplete) {
+                        ref.current.options.onComplete();
+                    }
+                    else if ((_b = ref.current.options) === null || _b === void 0 ? void 0 : _b.onSubscriptionComplete) {
+                        ref.current.options.onSubscriptionComplete();
+                    }
                 }
             },
         });
         return function () {
-            subscription.unsubscribe();
+            subscriptionStopped = true;
+            setTimeout(function () {
+                subscription.unsubscribe();
+            });
         };
     }, [observable]);
     return result;
