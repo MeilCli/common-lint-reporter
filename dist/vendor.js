@@ -1179,7 +1179,7 @@ exports.getOctokitOptions = exports.GitHub = exports.defaults = exports.context 
 const Context = __importStar(__webpack_require__(37));
 const Utils = __importStar(__webpack_require__(3460));
 // octokit + plugins
-const core_1 = __webpack_require__(5156);
+const core_1 = __webpack_require__(8);
 const plugin_rest_endpoint_methods_1 = __webpack_require__(9401);
 const plugin_paginate_rest_1 = __webpack_require__(5745);
 exports.context = new Context.Context();
@@ -3171,7 +3171,7 @@ exports.checkBypass = checkBypass;
 
 /***/ }),
 
-/***/ 5156:
+/***/ 8:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -3656,24 +3656,8 @@ function is_plain_object_isPlainObject(o) {
 
 // EXTERNAL MODULE: ./node_modules/node-fetch/lib/index.mjs
 var lib = __webpack_require__(6292);
-;// CONCATENATED MODULE: ./node_modules/deprecation/dist-web/index.js
-class Deprecation extends Error {
-  constructor(message) {
-    super(message); // Maintains proper stack trace (only available on V8)
-
-    /* istanbul ignore next */
-
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, this.constructor);
-    }
-
-    this.name = 'Deprecation';
-  }
-
-}
-
-
-
+// EXTERNAL MODULE: ./node_modules/deprecation/dist-web/index.js
+var dist_web = __webpack_require__(2327);
 // EXTERNAL MODULE: ./node_modules/once/once.js
 var once = __webpack_require__(778);
 var once_default = /*#__PURE__*/__webpack_require__.n(once);
@@ -3722,13 +3706,13 @@ class RequestError extends Error {
         // deprecations
         Object.defineProperty(this, "code", {
             get() {
-                logOnceCode(new Deprecation("[@octokit/request-error] `error.code` is deprecated, use `error.status`."));
+                logOnceCode(new dist_web/* Deprecation */.$("[@octokit/request-error] `error.code` is deprecated, use `error.status`."));
                 return statusCode;
             },
         });
         Object.defineProperty(this, "headers", {
             get() {
-                logOnceHeaders(new Deprecation("[@octokit/request-error] `error.headers` is deprecated, use `error.response.headers`."));
+                logOnceHeaders(new dist_web/* Deprecation */.$("[@octokit/request-error] `error.headers` is deprecated, use `error.response.headers`."));
                 return headers || {};
             },
         });
@@ -7092,6 +7076,33 @@ exports.Response = nodeFetch.Response
 
 // Needed for TypeScript consumers without esModuleInterop.
 exports["default"] = fetch
+
+
+/***/ }),
+
+/***/ 2327:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   $: () => (/* binding */ Deprecation)
+/* harmony export */ });
+class Deprecation extends (/* runtime-dependent pure expression or super */ /^(33[45]|149|179|28|452|474)$/.test(__webpack_require__.j) ? (Error) : null) {
+  constructor(message) {
+    super(message); // Maintains proper stack trace (only available on V8)
+
+    /* istanbul ignore next */
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, this.constructor);
+    }
+
+    this.name = 'Deprecation';
+  }
+
+}
+
+
 
 
 /***/ }),
@@ -23698,14 +23709,16 @@ var react__WEBPACK_IMPORTED_MODULE_1___namespace_cache;
 /* harmony export */ });
 /* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7294);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(320);
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(320);
+}
 
 
 
 var didWarnUncachedGetSnapshot = false;
 var uSESKey = "useSyncExternalStore";
 var realHook = /*#__PURE__*/ (react__WEBPACK_IMPORTED_MODULE_1___namespace_cache || (react__WEBPACK_IMPORTED_MODULE_1___namespace_cache = __webpack_require__.t(react__WEBPACK_IMPORTED_MODULE_1__, 2)))[uSESKey];
-var useSyncExternalStore = realHook || (function (subscribe, getSnapshot, getServerSnapshot) {
+var useSyncExternalStore = (/* runtime-dependent pure expression or super */ /^(33[45]|149|179|28|452)$/.test(__webpack_require__.j) ? (realHook || (function (subscribe, getSnapshot, getServerSnapshot) {
     var value = getSnapshot();
     if (__DEV__ &&
         !didWarnUncachedGetSnapshot &&
@@ -23736,7 +23749,7 @@ var useSyncExternalStore = realHook || (function (subscribe, getSnapshot, getSer
         });
     }, [subscribe]);
     return value;
-});
+})) : null);
 function checkIfSnapshotChanged(_a) {
     var value = _a.value, getSnapshot = _a.getSnapshot;
     try {
