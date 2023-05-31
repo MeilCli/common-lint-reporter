@@ -6516,69 +6516,6 @@ function previouslyCompared(a, b) {
 
 /***/ }),
 
-/***/ 657:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   B: () => (/* binding */ Trie)
-/* harmony export */ });
-// A [trie](https://en.wikipedia.org/wiki/Trie) data structure that holds
-// object keys weakly, yet can also hold non-object keys, unlike the
-// native `WeakMap`.
-// If no makeData function is supplied, the looked-up data will be an empty,
-// null-prototype Object.
-var defaultMakeData = function () { return Object.create(null); };
-// Useful for processing arguments objects as well as arrays.
-var _a = Array.prototype, forEach = _a.forEach, slice = _a.slice;
-var Trie = /** @class */ (function () {
-    function Trie(weakness, makeData) {
-        if (weakness === void 0) { weakness = true; }
-        if (makeData === void 0) { makeData = defaultMakeData; }
-        this.weakness = weakness;
-        this.makeData = makeData;
-    }
-    Trie.prototype.lookup = function () {
-        var array = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            array[_i] = arguments[_i];
-        }
-        return this.lookupArray(array);
-    };
-    Trie.prototype.lookupArray = function (array) {
-        var node = this;
-        forEach.call(array, function (key) { return node = node.getChildTrie(key); });
-        return node.data || (node.data = this.makeData(slice.call(array)));
-    };
-    Trie.prototype.getChildTrie = function (key) {
-        var map = this.weakness && isObjRef(key)
-            ? this.weak || (this.weak = new WeakMap())
-            : this.strong || (this.strong = new Map());
-        var child = map.get(key);
-        if (!child)
-            map.set(key, child = new Trie(this.weakness, this.makeData));
-        return child;
-    };
-    return Trie;
-}());
-function isObjRef(value) {
-    switch (typeof value) {
-        case "object":
-            if (value === null)
-                break;
-        // Fall through to return true...
-        case "function":
-            return true;
-    }
-    return false;
-}
-
-
-//# sourceMappingURL=trie.esm.js.map
-
-
-/***/ }),
-
 /***/ 5623:
 /***/ ((module) => {
 
@@ -14248,17 +14185,76 @@ function onceStrict (fn) {
 
 /***/ }),
 
-/***/ 507:
+/***/ 2667:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   dP: () => (/* binding */ dep),
-/* harmony export */   re: () => (/* binding */ wrap)
-/* harmony export */ });
-/* unused harmony export defaultMakeCacheKey */
-/* harmony import */ var _wry_trie__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(657);
-/* harmony import */ var _wry_context__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(8751);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  dP: () => (/* binding */ dep),
+  re: () => (/* binding */ wrap)
+});
+
+// UNUSED EXPORTS: KeyTrie, asyncFromGen, bindContext, defaultMakeCacheKey, noContext, setTimeout
+
+;// CONCATENATED MODULE: ./node_modules/@wry/trie/lib/trie.esm.js
+// A [trie](https://en.wikipedia.org/wiki/Trie) data structure that holds
+// object keys weakly, yet can also hold non-object keys, unlike the
+// native `WeakMap`.
+// If no makeData function is supplied, the looked-up data will be an empty,
+// null-prototype Object.
+var defaultMakeData = function () { return Object.create(null); };
+// Useful for processing arguments objects as well as arrays.
+var _a = Array.prototype, forEach = _a.forEach, slice = _a.slice;
+var Trie = /** @class */ (function () {
+    function Trie(weakness, makeData) {
+        if (weakness === void 0) { weakness = true; }
+        if (makeData === void 0) { makeData = defaultMakeData; }
+        this.weakness = weakness;
+        this.makeData = makeData;
+    }
+    Trie.prototype.lookup = function () {
+        var array = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            array[_i] = arguments[_i];
+        }
+        return this.lookupArray(array);
+    };
+    Trie.prototype.lookupArray = function (array) {
+        var node = this;
+        forEach.call(array, function (key) { return node = node.getChildTrie(key); });
+        return node.data || (node.data = this.makeData(slice.call(array)));
+    };
+    Trie.prototype.getChildTrie = function (key) {
+        var map = this.weakness && isObjRef(key)
+            ? this.weak || (this.weak = new WeakMap())
+            : this.strong || (this.strong = new Map());
+        var child = map.get(key);
+        if (!child)
+            map.set(key, child = new Trie(this.weakness, this.makeData));
+        return child;
+    };
+    return Trie;
+}());
+function isObjRef(value) {
+    switch (typeof value) {
+        case "object":
+            if (value === null)
+                break;
+        // Fall through to return true...
+        case "function":
+            return true;
+    }
+    return false;
+}
+
+
+//# sourceMappingURL=trie.esm.js.map
+
+// EXTERNAL MODULE: ./node_modules/@wry/context/lib/context.esm.js
+var context_esm = __webpack_require__(8751);
+;// CONCATENATED MODULE: ./node_modules/optimism/lib/bundle.esm.js
 
 
 
@@ -14350,21 +14346,21 @@ var Cache = /** @class */ (function () {
     return Cache;
 }());
 
-var parentEntrySlot = new _wry_context__WEBPACK_IMPORTED_MODULE_1__/* .Slot */ .g7();
+var parentEntrySlot = new context_esm/* Slot */.g7();
 
-var _a;
-var hasOwnProperty = Object.prototype.hasOwnProperty;
+var bundle_esm_a;
+var bundle_esm_hasOwnProperty = Object.prototype.hasOwnProperty;
 var 
 // This Array.from polyfill is restricted to working with Set<any> for now,
 // but we can improve the polyfill and add other input types, as needed. Note
 // that this fallback implementation will only be used if the host environment
 // does not support a native Array.from function. In most modern JS runtimes,
 // the toArray function exported here will be === Array.from.
-toArray = (_a = Array.from, _a === void 0 ? function (collection) {
+toArray = (bundle_esm_a = Array.from, bundle_esm_a === void 0 ? function (collection) {
     var array = [];
     collection.forEach(function (item) { return array.push(item); });
     return array;
-} : _a);
+} : bundle_esm_a);
 function maybeUnsubscribe(entryOrDep) {
     var unsubscribe = entryOrDep.unsubscribe;
     if (typeof unsubscribe === "function") {
@@ -14684,7 +14680,7 @@ function dep(options) {
         var dep = depsByKey.get(key);
         if (dep) {
             var m_1 = (entryMethodName &&
-                hasOwnProperty.call(EntryMethods, entryMethodName)) ? entryMethodName : "setDirty";
+                bundle_esm_hasOwnProperty.call(EntryMethods, entryMethodName)) ? entryMethodName : "setDirty";
             // We have to use toArray(dep).forEach instead of dep.forEach, because
             // modifying a Set while iterating over it can cause elements in the Set
             // to be removed from the Set before they've been iterated over.
@@ -14697,7 +14693,7 @@ function dep(options) {
 }
 
 function makeDefaultMakeCacheKeyFunction() {
-    var keyTrie = new _wry_trie__WEBPACK_IMPORTED_MODULE_0__/* .Trie */ .B(typeof WeakMap === "function");
+    var keyTrie = new Trie(typeof WeakMap === "function");
     return function () {
         return keyTrie.lookupArray(arguments);
     };
@@ -15925,7 +15921,7 @@ function wrappy (fn, cb) {
 /* harmony export */   R: () => (/* binding */ ApolloCache)
 /* harmony export */ });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(655);
-/* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(507);
+/* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2667);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3361);
 
 
@@ -16209,8 +16205,8 @@ __webpack_require__.d(__webpack_exports__, {
 var tslib_es6 = __webpack_require__(655);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/globals/index.js + 5 modules
 var globals = __webpack_require__(846);
-// EXTERNAL MODULE: ./node_modules/optimism/lib/bundle.esm.js
-var bundle_esm = __webpack_require__(507);
+// EXTERNAL MODULE: ./node_modules/optimism/lib/bundle.esm.js + 1 modules
+var bundle_esm = __webpack_require__(2667);
 // EXTERNAL MODULE: ./node_modules/@wry/equality/lib/equality.esm.js
 var equality_esm = __webpack_require__(2152);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/cache/core/cache.js
@@ -16239,8 +16235,8 @@ var fragments = __webpack_require__(3361);
 var maybeDeepFreeze = __webpack_require__(8702);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/objects.js
 var objects = __webpack_require__(3154);
-// EXTERNAL MODULE: ./node_modules/@wry/trie/lib/trie.esm.js
-var trie_esm = __webpack_require__(657);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/node_modules/@wry/trie/lib/index.js
+var lib = __webpack_require__(5352);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/cache/inmemory/helpers.js
 var helpers = __webpack_require__(9641);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/cache/inmemory/entityStore.js
@@ -16574,7 +16570,7 @@ var CacheGroup = (function () {
     }
     CacheGroup.prototype.resetCaching = function () {
         this.d = this.caching ? (0,bundle_esm/* dep */.dP)() : null;
-        this.keyMaker = new trie_esm/* Trie */.B(canUse/* canUseWeakMap */.mr);
+        this.keyMaker = new lib/* Trie */.B(canUse/* canUseWeakMap */.mr);
     };
     CacheGroup.prototype.depend = function (dataId, storeFieldName) {
         if (this.d) {
@@ -16610,7 +16606,7 @@ function maybeDependOnExistenceOfEntity(store, entityId) {
             var policies = _a.policies, _b = _a.resultCaching, resultCaching = _b === void 0 ? true : _b, seed = _a.seed;
             var _this = _super.call(this, policies, new CacheGroup(resultCaching)) || this;
             _this.stump = new Stump(_this);
-            _this.storageTrie = new trie_esm/* Trie */.B(canUse/* canUseWeakMap */.mr);
+            _this.storageTrie = new lib/* Trie */.B(canUse/* canUseWeakMap */.mr);
             if (seed)
                 _this.replace(seed);
             return _this;
@@ -17179,7 +17175,7 @@ var Policies = (function () {
         var policy = typename && this.getTypePolicy(typename);
         var keyFn = policy && policy.keyFn || this.config.dataIdFromObject;
         while (keyFn) {
-            var specifierOrId = keyFn(object, context);
+            var specifierOrId = keyFn((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, object), storeObject), context);
             if ((0,arrays/* isArray */.k)(specifierOrId)) {
                 keyFn = keyFieldsFnFromSpecifier(specifierOrId);
             }
@@ -17751,7 +17747,7 @@ var StoreWriter = (function () {
         if (typename === void 0) { typename = (0,storeUtils/* getTypenameFromResult */.qw)(result, selectionSet, context.fragmentMap); }
         var fieldMap = new Map();
         var policies = this.cache.policies;
-        var limitingTrie = new trie_esm/* Trie */.B(false);
+        var limitingTrie = new lib/* Trie */.B(false);
         (function flatten(selectionSet, inheritedContext) {
             var visitedNode = limitingTrie.lookup(selectionSet, inheritedContext.clientOnly, inheritedContext.deferred);
             if (visitedNode.visited)
@@ -18259,7 +18255,7 @@ var InMemoryCache = (function (_super) {
 /* harmony export */ });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(655);
 /* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
-/* harmony import */ var _wry_trie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(657);
+/* harmony import */ var _wry_trie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5352);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3154);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(320);
 /* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1436);
@@ -18396,7 +18392,7 @@ function resetCanonicalStringify() {
 /* harmony export */   ab: () => (/* binding */ cacheSlot),
 /* harmony export */   li: () => (/* binding */ forgetCache)
 /* harmony export */ });
-/* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(507);
+/* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2667);
 /* harmony import */ var _wry_context__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(8751);
 
 
@@ -18487,7 +18483,7 @@ var ApolloLink = __webpack_require__(3581);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
 var execute = __webpack_require__(7037);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.7.14';
+var version = '3.7.15';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
@@ -22222,7 +22218,7 @@ var hasOwnProperty = Object.prototype.hasOwnProperty;
 function readMultipartBody(response, observer) {
     var _a, _b, _c, _d, _e;
     return (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__awaiter */ .mG)(this, void 0, void 0, function () {
-        var decoder, contentType, delimiter, boundaryVal, boundary, buffer, iterator, running, _f, value, done, chunk, bi, message, i, headers, contentType_1, body, result, next;
+        var decoder, contentType, delimiter, boundaryVal, boundary, buffer, iterator, running, _f, value, done, chunk, searchFrom, bi, message, i, headers, contentType_1, body, result, next;
         var _g, _h;
         return (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__generator */ .Jh)(this, function (_j) {
             switch (_j.label) {
@@ -22236,7 +22232,7 @@ function readMultipartBody(response, observer) {
                     boundaryVal = (contentType === null || contentType === void 0 ? void 0 : contentType.includes(delimiter))
                         ? contentType === null || contentType === void 0 ? void 0 : contentType.substring((contentType === null || contentType === void 0 ? void 0 : contentType.indexOf(delimiter)) + delimiter.length).replace(/['"]/g, "").replace(/\;(.*)/gm, "").trim()
                         : "-";
-                    boundary = "--".concat(boundaryVal);
+                    boundary = "\r\n--".concat(boundaryVal);
                     buffer = "";
                     iterator = (0,_responseIterator_js__WEBPACK_IMPORTED_MODULE_1__/* .responseIterator */ .k)(response);
                     running = true;
@@ -22247,26 +22243,27 @@ function readMultipartBody(response, observer) {
                 case 2:
                     _f = _j.sent(), value = _f.value, done = _f.done;
                     chunk = typeof value === "string" ? value : decoder.decode(value);
+                    searchFrom = buffer.length - boundary.length + 1;
                     running = !done;
                     buffer += chunk;
-                    bi = buffer.indexOf(boundary);
+                    bi = buffer.indexOf(boundary, searchFrom);
                     while (bi > -1) {
                         message = void 0;
                         _g = [
                             buffer.slice(0, bi),
                             buffer.slice(bi + boundary.length),
                         ], message = _g[0], buffer = _g[1];
-                        if (message.trim()) {
-                            i = message.indexOf("\r\n\r\n");
-                            headers = parseHeaders(message.slice(0, i));
-                            contentType_1 = headers["content-type"];
-                            if (contentType_1 &&
-                                contentType_1.toLowerCase().indexOf("application/json") === -1) {
-                                throw new Error("Unsupported patch content type: application/json is required.");
-                            }
-                            body = message.slice(i);
+                        i = message.indexOf("\r\n\r\n");
+                        headers = parseHeaders(message.slice(0, i));
+                        contentType_1 = headers["content-type"];
+                        if (contentType_1 &&
+                            contentType_1.toLowerCase().indexOf("application/json") === -1) {
+                            throw new Error("Unsupported patch content type: application/json is required.");
+                        }
+                        body = message.slice(i);
+                        if (body) {
                             try {
-                                result = parseJsonBody(response, body.replace("\r\n", ""));
+                                result = parseJsonBody(response, body);
                                 if (Object.keys(result).length > 1 ||
                                     "data" in result ||
                                     "incremental" in result ||
@@ -22725,6 +22722,73 @@ function toPromise(observable) {
     });
 }
 //# sourceMappingURL=toPromise.js.map
+
+/***/ }),
+
+/***/ 5352:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   B: () => (/* binding */ Trie)
+/* harmony export */ });
+// A [trie](https://en.wikipedia.org/wiki/Trie) data structure that holds
+// object keys weakly, yet can also hold non-object keys, unlike the
+// native `WeakMap`.
+// If no makeData function is supplied, the looked-up data will be an empty,
+// null-prototype Object.
+const defaultMakeData = () => Object.create(null);
+// Useful for processing arguments objects as well as arrays.
+const { forEach, slice } = Array.prototype;
+const { hasOwnProperty } = Object.prototype;
+class Trie {
+    constructor(weakness = true, makeData = defaultMakeData) {
+        this.weakness = weakness;
+        this.makeData = makeData;
+    }
+    lookup(...array) {
+        return this.lookupArray(array);
+    }
+    lookupArray(array) {
+        let node = this;
+        forEach.call(array, key => node = node.getChildTrie(key));
+        return hasOwnProperty.call(node, "data")
+            ? node.data
+            : node.data = this.makeData(slice.call(array));
+    }
+    peek(...array) {
+        return this.peekArray(array);
+    }
+    peekArray(array) {
+        let node = this;
+        for (let i = 0, len = array.length; node && i < len; ++i) {
+            const map = this.weakness && isObjRef(array[i]) ? node.weak : node.strong;
+            node = map && map.get(array[i]);
+        }
+        return node && node.data;
+    }
+    getChildTrie(key) {
+        const map = this.weakness && isObjRef(key)
+            ? this.weak || (this.weak = new WeakMap())
+            : this.strong || (this.strong = new Map());
+        let child = map.get(key);
+        if (!child)
+            map.set(key, child = new Trie(this.weakness, this.makeData));
+        return child;
+    }
+}
+function isObjRef(value) {
+    switch (typeof value) {
+        case "object":
+            if (value === null)
+                break;
+        // Fall through to return true...
+        case "function":
+            return true;
+    }
+    return false;
+}
+//# sourceMappingURL=index.js.map
 
 /***/ }),
 
@@ -24930,9 +24994,7 @@ function resultKeyNameFromField(field) {
     return field.alias ? field.alias.value : field.name.value;
 }
 function getTypenameFromResult(result, selectionSet, fragmentMap) {
-    if (typeof result.__typename === 'string') {
-        return result.__typename;
-    }
+    var fragments;
     for (var _i = 0, _a = selectionSet.selections; _i < _a.length; _i++) {
         var selection = _a[_i];
         if (isField(selection)) {
@@ -24940,7 +25002,19 @@ function getTypenameFromResult(result, selectionSet, fragmentMap) {
                 return result[resultKeyNameFromField(selection)];
             }
         }
+        else if (fragments) {
+            fragments.push(selection);
+        }
         else {
+            fragments = [selection];
+        }
+    }
+    if (typeof result.__typename === 'string') {
+        return result.__typename;
+    }
+    if (fragments) {
+        for (var _b = 0, fragments_1 = fragments; _b < fragments_1.length; _b++) {
+            var selection = fragments_1[_b];
             var typename = getTypenameFromResult(result, (0,_fragments_js__WEBPACK_IMPORTED_MODULE_2__/* .getFragmentFromSelection */ .hi)(selection, fragmentMap).selectionSet, fragmentMap);
             if (typeof typename === 'string') {
                 return typename;
