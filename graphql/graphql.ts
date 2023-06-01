@@ -13424,6 +13424,8 @@ export type Organization = Actor & AnnouncementBanner & MemberStatusable & Node 
   requiresTwoFactorAuthentication?: Maybe<Scalars['Boolean']>;
   /** The HTTP path for this organization. */
   resourcePath: Scalars['URI'];
+  /** Returns a single ruleset from the current organization by ID. */
+  ruleset?: Maybe<RepositoryRuleset>;
   /** A list of rulesets for this organization. */
   rulesets?: Maybe<RepositoryRulesetConnection>;
   /** The Organization's SAML identity provider. Visible to (1) organization owners, (2) organization owners' personal access tokens (classic) with read:org or admin:org scope, (3) GitHub App with an installation token with read or write access to members. */
@@ -13720,6 +13722,12 @@ export type OrganizationRepositoryMigrationsArgs = {
   orderBy?: InputMaybe<RepositoryMigrationOrder>;
   repositoryName?: InputMaybe<Scalars['String']>;
   state?: InputMaybe<MigrationState>;
+};
+
+
+/** An account on GitHub, with one or more owners, that has repositories, members and teams. */
+export type OrganizationRulesetArgs = {
+  databaseId: Scalars['Int'];
 };
 
 
@@ -17002,7 +17010,7 @@ export enum PullRequestOrderField {
   UpdatedAt = 'UPDATED_AT'
 }
 
-/** Parameters to be used for the pull_request rule */
+/** Require all commits be made to a non-target branch and submitted via a pull request before they can be merged. */
 export type PullRequestParameters = {
   __typename?: 'PullRequestParameters';
   /** New, reviewable commits pushed will dismiss previous pull request review approvals. */
@@ -17017,7 +17025,7 @@ export type PullRequestParameters = {
   requiredReviewThreadResolution: Scalars['Boolean'];
 };
 
-/** Parameters to be used for the pull_request rule */
+/** Require all commits be made to a non-target branch and submitted via a pull request before they can be merged. */
 export type PullRequestParametersInput = {
   /** New, reviewable commits pushed will dismiss previous pull request review approvals. */
   dismissStaleReviewsOnPush: Scalars['Boolean'];
@@ -20157,6 +20165,8 @@ export type Repository = Node & PackageOwner & ProjectOwner & ProjectV2Recent & 
   repositoryTopics: RepositoryTopicConnection;
   /** The HTTP path for this repository */
   resourcePath: Scalars['URI'];
+  /** Returns a single ruleset from the current repository by ID. */
+  ruleset?: Maybe<RepositoryRuleset>;
   /** A list of rulesets for this repository. */
   rulesets?: Maybe<RepositoryRulesetConnection>;
   /** The security policy URL. */
@@ -20586,6 +20596,12 @@ export type RepositoryRepositoryTopicsArgs = {
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+};
+
+
+/** A repository contains the content for a project. */
+export type RepositoryRulesetArgs = {
+  databaseId: Scalars['Int'];
 };
 
 
@@ -21249,25 +21265,25 @@ export enum RepositoryRuleType {
   CommitAuthorEmailPattern = 'COMMIT_AUTHOR_EMAIL_PATTERN',
   /** Commit message pattern */
   CommitMessagePattern = 'COMMIT_MESSAGE_PATTERN',
-  /** Creation */
+  /** Only allow users with bypass permission to create matching refs. */
   Creation = 'CREATION',
-  /** Deletion */
+  /** Only allow users with bypass permissions to delete matching refs. */
   Deletion = 'DELETION',
-  /** Non fast forward */
+  /** Prevent users with push access from force pushing to branches. */
   NonFastForward = 'NON_FAST_FORWARD',
-  /** Pull request */
+  /** Require all commits be made to a non-target branch and submitted via a pull request before they can be merged. */
   PullRequest = 'PULL_REQUEST',
-  /** Required deployments */
+  /** Choose which environments must be successfully deployed to before branches can be merged into a branch that matches this rule. */
   RequiredDeployments = 'REQUIRED_DEPLOYMENTS',
-  /** Required linear history */
+  /** Prevent merge commits from being pushed to matching branches. */
   RequiredLinearHistory = 'REQUIRED_LINEAR_HISTORY',
-  /** Required signatures */
+  /** Commits pushed to matching branches must have verified signatures. */
   RequiredSignatures = 'REQUIRED_SIGNATURES',
-  /** Required status checks */
+  /** Choose which status checks must pass before branches can be merged into a branch that matches this rule. When enabled, commits must first be pushed to another branch, then merged or pushed directly to a branch that matches this rule after status checks have passed. */
   RequiredStatusChecks = 'REQUIRED_STATUS_CHECKS',
   /** Tag name pattern */
   TagNamePattern = 'TAG_NAME_PATTERN',
-  /** Update */
+  /** Only allow users with bypass permission to update matching refs. */
   Update = 'UPDATE'
 }
 
@@ -21280,6 +21296,8 @@ export type RepositoryRuleset = Node & {
   bypassMode: RuleBypassMode;
   /** The set of conditions that must evaluate to true for this ruleset to apply */
   conditions: RepositoryRuleConditions;
+  /** Identifies the date and time when the object was created. */
+  createdAt: Scalars['DateTime'];
   /** Identifies the primary key from the database. */
   databaseId?: Maybe<Scalars['Int']>;
   /** The enforcement level of this ruleset */
@@ -21293,6 +21311,8 @@ export type RepositoryRuleset = Node & {
   source: RuleSource;
   /** Target of the ruleset. */
   target?: Maybe<RepositoryRulesetTarget>;
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt: Scalars['DateTime'];
 };
 
 
@@ -21673,14 +21693,14 @@ export type RequirableByPullRequestIsRequiredArgs = {
   pullRequestNumber?: InputMaybe<Scalars['Int']>;
 };
 
-/** Parameters to be used for the required_deployments rule */
+/** Choose which environments must be successfully deployed to before branches can be merged into a branch that matches this rule. */
 export type RequiredDeploymentsParameters = {
   __typename?: 'RequiredDeploymentsParameters';
   /** The environments that must be successfully deployed to before branches can be merged. */
   requiredDeploymentEnvironments: Array<Scalars['String']>;
 };
 
-/** Parameters to be used for the required_deployments rule */
+/** Choose which environments must be successfully deployed to before branches can be merged into a branch that matches this rule. */
 export type RequiredDeploymentsParametersInput = {
   /** The environments that must be successfully deployed to before branches can be merged. */
   requiredDeploymentEnvironments: Array<Scalars['String']>;
@@ -21703,7 +21723,7 @@ export type RequiredStatusCheckInput = {
   context: Scalars['String'];
 };
 
-/** Parameters to be used for the required_status_checks rule */
+/** Choose which status checks must pass before branches can be merged into a branch that matches this rule. When enabled, commits must first be pushed to another branch, then merged or pushed directly to a branch that matches this rule after status checks have passed. */
 export type RequiredStatusChecksParameters = {
   __typename?: 'RequiredStatusChecksParameters';
   /** Status checks that are required. */
@@ -21712,7 +21732,7 @@ export type RequiredStatusChecksParameters = {
   strictRequiredStatusChecksPolicy: Scalars['Boolean'];
 };
 
-/** Parameters to be used for the required_status_checks rule */
+/** Choose which status checks must pass before branches can be merged into a branch that matches this rule. When enabled, commits must first be pushed to another branch, then merged or pushed directly to a branch that matches this rule after status checks have passed. */
 export type RequiredStatusChecksParametersInput = {
   /** Status checks that are required. */
   requiredStatusChecks: Array<StatusCheckConfigurationInput>;
@@ -26514,14 +26534,14 @@ export type UpdateOrganizationWebCommitSignoffSettingPayload = {
   organization?: Maybe<Organization>;
 };
 
-/** Parameters to be used for the update rule */
+/** Only allow users with bypass permission to update matching refs. */
 export type UpdateParameters = {
   __typename?: 'UpdateParameters';
   /** Branch can pull changes from its upstream repository */
   updateAllowsFetchAndMerge: Scalars['Boolean'];
 };
 
-/** Parameters to be used for the update rule */
+/** Only allow users with bypass permission to update matching refs. */
 export type UpdateParametersInput = {
   /** Branch can pull changes from its upstream repository */
   updateAllowsFetchAndMerge: Scalars['Boolean'];
@@ -35485,6 +35505,7 @@ export type OrganizationResolvers<ContextType = any, ParentType extends Resolver
   repositoryMigrations?: Resolver<ResolversTypes['RepositoryMigrationConnection'], ParentType, ContextType, RequireFields<OrganizationRepositoryMigrationsArgs, 'orderBy'>>;
   requiresTwoFactorAuthentication?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
+  ruleset?: Resolver<Maybe<ResolversTypes['RepositoryRuleset']>, ParentType, ContextType, RequireFields<OrganizationRulesetArgs, 'databaseId'>>;
   rulesets?: Resolver<Maybe<ResolversTypes['RepositoryRulesetConnection']>, ParentType, ContextType, RequireFields<OrganizationRulesetsArgs, 'includeParents'>>;
   samlIdentityProvider?: Resolver<Maybe<ResolversTypes['OrganizationIdentityProvider']>, ParentType, ContextType>;
   sponsoring?: Resolver<ResolversTypes['SponsorConnection'], ParentType, ContextType, RequireFields<OrganizationSponsoringArgs, 'orderBy'>>;
@@ -38009,6 +38030,7 @@ export type RepositoryResolvers<ContextType = any, ParentType extends ResolversP
   releases?: Resolver<ResolversTypes['ReleaseConnection'], ParentType, ContextType, Partial<RepositoryReleasesArgs>>;
   repositoryTopics?: Resolver<ResolversTypes['RepositoryTopicConnection'], ParentType, ContextType, Partial<RepositoryRepositoryTopicsArgs>>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
+  ruleset?: Resolver<Maybe<ResolversTypes['RepositoryRuleset']>, ParentType, ContextType, RequireFields<RepositoryRulesetArgs, 'databaseId'>>;
   rulesets?: Resolver<Maybe<ResolversTypes['RepositoryRulesetConnection']>, ParentType, ContextType, RequireFields<RepositoryRulesetsArgs, 'includeParents'>>;
   securityPolicyUrl?: Resolver<Maybe<ResolversTypes['URI']>, ParentType, ContextType>;
   shortDescriptionHTML?: Resolver<ResolversTypes['HTML'], ParentType, ContextType, RequireFields<RepositoryShortDescriptionHtmlArgs, 'limit'>>;
@@ -38265,6 +38287,7 @@ export type RepositoryRulesetResolvers<ContextType = any, ParentType extends Res
   bypassActors?: Resolver<Maybe<ResolversTypes['RepositoryRulesetBypassActorConnection']>, ParentType, ContextType, Partial<RepositoryRulesetBypassActorsArgs>>;
   bypassMode?: Resolver<ResolversTypes['RuleBypassMode'], ParentType, ContextType>;
   conditions?: Resolver<ResolversTypes['RepositoryRuleConditions'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   enforcement?: Resolver<ResolversTypes['RuleEnforcement'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -38272,6 +38295,7 @@ export type RepositoryRulesetResolvers<ContextType = any, ParentType extends Res
   rules?: Resolver<Maybe<ResolversTypes['RepositoryRuleConnection']>, ParentType, ContextType, Partial<RepositoryRulesetRulesArgs>>;
   source?: Resolver<ResolversTypes['RuleSource'], ParentType, ContextType>;
   target?: Resolver<Maybe<ResolversTypes['RepositoryRulesetTarget']>, ParentType, ContextType>;
+  updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

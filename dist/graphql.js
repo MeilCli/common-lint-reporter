@@ -1947,25 +1947,25 @@ var RepositoryRuleType;
     RepositoryRuleType["CommitAuthorEmailPattern"] = "COMMIT_AUTHOR_EMAIL_PATTERN";
     /** Commit message pattern */
     RepositoryRuleType["CommitMessagePattern"] = "COMMIT_MESSAGE_PATTERN";
-    /** Creation */
+    /** Only allow users with bypass permission to create matching refs. */
     RepositoryRuleType["Creation"] = "CREATION";
-    /** Deletion */
+    /** Only allow users with bypass permissions to delete matching refs. */
     RepositoryRuleType["Deletion"] = "DELETION";
-    /** Non fast forward */
+    /** Prevent users with push access from force pushing to branches. */
     RepositoryRuleType["NonFastForward"] = "NON_FAST_FORWARD";
-    /** Pull request */
+    /** Require all commits be made to a non-target branch and submitted via a pull request before they can be merged. */
     RepositoryRuleType["PullRequest"] = "PULL_REQUEST";
-    /** Required deployments */
+    /** Choose which environments must be successfully deployed to before branches can be merged into a branch that matches this rule. */
     RepositoryRuleType["RequiredDeployments"] = "REQUIRED_DEPLOYMENTS";
-    /** Required linear history */
+    /** Prevent merge commits from being pushed to matching branches. */
     RepositoryRuleType["RequiredLinearHistory"] = "REQUIRED_LINEAR_HISTORY";
-    /** Required signatures */
+    /** Commits pushed to matching branches must have verified signatures. */
     RepositoryRuleType["RequiredSignatures"] = "REQUIRED_SIGNATURES";
-    /** Required status checks */
+    /** Choose which status checks must pass before branches can be merged into a branch that matches this rule. When enabled, commits must first be pushed to another branch, then merged or pushed directly to a branch that matches this rule after status checks have passed. */
     RepositoryRuleType["RequiredStatusChecks"] = "REQUIRED_STATUS_CHECKS";
     /** Tag name pattern */
     RepositoryRuleType["TagNamePattern"] = "TAG_NAME_PATTERN";
-    /** Update */
+    /** Only allow users with bypass permission to update matching refs. */
     RepositoryRuleType["Update"] = "UPDATE";
 })(RepositoryRuleType = exports.RepositoryRuleType || (exports.RepositoryRuleType = {}));
 /** The targets supported for rulesets */
