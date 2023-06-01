@@ -9119,9 +9119,9 @@ class Parser {
    */
 
   parseName() {
-    const token = this.expectToken(tokenKind/* TokenKind.NAME */.T.NAME);
+    const token = this.expectToken(tokenKind/* TokenKind */.T.NAME);
     return this.node(token, {
-      kind: kinds/* Kind.NAME */.h.NAME,
+      kind: kinds/* Kind */.h.NAME,
       value: token.value,
     });
   } // Implements the parsing rules in the Document section.
@@ -9132,11 +9132,11 @@ class Parser {
 
   parseDocument() {
     return this.node(this._lexer.token, {
-      kind: kinds/* Kind.DOCUMENT */.h.DOCUMENT,
+      kind: kinds/* Kind */.h.DOCUMENT,
       definitions: this.many(
-        tokenKind/* TokenKind.SOF */.T.SOF,
+        tokenKind/* TokenKind */.T.SOF,
         this.parseDefinition,
-        tokenKind/* TokenKind.EOF */.T.EOF,
+        tokenKind/* TokenKind */.T.EOF,
       ),
     });
   }
@@ -9165,7 +9165,7 @@ class Parser {
    */
 
   parseDefinition() {
-    if (this.peek(tokenKind/* TokenKind.BRACE_L */.T.BRACE_L)) {
+    if (this.peek(tokenKind/* TokenKind */.T.BRACE_L)) {
       return this.parseOperationDefinition();
     } // Many definitions begin with a description and require a lookahead.
 
@@ -9174,7 +9174,7 @@ class Parser {
       ? this._lexer.lookahead()
       : this._lexer.token;
 
-    if (keywordToken.kind === tokenKind/* TokenKind.NAME */.T.NAME) {
+    if (keywordToken.kind === tokenKind/* TokenKind */.T.NAME) {
       switch (keywordToken.value) {
         case 'schema':
           return this.parseSchemaDefinition();
@@ -9235,10 +9235,10 @@ class Parser {
   parseOperationDefinition() {
     const start = this._lexer.token;
 
-    if (this.peek(tokenKind/* TokenKind.BRACE_L */.T.BRACE_L)) {
+    if (this.peek(tokenKind/* TokenKind */.T.BRACE_L)) {
       return this.node(start, {
-        kind: kinds/* Kind.OPERATION_DEFINITION */.h.OPERATION_DEFINITION,
-        operation: ast/* OperationTypeNode.QUERY */.ku.QUERY,
+        kind: kinds/* Kind */.h.OPERATION_DEFINITION,
+        operation: ast/* OperationTypeNode */.ku.QUERY,
         name: undefined,
         variableDefinitions: [],
         directives: [],
@@ -9249,12 +9249,12 @@ class Parser {
     const operation = this.parseOperationType();
     let name;
 
-    if (this.peek(tokenKind/* TokenKind.NAME */.T.NAME)) {
+    if (this.peek(tokenKind/* TokenKind */.T.NAME)) {
       name = this.parseName();
     }
 
     return this.node(start, {
-      kind: kinds/* Kind.OPERATION_DEFINITION */.h.OPERATION_DEFINITION,
+      kind: kinds/* Kind */.h.OPERATION_DEFINITION,
       operation,
       name,
       variableDefinitions: this.parseVariableDefinitions(),
@@ -9267,17 +9267,17 @@ class Parser {
    */
 
   parseOperationType() {
-    const operationToken = this.expectToken(tokenKind/* TokenKind.NAME */.T.NAME);
+    const operationToken = this.expectToken(tokenKind/* TokenKind */.T.NAME);
 
     switch (operationToken.value) {
       case 'query':
-        return ast/* OperationTypeNode.QUERY */.ku.QUERY;
+        return ast/* OperationTypeNode */.ku.QUERY;
 
       case 'mutation':
-        return ast/* OperationTypeNode.MUTATION */.ku.MUTATION;
+        return ast/* OperationTypeNode */.ku.MUTATION;
 
       case 'subscription':
-        return ast/* OperationTypeNode.SUBSCRIPTION */.ku.SUBSCRIPTION;
+        return ast/* OperationTypeNode */.ku.SUBSCRIPTION;
     }
 
     throw this.unexpected(operationToken);
@@ -9288,9 +9288,9 @@ class Parser {
 
   parseVariableDefinitions() {
     return this.optionalMany(
-      tokenKind/* TokenKind.PAREN_L */.T.PAREN_L,
+      tokenKind/* TokenKind */.T.PAREN_L,
       this.parseVariableDefinition,
-      tokenKind/* TokenKind.PAREN_R */.T.PAREN_R,
+      tokenKind/* TokenKind */.T.PAREN_R,
     );
   }
   /**
@@ -9299,10 +9299,10 @@ class Parser {
 
   parseVariableDefinition() {
     return this.node(this._lexer.token, {
-      kind: kinds/* Kind.VARIABLE_DEFINITION */.h.VARIABLE_DEFINITION,
+      kind: kinds/* Kind */.h.VARIABLE_DEFINITION,
       variable: this.parseVariable(),
-      type: (this.expectToken(tokenKind/* TokenKind.COLON */.T.COLON), this.parseTypeReference()),
-      defaultValue: this.expectOptionalToken(tokenKind/* TokenKind.EQUALS */.T.EQUALS)
+      type: (this.expectToken(tokenKind/* TokenKind */.T.COLON), this.parseTypeReference()),
+      defaultValue: this.expectOptionalToken(tokenKind/* TokenKind */.T.EQUALS)
         ? this.parseConstValueLiteral()
         : undefined,
       directives: this.parseConstDirectives(),
@@ -9314,9 +9314,9 @@ class Parser {
 
   parseVariable() {
     const start = this._lexer.token;
-    this.expectToken(tokenKind/* TokenKind.DOLLAR */.T.DOLLAR);
+    this.expectToken(tokenKind/* TokenKind */.T.DOLLAR);
     return this.node(start, {
-      kind: kinds/* Kind.VARIABLE */.h.VARIABLE,
+      kind: kinds/* Kind */.h.VARIABLE,
       name: this.parseName(),
     });
   }
@@ -9328,11 +9328,11 @@ class Parser {
 
   parseSelectionSet() {
     return this.node(this._lexer.token, {
-      kind: kinds/* Kind.SELECTION_SET */.h.SELECTION_SET,
+      kind: kinds/* Kind */.h.SELECTION_SET,
       selections: this.many(
-        tokenKind/* TokenKind.BRACE_L */.T.BRACE_L,
+        tokenKind/* TokenKind */.T.BRACE_L,
         this.parseSelection,
-        tokenKind/* TokenKind.BRACE_R */.T.BRACE_R,
+        tokenKind/* TokenKind */.T.BRACE_R,
       ),
     });
   }
@@ -9344,7 +9344,7 @@ class Parser {
    */
 
   parseSelection() {
-    return this.peek(tokenKind/* TokenKind.SPREAD */.T.SPREAD)
+    return this.peek(tokenKind/* TokenKind */.T.SPREAD)
       ? this.parseFragment()
       : this.parseField();
   }
@@ -9360,7 +9360,7 @@ class Parser {
     let alias;
     let name;
 
-    if (this.expectOptionalToken(tokenKind/* TokenKind.COLON */.T.COLON)) {
+    if (this.expectOptionalToken(tokenKind/* TokenKind */.T.COLON)) {
       alias = nameOrAlias;
       name = this.parseName();
     } else {
@@ -9368,12 +9368,12 @@ class Parser {
     }
 
     return this.node(start, {
-      kind: kinds/* Kind.FIELD */.h.FIELD,
+      kind: kinds/* Kind */.h.FIELD,
       alias,
       name,
       arguments: this.parseArguments(false),
       directives: this.parseDirectives(false),
-      selectionSet: this.peek(tokenKind/* TokenKind.BRACE_L */.T.BRACE_L)
+      selectionSet: this.peek(tokenKind/* TokenKind */.T.BRACE_L)
         ? this.parseSelectionSet()
         : undefined,
     });
@@ -9384,7 +9384,7 @@ class Parser {
 
   parseArguments(isConst) {
     const item = isConst ? this.parseConstArgument : this.parseArgument;
-    return this.optionalMany(tokenKind/* TokenKind.PAREN_L */.T.PAREN_L, item, tokenKind/* TokenKind.PAREN_R */.T.PAREN_R);
+    return this.optionalMany(tokenKind/* TokenKind */.T.PAREN_L, item, tokenKind/* TokenKind */.T.PAREN_R);
   }
   /**
    * Argument[Const] : Name : Value[?Const]
@@ -9393,9 +9393,9 @@ class Parser {
   parseArgument(isConst = false) {
     const start = this._lexer.token;
     const name = this.parseName();
-    this.expectToken(tokenKind/* TokenKind.COLON */.T.COLON);
+    this.expectToken(tokenKind/* TokenKind */.T.COLON);
     return this.node(start, {
-      kind: kinds/* Kind.ARGUMENT */.h.ARGUMENT,
+      kind: kinds/* Kind */.h.ARGUMENT,
       name,
       value: this.parseValueLiteral(isConst),
     });
@@ -9415,19 +9415,19 @@ class Parser {
 
   parseFragment() {
     const start = this._lexer.token;
-    this.expectToken(tokenKind/* TokenKind.SPREAD */.T.SPREAD);
+    this.expectToken(tokenKind/* TokenKind */.T.SPREAD);
     const hasTypeCondition = this.expectOptionalKeyword('on');
 
-    if (!hasTypeCondition && this.peek(tokenKind/* TokenKind.NAME */.T.NAME)) {
+    if (!hasTypeCondition && this.peek(tokenKind/* TokenKind */.T.NAME)) {
       return this.node(start, {
-        kind: kinds/* Kind.FRAGMENT_SPREAD */.h.FRAGMENT_SPREAD,
+        kind: kinds/* Kind */.h.FRAGMENT_SPREAD,
         name: this.parseFragmentName(),
         directives: this.parseDirectives(false),
       });
     }
 
     return this.node(start, {
-      kind: kinds/* Kind.INLINE_FRAGMENT */.h.INLINE_FRAGMENT,
+      kind: kinds/* Kind */.h.INLINE_FRAGMENT,
       typeCondition: hasTypeCondition ? this.parseNamedType() : undefined,
       directives: this.parseDirectives(false),
       selectionSet: this.parseSelectionSet(),
@@ -9448,7 +9448,7 @@ class Parser {
 
     if (this._options.allowLegacyFragmentVariables === true) {
       return this.node(start, {
-        kind: kinds/* Kind.FRAGMENT_DEFINITION */.h.FRAGMENT_DEFINITION,
+        kind: kinds/* Kind */.h.FRAGMENT_DEFINITION,
         name: this.parseFragmentName(),
         variableDefinitions: this.parseVariableDefinitions(),
         typeCondition: (this.expectKeyword('on'), this.parseNamedType()),
@@ -9458,7 +9458,7 @@ class Parser {
     }
 
     return this.node(start, {
-      kind: kinds/* Kind.FRAGMENT_DEFINITION */.h.FRAGMENT_DEFINITION,
+      kind: kinds/* Kind */.h.FRAGMENT_DEFINITION,
       name: this.parseFragmentName(),
       typeCondition: (this.expectKeyword('on'), this.parseNamedType()),
       directives: this.parseDirectives(false),
@@ -9500,63 +9500,63 @@ class Parser {
     const token = this._lexer.token;
 
     switch (token.kind) {
-      case tokenKind/* TokenKind.BRACKET_L */.T.BRACKET_L:
+      case tokenKind/* TokenKind */.T.BRACKET_L:
         return this.parseList(isConst);
 
-      case tokenKind/* TokenKind.BRACE_L */.T.BRACE_L:
+      case tokenKind/* TokenKind */.T.BRACE_L:
         return this.parseObject(isConst);
 
-      case tokenKind/* TokenKind.INT */.T.INT:
+      case tokenKind/* TokenKind */.T.INT:
         this.advanceLexer();
         return this.node(token, {
-          kind: kinds/* Kind.INT */.h.INT,
+          kind: kinds/* Kind */.h.INT,
           value: token.value,
         });
 
-      case tokenKind/* TokenKind.FLOAT */.T.FLOAT:
+      case tokenKind/* TokenKind */.T.FLOAT:
         this.advanceLexer();
         return this.node(token, {
-          kind: kinds/* Kind.FLOAT */.h.FLOAT,
+          kind: kinds/* Kind */.h.FLOAT,
           value: token.value,
         });
 
-      case tokenKind/* TokenKind.STRING */.T.STRING:
-      case tokenKind/* TokenKind.BLOCK_STRING */.T.BLOCK_STRING:
+      case tokenKind/* TokenKind */.T.STRING:
+      case tokenKind/* TokenKind */.T.BLOCK_STRING:
         return this.parseStringLiteral();
 
-      case tokenKind/* TokenKind.NAME */.T.NAME:
+      case tokenKind/* TokenKind */.T.NAME:
         this.advanceLexer();
 
         switch (token.value) {
           case 'true':
             return this.node(token, {
-              kind: kinds/* Kind.BOOLEAN */.h.BOOLEAN,
+              kind: kinds/* Kind */.h.BOOLEAN,
               value: true,
             });
 
           case 'false':
             return this.node(token, {
-              kind: kinds/* Kind.BOOLEAN */.h.BOOLEAN,
+              kind: kinds/* Kind */.h.BOOLEAN,
               value: false,
             });
 
           case 'null':
             return this.node(token, {
-              kind: kinds/* Kind.NULL */.h.NULL,
+              kind: kinds/* Kind */.h.NULL,
             });
 
           default:
             return this.node(token, {
-              kind: kinds/* Kind.ENUM */.h.ENUM,
+              kind: kinds/* Kind */.h.ENUM,
               value: token.value,
             });
         }
 
-      case tokenKind/* TokenKind.DOLLAR */.T.DOLLAR:
+      case tokenKind/* TokenKind */.T.DOLLAR:
         if (isConst) {
-          this.expectToken(tokenKind/* TokenKind.DOLLAR */.T.DOLLAR);
+          this.expectToken(tokenKind/* TokenKind */.T.DOLLAR);
 
-          if (this._lexer.token.kind === tokenKind/* TokenKind.NAME */.T.NAME) {
+          if (this._lexer.token.kind === tokenKind/* TokenKind */.T.NAME) {
             const varName = this._lexer.token.value;
             throw (0,syntaxError/* syntaxError */.h)(
               this._lexer.source,
@@ -9583,9 +9583,9 @@ class Parser {
     const token = this._lexer.token;
     this.advanceLexer();
     return this.node(token, {
-      kind: kinds/* Kind.STRING */.h.STRING,
+      kind: kinds/* Kind */.h.STRING,
       value: token.value,
-      block: token.kind === tokenKind/* TokenKind.BLOCK_STRING */.T.BLOCK_STRING,
+      block: token.kind === tokenKind/* TokenKind */.T.BLOCK_STRING,
     });
   }
   /**
@@ -9598,8 +9598,8 @@ class Parser {
     const item = () => this.parseValueLiteral(isConst);
 
     return this.node(this._lexer.token, {
-      kind: kinds/* Kind.LIST */.h.LIST,
-      values: this.any(tokenKind/* TokenKind.BRACKET_L */.T.BRACKET_L, item, tokenKind/* TokenKind.BRACKET_R */.T.BRACKET_R),
+      kind: kinds/* Kind */.h.LIST,
+      values: this.any(tokenKind/* TokenKind */.T.BRACKET_L, item, tokenKind/* TokenKind */.T.BRACKET_R),
     });
   }
   /**
@@ -9614,8 +9614,8 @@ class Parser {
     const item = () => this.parseObjectField(isConst);
 
     return this.node(this._lexer.token, {
-      kind: kinds/* Kind.OBJECT */.h.OBJECT,
-      fields: this.any(tokenKind/* TokenKind.BRACE_L */.T.BRACE_L, item, tokenKind/* TokenKind.BRACE_R */.T.BRACE_R),
+      kind: kinds/* Kind */.h.OBJECT,
+      fields: this.any(tokenKind/* TokenKind */.T.BRACE_L, item, tokenKind/* TokenKind */.T.BRACE_R),
     });
   }
   /**
@@ -9625,9 +9625,9 @@ class Parser {
   parseObjectField(isConst) {
     const start = this._lexer.token;
     const name = this.parseName();
-    this.expectToken(tokenKind/* TokenKind.COLON */.T.COLON);
+    this.expectToken(tokenKind/* TokenKind */.T.COLON);
     return this.node(start, {
-      kind: kinds/* Kind.OBJECT_FIELD */.h.OBJECT_FIELD,
+      kind: kinds/* Kind */.h.OBJECT_FIELD,
       name,
       value: this.parseValueLiteral(isConst),
     });
@@ -9640,7 +9640,7 @@ class Parser {
   parseDirectives(isConst) {
     const directives = [];
 
-    while (this.peek(tokenKind/* TokenKind.AT */.T.AT)) {
+    while (this.peek(tokenKind/* TokenKind */.T.AT)) {
       directives.push(this.parseDirective(isConst));
     }
 
@@ -9658,9 +9658,9 @@ class Parser {
 
   parseDirective(isConst) {
     const start = this._lexer.token;
-    this.expectToken(tokenKind/* TokenKind.AT */.T.AT);
+    this.expectToken(tokenKind/* TokenKind */.T.AT);
     return this.node(start, {
-      kind: kinds/* Kind.DIRECTIVE */.h.DIRECTIVE,
+      kind: kinds/* Kind */.h.DIRECTIVE,
       name: this.parseName(),
       arguments: this.parseArguments(isConst),
     });
@@ -9677,20 +9677,20 @@ class Parser {
     const start = this._lexer.token;
     let type;
 
-    if (this.expectOptionalToken(tokenKind/* TokenKind.BRACKET_L */.T.BRACKET_L)) {
+    if (this.expectOptionalToken(tokenKind/* TokenKind */.T.BRACKET_L)) {
       const innerType = this.parseTypeReference();
-      this.expectToken(tokenKind/* TokenKind.BRACKET_R */.T.BRACKET_R);
+      this.expectToken(tokenKind/* TokenKind */.T.BRACKET_R);
       type = this.node(start, {
-        kind: kinds/* Kind.LIST_TYPE */.h.LIST_TYPE,
+        kind: kinds/* Kind */.h.LIST_TYPE,
         type: innerType,
       });
     } else {
       type = this.parseNamedType();
     }
 
-    if (this.expectOptionalToken(tokenKind/* TokenKind.BANG */.T.BANG)) {
+    if (this.expectOptionalToken(tokenKind/* TokenKind */.T.BANG)) {
       return this.node(start, {
-        kind: kinds/* Kind.NON_NULL_TYPE */.h.NON_NULL_TYPE,
+        kind: kinds/* Kind */.h.NON_NULL_TYPE,
         type,
       });
     }
@@ -9703,13 +9703,13 @@ class Parser {
 
   parseNamedType() {
     return this.node(this._lexer.token, {
-      kind: kinds/* Kind.NAMED_TYPE */.h.NAMED_TYPE,
+      kind: kinds/* Kind */.h.NAMED_TYPE,
       name: this.parseName(),
     });
   } // Implements the parsing rules in the Type Definition section.
 
   peekDescription() {
-    return this.peek(tokenKind/* TokenKind.STRING */.T.STRING) || this.peek(tokenKind/* TokenKind.BLOCK_STRING */.T.BLOCK_STRING);
+    return this.peek(tokenKind/* TokenKind */.T.STRING) || this.peek(tokenKind/* TokenKind */.T.BLOCK_STRING);
   }
   /**
    * Description : StringValue
@@ -9732,12 +9732,12 @@ class Parser {
     this.expectKeyword('schema');
     const directives = this.parseConstDirectives();
     const operationTypes = this.many(
-      tokenKind/* TokenKind.BRACE_L */.T.BRACE_L,
+      tokenKind/* TokenKind */.T.BRACE_L,
       this.parseOperationTypeDefinition,
-      tokenKind/* TokenKind.BRACE_R */.T.BRACE_R,
+      tokenKind/* TokenKind */.T.BRACE_R,
     );
     return this.node(start, {
-      kind: kinds/* Kind.SCHEMA_DEFINITION */.h.SCHEMA_DEFINITION,
+      kind: kinds/* Kind */.h.SCHEMA_DEFINITION,
       description,
       directives,
       operationTypes,
@@ -9750,10 +9750,10 @@ class Parser {
   parseOperationTypeDefinition() {
     const start = this._lexer.token;
     const operation = this.parseOperationType();
-    this.expectToken(tokenKind/* TokenKind.COLON */.T.COLON);
+    this.expectToken(tokenKind/* TokenKind */.T.COLON);
     const type = this.parseNamedType();
     return this.node(start, {
-      kind: kinds/* Kind.OPERATION_TYPE_DEFINITION */.h.OPERATION_TYPE_DEFINITION,
+      kind: kinds/* Kind */.h.OPERATION_TYPE_DEFINITION,
       operation,
       type,
     });
@@ -9769,7 +9769,7 @@ class Parser {
     const name = this.parseName();
     const directives = this.parseConstDirectives();
     return this.node(start, {
-      kind: kinds/* Kind.SCALAR_TYPE_DEFINITION */.h.SCALAR_TYPE_DEFINITION,
+      kind: kinds/* Kind */.h.SCALAR_TYPE_DEFINITION,
       description,
       name,
       directives,
@@ -9790,7 +9790,7 @@ class Parser {
     const directives = this.parseConstDirectives();
     const fields = this.parseFieldsDefinition();
     return this.node(start, {
-      kind: kinds/* Kind.OBJECT_TYPE_DEFINITION */.h.OBJECT_TYPE_DEFINITION,
+      kind: kinds/* Kind */.h.OBJECT_TYPE_DEFINITION,
       description,
       name,
       interfaces,
@@ -9806,7 +9806,7 @@ class Parser {
 
   parseImplementsInterfaces() {
     return this.expectOptionalKeyword('implements')
-      ? this.delimitedMany(tokenKind/* TokenKind.AMP */.T.AMP, this.parseNamedType)
+      ? this.delimitedMany(tokenKind/* TokenKind */.T.AMP, this.parseNamedType)
       : [];
   }
   /**
@@ -9817,9 +9817,9 @@ class Parser {
 
   parseFieldsDefinition() {
     return this.optionalMany(
-      tokenKind/* TokenKind.BRACE_L */.T.BRACE_L,
+      tokenKind/* TokenKind */.T.BRACE_L,
       this.parseFieldDefinition,
-      tokenKind/* TokenKind.BRACE_R */.T.BRACE_R,
+      tokenKind/* TokenKind */.T.BRACE_R,
     );
   }
   /**
@@ -9832,11 +9832,11 @@ class Parser {
     const description = this.parseDescription();
     const name = this.parseName();
     const args = this.parseArgumentDefs();
-    this.expectToken(tokenKind/* TokenKind.COLON */.T.COLON);
+    this.expectToken(tokenKind/* TokenKind */.T.COLON);
     const type = this.parseTypeReference();
     const directives = this.parseConstDirectives();
     return this.node(start, {
-      kind: kinds/* Kind.FIELD_DEFINITION */.h.FIELD_DEFINITION,
+      kind: kinds/* Kind */.h.FIELD_DEFINITION,
       description,
       name,
       arguments: args,
@@ -9850,9 +9850,9 @@ class Parser {
 
   parseArgumentDefs() {
     return this.optionalMany(
-      tokenKind/* TokenKind.PAREN_L */.T.PAREN_L,
+      tokenKind/* TokenKind */.T.PAREN_L,
       this.parseInputValueDef,
-      tokenKind/* TokenKind.PAREN_R */.T.PAREN_R,
+      tokenKind/* TokenKind */.T.PAREN_R,
     );
   }
   /**
@@ -9864,17 +9864,17 @@ class Parser {
     const start = this._lexer.token;
     const description = this.parseDescription();
     const name = this.parseName();
-    this.expectToken(tokenKind/* TokenKind.COLON */.T.COLON);
+    this.expectToken(tokenKind/* TokenKind */.T.COLON);
     const type = this.parseTypeReference();
     let defaultValue;
 
-    if (this.expectOptionalToken(tokenKind/* TokenKind.EQUALS */.T.EQUALS)) {
+    if (this.expectOptionalToken(tokenKind/* TokenKind */.T.EQUALS)) {
       defaultValue = this.parseConstValueLiteral();
     }
 
     const directives = this.parseConstDirectives();
     return this.node(start, {
-      kind: kinds/* Kind.INPUT_VALUE_DEFINITION */.h.INPUT_VALUE_DEFINITION,
+      kind: kinds/* Kind */.h.INPUT_VALUE_DEFINITION,
       description,
       name,
       type,
@@ -9896,7 +9896,7 @@ class Parser {
     const directives = this.parseConstDirectives();
     const fields = this.parseFieldsDefinition();
     return this.node(start, {
-      kind: kinds/* Kind.INTERFACE_TYPE_DEFINITION */.h.INTERFACE_TYPE_DEFINITION,
+      kind: kinds/* Kind */.h.INTERFACE_TYPE_DEFINITION,
       description,
       name,
       interfaces,
@@ -9917,7 +9917,7 @@ class Parser {
     const directives = this.parseConstDirectives();
     const types = this.parseUnionMemberTypes();
     return this.node(start, {
-      kind: kinds/* Kind.UNION_TYPE_DEFINITION */.h.UNION_TYPE_DEFINITION,
+      kind: kinds/* Kind */.h.UNION_TYPE_DEFINITION,
       description,
       name,
       directives,
@@ -9931,8 +9931,8 @@ class Parser {
    */
 
   parseUnionMemberTypes() {
-    return this.expectOptionalToken(tokenKind/* TokenKind.EQUALS */.T.EQUALS)
-      ? this.delimitedMany(tokenKind/* TokenKind.PIPE */.T.PIPE, this.parseNamedType)
+    return this.expectOptionalToken(tokenKind/* TokenKind */.T.EQUALS)
+      ? this.delimitedMany(tokenKind/* TokenKind */.T.PIPE, this.parseNamedType)
       : [];
   }
   /**
@@ -9948,7 +9948,7 @@ class Parser {
     const directives = this.parseConstDirectives();
     const values = this.parseEnumValuesDefinition();
     return this.node(start, {
-      kind: kinds/* Kind.ENUM_TYPE_DEFINITION */.h.ENUM_TYPE_DEFINITION,
+      kind: kinds/* Kind */.h.ENUM_TYPE_DEFINITION,
       description,
       name,
       directives,
@@ -9963,9 +9963,9 @@ class Parser {
 
   parseEnumValuesDefinition() {
     return this.optionalMany(
-      tokenKind/* TokenKind.BRACE_L */.T.BRACE_L,
+      tokenKind/* TokenKind */.T.BRACE_L,
       this.parseEnumValueDefinition,
-      tokenKind/* TokenKind.BRACE_R */.T.BRACE_R,
+      tokenKind/* TokenKind */.T.BRACE_R,
     );
   }
   /**
@@ -9978,7 +9978,7 @@ class Parser {
     const name = this.parseEnumValueName();
     const directives = this.parseConstDirectives();
     return this.node(start, {
-      kind: kinds/* Kind.ENUM_VALUE_DEFINITION */.h.ENUM_VALUE_DEFINITION,
+      kind: kinds/* Kind */.h.ENUM_VALUE_DEFINITION,
       description,
       name,
       directives,
@@ -10018,7 +10018,7 @@ class Parser {
     const directives = this.parseConstDirectives();
     const fields = this.parseInputFieldsDefinition();
     return this.node(start, {
-      kind: kinds/* Kind.INPUT_OBJECT_TYPE_DEFINITION */.h.INPUT_OBJECT_TYPE_DEFINITION,
+      kind: kinds/* Kind */.h.INPUT_OBJECT_TYPE_DEFINITION,
       description,
       name,
       directives,
@@ -10033,9 +10033,9 @@ class Parser {
 
   parseInputFieldsDefinition() {
     return this.optionalMany(
-      tokenKind/* TokenKind.BRACE_L */.T.BRACE_L,
+      tokenKind/* TokenKind */.T.BRACE_L,
       this.parseInputValueDef,
-      tokenKind/* TokenKind.BRACE_R */.T.BRACE_R,
+      tokenKind/* TokenKind */.T.BRACE_R,
     );
   }
   /**
@@ -10055,7 +10055,7 @@ class Parser {
   parseTypeSystemExtension() {
     const keywordToken = this._lexer.lookahead();
 
-    if (keywordToken.kind === tokenKind/* TokenKind.NAME */.T.NAME) {
+    if (keywordToken.kind === tokenKind/* TokenKind */.T.NAME) {
       switch (keywordToken.value) {
         case 'schema':
           return this.parseSchemaExtension();
@@ -10096,9 +10096,9 @@ class Parser {
     this.expectKeyword('schema');
     const directives = this.parseConstDirectives();
     const operationTypes = this.optionalMany(
-      tokenKind/* TokenKind.BRACE_L */.T.BRACE_L,
+      tokenKind/* TokenKind */.T.BRACE_L,
       this.parseOperationTypeDefinition,
-      tokenKind/* TokenKind.BRACE_R */.T.BRACE_R,
+      tokenKind/* TokenKind */.T.BRACE_R,
     );
 
     if (directives.length === 0 && operationTypes.length === 0) {
@@ -10106,7 +10106,7 @@ class Parser {
     }
 
     return this.node(start, {
-      kind: kinds/* Kind.SCHEMA_EXTENSION */.h.SCHEMA_EXTENSION,
+      kind: kinds/* Kind */.h.SCHEMA_EXTENSION,
       directives,
       operationTypes,
     });
@@ -10128,7 +10128,7 @@ class Parser {
     }
 
     return this.node(start, {
-      kind: kinds/* Kind.SCALAR_TYPE_EXTENSION */.h.SCALAR_TYPE_EXTENSION,
+      kind: kinds/* Kind */.h.SCALAR_TYPE_EXTENSION,
       name,
       directives,
     });
@@ -10158,7 +10158,7 @@ class Parser {
     }
 
     return this.node(start, {
-      kind: kinds/* Kind.OBJECT_TYPE_EXTENSION */.h.OBJECT_TYPE_EXTENSION,
+      kind: kinds/* Kind */.h.OBJECT_TYPE_EXTENSION,
       name,
       interfaces,
       directives,
@@ -10190,7 +10190,7 @@ class Parser {
     }
 
     return this.node(start, {
-      kind: kinds/* Kind.INTERFACE_TYPE_EXTENSION */.h.INTERFACE_TYPE_EXTENSION,
+      kind: kinds/* Kind */.h.INTERFACE_TYPE_EXTENSION,
       name,
       interfaces,
       directives,
@@ -10216,7 +10216,7 @@ class Parser {
     }
 
     return this.node(start, {
-      kind: kinds/* Kind.UNION_TYPE_EXTENSION */.h.UNION_TYPE_EXTENSION,
+      kind: kinds/* Kind */.h.UNION_TYPE_EXTENSION,
       name,
       directives,
       types,
@@ -10241,7 +10241,7 @@ class Parser {
     }
 
     return this.node(start, {
-      kind: kinds/* Kind.ENUM_TYPE_EXTENSION */.h.ENUM_TYPE_EXTENSION,
+      kind: kinds/* Kind */.h.ENUM_TYPE_EXTENSION,
       name,
       directives,
       values,
@@ -10266,7 +10266,7 @@ class Parser {
     }
 
     return this.node(start, {
-      kind: kinds/* Kind.INPUT_OBJECT_TYPE_EXTENSION */.h.INPUT_OBJECT_TYPE_EXTENSION,
+      kind: kinds/* Kind */.h.INPUT_OBJECT_TYPE_EXTENSION,
       name,
       directives,
       fields,
@@ -10283,14 +10283,14 @@ class Parser {
     const start = this._lexer.token;
     const description = this.parseDescription();
     this.expectKeyword('directive');
-    this.expectToken(tokenKind/* TokenKind.AT */.T.AT);
+    this.expectToken(tokenKind/* TokenKind */.T.AT);
     const name = this.parseName();
     const args = this.parseArgumentDefs();
     const repeatable = this.expectOptionalKeyword('repeatable');
     this.expectKeyword('on');
     const locations = this.parseDirectiveLocations();
     return this.node(start, {
-      kind: kinds/* Kind.DIRECTIVE_DEFINITION */.h.DIRECTIVE_DEFINITION,
+      kind: kinds/* Kind */.h.DIRECTIVE_DEFINITION,
       description,
       name,
       arguments: args,
@@ -10305,7 +10305,7 @@ class Parser {
    */
 
   parseDirectiveLocations() {
-    return this.delimitedMany(tokenKind/* TokenKind.PIPE */.T.PIPE, this.parseDirectiveLocation);
+    return this.delimitedMany(tokenKind/* TokenKind */.T.PIPE, this.parseDirectiveLocation);
   }
   /*
    * DirectiveLocation :
@@ -10412,7 +10412,7 @@ class Parser {
   expectKeyword(value) {
     const token = this._lexer.token;
 
-    if (token.kind === tokenKind/* TokenKind.NAME */.T.NAME && token.value === value) {
+    if (token.kind === tokenKind/* TokenKind */.T.NAME && token.value === value) {
       this.advanceLexer();
     } else {
       throw (0,syntaxError/* syntaxError */.h)(
@@ -10430,7 +10430,7 @@ class Parser {
   expectOptionalKeyword(value) {
     const token = this._lexer.token;
 
-    if (token.kind === tokenKind/* TokenKind.NAME */.T.NAME && token.value === value) {
+    if (token.kind === tokenKind/* TokenKind */.T.NAME && token.value === value) {
       this.advanceLexer();
       return true;
     }
@@ -10524,7 +10524,7 @@ class Parser {
 
     const token = this._lexer.advance();
 
-    if (maxTokens !== undefined && token.kind !== tokenKind/* TokenKind.EOF */.T.EOF) {
+    if (maxTokens !== undefined && token.kind !== tokenKind/* TokenKind */.T.EOF) {
       ++this._tokenCounter;
 
       if (this._tokenCounter > maxTokens) {
@@ -16291,14 +16291,14 @@ var EntityStore = (function () {
     };
     EntityStore.prototype.get = function (dataId, fieldName) {
         this.group.depend(dataId, fieldName);
-        if (helpers/* hasOwn.call */.RI.call(this.data, dataId)) {
+        if (helpers/* hasOwn */.RI.call(this.data, dataId)) {
             var storeObject = this.data[dataId];
-            if (storeObject && helpers/* hasOwn.call */.RI.call(storeObject, fieldName)) {
+            if (storeObject && helpers/* hasOwn */.RI.call(storeObject, fieldName)) {
                 return storeObject[fieldName];
             }
         }
         if (fieldName === "__typename" &&
-            helpers/* hasOwn.call */.RI.call(this.policies.rootTypenamesById, dataId)) {
+            helpers/* hasOwn */.RI.call(this.policies.rootTypenamesById, dataId)) {
             return this.policies.rootTypenamesById[dataId];
         }
         if (this instanceof Layer) {
@@ -16308,7 +16308,7 @@ var EntityStore = (function () {
     EntityStore.prototype.lookup = function (dataId, dependOnExistence) {
         if (dependOnExistence)
             this.group.depend(dataId, "__exists");
-        if (helpers/* hasOwn.call */.RI.call(this.data, dataId)) {
+        if (helpers/* hasOwn */.RI.call(this.data, dataId)) {
             return this.data[dataId];
         }
         if (this instanceof Layer) {
@@ -16443,7 +16443,7 @@ var EntityStore = (function () {
     EntityStore.prototype.evict = function (options, limit) {
         var evicted = false;
         if (options.id) {
-            if (helpers/* hasOwn.call */.RI.call(this.data, options.id)) {
+            if (helpers/* hasOwn */.RI.call(this.data, options.id)) {
                 evicted = this.delete(options.id, options.fieldName, options.args);
             }
             if (this instanceof Layer && this !== limit) {
@@ -16463,7 +16463,7 @@ var EntityStore = (function () {
         var obj = this.toObject();
         var extraRootIds = [];
         this.getRootIdSet().forEach(function (id) {
-            if (!helpers/* hasOwn.call */.RI.call(_this.policies.rootTypenamesById, id)) {
+            if (!helpers/* hasOwn */.RI.call(_this.policies.rootTypenamesById, id)) {
                 extraRootIds.push(id);
             }
         });
@@ -16475,7 +16475,7 @@ var EntityStore = (function () {
     EntityStore.prototype.replace = function (newData) {
         var _this = this;
         Object.keys(this.data).forEach(function (dataId) {
-            if (!(newData && helpers/* hasOwn.call */.RI.call(newData, dataId))) {
+            if (!(newData && helpers/* hasOwn */.RI.call(newData, dataId))) {
                 _this.delete(dataId);
             }
         });
@@ -16517,7 +16517,7 @@ var EntityStore = (function () {
         var ids = this.getRootIdSet();
         var snapshot = this.toObject();
         ids.forEach(function (id) {
-            if (helpers/* hasOwn.call */.RI.call(snapshot, id)) {
+            if (helpers/* hasOwn */.RI.call(snapshot, id)) {
                 Object.keys(_this.findChildRefIds(id)).forEach(ids.add, ids);
                 delete snapshot[id];
             }
@@ -16532,7 +16532,7 @@ var EntityStore = (function () {
         return idsToRemove;
     };
     EntityStore.prototype.findChildRefIds = function (dataId) {
-        if (!helpers/* hasOwn.call */.RI.call(this.refs, dataId)) {
+        if (!helpers/* hasOwn */.RI.call(this.refs, dataId)) {
             var found_1 = this.refs[dataId] = Object.create(null);
             var root = this.data[dataId];
             if (!root)
@@ -16675,7 +16675,7 @@ var Layer = (function (_super) {
     };
     Layer.prototype.findChildRefIds = function (dataId) {
         var fromParent = this.parent.findChildRefIds(dataId);
-        return helpers/* hasOwn.call */.RI.call(this.data, dataId) ? (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, fromParent), _super.prototype.findChildRefIds.call(this, dataId)) : fromParent;
+        return helpers/* hasOwn */.RI.call(this.data, dataId) ? (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, fromParent), _super.prototype.findChildRefIds.call(this, dataId)) : fromParent;
     };
     Layer.prototype.getStorage = function () {
         var p = this.parent;
@@ -16854,7 +16854,7 @@ var StoreReader = (function () {
                 }, context);
                 var resultName = (0,storeUtils/* resultKeyNameFromField */.u2)(selection);
                 if (fieldValue === void 0) {
-                    if (!transform/* addTypenameToDocument.added */.Gw.added(selection)) {
+                    if (!transform/* addTypenameToDocument */.Gw.added(selection)) {
                         missing = missingMerger.merge(missing, (_a = {},
                             _a[resultName] = "Can't find field '".concat(selection.name.value, "' on ").concat((0,storeUtils/* isReference */.Yk)(objectOrReference)
                                 ? objectOrReference.__ref + " object"
@@ -16889,7 +16889,7 @@ var StoreReader = (function () {
             }
             else {
                 var fragment = (0,fragments/* getFragmentFromSelection */.hi)(selection, context.lookupFragment);
-                if (!fragment && selection.kind === kinds/* Kind.FRAGMENT_SPREAD */.h.FRAGMENT_SPREAD) {
+                if (!fragment && selection.kind === kinds/* Kind */.h.FRAGMENT_SPREAD) {
                     throw __DEV__ ? new globals/* InvariantError */.ej("No fragment named ".concat(selection.name.value)) : new globals/* InvariantError */.ej(5);
                 }
                 if (fragment && policies.fragmentMatches(fragment, typename)) {
@@ -17012,7 +17012,7 @@ function keyFieldsFnFromSpecifier(specifier) {
             var extracted = extractKeyPath(context.storeObject, schemaKeyPath, extract);
             if (extracted === void 0 &&
                 object !== context.storeObject &&
-                helpers/* hasOwn.call */.RI.call(object, schemaKeyPath[0])) {
+                helpers/* hasOwn */.RI.call(object, schemaKeyPath[0])) {
                 extracted = extractKeyPath(object, schemaKeyPath, extractKey);
             }
             __DEV__ ? (0,globals/* invariant */.kG)(extracted !== void 0, "Missing field '".concat(schemaKeyPath.join('.'), "' while extracting keyFields from ").concat(JSON.stringify(object))) : (0,globals/* invariant */.kG)(extracted !== void 0, 2);
@@ -17039,7 +17039,7 @@ function keyArgsFnFromSpecifier(specifier) {
             }
             if (firstChar === "$") {
                 var variableName = firstKey.slice(1);
-                if (variables && helpers/* hasOwn.call */.RI.call(variables, variableName)) {
+                if (variables && helpers/* hasOwn */.RI.call(variables, variableName)) {
                     var varKeyPath = keyPath.slice(0);
                     varKeyPath[0] = variableName;
                     return extractKeyPath(variables, varKeyPath);
@@ -17121,7 +17121,7 @@ function normalize(value) {
 
 
 
-storeUtils/* getStoreKeyName.setStringify */.PT.setStringify(object_canon/* canonicalStringify */.B);
+storeUtils/* getStoreKeyName */.PT.setStringify(object_canon/* canonicalStringify */.B);
 function argsFromFieldSpecifier(spec) {
     return spec.args !== void 0 ? spec.args :
         spec.field ? (0,storeUtils/* argumentsObjectFromField */.NC)(spec.field, spec.variables) : null;
@@ -17197,7 +17197,7 @@ var Policies = (function () {
                 _this.setRootTypename("Mutation", typename);
             if (subscriptionType)
                 _this.setRootTypename("Subscription", typename);
-            if (helpers/* hasOwn.call */.RI.call(_this.toBeAdded, typename)) {
+            if (helpers/* hasOwn */.RI.call(_this.toBeAdded, typename)) {
                 _this.toBeAdded[typename].push(incoming);
             }
             else {
@@ -17275,7 +17275,7 @@ var Policies = (function () {
     };
     Policies.prototype.getTypePolicy = function (typename) {
         var _this = this;
-        if (!helpers/* hasOwn.call */.RI.call(this.typePolicies, typename)) {
+        if (!helpers/* hasOwn */.RI.call(this.typePolicies, typename)) {
             var policy_1 = this.typePolicies[typename] = Object.create(null);
             policy_1.fields = Object.create(null);
             var supertypes = this.supertypeMap.get(typename);
@@ -17336,7 +17336,7 @@ var Policies = (function () {
                 if (supertypeSet.has(supertype)) {
                     if (!typenameSupertypeSet.has(supertype)) {
                         if (checkingFuzzySubtypes) {
-                            __DEV__ && globals/* invariant.warn */.kG.warn("Inferring subtype ".concat(typename, " of supertype ").concat(supertype));
+                            __DEV__ && globals/* invariant */.kG.warn("Inferring subtype ".concat(typename, " of supertype ").concat(supertype));
                         }
                         typenameSupertypeSet.add(supertype);
                     }
@@ -17420,7 +17420,7 @@ var Policies = (function () {
             var readOptions = makeFieldFunctionOptions(this, objectOrReference, options, context, context.store.getStorage((0,storeUtils/* isReference */.Yk)(objectOrReference)
                 ? objectOrReference.__ref
                 : objectOrReference, storeFieldName));
-            return reactiveVars/* cacheSlot.withValue */.ab.withValue(this.cache, read, [existing, readOptions]);
+            return reactiveVars/* cacheSlot */.ab.withValue(this.cache, read, [existing, readOptions]);
         }
         return existing;
     };
@@ -17486,12 +17486,12 @@ function normalizeReadFieldOptions(readFieldArgs, objectOrReference, variables) 
     }
     else {
         options = (0,tslib_es6/* __assign */.pi)({}, fieldNameOrOptions);
-        if (!helpers/* hasOwn.call */.RI.call(options, "from")) {
+        if (!helpers/* hasOwn */.RI.call(options, "from")) {
             options.from = objectOrReference;
         }
     }
     if (__DEV__ && options.from === void 0) {
-        __DEV__ && globals/* invariant.warn */.kG.warn("Undefined 'from' passed to readField with arguments ".concat(stringifyForDisplay(Array.from(readFieldArgs))));
+        __DEV__ && globals/* invariant */.kG.warn("Undefined 'from' passed to readField with arguments ".concat(stringifyForDisplay(Array.from(readFieldArgs))));
     }
     if (void 0 === options.variables) {
         options.variables = variables;
@@ -17676,9 +17676,9 @@ var StoreWriter = (function () {
             else if (__DEV__ &&
                 !context.clientOnly &&
                 !context.deferred &&
-                !transform/* addTypenameToDocument.added */.Gw.added(field) &&
+                !transform/* addTypenameToDocument */.Gw.added(field) &&
                 !policies.getReadFunction(typename, field.name.value)) {
-                __DEV__ && globals/* invariant.error */.kG.error("Missing field '".concat((0,storeUtils/* resultKeyNameFromField */.u2)(field), "' while writing result ").concat(JSON.stringify(result, null, 2)).substring(0, 1000));
+                __DEV__ && globals/* invariant */.kG.error("Missing field '".concat((0,storeUtils/* resultKeyNameFromField */.u2)(field), "' while writing result ").concat(JSON.stringify(result, null, 2)).substring(0, 1000));
             }
         });
         try {
@@ -17781,7 +17781,7 @@ var StoreWriter = (function () {
                 }
                 else {
                     var fragment = (0,fragments/* getFragmentFromSelection */.hi)(selection, context.lookupFragment);
-                    if (!fragment && selection.kind === kinds/* Kind.FRAGMENT_SPREAD */.h.FRAGMENT_SPREAD) {
+                    if (!fragment && selection.kind === kinds/* Kind */.h.FRAGMENT_SPREAD) {
                         throw __DEV__ ? new globals/* InvariantError */.ej("No fragment named ".concat(selection.name.value)) : new globals/* InvariantError */.ej(8);
                     }
                     if (fragment &&
@@ -17919,7 +17919,7 @@ function warnAboutDataLoss(existingRef, incomingObj, storeFieldName, store) {
             }
         });
     }
-    __DEV__ && globals/* invariant.warn */.kG.warn("Cache data may be lost when replacing the ".concat(fieldName, " field of a ").concat(parentType, " object.\n\nTo address this problem (which is not a bug in Apollo Client), ").concat(childTypenames.length
+    __DEV__ && globals/* invariant */.kG.warn("Cache data may be lost when replacing the ".concat(fieldName, " field of a ").concat(parentType, " object.\n\nTo address this problem (which is not a bug in Apollo Client), ").concat(childTypenames.length
         ? "either ensure all objects of type " +
             childTypenames.join(" and ") + " have an ID or a custom merge function, or "
         : "", "define a custom merge function for the ").concat(typeDotName, " field, so InMemoryCache can safely merge these objects:\n\n  existing: ").concat(JSON.stringify(existing).slice(0, 1000), "\n  incoming: ").concat(JSON.stringify(incoming).slice(0, 1000), "\n\nFor more information about these options, please refer to the documentation:\n\n  * Ensuring entity objects have IDs: https://go.apollo.dev/c/generating-unique-identifiers\n  * Defining custom merge functions: https://go.apollo.dev/c/merging-non-normalized-objects\n"));
@@ -18034,7 +18034,7 @@ var InMemoryCache = (function (_super) {
         }
     };
     InMemoryCache.prototype.modify = function (options) {
-        if (helpers/* hasOwn.call */.RI.call(options, "id") && !options.id) {
+        if (helpers/* hasOwn */.RI.call(options, "id") && !options.id) {
             return false;
         }
         var store = options.optimistic
@@ -18070,7 +18070,7 @@ var InMemoryCache = (function (_super) {
         };
     };
     InMemoryCache.prototype.gc = function (options) {
-        object_canon/* canonicalStringify.reset */.B.reset();
+        object_canon/* canonicalStringify */.B.reset();
         var ids = this.optimisticData.gc();
         if (options && !this.txCount) {
             if (options.resetResultCache) {
@@ -18095,12 +18095,12 @@ var InMemoryCache = (function (_super) {
             return this.policies.identify(object)[0];
         }
         catch (e) {
-            __DEV__ && globals/* invariant.warn */.kG.warn(e);
+            __DEV__ && globals/* invariant */.kG.warn(e);
         }
     };
     InMemoryCache.prototype.evict = function (options) {
         if (!options.id) {
-            if (helpers/* hasOwn.call */.RI.call(options, "id")) {
+            if (helpers/* hasOwn */.RI.call(options, "id")) {
                 return false;
             }
             options = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { id: "ROOT_QUERY" });
@@ -18118,7 +18118,7 @@ var InMemoryCache = (function (_super) {
     InMemoryCache.prototype.reset = function (options) {
         var _this = this;
         this.init();
-        object_canon/* canonicalStringify.reset */.B.reset();
+        object_canon/* canonicalStringify */.B.reset();
         if (options && options.discardWatches) {
             this.watches.forEach(function (watch) { return _this.maybeBroadcastWatch.forget(watch); });
             this.watches.clear();
@@ -18752,9 +18752,9 @@ function isExecutableDefinitionNode(node) {
 }
 function isSelectionNode(node) {
   return (
-    node.kind === kinds/* Kind.FIELD */.h.FIELD ||
-    node.kind === kinds/* Kind.FRAGMENT_SPREAD */.h.FRAGMENT_SPREAD ||
-    node.kind === kinds/* Kind.INLINE_FRAGMENT */.h.INLINE_FRAGMENT
+    node.kind === kinds/* Kind */.h.FIELD ||
+    node.kind === kinds/* Kind */.h.FRAGMENT_SPREAD ||
+    node.kind === kinds/* Kind */.h.INLINE_FRAGMENT
   );
 }
 function isValueNode(node) {
@@ -19045,7 +19045,7 @@ var LocalState = (function () {
                     if (resolverMap) {
                         resolve = resolverMap[aliasUsed ? fieldName : aliasedFieldName];
                         if (resolve) {
-                            resultPromise = Promise.resolve(reactiveVars/* cacheSlot.withValue */.ab.withValue(this.cache, resolve, [
+                            resultPromise = Promise.resolve(reactiveVars/* cacheSlot */.ab.withValue(this.cache, resolve, [
                                 rootValue,
                                 (0,storeUtils/* argumentsObjectFromField */.NC)(field, variables),
                                 execContext.context,
@@ -19187,11 +19187,11 @@ var QueryInfo = (function () {
         }
     }
     QueryInfo.prototype.init = function (query) {
-        var networkStatus = query.networkStatus || core_networkStatus/* NetworkStatus.loading */.I.loading;
+        var networkStatus = query.networkStatus || core_networkStatus/* NetworkStatus */.I.loading;
         if (this.variables &&
-            this.networkStatus !== core_networkStatus/* NetworkStatus.loading */.I.loading &&
+            this.networkStatus !== core_networkStatus/* NetworkStatus */.I.loading &&
             !(0,equality_esm/* equal */.D)(this.variables, query.variables)) {
-            networkStatus = core_networkStatus/* NetworkStatus.setVariables */.I.setVariables;
+            networkStatus = core_networkStatus/* NetworkStatus */.I.setVariables;
         }
         if (!(0,equality_esm/* equal */.D)(query.variables, this.variables)) {
             this.lastDiff = void 0;
@@ -19402,10 +19402,10 @@ var QueryInfo = (function () {
     };
     QueryInfo.prototype.markReady = function () {
         this.networkError = null;
-        return this.networkStatus = core_networkStatus/* NetworkStatus.ready */.I.ready;
+        return this.networkStatus = core_networkStatus/* NetworkStatus */.I.ready;
     };
     QueryInfo.prototype.markError = function (error) {
-        this.networkStatus = core_networkStatus/* NetworkStatus.error */.I.error;
+        this.networkStatus = core_networkStatus/* NetworkStatus */.I.error;
         this.lastWrite = void 0;
         this.reset();
         if (error.graphQLErrors) {
@@ -19727,7 +19727,7 @@ var QueryManager = (function () {
                 _this.markMutationResult((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, mutation), { result: { data: data } }), cache);
             }
             catch (error) {
-                __DEV__ && globals/* invariant.error */.kG.error(error);
+                __DEV__ && globals/* invariant */.kG.error(error);
             }
         }, mutation.mutationId);
     };
@@ -19844,7 +19844,7 @@ var QueryManager = (function () {
         this.cancelPendingFetches(__DEV__ ? new globals/* InvariantError */.ej('Store reset while query was in flight (not completed in link chain)') : new globals/* InvariantError */.ej(21));
         this.queries.forEach(function (queryInfo) {
             if (queryInfo.observableQuery) {
-                queryInfo.networkStatus = core_networkStatus/* NetworkStatus.loading */.I.loading;
+                queryInfo.networkStatus = core_networkStatus/* NetworkStatus */.I.loading;
             }
             else {
                 queryInfo.stop();
@@ -19917,7 +19917,7 @@ var QueryManager = (function () {
         if (__DEV__ && queryNamesAndDocs.size) {
             queryNamesAndDocs.forEach(function (included, nameOrDoc) {
                 if (!included) {
-                    __DEV__ && globals/* invariant.warn */.kG.warn("Unknown query ".concat(typeof nameOrDoc === "string" ? "named " : "").concat(JSON.stringify(nameOrDoc, null, 2), " requested in refetchQueries options.include array"));
+                    __DEV__ && globals/* invariant */.kG.warn("Unknown query ".concat(typeof nameOrDoc === "string" ? "named " : "").concat(JSON.stringify(nameOrDoc, null, 2), " requested in refetchQueries options.include array"));
                 }
             });
         }
@@ -20050,7 +20050,7 @@ var QueryManager = (function () {
         }
         else {
             observable = new Concast([
-                zen_observable_ts_module/* Observable.of */.y.of({ data: {} })
+                zen_observable_ts_module/* Observable */.y.of({ data: {} })
             ]);
             context = this.prepareContext(context);
         }
@@ -20085,11 +20085,11 @@ var QueryManager = (function () {
             var aqr = {
                 data: result.data,
                 loading: false,
-                networkStatus: core_networkStatus/* NetworkStatus.ready */.I.ready,
+                networkStatus: core_networkStatus/* NetworkStatus */.I.ready,
             };
             if (hasErrors && options.errorPolicy !== "ignore") {
                 aqr.errors = graphQLErrors;
-                aqr.networkStatus = core_networkStatus/* NetworkStatus.error */.I.error;
+                aqr.networkStatus = core_networkStatus/* NetworkStatus */.I.error;
             }
             return aqr;
         }, function (networkError) {
@@ -20107,7 +20107,7 @@ var QueryManager = (function () {
     };
     QueryManager.prototype.fetchConcastWithInfo = function (queryId, options, networkStatus) {
         var _this = this;
-        if (networkStatus === void 0) { networkStatus = core_networkStatus/* NetworkStatus.loading */.I.loading; }
+        if (networkStatus === void 0) { networkStatus = core_networkStatus/* NetworkStatus */.I.loading; }
         var query = this.transform(options.query).document;
         var variables = this.getVariables(query, options.variables);
         var queryInfo = this.getQuery(queryId);
@@ -20234,14 +20234,14 @@ var QueryManager = (function () {
         });
         var readCache = function () { return queryInfo.getDiff(variables); };
         var resultsFromCache = function (diff, networkStatus) {
-            if (networkStatus === void 0) { networkStatus = queryInfo.networkStatus || core_networkStatus/* NetworkStatus.loading */.I.loading; }
+            if (networkStatus === void 0) { networkStatus = queryInfo.networkStatus || core_networkStatus/* NetworkStatus */.I.loading; }
             var data = diff.result;
             if (__DEV__ &&
                 !returnPartialData &&
                 !(0,equality_esm/* equal */.D)(data, {})) {
                 (0,ObservableQuery/* logMissingFieldErrors */.DC)(diff.missing);
             }
-            var fromData = function (data) { return zen_observable_ts_module/* Observable.of */.y.of((0,tslib_es6/* __assign */.pi)({ data: data, loading: (0,core_networkStatus/* isNetworkRequestInFlight */.O)(networkStatus), networkStatus: networkStatus }, (diff.complete ? null : { partial: true }))); };
+            var fromData = function (data) { return zen_observable_ts_module/* Observable */.y.of((0,tslib_es6/* __assign */.pi)({ data: data, loading: (0,core_networkStatus/* isNetworkRequestInFlight */.O)(networkStatus), networkStatus: networkStatus }, (diff.complete ? null : { partial: true }))); };
             if (data && _this.transform(query).hasForcedResolvers) {
                 return _this.localState.runResolvers({
                     document: query,
@@ -20252,14 +20252,14 @@ var QueryManager = (function () {
                 }).then(function (resolved) { return fromData(resolved.data || void 0); });
             }
             if (errorPolicy === 'none' &&
-                networkStatus === core_networkStatus/* NetworkStatus.refetch */.I.refetch &&
+                networkStatus === core_networkStatus/* NetworkStatus */.I.refetch &&
                 Array.isArray(diff.missing)) {
                 return fromData(void 0);
             }
             return fromData(data);
         };
         var cacheWriteBehavior = fetchPolicy === "no-cache" ? 0 :
-            (networkStatus === core_networkStatus/* NetworkStatus.refetch */.I.refetch &&
+            (networkStatus === core_networkStatus/* NetworkStatus */.I.refetch &&
                 refetchWritePolicy !== "merge") ? 1
                 : 2;
         var resultsFromLink = function () { return _this.getResultsFromLink(queryInfo, cacheWriteBehavior, {
@@ -20353,7 +20353,7 @@ var ApolloClient = (function () {
         if (!link) {
             link = uri
                 ? new HttpLink/* HttpLink */.u({ uri: uri, credentials: credentials, headers: headers })
-                : ApolloLink/* ApolloLink.empty */.i.empty();
+                : ApolloLink/* ApolloLink */.i.empty();
         }
         if (!cache) {
             throw __DEV__ ? new globals/* InvariantError */.ej("To initialize Apollo Client, you must specify a 'cache' property " +
@@ -20396,7 +20396,7 @@ var ApolloClient = (function () {
                     }
                 }
                 if (url) {
-                    __DEV__ && globals/* invariant.log */.kG.log("Download the Apollo DevTools for a better development " +
+                    __DEV__ && globals/* invariant */.kG.log("Download the Apollo DevTools for a better development " +
                         "experience: " + url);
                 }
             }
@@ -20544,7 +20544,7 @@ var ApolloClient = (function () {
         result.queries = queries;
         result.results = results;
         result.catch(function (error) {
-            __DEV__ && globals/* invariant.debug */.kG.debug("In client.refetchQueries, Promise.all promise rejected with error ".concat(error));
+            __DEV__ && globals/* invariant */.kG.debug("In client.refetchQueries, Promise.all promise rejected with error ".concat(error));
         });
         return result;
     };
@@ -20687,7 +20687,7 @@ var ObservableQuery = (function (_super) {
         var lastResult = this.getLastResult(true);
         var networkStatus = this.queryInfo.networkStatus ||
             (lastResult && lastResult.networkStatus) ||
-            _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.ready */ .I.ready;
+            _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.ready;
         var result = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, lastResult), { loading: (0,_networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .isNetworkRequestInFlight */ .O)(networkStatus), networkStatus: networkStatus });
         var _a = this.options.fetchPolicy, fetchPolicy = _a === void 0 ? "cache-first" : _a;
         if (fetchPolicy === 'network-only' ||
@@ -20706,10 +20706,10 @@ var ObservableQuery = (function (_super) {
             if (diff.complete) {
                 delete result.partial;
                 if (diff.complete &&
-                    result.networkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.loading */ .I.loading &&
+                    result.networkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.loading &&
                     (fetchPolicy === 'cache-first' ||
                         fetchPolicy === 'cache-only')) {
-                    result.networkStatus = _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.ready */ .I.ready;
+                    result.networkStatus = _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.ready;
                     result.loading = false;
                 }
             }
@@ -20775,14 +20775,14 @@ var ObservableQuery = (function (_super) {
             var queryDef = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .getQueryDefinition */ .iW)(this.query);
             var vars = queryDef.variableDefinitions;
             if (!vars || !vars.some(function (v) { return v.variable.name.value === "variables"; })) {
-                __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.warn */ .kG.warn("Called refetch(".concat(JSON.stringify(variables), ") for query ").concat(((_a = queryDef.name) === null || _a === void 0 ? void 0 : _a.value) || JSON.stringify(queryDef), ", which does not declare a $variables variable.\nDid you mean to call refetch(variables) instead of refetch({ variables })?"));
+                __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn("Called refetch(".concat(JSON.stringify(variables), ") for query ").concat(((_a = queryDef.name) === null || _a === void 0 ? void 0 : _a.value) || JSON.stringify(queryDef), ", which does not declare a $variables variable.\nDid you mean to call refetch(variables) instead of refetch({ variables })?"));
             }
         }
         if (variables && !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(this.options.variables, variables)) {
             reobserveOptions.variables = this.options.variables = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, this.options.variables), variables);
         }
         this.queryInfo.resetLastWrite();
-        return this.reobserve(reobserveOptions, _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.refetch */ .I.refetch);
+        return this.reobserve(reobserveOptions, _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.refetch);
     };
     ObservableQuery.prototype.fetchMore = function (fetchMoreOptions) {
         var _this = this;
@@ -20790,14 +20790,14 @@ var ObservableQuery = (function (_super) {
         var qid = this.queryManager.generateQueryId();
         var queryInfo = this.queryInfo;
         var originalNetworkStatus = queryInfo.networkStatus;
-        queryInfo.networkStatus = _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.fetchMore */ .I.fetchMore;
+        queryInfo.networkStatus = _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.fetchMore;
         if (combinedOptions.notifyOnNetworkStatusChange) {
             this.observe();
         }
         var updatedQuerySet = new Set();
-        return this.queryManager.fetchQuery(qid, combinedOptions, _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.fetchMore */ .I.fetchMore).then(function (fetchMoreResult) {
+        return this.queryManager.fetchQuery(qid, combinedOptions, _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.fetchMore).then(function (fetchMoreResult) {
             _this.queryManager.removeQuery(qid);
-            if (queryInfo.networkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.fetchMore */ .I.fetchMore) {
+            if (queryInfo.networkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.fetchMore) {
                 queryInfo.networkStatus = originalNetworkStatus;
             }
             _this.queryManager.cache.batch({
@@ -20859,7 +20859,7 @@ var ObservableQuery = (function (_super) {
                     options.onError(err);
                     return;
                 }
-                __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.error */ .kG.error('Unhandled GraphQL subscription error', err);
+                __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.error('Unhandled GraphQL subscription error', err);
             },
         });
         this.subscriptions.add(subscription);
@@ -20885,7 +20885,7 @@ var ObservableQuery = (function (_super) {
         return this.reobserve({
             fetchPolicy: this.options.initialFetchPolicy,
             variables: variables,
-        }, _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.setVariables */ .I.setVariables);
+        }, _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.setVariables);
     };
     ObservableQuery.prototype.updateQuery = function (mapFn) {
         var queryManager = this.queryManager;
@@ -20966,7 +20966,7 @@ var ObservableQuery = (function (_super) {
                 if (!(0,_networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .isNetworkRequestInFlight */ .O)(_this.queryInfo.networkStatus)) {
                     _this.reobserve({
                         fetchPolicy: _this.options.initialFetchPolicy === 'no-cache' ? 'no-cache' : 'network-only',
-                    }, _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.poll */ .I.poll).then(poll, poll);
+                    }, _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.poll).then(poll, poll);
                 }
                 else {
                     poll();
@@ -20996,9 +20996,9 @@ var ObservableQuery = (function (_super) {
     ObservableQuery.prototype.reobserveAsConcast = function (newOptions, newNetworkStatus) {
         var _this = this;
         this.isTornDown = false;
-        var useDisposableConcast = newNetworkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.refetch */ .I.refetch ||
-            newNetworkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.fetchMore */ .I.fetchMore ||
-            newNetworkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.poll */ .I.poll;
+        var useDisposableConcast = newNetworkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.refetch ||
+            newNetworkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.fetchMore ||
+            newNetworkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.poll;
         var oldVariables = this.options.variables;
         var oldFetchPolicy = this.options.fetchPolicy;
         var mergedOptions = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_7__/* .compact */ .o)(this.options, newOptions || {});
@@ -21014,7 +21014,7 @@ var ObservableQuery = (function (_super) {
                 options.fetchPolicy === oldFetchPolicy) {
                 this.applyNextFetchPolicy("variables-changed", options);
                 if (newNetworkStatus === void 0) {
-                    newNetworkStatus = _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.setVariables */ .I.setVariables;
+                    newNetworkStatus = _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.setVariables;
                 }
             }
         }
@@ -21054,7 +21054,7 @@ var ObservableQuery = (function (_super) {
         }
     };
     ObservableQuery.prototype.reportError = function (error, variables) {
-        var errorResult = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, this.getLastResult()), { error: error, errors: error.graphQLErrors, networkStatus: _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus.error */ .I.error, loading: false });
+        var errorResult = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, this.getLastResult()), { error: error, errors: error.graphQLErrors, networkStatus: _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.error, loading: false });
         this.updateLastResult(errorResult, variables);
         (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_8__/* .iterateObserversSafely */ .p)(this.observers, 'error', this.last.error = error);
     };
@@ -21098,11 +21098,11 @@ function reobserveCacheFirst(obsQuery) {
     return obsQuery.reobserve();
 }
 function defaultSubscriptionObserverErrorCallback(error) {
-    __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.error */ .kG.error('Unhandled error', error.message, error.stack);
+    __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.error('Unhandled error', error.message, error.stack);
 }
 function logMissingFieldErrors(missing) {
     if (__DEV__ && missing) {
-        __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.debug */ .kG.debug("Missing cache result fields: ".concat(JSON.stringify(missing)), missing);
+        __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.debug("Missing cache result fields: ".concat(JSON.stringify(missing)), missing);
     }
 }
 //# sourceMappingURL=ObservableQuery.js.map
@@ -21482,7 +21482,7 @@ function validateOperation(operation) {
 
 
 function passthrough(op, forward) {
-    return (forward ? forward(op) : zen_observable_ts_module/* Observable.of */.y.of());
+    return (forward ? forward(op) : zen_observable_ts_module/* Observable */.y.of());
 }
 function toLink(handler) {
     return typeof handler === 'function' ? new ApolloLink(handler) : handler;
@@ -21505,7 +21505,7 @@ var ApolloLink = (function () {
             this.request = request;
     }
     ApolloLink.empty = function () {
-        return new ApolloLink(function () { return zen_observable_ts_module/* Observable.of */.y.of(); });
+        return new ApolloLink(function () { return zen_observable_ts_module/* Observable */.y.of(); });
     };
     ApolloLink.from = function (links) {
         if (links.length === 0)
@@ -21518,38 +21518,38 @@ var ApolloLink = (function () {
         if (isTerminating(leftLink) && isTerminating(rightLink)) {
             return new ApolloLink(function (operation) {
                 return test(operation)
-                    ? leftLink.request(operation) || zen_observable_ts_module/* Observable.of */.y.of()
-                    : rightLink.request(operation) || zen_observable_ts_module/* Observable.of */.y.of();
+                    ? leftLink.request(operation) || zen_observable_ts_module/* Observable */.y.of()
+                    : rightLink.request(operation) || zen_observable_ts_module/* Observable */.y.of();
             });
         }
         else {
             return new ApolloLink(function (operation, forward) {
                 return test(operation)
-                    ? leftLink.request(operation, forward) || zen_observable_ts_module/* Observable.of */.y.of()
-                    : rightLink.request(operation, forward) || zen_observable_ts_module/* Observable.of */.y.of();
+                    ? leftLink.request(operation, forward) || zen_observable_ts_module/* Observable */.y.of()
+                    : rightLink.request(operation, forward) || zen_observable_ts_module/* Observable */.y.of();
             });
         }
     };
     ApolloLink.execute = function (link, operation) {
-        return (link.request(createOperation(operation.context, transformOperation(validateOperation(operation)))) || zen_observable_ts_module/* Observable.of */.y.of());
+        return (link.request(createOperation(operation.context, transformOperation(validateOperation(operation)))) || zen_observable_ts_module/* Observable */.y.of());
     };
     ApolloLink.concat = function (first, second) {
         var firstLink = toLink(first);
         if (isTerminating(firstLink)) {
-            __DEV__ && globals/* invariant.warn */.kG.warn(new LinkError("You are calling concat on a terminating link, which will have no effect", firstLink));
+            __DEV__ && globals/* invariant */.kG.warn(new LinkError("You are calling concat on a terminating link, which will have no effect", firstLink));
             return firstLink;
         }
         var nextLink = toLink(second);
         if (isTerminating(nextLink)) {
             return new ApolloLink(function (operation) {
-                return firstLink.request(operation, function (op) { return nextLink.request(op) || zen_observable_ts_module/* Observable.of */.y.of(); }) || zen_observable_ts_module/* Observable.of */.y.of();
+                return firstLink.request(operation, function (op) { return nextLink.request(op) || zen_observable_ts_module/* Observable */.y.of(); }) || zen_observable_ts_module/* Observable */.y.of();
             });
         }
         else {
             return new ApolloLink(function (operation, forward) {
                 return (firstLink.request(operation, function (op) {
-                    return nextLink.request(op, forward) || zen_observable_ts_module/* Observable.of */.y.of();
-                }) || zen_observable_ts_module/* Observable.of */.y.of());
+                    return nextLink.request(op, forward) || zen_observable_ts_module/* Observable */.y.of();
+                }) || zen_observable_ts_module/* Observable */.y.of());
             });
         }
     };
@@ -21589,7 +21589,7 @@ var ApolloLink = (function () {
 /* harmony export */ });
 /* harmony import */ var _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3581);
 
-var concat = _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__/* .ApolloLink.concat */ .i.concat;
+var concat = _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__/* .ApolloLink */ .i.concat;
 //# sourceMappingURL=concat.js.map
 
 /***/ }),
@@ -21603,7 +21603,7 @@ var concat = _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__/* .ApolloLink.concat */
 /* harmony export */ });
 /* harmony import */ var _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3581);
 
-var empty = _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__/* .ApolloLink.empty */ .i.empty;
+var empty = _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__/* .ApolloLink */ .i.empty;
 //# sourceMappingURL=empty.js.map
 
 /***/ }),
@@ -21617,7 +21617,7 @@ var empty = _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__/* .ApolloLink.empty */ .
 /* harmony export */ });
 /* harmony import */ var _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3581);
 
-var execute = _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__/* .ApolloLink.execute */ .i.execute;
+var execute = _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__/* .ApolloLink */ .i.execute;
 //# sourceMappingURL=execute.js.map
 
 /***/ }),
@@ -21631,7 +21631,7 @@ var execute = _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__/* .ApolloLink.execute 
 /* harmony export */ });
 /* harmony import */ var _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3581);
 
-var from = _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__/* .ApolloLink.from */ .i.from;
+var from = _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__/* .ApolloLink */ .i.from;
 //# sourceMappingURL=from.js.map
 
 /***/ }),
@@ -21688,7 +21688,7 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 /* harmony export */ });
 /* harmony import */ var _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3581);
 
-var split = _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__/* .ApolloLink.split */ .i.split;
+var split = _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__/* .ApolloLink */ .i.split;
 //# sourceMappingURL=split.js.map
 
 /***/ }),
@@ -21877,7 +21877,7 @@ var createHttpLink = function (linkOptions) {
             options.headers = options.headers || {};
             var acceptHeader = "multipart/mixed;";
             if (isSubscription && hasDefer) {
-                __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.warn */ .kG.warn("Multipart-subscriptions do not support @defer");
+                __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn("Multipart-subscriptions do not support @defer");
             }
             if (isSubscription) {
                 acceptHeader += 'boundary=graphql;subscriptionSpec=1.0,application/json';
@@ -22710,7 +22710,7 @@ function toPromise(observable) {
         observable.subscribe({
             next: function (data) {
                 if (completed) {
-                    __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.warn */ .kG.warn("Promise Wrapper does not support multiple results from Observable");
+                    __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn("Promise Wrapper does not support multiple results from Observable");
                 }
                 else {
                     completed = true;
@@ -23139,7 +23139,7 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 function useMutation(mutation, options) {
     var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__/* .useApolloClient */ .x)(options === null || options === void 0 ? void 0 : options.client);
-    (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_3__/* .verifyDocumentType */ .Vp)(mutation, _parser_index_js__WEBPACK_IMPORTED_MODULE_3__/* .DocumentType.Mutation */ .n_.Mutation);
+    (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_3__/* .verifyDocumentType */ .Vp)(mutation, _parser_index_js__WEBPACK_IMPORTED_MODULE_3__/* .DocumentType */ .n_.Mutation);
     var _a = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
         called: false,
         loading: false,
@@ -23298,16 +23298,16 @@ var InternalState = (function () {
             loading: true,
             data: void 0,
             error: void 0,
-            networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus.loading */ .I.loading,
+            networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus */ .I.loading,
         });
         this.skipStandbyResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .maybeDeepFreeze */ .J)({
             loading: false,
             data: void 0,
             error: void 0,
-            networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus.ready */ .I.ready,
+            networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus */ .I.ready,
         });
         this.toQueryResultCache = new (_utilities_index_js__WEBPACK_IMPORTED_MODULE_6__/* .canUseWeakMap */ .mr ? WeakMap : Map)();
-        (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_7__/* .verifyDocumentType */ .Vp)(query, _parser_index_js__WEBPACK_IMPORTED_MODULE_7__/* .DocumentType.Query */ .n_.Query);
+        (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_7__/* .verifyDocumentType */ .Vp)(query, _parser_index_js__WEBPACK_IMPORTED_MODULE_7__/* .DocumentType */ .n_.Query);
         var previousResult = previous && previous.result;
         var previousData = previousResult && previousResult.data;
         if (previousData) {
@@ -23315,7 +23315,7 @@ var InternalState = (function () {
         }
     }
     InternalState.prototype.forceUpdate = function () {
-        __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.warn */ .kG.warn("Calling default no-op implementation of InternalState#forceUpdate");
+        __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn("Calling default no-op implementation of InternalState#forceUpdate");
     };
     InternalState.prototype.executeQuery = function (options) {
         var _this = this;
@@ -23384,7 +23384,7 @@ var InternalState = (function () {
                         data: (previousResult && previousResult.data),
                         error: error,
                         loading: false,
-                        networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus.error */ .I.error,
+                        networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus */ .I.error,
                     });
                 }
             };
@@ -23518,7 +23518,7 @@ var InternalState = (function () {
                     _this.onCompleted(result.data);
                 }
             }).catch(function (error) {
-                __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.warn */ .kG.warn(error);
+                __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn(error);
             });
         }
     };
@@ -23552,7 +23552,7 @@ var InternalState = (function () {
             this.observable.options.fetchPolicy !== 'cache-only') {
             Object.assign(result, {
                 loading: true,
-                networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus.refetch */ .I.refetch,
+                networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus */ .I.refetch,
             });
             this.observable.refetch();
         }
@@ -23615,7 +23615,7 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 function useSubscription(subscription, options) {
     var hasIssuedDeprecationWarningRef = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)(false);
     var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .x)(options === null || options === void 0 ? void 0 : options.client);
-    (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_4__/* .verifyDocumentType */ .Vp)(subscription, _parser_index_js__WEBPACK_IMPORTED_MODULE_4__/* .DocumentType.Subscription */ .n_.Subscription);
+    (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_4__/* .verifyDocumentType */ .Vp)(subscription, _parser_index_js__WEBPACK_IMPORTED_MODULE_4__/* .DocumentType */ .n_.Subscription);
     var _a = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)({
         loading: !(options === null || options === void 0 ? void 0 : options.skip),
         error: void 0,
@@ -23625,12 +23625,12 @@ function useSubscription(subscription, options) {
     if (!hasIssuedDeprecationWarningRef.current) {
         hasIssuedDeprecationWarningRef.current = true;
         if (options === null || options === void 0 ? void 0 : options.onSubscriptionData) {
-            __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.warn */ .kG.warn(options.onData
+            __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn(options.onData
                 ? "'useSubscription' supports only the 'onSubscriptionData' or 'onData' option, but not both. Only the 'onData' option will be used."
                 : "'onSubscriptionData' is deprecated and will be removed in a future major version. Please use the 'onData' option instead.");
         }
         if (options === null || options === void 0 ? void 0 : options.onSubscriptionComplete) {
-            __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.warn */ .kG.warn(options.onComplete
+            __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn(options.onComplete
                 ? "'useSubscription' supports only the 'onSubscriptionComplete' or 'onComplete' option, but not both. Only the 'onComplete' option will be used."
                 : "'onSubscriptionComplete' is deprecated and will be removed in a future major version. Please use the 'onComplete' option instead.");
         }
@@ -23788,7 +23788,7 @@ var useSyncExternalStore = (/* runtime-dependent pure expression or super */ /^(
         !didWarnUncachedGetSnapshot &&
         value !== getSnapshot()) {
         didWarnUncachedGetSnapshot = true;
-        __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.error */ .kG.error('The result of getSnapshot should be cached to avoid an infinite loop');
+        __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.error('The result of getSnapshot should be cached to avoid an infinite loop');
     }
     var _a = react__WEBPACK_IMPORTED_MODULE_1__.useState({ inst: { value: value, getSnapshot: getSnapshot } }), inst = _a[0].inst, forceUpdate = _a[1];
     if (_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .canUseLayoutEffect */ .JC) {
@@ -25065,14 +25065,14 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 
 var TYPENAME_FIELD = {
-    kind: graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind.FIELD */ .h.FIELD,
+    kind: graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.FIELD,
     name: {
-        kind: graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind.NAME */ .h.NAME,
+        kind: graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.NAME,
         value: '__typename',
     },
 };
 function isEmpty(op, fragmentMap) {
-    return !op || op.selectionSet.selections.every(function (selection) { return selection.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind.FRAGMENT_SPREAD */ .h.FRAGMENT_SPREAD &&
+    return !op || op.selectionSet.selections.every(function (selection) { return selection.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.FRAGMENT_SPREAD &&
         isEmpty(fragmentMap[selection.name.value], fragmentMap); });
 }
 function nullIfDocIsEmpty(doc) {
@@ -25115,19 +25115,19 @@ function removeDirectivesFromDocument(directives, doc) {
         for (var p = 0, ancestor = void 0; p < ancestors.length && (ancestor = ancestors[p]); ++p) {
             if ((0,_common_arrays_js__WEBPACK_IMPORTED_MODULE_4__/* .isArray */ .k)(ancestor))
                 continue;
-            if (ancestor.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind.OPERATION_DEFINITION */ .h.OPERATION_DEFINITION) {
+            if (ancestor.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.OPERATION_DEFINITION) {
                 return getInUseByOperationName(ancestor.name && ancestor.name.value);
             }
-            if (ancestor.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind.FRAGMENT_DEFINITION */ .h.FRAGMENT_DEFINITION) {
+            if (ancestor.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.FRAGMENT_DEFINITION) {
                 return getInUseByFragmentName(ancestor.name.value);
             }
         }
-        __DEV__ && _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.error */ .kG.error("Could not find operation or fragment");
+        __DEV__ && _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.error("Could not find operation or fragment");
         return null;
     };
     var operationCount = 0;
     for (var i = doc.definitions.length - 1; i >= 0; --i) {
-        if (doc.definitions[i].kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind.OPERATION_DEFINITION */ .h.OPERATION_DEFINITION) {
+        if (doc.definitions[i].kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.OPERATION_DEFINITION) {
             ++operationCount;
         }
     }
@@ -25184,7 +25184,7 @@ function removeDirectivesFromDocument(directives, doc) {
                     return node;
                 }
                 if (operationCount > 0 &&
-                    node.selectionSet.selections.every(function (selection) { return (selection.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind.FIELD */ .h.FIELD &&
+                    node.selectionSet.selections.every(function (selection) { return (selection.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.FIELD &&
                         selection.name.value === '__typename'); })) {
                     getInUseByFragmentName(node.name.value).removed = true;
                     firstVisitMadeChanges = true;
@@ -25219,12 +25219,12 @@ function removeDirectivesFromDocument(directives, doc) {
     };
     var allFragmentNamesUsed = new Set();
     docWithoutDirectiveSubtrees.definitions.forEach(function (def) {
-        if (def.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind.OPERATION_DEFINITION */ .h.OPERATION_DEFINITION) {
+        if (def.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.OPERATION_DEFINITION) {
             populateTransitiveVars(getInUseByOperationName(def.name && def.name.value)).fragmentSpreads.forEach(function (childFragmentName) {
                 allFragmentNamesUsed.add(childFragmentName);
             });
         }
-        else if (def.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind.FRAGMENT_DEFINITION */ .h.FRAGMENT_DEFINITION &&
+        else if (def.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.FRAGMENT_DEFINITION &&
             operationCount === 0 &&
             !getInUseByFragmentName(def.name.value).removed) {
             allFragmentNamesUsed.add(def.name.value);
@@ -25264,7 +25264,7 @@ var addTypenameToDocument = Object.assign(function (doc) {
         SelectionSet: {
             enter: function (node, _key, parent) {
                 if (parent &&
-                    parent.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind.OPERATION_DEFINITION */ .h.OPERATION_DEFINITION) {
+                    parent.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.OPERATION_DEFINITION) {
                     return;
                 }
                 var selections = node.selections;
@@ -25300,7 +25300,7 @@ var connectionRemoveConfig = {
         if (willRemove) {
             if (!directive.arguments ||
                 !directive.arguments.some(function (arg) { return arg.name.value === 'key'; })) {
-                __DEV__ && _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant.warn */ .kG.warn('Removing an @connection directive even though it does not have a key. ' +
+                __DEV__ && _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn('Removing an @connection directive even though it does not have a key. ' +
                     'You may want to use the key parameter to specify a store key.');
             }
         }
@@ -26679,7 +26679,7 @@ class Lexer {
    * The character offset at which the current line begins.
    */
   constructor(source) {
-    const startOfFileToken = new _ast_mjs__WEBPACK_IMPORTED_MODULE_0__/* .Token */ .WU(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.SOF */ .T.SOF, 0, 0, 0, 0);
+    const startOfFileToken = new _ast_mjs__WEBPACK_IMPORTED_MODULE_0__/* .Token */ .WU(_tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.SOF, 0, 0, 0, 0);
     this.source = source;
     this.lastToken = startOfFileToken;
     this.token = startOfFileToken;
@@ -26707,7 +26707,7 @@ class Lexer {
   lookahead() {
     let token = this.token;
 
-    if (token.kind !== _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.EOF */ .T.EOF) {
+    if (token.kind !== _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.EOF) {
       do {
         if (token.next) {
           token = token.next;
@@ -26720,7 +26720,7 @@ class Lexer {
           nextToken.prev = token;
           token = nextToken;
         }
-      } while (token.kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.COMMENT */ .T.COMMENT);
+      } while (token.kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.COMMENT);
     }
 
     return token;
@@ -26732,20 +26732,20 @@ class Lexer {
 
 function isPunctuatorTokenKind(kind) {
   return (
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.BANG */ .T.BANG ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.DOLLAR */ .T.DOLLAR ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.AMP */ .T.AMP ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.PAREN_L */ .T.PAREN_L ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.PAREN_R */ .T.PAREN_R ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.SPREAD */ .T.SPREAD ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.COLON */ .T.COLON ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.EQUALS */ .T.EQUALS ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.AT */ .T.AT ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.BRACKET_L */ .T.BRACKET_L ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.BRACKET_R */ .T.BRACKET_R ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.BRACE_L */ .T.BRACE_L ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.PIPE */ .T.PIPE ||
-    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.BRACE_R */ .T.BRACE_R
+    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.BANG ||
+    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.DOLLAR ||
+    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.AMP ||
+    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.PAREN_L ||
+    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.PAREN_R ||
+    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.SPREAD ||
+    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.COLON ||
+    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.EQUALS ||
+    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.AT ||
+    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.BRACKET_L ||
+    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.BRACKET_R ||
+    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.BRACE_L ||
+    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.PIPE ||
+    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.BRACE_R
   );
 }
 /**
@@ -26797,7 +26797,7 @@ function printCodePointAt(lexer, location) {
   const code = lexer.source.body.codePointAt(location);
 
   if (code === undefined) {
-    return _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.EOF */ .T.EOF;
+    return _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.EOF;
   } else if (code >= 0x0020 && code <= 0x007e) {
     // Printable ASCII
     const char = String.fromCodePoint(code);
@@ -26895,23 +26895,23 @@ function readNextToken(lexer, start) {
 
       case 0x0021:
         // !
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.BANG */ .T.BANG, position, position + 1);
+        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.BANG, position, position + 1);
 
       case 0x0024:
         // $
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.DOLLAR */ .T.DOLLAR, position, position + 1);
+        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.DOLLAR, position, position + 1);
 
       case 0x0026:
         // &
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.AMP */ .T.AMP, position, position + 1);
+        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.AMP, position, position + 1);
 
       case 0x0028:
         // (
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.PAREN_L */ .T.PAREN_L, position, position + 1);
+        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.PAREN_L, position, position + 1);
 
       case 0x0029:
         // )
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.PAREN_R */ .T.PAREN_R, position, position + 1);
+        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.PAREN_R, position, position + 1);
 
       case 0x002e:
         // .
@@ -26919,42 +26919,42 @@ function readNextToken(lexer, start) {
           body.charCodeAt(position + 1) === 0x002e &&
           body.charCodeAt(position + 2) === 0x002e
         ) {
-          return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.SPREAD */ .T.SPREAD, position, position + 3);
+          return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.SPREAD, position, position + 3);
         }
 
         break;
 
       case 0x003a:
         // :
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.COLON */ .T.COLON, position, position + 1);
+        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.COLON, position, position + 1);
 
       case 0x003d:
         // =
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.EQUALS */ .T.EQUALS, position, position + 1);
+        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.EQUALS, position, position + 1);
 
       case 0x0040:
         // @
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.AT */ .T.AT, position, position + 1);
+        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.AT, position, position + 1);
 
       case 0x005b:
         // [
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.BRACKET_L */ .T.BRACKET_L, position, position + 1);
+        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.BRACKET_L, position, position + 1);
 
       case 0x005d:
         // ]
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.BRACKET_R */ .T.BRACKET_R, position, position + 1);
+        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.BRACKET_R, position, position + 1);
 
       case 0x007b:
         // {
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.BRACE_L */ .T.BRACE_L, position, position + 1);
+        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.BRACE_L, position, position + 1);
 
       case 0x007c:
         // |
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.PIPE */ .T.PIPE, position, position + 1);
+        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.PIPE, position, position + 1);
 
       case 0x007d:
         // }
-        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.BRACE_R */ .T.BRACE_R, position, position + 1);
+        return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.BRACE_R, position, position + 1);
       // StringValue
 
       case 0x0022:
@@ -26988,7 +26988,7 @@ function readNextToken(lexer, start) {
     );
   }
 
-  return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.EOF */ .T.EOF, bodyLength, bodyLength);
+  return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.EOF, bodyLength, bodyLength);
 }
 /**
  * Reads a comment token from the source file.
@@ -27023,7 +27023,7 @@ function readComment(lexer, start) {
 
   return createToken(
     lexer,
-    _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.COMMENT */ .T.COMMENT,
+    _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.COMMENT,
     start,
     position,
     body.slice(start + 1, position),
@@ -27119,7 +27119,7 @@ function readNumber(lexer, start, firstCode) {
 
   return createToken(
     lexer,
-    isFloat ? _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.FLOAT */ .T.FLOAT : _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.INT */ .T.INT,
+    isFloat ? _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.FLOAT : _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.INT,
     start,
     position,
     body.slice(start, position),
@@ -27183,7 +27183,7 @@ function readString(lexer, start) {
 
     if (code === 0x0022) {
       value += body.slice(chunkStart, position);
-      return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.STRING */ .T.STRING, start, position + 1, value);
+      return createToken(lexer, _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.STRING, start, position + 1, value);
     } // Escape Sequence (\)
 
     if (code === 0x005c) {
@@ -27461,7 +27461,7 @@ function readBlockString(lexer, start) {
       blockLines.push(currentLine);
       const token = createToken(
         lexer,
-        _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.BLOCK_STRING */ .T.BLOCK_STRING,
+        _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.BLOCK_STRING,
         start,
         position + 3, // Return a string of the lines joined with U+000A.
         (0,_blockString_mjs__WEBPACK_IMPORTED_MODULE_4__/* .dedentBlockStringLines */ .wv)(blockLines).join('\n'),
@@ -27544,7 +27544,7 @@ function readName(lexer, start) {
 
   return createToken(
     lexer,
-    _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind.NAME */ .T.NAME,
+    _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_1__/* .TokenKind */ .T.NAME,
     start,
     position,
     body.slice(start, position),
