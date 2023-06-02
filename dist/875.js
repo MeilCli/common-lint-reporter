@@ -555,14 +555,14 @@ var ReportType;
     ReportType[ReportType["CheckRun"] = 0] = "CheckRun";
     ReportType[ReportType["Comment"] = 1] = "Comment";
     ReportType[ReportType["InlineComment"] = 2] = "InlineComment";
-})(ReportType = exports.ReportType || (exports.ReportType = {}));
+})(ReportType || (exports.ReportType = ReportType = {}));
 var OutdatedResolver;
 (function (OutdatedResolver) {
     OutdatedResolver[OutdatedResolver["ResolveThread"] = 0] = "ResolveThread";
     OutdatedResolver[OutdatedResolver["ForceResolveThread"] = 1] = "ForceResolveThread";
     OutdatedResolver[OutdatedResolver["DeleteThread"] = 2] = "DeleteThread";
     OutdatedResolver[OutdatedResolver["DeleteOrForceResolveThread"] = 3] = "DeleteOrForceResolveThread";
-})(OutdatedResolver = exports.OutdatedResolver || (exports.OutdatedResolver = {}));
+})(OutdatedResolver || (exports.OutdatedResolver = OutdatedResolver = {}));
 function getOption() {
     const reportTypeString = getInput("report_type");
     let reportType = ReportType.CheckRun;
