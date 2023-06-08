@@ -8045,7 +8045,7 @@ export enum IpAllowListForInstalledAppsEnabledSettingValue {
 export type IpAllowListOwner = App | Enterprise | Organization;
 
 /** An Issue is a place to discuss ideas, enhancements, tasks, and bugs for a project. */
-export type Issue = Assignable & Closable & Comment & Labelable & Lockable & Node & ProjectV2Owner & Reactable & RepositoryNode & Subscribable & UniformResourceLocatable & Updatable & UpdatableComment & {
+export type Issue = Assignable & Closable & Comment & Deletable & Labelable & Lockable & Node & ProjectV2Owner & Reactable & RepositoryNode & Subscribable & UniformResourceLocatable & Updatable & UpdatableComment & {
   __typename?: 'Issue';
   /** Reason that the conversation was locked. */
   activeLockReason?: Maybe<LockReason>;
@@ -8151,6 +8151,8 @@ export type Issue = Assignable & Closable & Comment & Labelable & Lockable & Nod
   userContentEdits?: Maybe<UserContentEditConnection>;
   /** Indicates if the object can be closed by the viewer. */
   viewerCanClose: Scalars['Boolean'];
+  /** Check if the current viewer can delete this object. */
+  viewerCanDelete: Scalars['Boolean'];
   /** Can user react to this subject */
   viewerCanReact: Scalars['Boolean'];
   /** Indicates if the object can be reopened by the viewer. */
@@ -14116,10 +14118,14 @@ export type OrganizationMigration = Node & {
 export enum OrganizationMigrationState {
   /** The Octoshift migration has failed. */
   Failed = 'FAILED',
+  /** The Octoshift migration has invalid credentials. */
+  FailedValidation = 'FAILED_VALIDATION',
   /** The Octoshift migration is in progress. */
   InProgress = 'IN_PROGRESS',
   /** The Octoshift migration has not started. */
   NotStarted = 'NOT_STARTED',
+  /** The Octoshift migration needs to have its credentials validated. */
+  PendingValidation = 'PENDING_VALIDATION',
   /** The Octoshift migration is performing post repository migrations. */
   PostRepoMigration = 'POST_REPO_MIGRATION',
   /** The Octoshift migration is performing pre repository migrations. */
@@ -28519,7 +28525,7 @@ export type ResolversTypes = {
   DeclineTopicSuggestionInput: DeclineTopicSuggestionInput;
   DeclineTopicSuggestionPayload: ResolverTypeWrapper<DeclineTopicSuggestionPayload>;
   DefaultRepositoryPermissionField: DefaultRepositoryPermissionField;
-  Deletable: ResolversTypes['CommitComment'] | ResolversTypes['Discussion'] | ResolversTypes['DiscussionComment'] | ResolversTypes['GistComment'] | ResolversTypes['IssueComment'] | ResolversTypes['PullRequestReview'] | ResolversTypes['PullRequestReviewComment'] | ResolversTypes['TeamDiscussion'] | ResolversTypes['TeamDiscussionComment'];
+  Deletable: ResolversTypes['CommitComment'] | ResolversTypes['Discussion'] | ResolversTypes['DiscussionComment'] | ResolversTypes['GistComment'] | ResolversTypes['Issue'] | ResolversTypes['IssueComment'] | ResolversTypes['PullRequestReview'] | ResolversTypes['PullRequestReviewComment'] | ResolversTypes['TeamDiscussion'] | ResolversTypes['TeamDiscussionComment'];
   DeleteBranchProtectionRuleInput: DeleteBranchProtectionRuleInput;
   DeleteBranchProtectionRulePayload: ResolverTypeWrapper<DeleteBranchProtectionRulePayload>;
   DeleteDeploymentInput: DeleteDeploymentInput;
@@ -29956,7 +29962,7 @@ export type ResolversParentTypes = {
   DateTime: Scalars['DateTime'];
   DeclineTopicSuggestionInput: DeclineTopicSuggestionInput;
   DeclineTopicSuggestionPayload: DeclineTopicSuggestionPayload;
-  Deletable: ResolversParentTypes['CommitComment'] | ResolversParentTypes['Discussion'] | ResolversParentTypes['DiscussionComment'] | ResolversParentTypes['GistComment'] | ResolversParentTypes['IssueComment'] | ResolversParentTypes['PullRequestReview'] | ResolversParentTypes['PullRequestReviewComment'] | ResolversParentTypes['TeamDiscussion'] | ResolversParentTypes['TeamDiscussionComment'];
+  Deletable: ResolversParentTypes['CommitComment'] | ResolversParentTypes['Discussion'] | ResolversParentTypes['DiscussionComment'] | ResolversParentTypes['GistComment'] | ResolversParentTypes['Issue'] | ResolversParentTypes['IssueComment'] | ResolversParentTypes['PullRequestReview'] | ResolversParentTypes['PullRequestReviewComment'] | ResolversParentTypes['TeamDiscussion'] | ResolversParentTypes['TeamDiscussionComment'];
   DeleteBranchProtectionRuleInput: DeleteBranchProtectionRuleInput;
   DeleteBranchProtectionRulePayload: DeleteBranchProtectionRulePayload;
   DeleteDeploymentInput: DeleteDeploymentInput;
@@ -32413,7 +32419,7 @@ export type DeclineTopicSuggestionPayloadResolvers<ContextType = any, ParentType
 };
 
 export type DeletableResolvers<ContextType = any, ParentType extends ResolversParentTypes['Deletable'] = ResolversParentTypes['Deletable']> = {
-  __resolveType: TypeResolveFn<'CommitComment' | 'Discussion' | 'DiscussionComment' | 'GistComment' | 'IssueComment' | 'PullRequestReview' | 'PullRequestReviewComment' | 'TeamDiscussion' | 'TeamDiscussionComment', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'CommitComment' | 'Discussion' | 'DiscussionComment' | 'GistComment' | 'Issue' | 'IssueComment' | 'PullRequestReview' | 'PullRequestReviewComment' | 'TeamDiscussion' | 'TeamDiscussionComment', ParentType, ContextType>;
   viewerCanDelete?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
 };
 
@@ -33821,6 +33827,7 @@ export type IssueResolvers<ContextType = any, ParentType extends ResolversParent
   url?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   userContentEdits?: Resolver<Maybe<ResolversTypes['UserContentEditConnection']>, ParentType, ContextType, Partial<IssueUserContentEditsArgs>>;
   viewerCanClose?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  viewerCanDelete?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanReact?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanReopen?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerCanSubscribe?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
