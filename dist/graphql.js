@@ -2041,6 +2041,12 @@ var RuleBypassMode;
     RuleBypassMode["None"] = "NONE";
     /** Those with bypass permission at the organization level can bypass */
     RuleBypassMode["Organization"] = "ORGANIZATION";
+    /** Those with bypass permission at the organization level can always bypass */
+    RuleBypassMode["OrganizationAlways"] = "ORGANIZATION_ALWAYS";
+    /** Bypassing is disabled */
+    RuleBypassMode["OrganizationNone"] = "ORGANIZATION_NONE";
+    /** Those with bypass permission at the organization level can bypass for pull requests only */
+    RuleBypassMode["OrganizationPrsOnly"] = "ORGANIZATION_PRS_ONLY";
     /** Those with bypass permission at the repository level can bypass */
     RuleBypassMode["Repository"] = "REPOSITORY";
 })(RuleBypassMode || (exports.RuleBypassMode = RuleBypassMode = {}));
