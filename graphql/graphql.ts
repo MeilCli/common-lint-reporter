@@ -2245,7 +2245,7 @@ export type Commit = GitObject & Node & Subscribable & UniformResourceLocatable 
   /** Fetches `git blame` information. */
   blame: Blame;
   /**
-   * We recommend using the `changedFielsIfAvailable` field instead of `changedFiles`, as `changedFiles` will cause your request to return an error if GitHub is unable to calculate the number of changed files.
+   * We recommend using the `changedFilesIfAvailable` field instead of `changedFiles`, as `changedFiles` will cause your request to return an error if GitHub is unable to calculate the number of changed files.
    * @deprecated `changedFiles` will be removed. Use `changedFilesIfAvailable` instead. Removal on 2023-01-01 UTC.
    */
   changedFiles: Scalars['Int'];
@@ -10559,6 +10559,8 @@ export type Mutation = {
   updateProjectColumn?: Maybe<UpdateProjectColumnPayload>;
   /** Updates an existing project (beta). */
   updateProjectV2?: Maybe<UpdateProjectV2Payload>;
+  /** Update the collaborators on a team or a project */
+  updateProjectV2Collaborators?: Maybe<UpdateProjectV2CollaboratorsPayload>;
   /** Updates a draft issue within a Project. */
   updateProjectV2DraftIssue?: Maybe<UpdateProjectV2DraftIssuePayload>;
   /** This mutation updates the value of a field for an item in a Project. Currently only single-select, text, number, date, and iteration fields are supported. */
@@ -11775,6 +11777,12 @@ export type MutationUpdateProjectV2Args = {
 
 
 /** The root query for implementing GraphQL mutations. */
+export type MutationUpdateProjectV2CollaboratorsArgs = {
+  input: UpdateProjectV2CollaboratorsInput;
+};
+
+
+/** The root query for implementing GraphQL mutations. */
 export type MutationUpdateProjectV2DraftIssueArgs = {
   input: UpdateProjectV2DraftIssueInput;
 };
@@ -11929,11 +11937,11 @@ export enum OidcProviderType {
 
 /** Metadata for an audit entry with action oauth_application.* */
 export type OauthApplicationAuditEntryData = {
-  /** The name of the OAuth Application. */
+  /** The name of the OAuth application. */
   oauthApplicationName?: Maybe<Scalars['String']>;
-  /** The HTTP path for the OAuth Application */
+  /** The HTTP path for the OAuth application */
   oauthApplicationResourcePath?: Maybe<Scalars['URI']>;
-  /** The HTTP URL for the OAuth Application */
+  /** The HTTP URL for the OAuth application */
   oauthApplicationUrl?: Maybe<Scalars['URI']>;
 };
 
@@ -11954,18 +11962,18 @@ export type OauthApplicationCreateAuditEntry = AuditEntry & Node & OauthApplicat
   actorResourcePath?: Maybe<Scalars['URI']>;
   /** The HTTP URL for the actor. */
   actorUrl?: Maybe<Scalars['URI']>;
-  /** The application URL of the OAuth Application. */
+  /** The application URL of the OAuth application. */
   applicationUrl?: Maybe<Scalars['URI']>;
-  /** The callback URL of the OAuth Application. */
+  /** The callback URL of the OAuth application. */
   callbackUrl?: Maybe<Scalars['URI']>;
   /** The time the action was initiated */
   createdAt: Scalars['PreciseDateTime'];
   id: Scalars['ID'];
-  /** The name of the OAuth Application. */
+  /** The name of the OAuth application. */
   oauthApplicationName?: Maybe<Scalars['String']>;
-  /** The HTTP path for the OAuth Application */
+  /** The HTTP path for the OAuth application */
   oauthApplicationResourcePath?: Maybe<Scalars['URI']>;
-  /** The HTTP URL for the OAuth Application */
+  /** The HTTP URL for the OAuth application */
   oauthApplicationUrl?: Maybe<Scalars['URI']>;
   /** The corresponding operation type for the action */
   operationType?: Maybe<OperationType>;
@@ -11977,9 +11985,9 @@ export type OauthApplicationCreateAuditEntry = AuditEntry & Node & OauthApplicat
   organizationResourcePath?: Maybe<Scalars['URI']>;
   /** The HTTP URL for the organization */
   organizationUrl?: Maybe<Scalars['URI']>;
-  /** The rate limit of the OAuth Application. */
+  /** The rate limit of the OAuth application. */
   rateLimit?: Maybe<Scalars['Int']>;
-  /** The state of the OAuth Application. */
+  /** The state of the OAuth application. */
   state?: Maybe<OauthApplicationCreateAuditEntryState>;
   /** The user affected by the action */
   user?: Maybe<User>;
@@ -11991,13 +11999,13 @@ export type OauthApplicationCreateAuditEntry = AuditEntry & Node & OauthApplicat
   userUrl?: Maybe<Scalars['URI']>;
 };
 
-/** The state of an OAuth Application when it was created. */
+/** The state of an OAuth application when it was created. */
 export enum OauthApplicationCreateAuditEntryState {
-  /** The OAuth Application was active and allowed to have OAuth Accesses. */
+  /** The OAuth application was active and allowed to have OAuth Accesses. */
   Active = 'ACTIVE',
-  /** The OAuth Application was in the process of being deleted. */
+  /** The OAuth application was in the process of being deleted. */
   PendingDeletion = 'PENDING_DELETION',
-  /** The OAuth Application was suspended from generating OAuth Accesses due to abuse or security concerns. */
+  /** The OAuth application was suspended from generating OAuth Accesses due to abuse or security concerns. */
   Suspended = 'SUSPENDED'
 }
 
@@ -12683,11 +12691,11 @@ export type OrgOauthAppAccessApprovedAuditEntry = AuditEntry & Node & OauthAppli
   /** The time the action was initiated */
   createdAt: Scalars['PreciseDateTime'];
   id: Scalars['ID'];
-  /** The name of the OAuth Application. */
+  /** The name of the OAuth application. */
   oauthApplicationName?: Maybe<Scalars['String']>;
-  /** The HTTP path for the OAuth Application */
+  /** The HTTP path for the OAuth application */
   oauthApplicationResourcePath?: Maybe<Scalars['URI']>;
-  /** The HTTP URL for the OAuth Application */
+  /** The HTTP URL for the OAuth application */
   oauthApplicationUrl?: Maybe<Scalars['URI']>;
   /** The corresponding operation type for the action */
   operationType?: Maybe<OperationType>;
@@ -12729,11 +12737,11 @@ export type OrgOauthAppAccessDeniedAuditEntry = AuditEntry & Node & OauthApplica
   /** The time the action was initiated */
   createdAt: Scalars['PreciseDateTime'];
   id: Scalars['ID'];
-  /** The name of the OAuth Application. */
+  /** The name of the OAuth application. */
   oauthApplicationName?: Maybe<Scalars['String']>;
-  /** The HTTP path for the OAuth Application */
+  /** The HTTP path for the OAuth application */
   oauthApplicationResourcePath?: Maybe<Scalars['URI']>;
-  /** The HTTP URL for the OAuth Application */
+  /** The HTTP URL for the OAuth application */
   oauthApplicationUrl?: Maybe<Scalars['URI']>;
   /** The corresponding operation type for the action */
   operationType?: Maybe<OperationType>;
@@ -12775,11 +12783,11 @@ export type OrgOauthAppAccessRequestedAuditEntry = AuditEntry & Node & OauthAppl
   /** The time the action was initiated */
   createdAt: Scalars['PreciseDateTime'];
   id: Scalars['ID'];
-  /** The name of the OAuth Application. */
+  /** The name of the OAuth application. */
   oauthApplicationName?: Maybe<Scalars['String']>;
-  /** The HTTP path for the OAuth Application */
+  /** The HTTP path for the OAuth application */
   oauthApplicationResourcePath?: Maybe<Scalars['URI']>;
-  /** The HTTP URL for the OAuth Application */
+  /** The HTTP URL for the OAuth application */
   oauthApplicationUrl?: Maybe<Scalars['URI']>;
   /** The corresponding operation type for the action */
   operationType?: Maybe<OperationType>;
@@ -15386,6 +15394,41 @@ export type ProjectV2WorkflowsArgs = {
   orderBy?: InputMaybe<ProjectV2WorkflowOrder>;
 };
 
+/** Possible collaborators for a project. */
+export type ProjectV2Actor = Team | User;
+
+/** The connection type for ProjectV2Actor. */
+export type ProjectV2ActorConnection = {
+  __typename?: 'ProjectV2ActorConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<ProjectV2ActorEdge>>>;
+  /** A list of nodes. */
+  nodes?: Maybe<Array<Maybe<ProjectV2Actor>>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of items in the connection. */
+  totalCount: Scalars['Int'];
+};
+
+/** An edge in a connection. */
+export type ProjectV2ActorEdge = {
+  __typename?: 'ProjectV2ActorEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node?: Maybe<ProjectV2Actor>;
+};
+
+/** A collaborator to update on a project. Only one of the userId or teamId should be provided. */
+export type ProjectV2Collaborator = {
+  /** The role to grant the collaborator */
+  role: ProjectV2Roles;
+  /** The ID of the team as a collaborator. */
+  teamId?: InputMaybe<Scalars['ID']>;
+  /** The ID of the user as a collaborator. */
+  userId?: InputMaybe<Scalars['ID']>;
+};
+
 /** The connection type for ProjectV2. */
 export type ProjectV2Connection = {
   __typename?: 'ProjectV2Connection';
@@ -16032,6 +16075,18 @@ export type ProjectV2RecentRecentProjectsArgs = {
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
 };
+
+/** The possible roles of a collaborator on a project. */
+export enum ProjectV2Roles {
+  /** The collaborator can view, edit, and maange the settings of the project */
+  Admin = 'ADMIN',
+  /** The collaborator has no direct access to the project */
+  None = 'NONE',
+  /** The collaborator can view the project */
+  Reader = 'READER',
+  /** The collaborator can view and edit the project */
+  Writer = 'WRITER'
+}
 
 /** A single select field inside a project. */
 export type ProjectV2SingleSelectField = Node & ProjectV2FieldCommon & {
@@ -26674,6 +26729,34 @@ export type UpdateProjectPayload = {
   project?: Maybe<Project>;
 };
 
+/** Autogenerated input type of UpdateProjectV2Collaborators */
+export type UpdateProjectV2CollaboratorsInput = {
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: InputMaybe<Scalars['String']>;
+  /** The collaborators to update. */
+  collaborators: Array<ProjectV2Collaborator>;
+  /** The ID of the project to update the collaborators for. */
+  projectId: Scalars['ID'];
+};
+
+/** Autogenerated return type of UpdateProjectV2Collaborators */
+export type UpdateProjectV2CollaboratorsPayload = {
+  __typename?: 'UpdateProjectV2CollaboratorsPayload';
+  /** A unique identifier for the client performing the mutation. */
+  clientMutationId?: Maybe<Scalars['String']>;
+  /** The collaborators granted a role */
+  collaborators?: Maybe<ProjectV2ActorConnection>;
+};
+
+
+/** Autogenerated return type of UpdateProjectV2Collaborators */
+export type UpdateProjectV2CollaboratorsPayloadCollaboratorsArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+};
+
 /** Autogenerated input type of UpdateProjectV2DraftIssue */
 export type UpdateProjectV2DraftIssueInput = {
   /** The IDs of the assignees of the draft issue. */
@@ -28262,6 +28345,7 @@ export type ResolversUnionTypes = {
   PermissionGranter: ( Organization ) | ( Omit<Repository, 'issueOrPullRequest'> & { issueOrPullRequest?: Maybe<ResolversTypes['IssueOrPullRequest']> } ) | ( Team );
   PinnableItem: ( Gist ) | ( Omit<Repository, 'issueOrPullRequest'> & { issueOrPullRequest?: Maybe<ResolversTypes['IssueOrPullRequest']> } );
   ProjectCardItem: ( Issue ) | ( PullRequest );
+  ProjectV2Actor: ( Team ) | ( User );
   ProjectV2FieldConfiguration: ( ProjectV2Field ) | ( ProjectV2IterationField ) | ( ProjectV2SingleSelectField );
   ProjectV2ItemContent: ( DraftIssue ) | ( Issue ) | ( PullRequest );
   ProjectV2ItemFieldValue: ( Omit<ProjectV2ItemFieldDateValue, 'field'> & { field: ResolversTypes['ProjectV2FieldConfiguration'] } ) | ( Omit<ProjectV2ItemFieldIterationValue, 'field'> & { field: ResolversTypes['ProjectV2FieldConfiguration'] } ) | ( Omit<ProjectV2ItemFieldLabelValue, 'field'> & { field: ResolversTypes['ProjectV2FieldConfiguration'] } ) | ( Omit<ProjectV2ItemFieldMilestoneValue, 'field'> & { field: ResolversTypes['ProjectV2FieldConfiguration'] } ) | ( Omit<ProjectV2ItemFieldNumberValue, 'field'> & { field: ResolversTypes['ProjectV2FieldConfiguration'] } ) | ( Omit<ProjectV2ItemFieldPullRequestValue, 'field'> & { field: ResolversTypes['ProjectV2FieldConfiguration'] } ) | ( Omit<ProjectV2ItemFieldRepositoryValue, 'field'> & { field: ResolversTypes['ProjectV2FieldConfiguration'] } ) | ( Omit<ProjectV2ItemFieldReviewerValue, 'field'> & { field: ResolversTypes['ProjectV2FieldConfiguration'] } ) | ( Omit<ProjectV2ItemFieldSingleSelectValue, 'field'> & { field: ResolversTypes['ProjectV2FieldConfiguration'] } ) | ( Omit<ProjectV2ItemFieldTextValue, 'field'> & { field: ResolversTypes['ProjectV2FieldConfiguration'] } ) | ( Omit<ProjectV2ItemFieldUserValue, 'field'> & { field: ResolversTypes['ProjectV2FieldConfiguration'] } );
@@ -28307,6 +28391,7 @@ export type ResolversUnionParentTypes = {
   PermissionGranter: ( Organization ) | ( Omit<Repository, 'issueOrPullRequest'> & { issueOrPullRequest?: Maybe<ResolversParentTypes['IssueOrPullRequest']> } ) | ( Team );
   PinnableItem: ( Gist ) | ( Omit<Repository, 'issueOrPullRequest'> & { issueOrPullRequest?: Maybe<ResolversParentTypes['IssueOrPullRequest']> } );
   ProjectCardItem: ( Issue ) | ( PullRequest );
+  ProjectV2Actor: ( Team ) | ( User );
   ProjectV2FieldConfiguration: ( ProjectV2Field ) | ( ProjectV2IterationField ) | ( ProjectV2SingleSelectField );
   ProjectV2ItemContent: ( DraftIssue ) | ( Issue ) | ( PullRequest );
   ProjectV2ItemFieldValue: ( Omit<ProjectV2ItemFieldDateValue, 'field'> & { field: ResolversParentTypes['ProjectV2FieldConfiguration'] } ) | ( Omit<ProjectV2ItemFieldIterationValue, 'field'> & { field: ResolversParentTypes['ProjectV2FieldConfiguration'] } ) | ( Omit<ProjectV2ItemFieldLabelValue, 'field'> & { field: ResolversParentTypes['ProjectV2FieldConfiguration'] } ) | ( Omit<ProjectV2ItemFieldMilestoneValue, 'field'> & { field: ResolversParentTypes['ProjectV2FieldConfiguration'] } ) | ( Omit<ProjectV2ItemFieldNumberValue, 'field'> & { field: ResolversParentTypes['ProjectV2FieldConfiguration'] } ) | ( Omit<ProjectV2ItemFieldPullRequestValue, 'field'> & { field: ResolversParentTypes['ProjectV2FieldConfiguration'] } ) | ( Omit<ProjectV2ItemFieldRepositoryValue, 'field'> & { field: ResolversParentTypes['ProjectV2FieldConfiguration'] } ) | ( Omit<ProjectV2ItemFieldReviewerValue, 'field'> & { field: ResolversParentTypes['ProjectV2FieldConfiguration'] } ) | ( Omit<ProjectV2ItemFieldSingleSelectValue, 'field'> & { field: ResolversParentTypes['ProjectV2FieldConfiguration'] } ) | ( Omit<ProjectV2ItemFieldTextValue, 'field'> & { field: ResolversParentTypes['ProjectV2FieldConfiguration'] } ) | ( Omit<ProjectV2ItemFieldUserValue, 'field'> & { field: ResolversParentTypes['ProjectV2FieldConfiguration'] } );
@@ -29105,6 +29190,10 @@ export type ResolversTypes = {
   ProjectState: ProjectState;
   ProjectTemplate: ProjectTemplate;
   ProjectV2: ResolverTypeWrapper<Omit<ProjectV2, 'field'> & { field?: Maybe<ResolversTypes['ProjectV2FieldConfiguration']> }>;
+  ProjectV2Actor: ResolverTypeWrapper<ResolversUnionTypes['ProjectV2Actor']>;
+  ProjectV2ActorConnection: ResolverTypeWrapper<Omit<ProjectV2ActorConnection, 'nodes'> & { nodes?: Maybe<Array<Maybe<ResolversTypes['ProjectV2Actor']>>> }>;
+  ProjectV2ActorEdge: ResolverTypeWrapper<Omit<ProjectV2ActorEdge, 'node'> & { node?: Maybe<ResolversTypes['ProjectV2Actor']> }>;
+  ProjectV2Collaborator: ProjectV2Collaborator;
   ProjectV2Connection: ResolverTypeWrapper<ProjectV2Connection>;
   ProjectV2CustomFieldType: ProjectV2CustomFieldType;
   ProjectV2Edge: ResolverTypeWrapper<ProjectV2Edge>;
@@ -29151,6 +29240,7 @@ export type ResolversTypes = {
   ProjectV2OrderField: ProjectV2OrderField;
   ProjectV2Owner: ResolversTypes['Issue'] | ResolversTypes['Organization'] | ResolversTypes['PullRequest'] | ResolversTypes['User'];
   ProjectV2Recent: ResolversTypes['Organization'] | ResolversTypes['Repository'] | ResolversTypes['User'];
+  ProjectV2Roles: ProjectV2Roles;
   ProjectV2SingleSelectField: ResolverTypeWrapper<ProjectV2SingleSelectField>;
   ProjectV2SingleSelectFieldOption: ResolverTypeWrapper<ProjectV2SingleSelectFieldOption>;
   ProjectV2SingleSelectFieldOptionColor: ProjectV2SingleSelectFieldOptionColor;
@@ -29713,6 +29803,8 @@ export type ResolversTypes = {
   UpdateProjectColumnPayload: ResolverTypeWrapper<UpdateProjectColumnPayload>;
   UpdateProjectInput: UpdateProjectInput;
   UpdateProjectPayload: ResolverTypeWrapper<UpdateProjectPayload>;
+  UpdateProjectV2CollaboratorsInput: UpdateProjectV2CollaboratorsInput;
+  UpdateProjectV2CollaboratorsPayload: ResolverTypeWrapper<UpdateProjectV2CollaboratorsPayload>;
   UpdateProjectV2DraftIssueInput: UpdateProjectV2DraftIssueInput;
   UpdateProjectV2DraftIssuePayload: ResolverTypeWrapper<UpdateProjectV2DraftIssuePayload>;
   UpdateProjectV2Input: UpdateProjectV2Input;
@@ -30453,6 +30545,10 @@ export type ResolversParentTypes = {
   ProjectOwner: ResolversParentTypes['Organization'] | ResolversParentTypes['Repository'] | ResolversParentTypes['User'];
   ProjectProgress: ProjectProgress;
   ProjectV2: Omit<ProjectV2, 'field'> & { field?: Maybe<ResolversParentTypes['ProjectV2FieldConfiguration']> };
+  ProjectV2Actor: ResolversUnionParentTypes['ProjectV2Actor'];
+  ProjectV2ActorConnection: Omit<ProjectV2ActorConnection, 'nodes'> & { nodes?: Maybe<Array<Maybe<ResolversParentTypes['ProjectV2Actor']>>> };
+  ProjectV2ActorEdge: Omit<ProjectV2ActorEdge, 'node'> & { node?: Maybe<ResolversParentTypes['ProjectV2Actor']> };
+  ProjectV2Collaborator: ProjectV2Collaborator;
   ProjectV2Connection: ProjectV2Connection;
   ProjectV2Edge: ProjectV2Edge;
   ProjectV2Field: ProjectV2Field;
@@ -30966,6 +31062,8 @@ export type ResolversParentTypes = {
   UpdateProjectColumnPayload: UpdateProjectColumnPayload;
   UpdateProjectInput: UpdateProjectInput;
   UpdateProjectPayload: UpdateProjectPayload;
+  UpdateProjectV2CollaboratorsInput: UpdateProjectV2CollaboratorsInput;
+  UpdateProjectV2CollaboratorsPayload: UpdateProjectV2CollaboratorsPayload;
   UpdateProjectV2DraftIssueInput: UpdateProjectV2DraftIssueInput;
   UpdateProjectV2DraftIssuePayload: UpdateProjectV2DraftIssuePayload;
   UpdateProjectV2Input: UpdateProjectV2Input;
@@ -34832,6 +34930,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateProjectCard?: Resolver<Maybe<ResolversTypes['UpdateProjectCardPayload']>, ParentType, ContextType, RequireFields<MutationUpdateProjectCardArgs, 'input'>>;
   updateProjectColumn?: Resolver<Maybe<ResolversTypes['UpdateProjectColumnPayload']>, ParentType, ContextType, RequireFields<MutationUpdateProjectColumnArgs, 'input'>>;
   updateProjectV2?: Resolver<Maybe<ResolversTypes['UpdateProjectV2Payload']>, ParentType, ContextType, RequireFields<MutationUpdateProjectV2Args, 'input'>>;
+  updateProjectV2Collaborators?: Resolver<Maybe<ResolversTypes['UpdateProjectV2CollaboratorsPayload']>, ParentType, ContextType, RequireFields<MutationUpdateProjectV2CollaboratorsArgs, 'input'>>;
   updateProjectV2DraftIssue?: Resolver<Maybe<ResolversTypes['UpdateProjectV2DraftIssuePayload']>, ParentType, ContextType, RequireFields<MutationUpdateProjectV2DraftIssueArgs, 'input'>>;
   updateProjectV2ItemFieldValue?: Resolver<Maybe<ResolversTypes['UpdateProjectV2ItemFieldValuePayload']>, ParentType, ContextType, RequireFields<MutationUpdateProjectV2ItemFieldValueArgs, 'input'>>;
   updateProjectV2ItemPosition?: Resolver<Maybe<ResolversTypes['UpdateProjectV2ItemPositionPayload']>, ParentType, ContextType, RequireFields<MutationUpdateProjectV2ItemPositionArgs, 'input'>>;
@@ -36233,6 +36332,24 @@ export type ProjectV2Resolvers<ContextType = any, ParentType extends ResolversPa
   views?: Resolver<ResolversTypes['ProjectV2ViewConnection'], ParentType, ContextType, RequireFields<ProjectV2ViewsArgs, 'orderBy'>>;
   workflow?: Resolver<Maybe<ResolversTypes['ProjectV2Workflow']>, ParentType, ContextType, RequireFields<ProjectV2WorkflowArgs, 'number'>>;
   workflows?: Resolver<ResolversTypes['ProjectV2WorkflowConnection'], ParentType, ContextType, RequireFields<ProjectV2WorkflowsArgs, 'orderBy'>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ProjectV2ActorResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProjectV2Actor'] = ResolversParentTypes['ProjectV2Actor']> = {
+  __resolveType: TypeResolveFn<'Team' | 'User', ParentType, ContextType>;
+};
+
+export type ProjectV2ActorConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProjectV2ActorConnection'] = ResolversParentTypes['ProjectV2ActorConnection']> = {
+  edges?: Resolver<Maybe<Array<Maybe<ResolversTypes['ProjectV2ActorEdge']>>>, ParentType, ContextType>;
+  nodes?: Resolver<Maybe<Array<Maybe<ResolversTypes['ProjectV2Actor']>>>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ProjectV2ActorEdgeResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProjectV2ActorEdge'] = ResolversParentTypes['ProjectV2ActorEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['ProjectV2Actor']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -40200,6 +40317,12 @@ export type UpdateProjectPayloadResolvers<ContextType = any, ParentType extends 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UpdateProjectV2CollaboratorsPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateProjectV2CollaboratorsPayload'] = ResolversParentTypes['UpdateProjectV2CollaboratorsPayload']> = {
+  clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  collaborators?: Resolver<Maybe<ResolversTypes['ProjectV2ActorConnection']>, ParentType, ContextType, Partial<UpdateProjectV2CollaboratorsPayloadCollaboratorsArgs>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type UpdateProjectV2DraftIssuePayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['UpdateProjectV2DraftIssuePayload'] = ResolversParentTypes['UpdateProjectV2DraftIssuePayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   draftIssue?: Resolver<Maybe<ResolversTypes['DraftIssue']>, ParentType, ContextType>;
@@ -41111,6 +41234,9 @@ export type Resolvers<ContextType = any> = {
   ProjectOwner?: ProjectOwnerResolvers<ContextType>;
   ProjectProgress?: ProjectProgressResolvers<ContextType>;
   ProjectV2?: ProjectV2Resolvers<ContextType>;
+  ProjectV2Actor?: ProjectV2ActorResolvers<ContextType>;
+  ProjectV2ActorConnection?: ProjectV2ActorConnectionResolvers<ContextType>;
+  ProjectV2ActorEdge?: ProjectV2ActorEdgeResolvers<ContextType>;
   ProjectV2Connection?: ProjectV2ConnectionResolvers<ContextType>;
   ProjectV2Edge?: ProjectV2EdgeResolvers<ContextType>;
   ProjectV2Field?: ProjectV2FieldResolvers<ContextType>;
@@ -41496,6 +41622,7 @@ export type Resolvers<ContextType = any> = {
   UpdateProjectCardPayload?: UpdateProjectCardPayloadResolvers<ContextType>;
   UpdateProjectColumnPayload?: UpdateProjectColumnPayloadResolvers<ContextType>;
   UpdateProjectPayload?: UpdateProjectPayloadResolvers<ContextType>;
+  UpdateProjectV2CollaboratorsPayload?: UpdateProjectV2CollaboratorsPayloadResolvers<ContextType>;
   UpdateProjectV2DraftIssuePayload?: UpdateProjectV2DraftIssuePayloadResolvers<ContextType>;
   UpdateProjectV2ItemFieldValuePayload?: UpdateProjectV2ItemFieldValuePayloadResolvers<ContextType>;
   UpdateProjectV2ItemPositionPayload?: UpdateProjectV2ItemPositionPayloadResolvers<ContextType>;
