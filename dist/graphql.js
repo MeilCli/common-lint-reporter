@@ -2147,6 +2147,8 @@ var SecurityAdvisoryEcosystem;
     SecurityAdvisoryEcosystem["Rubygems"] = "RUBYGEMS";
     /** Rust crates */
     SecurityAdvisoryEcosystem["Rust"] = "RUST";
+    /** Swift packages */
+    SecurityAdvisoryEcosystem["Swift"] = "SWIFT";
 })(SecurityAdvisoryEcosystem || (exports.SecurityAdvisoryEcosystem = SecurityAdvisoryEcosystem = {}));
 /** Identifier formats available for advisories. */
 var SecurityAdvisoryIdentifierType;

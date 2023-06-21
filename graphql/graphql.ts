@@ -16108,6 +16108,12 @@ export type ProjectV2SingleSelectField = Node & ProjectV2FieldCommon & {
   updatedAt: Scalars['DateTime'];
 };
 
+
+/** A single select field inside a project. */
+export type ProjectV2SingleSelectFieldOptionsArgs = {
+  names?: InputMaybe<Array<Scalars['String']>>;
+};
+
 /** Single select field option for a configuration for a project. */
 export type ProjectV2SingleSelectFieldOption = {
   __typename?: 'ProjectV2SingleSelectFieldOption';
@@ -20696,6 +20702,7 @@ export type RepositoryRepositoryTopicsArgs = {
 /** A repository contains the content for a project. */
 export type RepositoryRulesetArgs = {
   databaseId: Scalars['Int'];
+  includeParents?: InputMaybe<Scalars['Boolean']>;
 };
 
 
@@ -22422,7 +22429,9 @@ export enum SecurityAdvisoryEcosystem {
   /** Ruby gems hosted at RubyGems.org */
   Rubygems = 'RUBYGEMS',
   /** Rust crates */
-  Rust = 'RUST'
+  Rust = 'RUST',
+  /** Swift packages */
+  Swift = 'SWIFT'
 }
 
 /** An edge in a connection. */
@@ -36632,7 +36641,7 @@ export type ProjectV2SingleSelectFieldResolvers<ContextType = any, ParentType ex
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  options?: Resolver<Array<ResolversTypes['ProjectV2SingleSelectFieldOption']>, ParentType, ContextType>;
+  options?: Resolver<Array<ResolversTypes['ProjectV2SingleSelectFieldOption']>, ParentType, ContextType, Partial<ProjectV2SingleSelectFieldOptionsArgs>>;
   project?: Resolver<ResolversTypes['ProjectV2'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -38252,7 +38261,7 @@ export type RepositoryResolvers<ContextType = any, ParentType extends ResolversP
   releases?: Resolver<ResolversTypes['ReleaseConnection'], ParentType, ContextType, Partial<RepositoryReleasesArgs>>;
   repositoryTopics?: Resolver<ResolversTypes['RepositoryTopicConnection'], ParentType, ContextType, Partial<RepositoryRepositoryTopicsArgs>>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
-  ruleset?: Resolver<Maybe<ResolversTypes['RepositoryRuleset']>, ParentType, ContextType, RequireFields<RepositoryRulesetArgs, 'databaseId'>>;
+  ruleset?: Resolver<Maybe<ResolversTypes['RepositoryRuleset']>, ParentType, ContextType, RequireFields<RepositoryRulesetArgs, 'databaseId' | 'includeParents'>>;
   rulesets?: Resolver<Maybe<ResolversTypes['RepositoryRulesetConnection']>, ParentType, ContextType, RequireFields<RepositoryRulesetsArgs, 'includeParents'>>;
   securityPolicyUrl?: Resolver<Maybe<ResolversTypes['URI']>, ParentType, ContextType>;
   shortDescriptionHTML?: Resolver<ResolversTypes['HTML'], ParentType, ContextType, RequireFields<RepositoryShortDescriptionHtmlArgs, 'limit'>>;
