@@ -236,6 +236,8 @@ var DependencyGraphEcosystem;
     DependencyGraphEcosystem["Rubygems"] = "RUBYGEMS";
     /** Rust crates */
     DependencyGraphEcosystem["Rust"] = "RUST";
+    /** Swift packages */
+    DependencyGraphEcosystem["Swift"] = "SWIFT";
 })(DependencyGraphEcosystem || (exports.DependencyGraphEcosystem = DependencyGraphEcosystem = {}));
 /** Properties by which deployment connections can be ordered. */
 var DeploymentOrderField;
