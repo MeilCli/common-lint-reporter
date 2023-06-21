@@ -18495,7 +18495,7 @@ var ApolloLink = __webpack_require__(3581);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
 var execute = __webpack_require__(7037);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.7.15';
+var version = '3.7.16';
 //# sourceMappingURL=version.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
@@ -25998,6 +25998,9 @@ function getObjectTag(object) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   n: () => (/* binding */ instanceOf)
 /* harmony export */ });
+/* harmony import */ var _inspect_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5821);
+var _globalThis$process;
+
 
 /**
  * A replacement for instanceof which includes an error warning when multi-realm
@@ -26009,12 +26012,50 @@ function getObjectTag(object) {
 const instanceOf =
   /* c8 ignore next 6 */
   // FIXME: https://github.com/graphql/graphql-js/issues/2317
-  // eslint-disable-next-line no-undef
-  (/* runtime-dependent pure expression or super */ /^(33[45]|149|179|28|452)$/.test(__webpack_require__.j) ? ( true
+  ((_globalThis$process = globalThis.process) === null ||
+  _globalThis$process === void 0
+    ? void 0
+    : _globalThis$process.env.NODE_ENV) === 'production'
     ? function instanceOf(value, constructor) {
         return value instanceof constructor;
       }
-    : 0) : null);
+    : function instanceOf(value, constructor) {
+        if (value instanceof constructor) {
+          return true;
+        }
+
+        if (typeof value === 'object' && value !== null) {
+          var _value$constructor;
+
+          // Prefer Symbol.toStringTag since it is immune to minification.
+          const className = constructor.prototype[Symbol.toStringTag];
+          const valueClassName = // We still need to support constructor's name to detect conflicts with older versions of this library.
+            Symbol.toStringTag in value // @ts-expect-error TS bug see, https://github.com/microsoft/TypeScript/issues/38009
+              ? value[Symbol.toStringTag]
+              : (_value$constructor = value.constructor) === null ||
+                _value$constructor === void 0
+              ? void 0
+              : _value$constructor.name;
+
+          if (className === valueClassName) {
+            const stringifiedValue = (0,_inspect_mjs__WEBPACK_IMPORTED_MODULE_0__/* .inspect */ .X)(value);
+            throw new Error(`Cannot use ${className} "${stringifiedValue}" from another module or realm.
+
+Ensure that there is only one instance of "graphql" in the node_modules
+directory. If different versions of "graphql" are the dependencies of other
+relied on modules, use "resolutions" to ensure only one version is installed.
+
+https://yarnpkg.com/en/docs/selective-version-resolutions
+
+Duplicate "graphql" modules cannot be used at the same time since different
+versions may have different capabilities and behavior. The data from one
+version used in the function from another could produce confusing and
+spurious results.`);
+          }
+        }
+
+        return false;
+      };
 
 
 /***/ }),
