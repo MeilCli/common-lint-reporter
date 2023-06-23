@@ -25997,8 +25997,6 @@ function getObjectTag(object) {
 /* harmony export */   n: () => (/* binding */ instanceOf)
 /* harmony export */ });
 /* harmony import */ var _inspect_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5821);
-var _globalThis$process;
-
 
 /**
  * A replacement for instanceof which includes an error warning when multi-realm
@@ -26010,10 +26008,7 @@ var _globalThis$process;
 const instanceOf =
   /* c8 ignore next 6 */
   // FIXME: https://github.com/graphql/graphql-js/issues/2317
-  ((_globalThis$process = globalThis.process) === null ||
-  _globalThis$process === void 0
-    ? void 0
-    : _globalThis$process.env.NODE_ENV) === 'production'
+  globalThis.process && globalThis.process.env.NODE_ENV === 'production'
     ? function instanceOf(value, constructor) {
         return value instanceof constructor;
       }
