@@ -20926,6 +20926,19 @@ export type RepositoryEdge = {
   node?: Maybe<Repository>;
 };
 
+/** Parameters to be used for the repository_id condition */
+export type RepositoryIdConditionTarget = {
+  __typename?: 'RepositoryIdConditionTarget';
+  /** One of these repo IDs must match the repo. */
+  repositoryIds: Array<Scalars['ID']>;
+};
+
+/** Parameters to be used for the repository_id condition */
+export type RepositoryIdConditionTargetInput = {
+  /** One of these repo IDs must match the repo. */
+  repositoryIds: Array<Scalars['ID']>;
+};
+
 /** A subset of repository info. */
 export type RepositoryInfo = {
   /** Identifies the date and time when the repository was archived. */
@@ -21314,6 +21327,8 @@ export type RepositoryRuleConditions = {
   __typename?: 'RepositoryRuleConditions';
   /** Configuration for the ref_name condition */
   refName?: Maybe<RefNameConditionTarget>;
+  /** Configuration for the repository_id condition */
+  repositoryId?: Maybe<RepositoryIdConditionTarget>;
   /** Configuration for the repository_name condition */
   repositoryName?: Maybe<RepositoryNameConditionTarget>;
 };
@@ -21322,6 +21337,8 @@ export type RepositoryRuleConditions = {
 export type RepositoryRuleConditionsInput = {
   /** Configuration for the ref_name condition */
   refName?: InputMaybe<RefNameConditionTargetInput>;
+  /** Configuration for the repository_id condition */
+  repositoryId?: InputMaybe<RepositoryIdConditionTargetInput>;
   /** Configuration for the repository_name condition */
   repositoryName?: InputMaybe<RepositoryNameConditionTargetInput>;
 };
@@ -29440,6 +29457,8 @@ export type ResolversTypes = {
   RepositoryDiscussionAuthor: ResolversTypes['Organization'] | ResolversTypes['User'];
   RepositoryDiscussionCommentAuthor: ResolversTypes['Organization'] | ResolversTypes['User'];
   RepositoryEdge: ResolverTypeWrapper<RepositoryEdge>;
+  RepositoryIdConditionTarget: ResolverTypeWrapper<RepositoryIdConditionTarget>;
+  RepositoryIdConditionTargetInput: RepositoryIdConditionTargetInput;
   RepositoryInfo: ResolversTypes['Repository'];
   RepositoryInteractionAbility: ResolverTypeWrapper<RepositoryInteractionAbility>;
   RepositoryInteractionLimit: RepositoryInteractionLimit;
@@ -30758,6 +30777,8 @@ export type ResolversParentTypes = {
   RepositoryDiscussionAuthor: ResolversParentTypes['Organization'] | ResolversParentTypes['User'];
   RepositoryDiscussionCommentAuthor: ResolversParentTypes['Organization'] | ResolversParentTypes['User'];
   RepositoryEdge: RepositoryEdge;
+  RepositoryIdConditionTarget: RepositoryIdConditionTarget;
+  RepositoryIdConditionTargetInput: RepositoryIdConditionTargetInput;
   RepositoryInfo: ResolversParentTypes['Repository'];
   RepositoryInteractionAbility: RepositoryInteractionAbility;
   RepositoryInvitation: RepositoryInvitation;
@@ -38370,6 +38391,11 @@ export type RepositoryEdgeResolvers<ContextType = any, ParentType extends Resolv
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type RepositoryIdConditionTargetResolvers<ContextType = any, ParentType extends ResolversParentTypes['RepositoryIdConditionTarget'] = ResolversParentTypes['RepositoryIdConditionTarget']> = {
+  repositoryIds?: Resolver<Array<ResolversTypes['ID']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type RepositoryInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['RepositoryInfo'] = ResolversParentTypes['RepositoryInfo']> = {
   __resolveType: TypeResolveFn<'Repository', ParentType, ContextType>;
   archivedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
@@ -38498,6 +38524,7 @@ export type RepositoryRuleResolvers<ContextType = any, ParentType extends Resolv
 
 export type RepositoryRuleConditionsResolvers<ContextType = any, ParentType extends ResolversParentTypes['RepositoryRuleConditions'] = ResolversParentTypes['RepositoryRuleConditions']> = {
   refName?: Resolver<Maybe<ResolversTypes['RefNameConditionTarget']>, ParentType, ContextType>;
+  repositoryId?: Resolver<Maybe<ResolversTypes['RepositoryIdConditionTarget']>, ParentType, ContextType>;
   repositoryName?: Resolver<Maybe<ResolversTypes['RepositoryNameConditionTarget']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -41413,6 +41440,7 @@ export type Resolvers<ContextType = any> = {
   RepositoryDiscussionAuthor?: RepositoryDiscussionAuthorResolvers<ContextType>;
   RepositoryDiscussionCommentAuthor?: RepositoryDiscussionCommentAuthorResolvers<ContextType>;
   RepositoryEdge?: RepositoryEdgeResolvers<ContextType>;
+  RepositoryIdConditionTarget?: RepositoryIdConditionTargetResolvers<ContextType>;
   RepositoryInfo?: RepositoryInfoResolvers<ContextType>;
   RepositoryInteractionAbility?: RepositoryInteractionAbilityResolvers<ContextType>;
   RepositoryInvitation?: RepositoryInvitationResolvers<ContextType>;
