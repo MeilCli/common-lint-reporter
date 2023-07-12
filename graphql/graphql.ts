@@ -13741,6 +13741,7 @@ export type OrganizationMannequinsArgs = {
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  login?: InputMaybe<Scalars['String']>;
   orderBy?: InputMaybe<MannequinOrder>;
 };
 
@@ -21958,7 +21959,7 @@ export enum RequestableCheckStatusState {
 }
 
 /** Types that can be requested reviewers. */
-export type RequestedReviewer = Mannequin | Team | User;
+export type RequestedReviewer = Bot | Mannequin | Team | User;
 
 /** The connection type for RequestedReviewer. */
 export type RequestedReviewerConnection = {
@@ -28607,7 +28608,7 @@ export type ResolversUnionTypes = {
   Reactor: ( Bot ) | ( Mannequin ) | ( Organization ) | ( User );
   ReferencedSubject: ( Issue ) | ( PullRequest );
   RenamedTitleSubject: ( Issue ) | ( PullRequest );
-  RequestedReviewer: ( Mannequin ) | ( Team ) | ( User );
+  RequestedReviewer: ( Bot ) | ( Mannequin ) | ( Team ) | ( User );
   ReviewDismissalAllowanceActor: ( App ) | ( Team ) | ( User );
   RuleParameters: ( BranchNamePatternParameters ) | ( CommitAuthorEmailPatternParameters ) | ( CommitMessagePatternParameters ) | ( CommitterEmailPatternParameters ) | ( PullRequestParameters ) | ( RequiredDeploymentsParameters ) | ( RequiredStatusChecksParameters ) | ( TagNamePatternParameters ) | ( UpdateParameters );
   RuleSource: ( Organization ) | ( Omit<Repository, 'issueOrPullRequest'> & { issueOrPullRequest?: Maybe<ResolversTypes['IssueOrPullRequest']> } );
@@ -28653,7 +28654,7 @@ export type ResolversUnionParentTypes = {
   Reactor: ( Bot ) | ( Mannequin ) | ( Organization ) | ( User );
   ReferencedSubject: ( Issue ) | ( PullRequest );
   RenamedTitleSubject: ( Issue ) | ( PullRequest );
-  RequestedReviewer: ( Mannequin ) | ( Team ) | ( User );
+  RequestedReviewer: ( Bot ) | ( Mannequin ) | ( Team ) | ( User );
   ReviewDismissalAllowanceActor: ( App ) | ( Team ) | ( User );
   RuleParameters: ( BranchNamePatternParameters ) | ( CommitAuthorEmailPatternParameters ) | ( CommitMessagePatternParameters ) | ( CommitterEmailPatternParameters ) | ( PullRequestParameters ) | ( RequiredDeploymentsParameters ) | ( RequiredStatusChecksParameters ) | ( TagNamePatternParameters ) | ( UpdateParameters );
   RuleSource: ( Organization ) | ( Omit<Repository, 'issueOrPullRequest'> & { issueOrPullRequest?: Maybe<ResolversParentTypes['IssueOrPullRequest']> } );
@@ -39002,7 +39003,7 @@ export type RequestReviewsPayloadResolvers<ContextType = any, ParentType extends
 };
 
 export type RequestedReviewerResolvers<ContextType = any, ParentType extends ResolversParentTypes['RequestedReviewer'] = ResolversParentTypes['RequestedReviewer']> = {
-  __resolveType: TypeResolveFn<'Mannequin' | 'Team' | 'User', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'Bot' | 'Mannequin' | 'Team' | 'User', ParentType, ContextType>;
 };
 
 export type RequestedReviewerConnectionResolvers<ContextType = any, ParentType extends ResolversParentTypes['RequestedReviewerConnection'] = ResolversParentTypes['RequestedReviewerConnection']> = {
