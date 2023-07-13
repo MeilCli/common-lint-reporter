@@ -7151,6 +7151,20 @@ export type EnvironmentEdge = {
   node?: Maybe<Environment>;
 };
 
+/** Properties by which environments connections can be ordered */
+export enum EnvironmentOrderField {
+  /** Order environments by name. */
+  Name = 'NAME'
+}
+
+/** Ordering options for environments */
+export type Environments = {
+  /** The direction in which to order environments by the specified field. */
+  direction: OrderDirection;
+  /** The field to order environments by. */
+  field: EnvironmentOrderField;
+};
+
 /** An external identity provisioned by SAML SSO or SCIM. If SAML is configured on the organization, the external identity is visible to (1) organization owners, (2) organization owners' personal access tokens (classic) with read:org or admin:org scope, (3) GitHub App with an installation token with read or write access to members. If SAML is configured on the enterprise, the external identity is visible to (1) enterprise owners, (2) enterprise owners' personal access tokens (classic) with read:enterprise or admin:enterprise scope. */
 export type ExternalIdentity = Node & {
   __typename?: 'ExternalIdentity';
@@ -20608,6 +20622,7 @@ export type RepositoryEnvironmentsArgs = {
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Environments>;
 };
 
 
@@ -29125,6 +29140,8 @@ export type ResolversTypes = {
   Environment: ResolverTypeWrapper<Environment>;
   EnvironmentConnection: ResolverTypeWrapper<EnvironmentConnection>;
   EnvironmentEdge: ResolverTypeWrapper<EnvironmentEdge>;
+  EnvironmentOrderField: EnvironmentOrderField;
+  Environments: Environments;
   ExternalIdentity: ResolverTypeWrapper<ExternalIdentity>;
   ExternalIdentityAttribute: ResolverTypeWrapper<ExternalIdentityAttribute>;
   ExternalIdentityConnection: ResolverTypeWrapper<ExternalIdentityConnection>;
@@ -30550,6 +30567,7 @@ export type ResolversParentTypes = {
   Environment: Environment;
   EnvironmentConnection: EnvironmentConnection;
   EnvironmentEdge: EnvironmentEdge;
+  Environments: Environments;
   ExternalIdentity: ExternalIdentity;
   ExternalIdentityAttribute: ExternalIdentityAttribute;
   ExternalIdentityConnection: ExternalIdentityConnection;
@@ -38502,7 +38520,7 @@ export type RepositoryResolvers<ContextType = any, ParentType extends ResolversP
   discussions?: Resolver<ResolversTypes['DiscussionConnection'], ParentType, ContextType, RequireFields<RepositoryDiscussionsArgs, 'categoryId' | 'orderBy' | 'states'>>;
   diskUsage?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   environment?: Resolver<Maybe<ResolversTypes['Environment']>, ParentType, ContextType, RequireFields<RepositoryEnvironmentArgs, 'name'>>;
-  environments?: Resolver<ResolversTypes['EnvironmentConnection'], ParentType, ContextType, Partial<RepositoryEnvironmentsArgs>>;
+  environments?: Resolver<ResolversTypes['EnvironmentConnection'], ParentType, ContextType, RequireFields<RepositoryEnvironmentsArgs, 'orderBy'>>;
   forkCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   forkingAllowed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   forks?: Resolver<ResolversTypes['RepositoryConnection'], ParentType, ContextType, RequireFields<RepositoryForksArgs, 'ownerAffiliations'>>;
