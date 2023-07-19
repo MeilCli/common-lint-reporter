@@ -13968,6 +13968,7 @@ export type OrganizationSponsorsActivitiesArgs = {
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   includeAsSponsor?: InputMaybe<Scalars['Boolean']>;
+  includePrivate?: InputMaybe<Scalars['Boolean']>;
   last?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<SponsorsActivityOrder>;
   period?: InputMaybe<SponsorsActivityPeriod>;
@@ -23062,6 +23063,7 @@ export type SponsorableSponsorsActivitiesArgs = {
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   includeAsSponsor?: InputMaybe<Scalars['Boolean']>;
+  includePrivate?: InputMaybe<Scalars['Boolean']>;
   last?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<SponsorsActivityOrder>;
   period?: InputMaybe<SponsorsActivityPeriod>;
@@ -27997,6 +27999,7 @@ export type UserSponsorsActivitiesArgs = {
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   includeAsSponsor?: InputMaybe<Scalars['Boolean']>;
+  includePrivate?: InputMaybe<Scalars['Boolean']>;
   last?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<SponsorsActivityOrder>;
   period?: InputMaybe<SponsorsActivityPeriod>;
@@ -36045,7 +36048,7 @@ export type OrganizationResolvers<ContextType = any, ParentType extends Resolver
   samlIdentityProvider?: Resolver<Maybe<ResolversTypes['OrganizationIdentityProvider']>, ParentType, ContextType>;
   sponsoring?: Resolver<ResolversTypes['SponsorConnection'], ParentType, ContextType, RequireFields<OrganizationSponsoringArgs, 'orderBy'>>;
   sponsors?: Resolver<ResolversTypes['SponsorConnection'], ParentType, ContextType, RequireFields<OrganizationSponsorsArgs, 'orderBy'>>;
-  sponsorsActivities?: Resolver<ResolversTypes['SponsorsActivityConnection'], ParentType, ContextType, RequireFields<OrganizationSponsorsActivitiesArgs, 'actions' | 'includeAsSponsor' | 'orderBy' | 'period'>>;
+  sponsorsActivities?: Resolver<ResolversTypes['SponsorsActivityConnection'], ParentType, ContextType, RequireFields<OrganizationSponsorsActivitiesArgs, 'actions' | 'includeAsSponsor' | 'includePrivate' | 'orderBy' | 'period'>>;
   sponsorsListing?: Resolver<Maybe<ResolversTypes['SponsorsListing']>, ParentType, ContextType>;
   sponsorshipForViewerAsSponsor?: Resolver<Maybe<ResolversTypes['Sponsorship']>, ParentType, ContextType, RequireFields<OrganizationSponsorshipForViewerAsSponsorArgs, 'activeOnly'>>;
   sponsorshipForViewerAsSponsorable?: Resolver<Maybe<ResolversTypes['Sponsorship']>, ParentType, ContextType, RequireFields<OrganizationSponsorshipForViewerAsSponsorableArgs, 'activeOnly'>>;
@@ -39416,7 +39419,7 @@ export type SponsorableResolvers<ContextType = any, ParentType extends Resolvers
   monthlyEstimatedSponsorsIncomeInCents?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   sponsoring?: Resolver<ResolversTypes['SponsorConnection'], ParentType, ContextType, RequireFields<SponsorableSponsoringArgs, 'orderBy'>>;
   sponsors?: Resolver<ResolversTypes['SponsorConnection'], ParentType, ContextType, RequireFields<SponsorableSponsorsArgs, 'orderBy'>>;
-  sponsorsActivities?: Resolver<ResolversTypes['SponsorsActivityConnection'], ParentType, ContextType, RequireFields<SponsorableSponsorsActivitiesArgs, 'actions' | 'includeAsSponsor' | 'orderBy' | 'period'>>;
+  sponsorsActivities?: Resolver<ResolversTypes['SponsorsActivityConnection'], ParentType, ContextType, RequireFields<SponsorableSponsorsActivitiesArgs, 'actions' | 'includeAsSponsor' | 'includePrivate' | 'orderBy' | 'period'>>;
   sponsorsListing?: Resolver<Maybe<ResolversTypes['SponsorsListing']>, ParentType, ContextType>;
   sponsorshipForViewerAsSponsor?: Resolver<Maybe<ResolversTypes['Sponsorship']>, ParentType, ContextType, RequireFields<SponsorableSponsorshipForViewerAsSponsorArgs, 'activeOnly'>>;
   sponsorshipForViewerAsSponsorable?: Resolver<Maybe<ResolversTypes['Sponsorship']>, ParentType, ContextType, RequireFields<SponsorableSponsorshipForViewerAsSponsorableArgs, 'activeOnly'>>;
@@ -40852,7 +40855,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   socialAccounts?: Resolver<ResolversTypes['SocialAccountConnection'], ParentType, ContextType, Partial<UserSocialAccountsArgs>>;
   sponsoring?: Resolver<ResolversTypes['SponsorConnection'], ParentType, ContextType, RequireFields<UserSponsoringArgs, 'orderBy'>>;
   sponsors?: Resolver<ResolversTypes['SponsorConnection'], ParentType, ContextType, RequireFields<UserSponsorsArgs, 'orderBy'>>;
-  sponsorsActivities?: Resolver<ResolversTypes['SponsorsActivityConnection'], ParentType, ContextType, RequireFields<UserSponsorsActivitiesArgs, 'actions' | 'includeAsSponsor' | 'orderBy' | 'period'>>;
+  sponsorsActivities?: Resolver<ResolversTypes['SponsorsActivityConnection'], ParentType, ContextType, RequireFields<UserSponsorsActivitiesArgs, 'actions' | 'includeAsSponsor' | 'includePrivate' | 'orderBy' | 'period'>>;
   sponsorsListing?: Resolver<Maybe<ResolversTypes['SponsorsListing']>, ParentType, ContextType>;
   sponsorshipForViewerAsSponsor?: Resolver<Maybe<ResolversTypes['Sponsorship']>, ParentType, ContextType, RequireFields<UserSponsorshipForViewerAsSponsorArgs, 'activeOnly'>>;
   sponsorshipForViewerAsSponsorable?: Resolver<Maybe<ResolversTypes['Sponsorship']>, ParentType, ContextType, RequireFields<UserSponsorshipForViewerAsSponsorableArgs, 'activeOnly'>>;
