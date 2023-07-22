@@ -23,7 +23,7 @@ export function equalsInlineComment(
     left: GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNode,
     right: LintResult,
     context: GitHubContext,
-    reportName: string
+    reportName: string,
 ): boolean {
     if (left.comments.nodes == null || left.comments.nodes == undefined) {
         return false;

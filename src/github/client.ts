@@ -67,7 +67,7 @@ export function githubClient(option: CommonOption): GitHubClient {
                 fetch,
             }),
             cache: new InMemoryCache(),
-        })
+        }),
     );
 }
 
@@ -75,7 +75,7 @@ export class GitHubClient {
     constructor(private readonly client: ApolloClient<NormalizedCacheObject>) {}
 
     async createCheckRun(
-        variables: CreateCheckRunMutationVariables
+        variables: CreateCheckRunMutationVariables,
     ): Promise<CreateCheckRunMutation | null | undefined> {
         const result = await this.client.mutate<CreateCheckRunMutation>({
             mutation: CreateCheckRun,
@@ -85,7 +85,7 @@ export class GitHubClient {
     }
 
     async getPullRequestChangedFile(
-        variables: GetPullRequestChangedFileQueryVariables
+        variables: GetPullRequestChangedFileQueryVariables,
     ): Promise<GetPullRequestChangedFileQuery> {
         const result = await this.client.query<GetPullRequestChangedFileQuery>({
             query: GetPullRequestChangedFile,
@@ -103,7 +103,7 @@ export class GitHubClient {
     }
 
     async updateCheckRun(
-        variables: UpdateCheckRunMutationVariables
+        variables: UpdateCheckRunMutationVariables,
     ): Promise<UpdateCheckRunMutation | null | undefined> {
         const result = await this.client.mutate<UpdateCheckRunMutation>({
             mutation: UpdateCheckRun,
@@ -113,7 +113,7 @@ export class GitHubClient {
     }
 
     async getCommitStatusAndCheckRun(
-        variables: GetCommitStatusAndCheckRunQueryVariables
+        variables: GetCommitStatusAndCheckRunQueryVariables,
     ): Promise<GetCommitStatusAndCheckRunQuery> {
         const result = await this.client.query<GetCommitStatusAndCheckRunQuery>({
             query: GetCommitStatusAndCheckRun,
@@ -123,7 +123,7 @@ export class GitHubClient {
     }
 
     async getCheckRunAnnotations(
-        variables: GetCheckRunAnnotationsQueryVariables
+        variables: GetCheckRunAnnotationsQueryVariables,
     ): Promise<GetCheckRunAnnotationsQuery> {
         const result = await this.client.query<GetCheckRunAnnotationsQuery>({
             query: GetCheckRunAnnotations,
@@ -173,7 +173,7 @@ export class GitHubClient {
     }
 
     async addPullRequestReviewDraft(
-        variables: AddPullRequestReviewDraftMutationVariables
+        variables: AddPullRequestReviewDraftMutationVariables,
     ): Promise<AddPullRequestReviewDraftMutation | null | undefined> {
         const result = await this.client.mutate<AddPullRequestReviewDraftMutation>({
             mutation: AddPullRequestReviewDraft,
@@ -183,7 +183,7 @@ export class GitHubClient {
     }
 
     async submitPullRequestReview(
-        variables: SubmitPullRequestReviewMutationVariables
+        variables: SubmitPullRequestReviewMutationVariables,
     ): Promise<SubmitPullRequestReviewMutation | null | undefined> {
         const result = await this.client.mutate<SubmitPullRequestReviewMutation>({
             mutation: SubmitPullRequestReview,
@@ -193,7 +193,7 @@ export class GitHubClient {
     }
 
     async deletePullRequestReview(
-        variables: DeletePullRequestReviewMutationVariables
+        variables: DeletePullRequestReviewMutationVariables,
     ): Promise<DeletePullRequestReviewMutation | null | undefined> {
         const result = await this.client.mutate<DeletePullRequestReviewMutation>({
             mutation: DeletePullRequestReview,
@@ -203,7 +203,7 @@ export class GitHubClient {
     }
 
     async addPullRequestReviewThread(
-        variables: AddPullRequestReviewThreadMutationVariables
+        variables: AddPullRequestReviewThreadMutationVariables,
     ): Promise<AddPullRequestReviewThreadMutation | null | undefined> {
         const result = await this.client.mutate<AddPullRequestReviewThreadMutation>({
             mutation: AddPullRequestReviewThread,
@@ -213,7 +213,7 @@ export class GitHubClient {
     }
 
     async deletePullRequestReviewComment(
-        variables: DeletePullRequestReviewCommentMutationVariables
+        variables: DeletePullRequestReviewCommentMutationVariables,
     ): Promise<DeletePullRequestReviewCommentMutation | null | undefined> {
         const result = await this.client.mutate<DeletePullRequestReviewCommentMutation>({
             mutation: DeletePullRequestReviewComment,
@@ -223,7 +223,7 @@ export class GitHubClient {
     }
 
     async resolvePullRequestReviewThread(
-        variables: ResolvePullRequestReviewThreadMutationVariables
+        variables: ResolvePullRequestReviewThreadMutationVariables,
     ): Promise<ResolvePullRequestReviewThreadMutation | null | undefined> {
         const result = await this.client.mutate<ResolvePullRequestReviewThreadMutation>({
             mutation: ResolvePullRequestReviewThread,
@@ -233,7 +233,7 @@ export class GitHubClient {
     }
 
     async getPullRequestReviewThreads(
-        variables: GetPullRequestReviewThreadsQueryVariables
+        variables: GetPullRequestReviewThreadsQueryVariables,
     ): Promise<GetPullRequestReviewThreadsQuery> {
         const result = await this.client.query<GetPullRequestReviewThreadsQuery>({
             query: GetPullRequestReviewThreads,

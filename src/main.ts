@@ -19,7 +19,6 @@ async function run() {
             reporter = new CheckRunReporter();
         }
         await reporter.report(option, lintResults);
-        const a: any = "a";
     } catch (error) {
         if (error instanceof Error) {
             core.setFailed(error.message);

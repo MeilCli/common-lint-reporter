@@ -11,7 +11,7 @@ export class FilterByFileChangedOperator extends Operator<OperatorOption> {
             return [];
         }
         return lintResults.filter(
-            (x) => api.changedFiles.filter((y) => y.path == context.github.trimPath(x.path)).length != 0
+            (x) => api.changedFiles.filter((y) => y.path == context.github.trimPath(x.path)).length != 0,
         );
     }
 }

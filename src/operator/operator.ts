@@ -53,7 +53,7 @@ export abstract class Operator<TOption extends OperatorOption> {
     protected async createContext(
         option: TOption,
         lintResults: LintResult[],
-        forceAccessApi = false
+        forceAccessApi = false,
     ): Promise<Context> {
         return {
             source: lintResults,

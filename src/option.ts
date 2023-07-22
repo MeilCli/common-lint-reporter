@@ -1,5 +1,4 @@
 import * as core from "@actions/core";
-import { report } from "process";
 
 export interface CommonOption {
     githubToken: string;

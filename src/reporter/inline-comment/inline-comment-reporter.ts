@@ -15,7 +15,7 @@ export class InlineCommentReporter extends CommentReporter {
         option: Option,
         pullRequest: PullRequest,
         loginUser: LoginUser,
-        lintResults: LintResult[]
+        lintResults: LintResult[],
     ) {
         const inlineLintResults = lintResults.filter((x) => x.startLine != undefined);
         const notInlineLintResults = lintResults.filter((x) => x.startLine == undefined);
@@ -25,7 +25,7 @@ export class InlineCommentReporter extends CommentReporter {
             option,
             pullRequest,
             loginUser,
-            inlineLintResults
+            inlineLintResults,
         );
         notInlineLintResults.push(...cannotReportedLintResults);
         await super.reportComment(client, context, option, pullRequest, loginUser, notInlineLintResults);
@@ -38,7 +38,7 @@ export class InlineCommentReporter extends CommentReporter {
         option: Option,
         pullRequest: PullRequest,
         loginUser: LoginUser,
-        lintResults: LintResult[]
+        lintResults: LintResult[],
     ): Promise<LintResult[]> {
         const reviewThreads = await getPullRequestReviewThreadsWithPaging(client, {
             owner: context.owner(),
@@ -49,10 +49,10 @@ export class InlineCommentReporter extends CommentReporter {
             client,
             option,
             loginUser,
-            reviewThreads
+            reviewThreads,
         );
         const newLintResults = lintResults.filter(
-            (x) => pastReviewThreads.filter((y) => equalsInlineComment(y, x, context, option.reportName)).length == 0
+            (x) => pastReviewThreads.filter((y) => equalsInlineComment(y, x, context, option.reportName)).length == 0,
         );
 
         const pullRequestReview = await client.addPullRequestReviewDraft({
@@ -114,7 +114,7 @@ export class InlineCommentReporter extends CommentReporter {
         client: GitHubClient,
         option: Option,
         loginUser: LoginUser,
-        reviewThreads: GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNode[]
+        reviewThreads: GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNode[],
     ): Promise<GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNode[]> {
         const result: GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNode[] = [];
         for (const reviewThread of reviewThreads) {

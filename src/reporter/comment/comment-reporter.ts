@@ -33,7 +33,7 @@ export class CommentReporter implements Reporter {
             commitSha: context.commitSha(),
         });
         const foundSameCheckRun = statusAndCheckRuns.find(
-            (x) => x.__typename == "CheckRun" && x.name == option.reportName
+            (x) => x.__typename == "CheckRun" && x.name == option.reportName,
         );
 
         if (foundSameCheckRun != undefined) {
@@ -110,7 +110,7 @@ export class CommentReporter implements Reporter {
         option: Option,
         pullRequest: PullRequest,
         loginUser: LoginUser,
-        lintResults: LintResult[]
+        lintResults: LintResult[],
     ) {
         const comments = await getPullRequestCommentsWithPaging(client, {
             owner: context.owner(),

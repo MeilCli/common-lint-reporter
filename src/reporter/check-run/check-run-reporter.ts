@@ -28,7 +28,7 @@ export class CheckRunReporter implements Reporter {
             commitSha: context.commitSha(),
         });
         const foundSameCheckRun = statusAndCheckRuns.find(
-            (x) => x.__typename == "CheckRun" && x.name == option.reportName
+            (x) => x.__typename == "CheckRun" && x.name == option.reportName,
         );
 
         if (foundSameCheckRun != undefined) {
@@ -70,13 +70,13 @@ export class CheckRunReporter implements Reporter {
         repositoryId: string,
         checkRunId: string,
         lintResults: LintResult[],
-        pastAnnotations: GetCheckRunAnnotationsQueryCheckRunAnnotationsNode[]
+        pastAnnotations: GetCheckRunAnnotationsQueryCheckRunAnnotationsNode[],
     ) {
         const batchSize = 50;
         let currentIndex = 0;
         const rawAnnotations = this.convertToCheckAnnotationData(context, lintResults);
         const newAnnotations = rawAnnotations.filter(
-            (x) => pastAnnotations.filter((y) => equalsAnnotation(y, x)).length == 0
+            (x) => pastAnnotations.filter((y) => equalsAnnotation(y, x)).length == 0,
         );
         while (currentIndex + batchSize < newAnnotations.length) {
             const batchNumber = `${currentIndex / batchSize + 1}/${Math.ceil(newAnnotations.length / batchSize)}`;

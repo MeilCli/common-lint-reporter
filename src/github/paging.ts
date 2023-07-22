@@ -38,12 +38,12 @@ async function getResponseWithPaging<
     TResponse,
     TPageInfo extends { hasNextPage: boolean; endCursor?: Maybe<string> | undefined },
     TNode,
-    TNodes extends Array<TNode | null | undefined>
+    TNodes extends Array<TNode | null | undefined>,
 >(
     variables: TVariables,
     getResponse: (variables: TVariables) => Promise<TResponse>,
     selectorPageInfo: (response: TResponse) => TPageInfo | null | undefined,
-    selectorNodes: (response: TResponse) => TNodes | null | undefined
+    selectorNodes: (response: TResponse) => TNodes | null | undefined,
 ): Promise<TNode[]> {
     const result: TNode[] = [];
 
@@ -94,7 +94,7 @@ async function getResponseWithPaging<
 
 export async function getPullRequestChangedFileWithPaging(
     client: GitHubClient,
-    variables: GetPullRequestChangedFileQueryVariables
+    variables: GetPullRequestChangedFileQueryVariables,
 ): Promise<GetPullRequestChangedFileQueryPullRequestFileNode[]> {
     return getResponseWithPaging<
         GetPullRequestChangedFileQueryVariables,
@@ -106,13 +106,13 @@ export async function getPullRequestChangedFileWithPaging(
         variables,
         (variables) => client.getPullRequestChangedFile(variables),
         (response) => response.repository?.pullRequest?.files?.pageInfo,
-        (response) => response.repository?.pullRequest?.files?.nodes
+        (response) => response.repository?.pullRequest?.files?.nodes,
     );
 }
 
 export async function getCommitStatusAndCheckRunWithPaging(
     client: GitHubClient,
-    variables: GetCommitStatusAndCheckRunQueryVariables
+    variables: GetCommitStatusAndCheckRunQueryVariables,
 ): Promise<GetCommitStatusAndCheckRunQueryCommitStatusCheckRollupContextsNode[]> {
     return getResponseWithPaging<
         GetCommitStatusAndCheckRunQueryVariables,
@@ -134,13 +134,13 @@ export async function getCommitStatusAndCheckRunWithPaging(
                 return null;
             }
             return response.repository.object.statusCheckRollup?.contexts.nodes;
-        }
+        },
     );
 }
 
 export async function getCheckRunAnnotationsWithPaging(
     client: GitHubClient,
-    variables: GetCheckRunAnnotationsQueryVariables
+    variables: GetCheckRunAnnotationsQueryVariables,
 ): Promise<GetCheckRunAnnotationsQueryCheckRunAnnotationsNode[]> {
     return getResponseWithPaging<
         GetCheckRunAnnotationsQueryVariables,
@@ -162,13 +162,13 @@ export async function getCheckRunAnnotationsWithPaging(
                 return null;
             }
             return response.node.annotations?.nodes;
-        }
+        },
     );
 }
 
 export async function getPullRequestCommentsWithPaging(
     client: GitHubClient,
-    variables: GetPullRequestCommentQueryVariables
+    variables: GetPullRequestCommentQueryVariables,
 ): Promise<GetPullRequestCommentQueryPullRequestCommentsNode[]> {
     return getResponseWithPaging<
         GetPullRequestCommentQueryVariables,
@@ -180,13 +180,13 @@ export async function getPullRequestCommentsWithPaging(
         variables,
         (variables) => client.getPullRequestComments(variables),
         (response) => response.repository?.pullRequest?.comments.pageInfo,
-        (response) => response.repository?.pullRequest?.comments.nodes
+        (response) => response.repository?.pullRequest?.comments.nodes,
     );
 }
 
 export async function getPullRequestReviewThreadsWithPaging(
     client: GitHubClient,
-    variables: GetPullRequestReviewThreadsQueryVariables
+    variables: GetPullRequestReviewThreadsQueryVariables,
 ): Promise<GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNode[]> {
     return getResponseWithPaging<
         GetPullRequestReviewThreadsQueryVariables,
@@ -198,6 +198,6 @@ export async function getPullRequestReviewThreadsWithPaging(
         variables,
         (variables) => client.getPullRequestReviewThreads(variables),
         (response) => response.repository?.pullRequest?.reviewThreads.pageInfo,
-        (response) => response.repository?.pullRequest?.reviewThreads.nodes
+        (response) => response.repository?.pullRequest?.reviewThreads.nodes,
     );
 }

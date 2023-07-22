@@ -67,7 +67,7 @@ async function run() {
             }
             if (s.startLine !== e.startLine) {
                 core.setFailed(
-                    `source startLine(${s.startLine}) is not match expect startLine(${e.startLine}) at index ${i}`
+                    `source startLine(${s.startLine}) is not match expect startLine(${e.startLine}) at index ${i}`,
                 );
                 return;
             }
@@ -77,13 +77,13 @@ async function run() {
             }
             if (s.startColumn !== e.startColumn) {
                 core.setFailed(
-                    `source startColumn(${s.startColumn}) is not match expect startColumn(${e.startColumn}) at index ${i}`
+                    `source startColumn(${s.startColumn}) is not match expect startColumn(${e.startColumn}) at index ${i}`,
                 );
                 return;
             }
             if (s.endColumn !== e.endColumn) {
                 core.setFailed(
-                    `source endColumn(${s.endColumn}) is not match expect endColumn(${e.endColumn}) at index ${i}`
+                    `source endColumn(${s.endColumn}) is not match expect endColumn(${e.endColumn}) at index ${i}`,
                 );
                 return;
             }

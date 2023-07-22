@@ -43,7 +43,7 @@ export function createAnnotation(context: GitHubContext, lintResult: LintResult)
 
 export function equalsAnnotation(
     left: GetCheckRunAnnotationsQueryCheckRunAnnotationsNode,
-    right: CheckAnnotationData
+    right: CheckAnnotationData,
 ): boolean {
     if (left.path !== right.path) {
         return false;
