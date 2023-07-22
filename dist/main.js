@@ -437,7 +437,6 @@ async function run() {
             reporter = new check_run_reporter_1.CheckRunReporter();
         }
         await reporter.report(option, lintResults);
-        const a = "a";
     }
     catch (error) {
         if (error instanceof Error) {
