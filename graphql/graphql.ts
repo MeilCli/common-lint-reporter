@@ -8109,7 +8109,7 @@ export enum IpAllowListForInstalledAppsEnabledSettingValue {
 export type IpAllowListOwner = App | Enterprise | Organization;
 
 /** An Issue is a place to discuss ideas, enhancements, tasks, and bugs for a project. */
-export type Issue = Assignable & Closable & Comment & Deletable & Labelable & Lockable & Node & ProjectV2Owner & Reactable & RepositoryNode & Subscribable & UniformResourceLocatable & Updatable & UpdatableComment & {
+export type Issue = Assignable & Closable & Comment & Deletable & Labelable & Lockable & Node & ProjectV2Owner & Reactable & RepositoryNode & Subscribable & SubscribableThread & UniformResourceLocatable & Updatable & UpdatableComment & {
   __typename?: 'Issue';
   /** Reason that the conversation was locked. */
   activeLockReason?: Maybe<LockReason>;
@@ -8231,6 +8231,10 @@ export type Issue = Assignable & Closable & Comment & Deletable & Labelable & Lo
   viewerDidAuthor: Scalars['Boolean']['output'];
   /** Identifies if the viewer is watching, not watching, or ignoring the subscribable entity. */
   viewerSubscription?: Maybe<SubscriptionState>;
+  /** Identifies the viewer's thread subscription form action. */
+  viewerThreadSubscriptionFormAction?: Maybe<ThreadSubscriptionFormAction>;
+  /** Identifies the viewer's thread subscription status. */
+  viewerThreadSubscriptionStatus?: Maybe<ThreadSubscriptionState>;
 };
 
 
@@ -24534,6 +24538,15 @@ export type Subscribable = {
   viewerSubscription?: Maybe<SubscriptionState>;
 };
 
+/** Entities that can be subscribed to for web and email notifications. */
+export type SubscribableThread = {
+  id: Scalars['ID']['output'];
+  /** Identifies the viewer's thread subscription form action. */
+  viewerThreadSubscriptionFormAction?: Maybe<ThreadSubscriptionFormAction>;
+  /** Identifies the viewer's thread subscription status. */
+  viewerThreadSubscriptionStatus?: Maybe<ThreadSubscriptionState>;
+};
+
 /** Represents a 'subscribed' event on a given `Subscribable`. */
 export type SubscribedEvent = Node & {
   __typename?: 'SubscribedEvent';
@@ -25602,6 +25615,38 @@ export type TextMatchHighlight = {
   /** The text matched. */
   text: Scalars['String']['output'];
 };
+
+/** The possible states of a thread subscription form action */
+export enum ThreadSubscriptionFormAction {
+  /** The User cannot subscribe or unsubscribe to the thread */
+  None = 'NONE',
+  /** The User can subscribe to the thread */
+  Subscribe = 'SUBSCRIBE',
+  /** The User can unsubscribe to the thread */
+  Unsubscribe = 'UNSUBSCRIBE'
+}
+
+/** The possible states of a subscription. */
+export enum ThreadSubscriptionState {
+  /** The subscription status is currently disabled. */
+  Disabled = 'DISABLED',
+  /** The User is never notified because they are ignoring the list */
+  IgnoringList = 'IGNORING_LIST',
+  /** The User is never notified because they are ignoring the thread */
+  IgnoringThread = 'IGNORING_THREAD',
+  /** The User is not recieving notifications from this thread */
+  None = 'NONE',
+  /** The User is notified becuase they are watching the list */
+  SubscribedToList = 'SUBSCRIBED_TO_LIST',
+  /** The User is notified because they are subscribed to the thread */
+  SubscribedToThread = 'SUBSCRIBED_TO_THREAD',
+  /** The User is notified because they chose custom settings for this thread. */
+  SubscribedToThreadEvents = 'SUBSCRIBED_TO_THREAD_EVENTS',
+  /** The User is notified because they chose custom settings for this thread. */
+  SubscribedToThreadType = 'SUBSCRIBED_TO_THREAD_TYPE',
+  /** The subscription status is currently unavailable. */
+  Unavailable = 'UNAVAILABLE'
+}
 
 /** A topic aggregates entities that are related to a subject. */
 export type Topic = Node & Starrable & {
@@ -28680,6 +28725,7 @@ export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
   Sponsorable: ( Organization ) | ( User );
   Starrable: ( Gist ) | ( Omit<Repository, 'issueOrPullRequest'> & { issueOrPullRequest?: Maybe<RefType['IssueOrPullRequest']> } ) | ( Topic );
   Subscribable: ( Commit ) | ( Discussion ) | ( Issue ) | ( PullRequest ) | ( Omit<Repository, 'issueOrPullRequest'> & { issueOrPullRequest?: Maybe<RefType['IssueOrPullRequest']> } ) | ( Team ) | ( TeamDiscussion );
+  SubscribableThread: ( Issue );
   TeamAuditEntryData: ( OrgRestoreMemberMembershipTeamAuditEntryData ) | ( Omit<TeamAddMemberAuditEntry, 'actor'> & { actor?: Maybe<RefType['AuditEntryActor']> } ) | ( Omit<TeamAddRepositoryAuditEntry, 'actor'> & { actor?: Maybe<RefType['AuditEntryActor']> } ) | ( Omit<TeamChangeParentTeamAuditEntry, 'actor'> & { actor?: Maybe<RefType['AuditEntryActor']> } ) | ( Omit<TeamRemoveMemberAuditEntry, 'actor'> & { actor?: Maybe<RefType['AuditEntryActor']> } ) | ( Omit<TeamRemoveRepositoryAuditEntry, 'actor'> & { actor?: Maybe<RefType['AuditEntryActor']> } );
   TopicAuditEntryData: ( Omit<RepoAddTopicAuditEntry, 'actor'> & { actor?: Maybe<RefType['AuditEntryActor']> } ) | ( Omit<RepoRemoveTopicAuditEntry, 'actor'> & { actor?: Maybe<RefType['AuditEntryActor']> } );
   UniformResourceLocatable: ( Bot ) | ( CheckRun ) | ( Omit<ClosedEvent, 'closer'> & { closer?: Maybe<RefType['Closer']> } ) | ( Commit ) | ( ConvertToDraftEvent ) | ( Omit<CrossReferencedEvent, 'source' | 'target'> & { source: RefType['ReferencedSubject'], target: RefType['ReferencedSubject'] } ) | ( Gist ) | ( Issue ) | ( Mannequin ) | ( MergedEvent ) | ( Milestone ) | ( Organization ) | ( PullRequest ) | ( PullRequestCommit ) | ( ReadyForReviewEvent ) | ( Release ) | ( Omit<Repository, 'issueOrPullRequest'> & { issueOrPullRequest?: Maybe<RefType['IssueOrPullRequest']> } ) | ( RepositoryTopic ) | ( ReviewDismissedEvent ) | ( TeamDiscussion ) | ( TeamDiscussionComment ) | ( User ) | ( Workflow ) | ( WorkflowRun ) | ( WorkflowRunFile );
@@ -29921,6 +29967,7 @@ export type ResolversTypes = {
   SubmoduleConnection: ResolverTypeWrapper<SubmoduleConnection>;
   SubmoduleEdge: ResolverTypeWrapper<SubmoduleEdge>;
   Subscribable: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Subscribable']>;
+  SubscribableThread: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['SubscribableThread']>;
   SubscribedEvent: ResolverTypeWrapper<SubscribedEvent>;
   SubscriptionState: SubscriptionState;
   SuggestedReviewer: ResolverTypeWrapper<SuggestedReviewer>;
@@ -29963,6 +30010,8 @@ export type ResolversTypes = {
   TeamRole: TeamRole;
   TextMatch: ResolverTypeWrapper<TextMatch>;
   TextMatchHighlight: ResolverTypeWrapper<TextMatchHighlight>;
+  ThreadSubscriptionFormAction: ThreadSubscriptionFormAction;
+  ThreadSubscriptionState: ThreadSubscriptionState;
   Topic: ResolverTypeWrapper<Topic>;
   TopicAuditEntryData: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['TopicAuditEntryData']>;
   TopicSuggestionDeclineReason: TopicSuggestionDeclineReason;
@@ -31199,6 +31248,7 @@ export type ResolversParentTypes = {
   SubmoduleConnection: SubmoduleConnection;
   SubmoduleEdge: SubmoduleEdge;
   Subscribable: ResolversInterfaceTypes<ResolversParentTypes>['Subscribable'];
+  SubscribableThread: ResolversInterfaceTypes<ResolversParentTypes>['SubscribableThread'];
   SubscribedEvent: SubscribedEvent;
   SuggestedReviewer: SuggestedReviewer;
   Tag: Tag;
@@ -34311,6 +34361,8 @@ export type IssueResolvers<ContextType = any, ParentType extends ResolversParent
   viewerCannotUpdateReasons?: Resolver<Array<ResolversTypes['CommentCannotUpdateReason']>, ParentType, ContextType>;
   viewerDidAuthor?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   viewerSubscription?: Resolver<Maybe<ResolversTypes['SubscriptionState']>, ParentType, ContextType>;
+  viewerThreadSubscriptionFormAction?: Resolver<Maybe<ResolversTypes['ThreadSubscriptionFormAction']>, ParentType, ContextType>;
+  viewerThreadSubscriptionStatus?: Resolver<Maybe<ResolversTypes['ThreadSubscriptionState']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -39804,6 +39856,13 @@ export type SubscribableResolvers<ContextType = any, ParentType extends Resolver
   viewerSubscription?: Resolver<Maybe<ResolversTypes['SubscriptionState']>, ParentType, ContextType>;
 };
 
+export type SubscribableThreadResolvers<ContextType = any, ParentType extends ResolversParentTypes['SubscribableThread'] = ResolversParentTypes['SubscribableThread']> = {
+  __resolveType: TypeResolveFn<'Issue', ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  viewerThreadSubscriptionFormAction?: Resolver<Maybe<ResolversTypes['ThreadSubscriptionFormAction']>, ParentType, ContextType>;
+  viewerThreadSubscriptionStatus?: Resolver<Maybe<ResolversTypes['ThreadSubscriptionState']>, ParentType, ContextType>;
+};
+
 export type SubscribedEventResolvers<ContextType = any, ParentType extends ResolversParentTypes['SubscribedEvent'] = ResolversParentTypes['SubscribedEvent']> = {
   actor?: Resolver<Maybe<ResolversTypes['Actor']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
@@ -41888,6 +41947,7 @@ export type Resolvers<ContextType = any> = {
   SubmoduleConnection?: SubmoduleConnectionResolvers<ContextType>;
   SubmoduleEdge?: SubmoduleEdgeResolvers<ContextType>;
   Subscribable?: SubscribableResolvers<ContextType>;
+  SubscribableThread?: SubscribableThreadResolvers<ContextType>;
   SubscribedEvent?: SubscribedEventResolvers<ContextType>;
   SuggestedReviewer?: SuggestedReviewerResolvers<ContextType>;
   Tag?: TagResolvers<ContextType>;
