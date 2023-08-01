@@ -13877,6 +13877,7 @@ export type OrganizationRepositoriesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  hasIssuesEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   isArchived?: InputMaybe<Scalars['Boolean']['input']>;
   isFork?: InputMaybe<Scalars['Boolean']['input']>;
   isLocked?: InputMaybe<Scalars['Boolean']['input']>;
@@ -20639,6 +20640,7 @@ export type RepositoryForksArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  hasIssuesEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   isLocked?: InputMaybe<Scalars['Boolean']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<RepositoryOrder>;
@@ -21453,6 +21455,7 @@ export type RepositoryOwnerRepositoriesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  hasIssuesEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   isArchived?: InputMaybe<Scalars['Boolean']['input']>;
   isFork?: InputMaybe<Scalars['Boolean']['input']>;
   isLocked?: InputMaybe<Scalars['Boolean']['input']>;
@@ -25686,6 +25689,7 @@ export type TopicRepositoriesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  hasIssuesEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   isLocked?: InputMaybe<Scalars['Boolean']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<RepositoryOrder>;
@@ -27944,6 +27948,7 @@ export type UserRepositoriesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  hasIssuesEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   isArchived?: InputMaybe<Scalars['Boolean']['input']>;
   isFork?: InputMaybe<Scalars['Boolean']['input']>;
   isLocked?: InputMaybe<Scalars['Boolean']['input']>;
@@ -27960,6 +27965,7 @@ export type UserRepositoriesContributedToArgs = {
   before?: InputMaybe<Scalars['String']['input']>;
   contributionTypes?: InputMaybe<Array<InputMaybe<RepositoryContributionType>>>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  hasIssues?: InputMaybe<Scalars['Boolean']['input']>;
   includeUserRepositories?: InputMaybe<Scalars['Boolean']['input']>;
   isLocked?: InputMaybe<Scalars['Boolean']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
@@ -28137,6 +28143,7 @@ export type UserWatchingArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+  hasIssuesEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   isLocked?: InputMaybe<Scalars['Boolean']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<RepositoryOrder>;
