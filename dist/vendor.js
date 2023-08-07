@@ -1179,7 +1179,7 @@ exports.getOctokitOptions = exports.GitHub = exports.defaults = exports.context 
 const Context = __importStar(__webpack_require__(37));
 const Utils = __importStar(__webpack_require__(3460));
 // octokit + plugins
-const core_1 = __webpack_require__(8);
+const core_1 = __webpack_require__(5277);
 const plugin_rest_endpoint_methods_1 = __webpack_require__(9401);
 const plugin_paginate_rest_1 = __webpack_require__(5745);
 exports.context = new Context.Context();
@@ -3171,7 +3171,7 @@ exports.checkBypass = checkBypass;
 
 /***/ }),
 
-/***/ 8:
+/***/ 5277:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -6067,455 +6067,6 @@ legacyRestEndpointMethods.VERSION = VERSION;
 
 /***/ }),
 
-/***/ 8751:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   g7: () => (/* binding */ Slot)
-/* harmony export */ });
-/* unused harmony exports asyncFromGen, bind, noContext, setTimeout, wrapYieldingFiberMethods */
-// This currentContext variable will only be used if the makeSlotClass
-// function is called, which happens only if this is the first copy of the
-// @wry/context package to be imported.
-var currentContext = null;
-// This unique internal object is used to denote the absence of a value
-// for a given Slot, and is never exposed to outside code.
-var MISSING_VALUE = {};
-var idCounter = 1;
-// Although we can't do anything about the cost of duplicated code from
-// accidentally bundling multiple copies of the @wry/context package, we can
-// avoid creating the Slot class more than once using makeSlotClass.
-var makeSlotClass = function () { return /** @class */ (function () {
-    function Slot() {
-        // If you have a Slot object, you can find out its slot.id, but you cannot
-        // guess the slot.id of a Slot you don't have access to, thanks to the
-        // randomized suffix.
-        this.id = [
-            "slot",
-            idCounter++,
-            Date.now(),
-            Math.random().toString(36).slice(2),
-        ].join(":");
-    }
-    Slot.prototype.hasValue = function () {
-        for (var context_1 = currentContext; context_1; context_1 = context_1.parent) {
-            // We use the Slot object iself as a key to its value, which means the
-            // value cannot be obtained without a reference to the Slot object.
-            if (this.id in context_1.slots) {
-                var value = context_1.slots[this.id];
-                if (value === MISSING_VALUE)
-                    break;
-                if (context_1 !== currentContext) {
-                    // Cache the value in currentContext.slots so the next lookup will
-                    // be faster. This caching is safe because the tree of contexts and
-                    // the values of the slots are logically immutable.
-                    currentContext.slots[this.id] = value;
-                }
-                return true;
-            }
-        }
-        if (currentContext) {
-            // If a value was not found for this Slot, it's never going to be found
-            // no matter how many times we look it up, so we might as well cache
-            // the absence of the value, too.
-            currentContext.slots[this.id] = MISSING_VALUE;
-        }
-        return false;
-    };
-    Slot.prototype.getValue = function () {
-        if (this.hasValue()) {
-            return currentContext.slots[this.id];
-        }
-    };
-    Slot.prototype.withValue = function (value, callback, 
-    // Given the prevalence of arrow functions, specifying arguments is likely
-    // to be much more common than specifying `this`, hence this ordering:
-    args, thisArg) {
-        var _a;
-        var slots = (_a = {
-                __proto__: null
-            },
-            _a[this.id] = value,
-            _a);
-        var parent = currentContext;
-        currentContext = { parent: parent, slots: slots };
-        try {
-            // Function.prototype.apply allows the arguments array argument to be
-            // omitted or undefined, so args! is fine here.
-            return callback.apply(thisArg, args);
-        }
-        finally {
-            currentContext = parent;
-        }
-    };
-    // Capture the current context and wrap a callback function so that it
-    // reestablishes the captured context when called.
-    Slot.bind = function (callback) {
-        var context = currentContext;
-        return function () {
-            var saved = currentContext;
-            try {
-                currentContext = context;
-                return callback.apply(this, arguments);
-            }
-            finally {
-                currentContext = saved;
-            }
-        };
-    };
-    // Immediately run a callback function without any captured context.
-    Slot.noContext = function (callback, 
-    // Given the prevalence of arrow functions, specifying arguments is likely
-    // to be much more common than specifying `this`, hence this ordering:
-    args, thisArg) {
-        if (currentContext) {
-            var saved = currentContext;
-            try {
-                currentContext = null;
-                // Function.prototype.apply allows the arguments array argument to be
-                // omitted or undefined, so args! is fine here.
-                return callback.apply(thisArg, args);
-            }
-            finally {
-                currentContext = saved;
-            }
-        }
-        else {
-            return callback.apply(thisArg, args);
-        }
-    };
-    return Slot;
-}()); };
-function maybe(fn) {
-    try {
-        return fn();
-    }
-    catch (ignored) { }
-}
-// We store a single global implementation of the Slot class as a permanent
-// non-enumerable property of the globalThis object. This obfuscation does
-// nothing to prevent access to the Slot class, but at least it ensures the
-// implementation (i.e. currentContext) cannot be tampered with, and all copies
-// of the @wry/context package (hopefully just one) will share the same Slot
-// implementation. Since the first copy of the @wry/context package to be
-// imported wins, this technique imposes a steep cost for any future breaking
-// changes to the Slot class.
-var globalKey = "@wry/context:Slot";
-var host = 
-// Prefer globalThis when available.
-// https://github.com/benjamn/wryware/issues/347
-maybe(function () { return globalThis; }) ||
-    // Fall back to global, which works in Node.js and may be converted by some
-    // bundlers to the appropriate identifier (window, self, ...) depending on the
-    // bundling target. https://github.com/endojs/endo/issues/576#issuecomment-1178515224
-    maybe(function () { return global; }) ||
-    // Otherwise, use a dummy host that's local to this module. We used to fall
-    // back to using the Array constructor as a namespace, but that was flagged in
-    // https://github.com/benjamn/wryware/issues/347, and can be avoided.
-    Object.create(null);
-// Whichever globalHost we're using, make TypeScript happy about the additional
-// globalKey property.
-var globalHost = host;
-var Slot = globalHost[globalKey] ||
-    // Earlier versions of this package stored the globalKey property on the Array
-    // constructor, so we check there as well, to prevent Slot class duplication.
-    Array[globalKey] ||
-    (function (Slot) {
-        try {
-            Object.defineProperty(globalHost, globalKey, {
-                value: Slot,
-                enumerable: false,
-                writable: false,
-                // When it was possible for globalHost to be the Array constructor (a
-                // legacy Slot dedup strategy), it was important for the property to be
-                // configurable:true so it could be deleted. That does not seem to be as
-                // important when globalHost is the global object, but I don't want to
-                // cause similar problems again, and configurable:true seems safest.
-                // https://github.com/endojs/endo/issues/576#issuecomment-1178274008
-                configurable: true
-            });
-        }
-        finally {
-            return Slot;
-        }
-    })(makeSlotClass());
-
-var bind = Slot.bind, noContext = Slot.noContext;
-function setTimeoutWithContext(callback, delay) {
-    return setTimeout(bind(callback), delay);
-}
-// Turn any generator function into an async function (using yield instead
-// of await), with context automatically preserved across yields.
-function asyncFromGen(genFn) {
-    return function () {
-        var gen = genFn.apply(this, arguments);
-        var boundNext = bind(gen.next);
-        var boundThrow = bind(gen.throw);
-        return new Promise(function (resolve, reject) {
-            function invoke(method, argument) {
-                try {
-                    var result = method.call(gen, argument);
-                }
-                catch (error) {
-                    return reject(error);
-                }
-                var next = result.done ? resolve : invokeNext;
-                if (isPromiseLike(result.value)) {
-                    result.value.then(next, result.done ? reject : invokeThrow);
-                }
-                else {
-                    next(result.value);
-                }
-            }
-            var invokeNext = function (value) { return invoke(boundNext, value); };
-            var invokeThrow = function (error) { return invoke(boundThrow, error); };
-            invokeNext();
-        });
-    };
-}
-function isPromiseLike(value) {
-    return value && typeof value.then === "function";
-}
-// If you use the fibers npm package to implement coroutines in Node.js,
-// you should call this function at least once to ensure context management
-// remains coherent across any yields.
-var wrappedFibers = (/* unused pure expression or super */ null && ([]));
-function wrapYieldingFiberMethods(Fiber) {
-    // There can be only one implementation of Fiber per process, so this array
-    // should never grow longer than one element.
-    if (wrappedFibers.indexOf(Fiber) < 0) {
-        var wrap = function (obj, method) {
-            var fn = obj[method];
-            obj[method] = function () {
-                return noContext(fn, arguments, this);
-            };
-        };
-        // These methods can yield, according to
-        // https://github.com/laverdet/node-fibers/blob/ddebed9b8ae3883e57f822e2108e6943e5c8d2a8/fibers.js#L97-L100
-        wrap(Fiber, "yield");
-        wrap(Fiber.prototype, "run");
-        wrap(Fiber.prototype, "throwInto");
-        wrappedFibers.push(Fiber);
-    }
-    return Fiber;
-}
-
-
-//# sourceMappingURL=context.esm.js.map
-
-
-/***/ }),
-
-/***/ 2152:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   D: () => (/* binding */ equal)
-/* harmony export */ });
-/* unused harmony export default */
-var _a = Object.prototype, toString = _a.toString, hasOwnProperty = _a.hasOwnProperty;
-var fnToStr = Function.prototype.toString;
-var previousComparisons = new Map();
-/**
- * Performs a deep equality check on two JavaScript values, tolerating cycles.
- */
-function equal(a, b) {
-    try {
-        return check(a, b);
-    }
-    finally {
-        previousComparisons.clear();
-    }
-}
-function check(a, b) {
-    // If the two values are strictly equal, our job is easy.
-    if (a === b) {
-        return true;
-    }
-    // Object.prototype.toString returns a representation of the runtime type of
-    // the given value that is considerably more precise than typeof.
-    var aTag = toString.call(a);
-    var bTag = toString.call(b);
-    // If the runtime types of a and b are different, they could maybe be equal
-    // under some interpretation of equality, but for simplicity and performance
-    // we just return false instead.
-    if (aTag !== bTag) {
-        return false;
-    }
-    switch (aTag) {
-        case '[object Array]':
-            // Arrays are a lot like other objects, but we can cheaply compare their
-            // lengths as a short-cut before comparing their elements.
-            if (a.length !== b.length)
-                return false;
-        // Fall through to object case...
-        case '[object Object]': {
-            if (previouslyCompared(a, b))
-                return true;
-            var aKeys = definedKeys(a);
-            var bKeys = definedKeys(b);
-            // If `a` and `b` have a different number of enumerable keys, they
-            // must be different.
-            var keyCount = aKeys.length;
-            if (keyCount !== bKeys.length)
-                return false;
-            // Now make sure they have the same keys.
-            for (var k = 0; k < keyCount; ++k) {
-                if (!hasOwnProperty.call(b, aKeys[k])) {
-                    return false;
-                }
-            }
-            // Finally, check deep equality of all child properties.
-            for (var k = 0; k < keyCount; ++k) {
-                var key = aKeys[k];
-                if (!check(a[key], b[key])) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        case '[object Error]':
-            return a.name === b.name && a.message === b.message;
-        case '[object Number]':
-            // Handle NaN, which is !== itself.
-            if (a !== a)
-                return b !== b;
-        // Fall through to shared +a === +b case...
-        case '[object Boolean]':
-        case '[object Date]':
-            return +a === +b;
-        case '[object RegExp]':
-        case '[object String]':
-            return a == "" + b;
-        case '[object Map]':
-        case '[object Set]': {
-            if (a.size !== b.size)
-                return false;
-            if (previouslyCompared(a, b))
-                return true;
-            var aIterator = a.entries();
-            var isMap = aTag === '[object Map]';
-            while (true) {
-                var info = aIterator.next();
-                if (info.done)
-                    break;
-                // If a instanceof Set, aValue === aKey.
-                var _a = info.value, aKey = _a[0], aValue = _a[1];
-                // So this works the same way for both Set and Map.
-                if (!b.has(aKey)) {
-                    return false;
-                }
-                // However, we care about deep equality of values only when dealing
-                // with Map structures.
-                if (isMap && !check(aValue, b.get(aKey))) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        case '[object Uint16Array]':
-        case '[object Uint8Array]': // Buffer, in Node.js.
-        case '[object Uint32Array]':
-        case '[object Int32Array]':
-        case '[object Int8Array]':
-        case '[object Int16Array]':
-        case '[object ArrayBuffer]':
-            // DataView doesn't need these conversions, but the equality check is
-            // otherwise the same.
-            a = new Uint8Array(a);
-            b = new Uint8Array(b);
-        // Fall through...
-        case '[object DataView]': {
-            var len = a.byteLength;
-            if (len === b.byteLength) {
-                while (len-- && a[len] === b[len]) {
-                    // Keep looping as long as the bytes are equal.
-                }
-            }
-            return len === -1;
-        }
-        case '[object AsyncFunction]':
-        case '[object GeneratorFunction]':
-        case '[object AsyncGeneratorFunction]':
-        case '[object Function]': {
-            var aCode = fnToStr.call(a);
-            if (aCode !== fnToStr.call(b)) {
-                return false;
-            }
-            // We consider non-native functions equal if they have the same code
-            // (native functions require === because their code is censored).
-            // Note that this behavior is not entirely sound, since !== function
-            // objects with the same code can behave differently depending on
-            // their closure scope. However, any function can behave differently
-            // depending on the values of its input arguments (including this)
-            // and its calling context (including its closure scope), even
-            // though the function object is === to itself; and it is entirely
-            // possible for functions that are not === to behave exactly the
-            // same under all conceivable circumstances. Because none of these
-            // factors are statically decidable in JavaScript, JS function
-            // equality is not well-defined. This ambiguity allows us to
-            // consider the best possible heuristic among various imperfect
-            // options, and equating non-native functions that have the same
-            // code has enormous practical benefits, such as when comparing
-            // functions that are repeatedly passed as fresh function
-            // expressions within objects that are otherwise deeply equal. Since
-            // any function created from the same syntactic expression (in the
-            // same code location) will always stringify to the same code
-            // according to fnToStr.call, we can reasonably expect these
-            // repeatedly passed function expressions to have the same code, and
-            // thus behave "the same" (with all the caveats mentioned above),
-            // even though the runtime function objects are !== to one another.
-            return !endsWith(aCode, nativeCodeSuffix);
-        }
-    }
-    // Otherwise the values are not equal.
-    return false;
-}
-function definedKeys(obj) {
-    // Remember that the second argument to Array.prototype.filter will be
-    // used as `this` within the callback function.
-    return Object.keys(obj).filter(isDefinedKey, obj);
-}
-function isDefinedKey(key) {
-    return this[key] !== void 0;
-}
-var nativeCodeSuffix = "{ [native code] }";
-function endsWith(full, suffix) {
-    var fromIndex = full.length - suffix.length;
-    return fromIndex >= 0 &&
-        full.indexOf(suffix, fromIndex) === fromIndex;
-}
-function previouslyCompared(a, b) {
-    // Though cyclic references can make an object graph appear infinite from the
-    // perspective of a depth-first traversal, the graph still contains a finite
-    // number of distinct object references. We use the previousComparisons cache
-    // to avoid comparing the same pair of object references more than once, which
-    // guarantees termination (even if we end up comparing every object in one
-    // graph to every object in the other graph, which is extremely unlikely),
-    // while still allowing weird isomorphic structures (like rings with different
-    // lengths) a chance to pass the equality test.
-    var bSet = previousComparisons.get(a);
-    if (bSet) {
-        // Return true here because we can be sure false will be returned somewhere
-        // else if the objects are not equivalent.
-        if (bSet.has(b))
-            return true;
-    }
-    else {
-        previousComparisons.set(a, bSet = new Set);
-    }
-    bSet.add(b);
-    return false;
-}
-
-
-//# sourceMappingURL=equality.esm.js.map
-
-
-/***/ }),
-
 /***/ 5623:
 /***/ ((module) => {
 
@@ -7988,7 +7539,7 @@ module.exports = toXml;
 
 /***/ }),
 
-/***/ 7716:
+/***/ 4780:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 const util = __webpack_require__(7849);
@@ -8210,7 +7761,7 @@ exports.defaultOptions = defaultOptions;
 
 const util = __webpack_require__(7849);
 const xmlNode = __webpack_require__(6311);
-const readDocType = __webpack_require__(7716);
+const readDocType = __webpack_require__(4780);
 const toNumber = __webpack_require__(4153);
 
 const regx =
@@ -14206,608 +13757,6 @@ function onceStrict (fn) {
 
 /***/ }),
 
-/***/ 2667:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  dP: () => (/* binding */ dep),
-  re: () => (/* binding */ wrap)
-});
-
-// UNUSED EXPORTS: KeyTrie, asyncFromGen, bindContext, defaultMakeCacheKey, noContext, setTimeout
-
-;// CONCATENATED MODULE: ./node_modules/@wry/trie/lib/trie.esm.js
-// A [trie](https://en.wikipedia.org/wiki/Trie) data structure that holds
-// object keys weakly, yet can also hold non-object keys, unlike the
-// native `WeakMap`.
-// If no makeData function is supplied, the looked-up data will be an empty,
-// null-prototype Object.
-var defaultMakeData = function () { return Object.create(null); };
-// Useful for processing arguments objects as well as arrays.
-var _a = Array.prototype, forEach = _a.forEach, slice = _a.slice;
-var Trie = /** @class */ (function () {
-    function Trie(weakness, makeData) {
-        if (weakness === void 0) { weakness = true; }
-        if (makeData === void 0) { makeData = defaultMakeData; }
-        this.weakness = weakness;
-        this.makeData = makeData;
-    }
-    Trie.prototype.lookup = function () {
-        var array = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            array[_i] = arguments[_i];
-        }
-        return this.lookupArray(array);
-    };
-    Trie.prototype.lookupArray = function (array) {
-        var node = this;
-        forEach.call(array, function (key) { return node = node.getChildTrie(key); });
-        return node.data || (node.data = this.makeData(slice.call(array)));
-    };
-    Trie.prototype.getChildTrie = function (key) {
-        var map = this.weakness && isObjRef(key)
-            ? this.weak || (this.weak = new WeakMap())
-            : this.strong || (this.strong = new Map());
-        var child = map.get(key);
-        if (!child)
-            map.set(key, child = new Trie(this.weakness, this.makeData));
-        return child;
-    };
-    return Trie;
-}());
-function isObjRef(value) {
-    switch (typeof value) {
-        case "object":
-            if (value === null)
-                break;
-        // Fall through to return true...
-        case "function":
-            return true;
-    }
-    return false;
-}
-
-
-//# sourceMappingURL=trie.esm.js.map
-
-// EXTERNAL MODULE: ./node_modules/@wry/context/lib/context.esm.js
-var context_esm = __webpack_require__(8751);
-;// CONCATENATED MODULE: ./node_modules/optimism/lib/bundle.esm.js
-
-
-
-
-
-function defaultDispose() { }
-var Cache = /** @class */ (function () {
-    function Cache(max, dispose) {
-        if (max === void 0) { max = Infinity; }
-        if (dispose === void 0) { dispose = defaultDispose; }
-        this.max = max;
-        this.dispose = dispose;
-        this.map = new Map();
-        this.newest = null;
-        this.oldest = null;
-    }
-    Cache.prototype.has = function (key) {
-        return this.map.has(key);
-    };
-    Cache.prototype.get = function (key) {
-        var node = this.getNode(key);
-        return node && node.value;
-    };
-    Cache.prototype.getNode = function (key) {
-        var node = this.map.get(key);
-        if (node && node !== this.newest) {
-            var older = node.older, newer = node.newer;
-            if (newer) {
-                newer.older = older;
-            }
-            if (older) {
-                older.newer = newer;
-            }
-            node.older = this.newest;
-            node.older.newer = node;
-            node.newer = null;
-            this.newest = node;
-            if (node === this.oldest) {
-                this.oldest = newer;
-            }
-        }
-        return node;
-    };
-    Cache.prototype.set = function (key, value) {
-        var node = this.getNode(key);
-        if (node) {
-            return node.value = value;
-        }
-        node = {
-            key: key,
-            value: value,
-            newer: null,
-            older: this.newest
-        };
-        if (this.newest) {
-            this.newest.newer = node;
-        }
-        this.newest = node;
-        this.oldest = this.oldest || node;
-        this.map.set(key, node);
-        return node.value;
-    };
-    Cache.prototype.clean = function () {
-        while (this.oldest && this.map.size > this.max) {
-            this.delete(this.oldest.key);
-        }
-    };
-    Cache.prototype.delete = function (key) {
-        var node = this.map.get(key);
-        if (node) {
-            if (node === this.newest) {
-                this.newest = node.older;
-            }
-            if (node === this.oldest) {
-                this.oldest = node.newer;
-            }
-            if (node.newer) {
-                node.newer.older = node.older;
-            }
-            if (node.older) {
-                node.older.newer = node.newer;
-            }
-            this.map.delete(key);
-            this.dispose(node.value, key);
-            return true;
-        }
-        return false;
-    };
-    return Cache;
-}());
-
-var parentEntrySlot = new context_esm/* Slot */.g7();
-
-var bundle_esm_a;
-var bundle_esm_hasOwnProperty = Object.prototype.hasOwnProperty;
-var 
-// This Array.from polyfill is restricted to working with Set<any> for now,
-// but we can improve the polyfill and add other input types, as needed. Note
-// that this fallback implementation will only be used if the host environment
-// does not support a native Array.from function. In most modern JS runtimes,
-// the toArray function exported here will be === Array.from.
-toArray = (bundle_esm_a = Array.from, bundle_esm_a === void 0 ? function (collection) {
-    var array = [];
-    collection.forEach(function (item) { return array.push(item); });
-    return array;
-} : bundle_esm_a);
-function maybeUnsubscribe(entryOrDep) {
-    var unsubscribe = entryOrDep.unsubscribe;
-    if (typeof unsubscribe === "function") {
-        entryOrDep.unsubscribe = void 0;
-        unsubscribe();
-    }
-}
-
-var emptySetPool = [];
-var POOL_TARGET_SIZE = 100;
-// Since this package might be used browsers, we should avoid using the
-// Node built-in assert module.
-function assert(condition, optionalMessage) {
-    if (!condition) {
-        throw new Error(optionalMessage || "assertion failure");
-    }
-}
-function valueIs(a, b) {
-    var len = a.length;
-    return (
-    // Unknown values are not equal to each other.
-    len > 0 &&
-        // Both values must be ordinary (or both exceptional) to be equal.
-        len === b.length &&
-        // The underlying value or exception must be the same.
-        a[len - 1] === b[len - 1]);
-}
-function valueGet(value) {
-    switch (value.length) {
-        case 0: throw new Error("unknown value");
-        case 1: return value[0];
-        case 2: throw value[1];
-    }
-}
-function valueCopy(value) {
-    return value.slice(0);
-}
-var Entry = /** @class */ (function () {
-    function Entry(fn) {
-        this.fn = fn;
-        this.parents = new Set();
-        this.childValues = new Map();
-        // When this Entry has children that are dirty, this property becomes
-        // a Set containing other Entry objects, borrowed from emptySetPool.
-        // When the set becomes empty, it gets recycled back to emptySetPool.
-        this.dirtyChildren = null;
-        this.dirty = true;
-        this.recomputing = false;
-        this.value = [];
-        this.deps = null;
-        ++Entry.count;
-    }
-    Entry.prototype.peek = function () {
-        if (this.value.length === 1 && !mightBeDirty(this)) {
-            rememberParent(this);
-            return this.value[0];
-        }
-    };
-    // This is the most important method of the Entry API, because it
-    // determines whether the cached this.value can be returned immediately,
-    // or must be recomputed. The overall performance of the caching system
-    // depends on the truth of the following observations: (1) this.dirty is
-    // usually false, (2) this.dirtyChildren is usually null/empty, and thus
-    // (3) valueGet(this.value) is usually returned without recomputation.
-    Entry.prototype.recompute = function (args) {
-        assert(!this.recomputing, "already recomputing");
-        rememberParent(this);
-        return mightBeDirty(this)
-            ? reallyRecompute(this, args)
-            : valueGet(this.value);
-    };
-    Entry.prototype.setDirty = function () {
-        if (this.dirty)
-            return;
-        this.dirty = true;
-        this.value.length = 0;
-        reportDirty(this);
-        // We can go ahead and unsubscribe here, since any further dirty
-        // notifications we receive will be redundant, and unsubscribing may
-        // free up some resources, e.g. file watchers.
-        maybeUnsubscribe(this);
-    };
-    Entry.prototype.dispose = function () {
-        var _this = this;
-        this.setDirty();
-        // Sever any dependency relationships with our own children, so those
-        // children don't retain this parent Entry in their child.parents sets,
-        // thereby preventing it from being fully garbage collected.
-        forgetChildren(this);
-        // Because this entry has been kicked out of the cache (in index.js),
-        // we've lost the ability to find out if/when this entry becomes dirty,
-        // whether that happens through a subscription, because of a direct call
-        // to entry.setDirty(), or because one of its children becomes dirty.
-        // Because of this loss of future information, we have to assume the
-        // worst (that this entry might have become dirty very soon), so we must
-        // immediately mark this entry's parents as dirty. Normally we could
-        // just call entry.setDirty() rather than calling parent.setDirty() for
-        // each parent, but that would leave this entry in parent.childValues
-        // and parent.dirtyChildren, which would prevent the child from being
-        // truly forgotten.
-        eachParent(this, function (parent, child) {
-            parent.setDirty();
-            forgetChild(parent, _this);
-        });
-    };
-    Entry.prototype.forget = function () {
-        // The code that creates Entry objects in index.ts will replace this method
-        // with one that actually removes the Entry from the cache, which will also
-        // trigger the entry.dispose method.
-        this.dispose();
-    };
-    Entry.prototype.dependOn = function (dep) {
-        dep.add(this);
-        if (!this.deps) {
-            this.deps = emptySetPool.pop() || new Set();
-        }
-        this.deps.add(dep);
-    };
-    Entry.prototype.forgetDeps = function () {
-        var _this = this;
-        if (this.deps) {
-            toArray(this.deps).forEach(function (dep) { return dep.delete(_this); });
-            this.deps.clear();
-            emptySetPool.push(this.deps);
-            this.deps = null;
-        }
-    };
-    Entry.count = 0;
-    return Entry;
-}());
-function rememberParent(child) {
-    var parent = parentEntrySlot.getValue();
-    if (parent) {
-        child.parents.add(parent);
-        if (!parent.childValues.has(child)) {
-            parent.childValues.set(child, []);
-        }
-        if (mightBeDirty(child)) {
-            reportDirtyChild(parent, child);
-        }
-        else {
-            reportCleanChild(parent, child);
-        }
-        return parent;
-    }
-}
-function reallyRecompute(entry, args) {
-    forgetChildren(entry);
-    // Set entry as the parent entry while calling recomputeNewValue(entry).
-    parentEntrySlot.withValue(entry, recomputeNewValue, [entry, args]);
-    if (maybeSubscribe(entry, args)) {
-        // If we successfully recomputed entry.value and did not fail to
-        // (re)subscribe, then this Entry is no longer explicitly dirty.
-        setClean(entry);
-    }
-    return valueGet(entry.value);
-}
-function recomputeNewValue(entry, args) {
-    entry.recomputing = true;
-    // Set entry.value as unknown.
-    entry.value.length = 0;
-    try {
-        // If entry.fn succeeds, entry.value will become a normal Value.
-        entry.value[0] = entry.fn.apply(null, args);
-    }
-    catch (e) {
-        // If entry.fn throws, entry.value will become exceptional.
-        entry.value[1] = e;
-    }
-    // Either way, this line is always reached.
-    entry.recomputing = false;
-}
-function mightBeDirty(entry) {
-    return entry.dirty || !!(entry.dirtyChildren && entry.dirtyChildren.size);
-}
-function setClean(entry) {
-    entry.dirty = false;
-    if (mightBeDirty(entry)) {
-        // This Entry may still have dirty children, in which case we can't
-        // let our parents know we're clean just yet.
-        return;
-    }
-    reportClean(entry);
-}
-function reportDirty(child) {
-    eachParent(child, reportDirtyChild);
-}
-function reportClean(child) {
-    eachParent(child, reportCleanChild);
-}
-function eachParent(child, callback) {
-    var parentCount = child.parents.size;
-    if (parentCount) {
-        var parents = toArray(child.parents);
-        for (var i = 0; i < parentCount; ++i) {
-            callback(parents[i], child);
-        }
-    }
-}
-// Let a parent Entry know that one of its children may be dirty.
-function reportDirtyChild(parent, child) {
-    // Must have called rememberParent(child) before calling
-    // reportDirtyChild(parent, child).
-    assert(parent.childValues.has(child));
-    assert(mightBeDirty(child));
-    var parentWasClean = !mightBeDirty(parent);
-    if (!parent.dirtyChildren) {
-        parent.dirtyChildren = emptySetPool.pop() || new Set;
-    }
-    else if (parent.dirtyChildren.has(child)) {
-        // If we already know this child is dirty, then we must have already
-        // informed our own parents that we are dirty, so we can terminate
-        // the recursion early.
-        return;
-    }
-    parent.dirtyChildren.add(child);
-    // If parent was clean before, it just became (possibly) dirty (according to
-    // mightBeDirty), since we just added child to parent.dirtyChildren.
-    if (parentWasClean) {
-        reportDirty(parent);
-    }
-}
-// Let a parent Entry know that one of its children is no longer dirty.
-function reportCleanChild(parent, child) {
-    // Must have called rememberChild(child) before calling
-    // reportCleanChild(parent, child).
-    assert(parent.childValues.has(child));
-    assert(!mightBeDirty(child));
-    var childValue = parent.childValues.get(child);
-    if (childValue.length === 0) {
-        parent.childValues.set(child, valueCopy(child.value));
-    }
-    else if (!valueIs(childValue, child.value)) {
-        parent.setDirty();
-    }
-    removeDirtyChild(parent, child);
-    if (mightBeDirty(parent)) {
-        return;
-    }
-    reportClean(parent);
-}
-function removeDirtyChild(parent, child) {
-    var dc = parent.dirtyChildren;
-    if (dc) {
-        dc.delete(child);
-        if (dc.size === 0) {
-            if (emptySetPool.length < POOL_TARGET_SIZE) {
-                emptySetPool.push(dc);
-            }
-            parent.dirtyChildren = null;
-        }
-    }
-}
-// Removes all children from this entry and returns an array of the
-// removed children.
-function forgetChildren(parent) {
-    if (parent.childValues.size > 0) {
-        parent.childValues.forEach(function (_value, child) {
-            forgetChild(parent, child);
-        });
-    }
-    // Remove this parent Entry from any sets to which it was added by the
-    // addToSet method.
-    parent.forgetDeps();
-    // After we forget all our children, this.dirtyChildren must be empty
-    // and therefore must have been reset to null.
-    assert(parent.dirtyChildren === null);
-}
-function forgetChild(parent, child) {
-    child.parents.delete(parent);
-    parent.childValues.delete(child);
-    removeDirtyChild(parent, child);
-}
-function maybeSubscribe(entry, args) {
-    if (typeof entry.subscribe === "function") {
-        try {
-            maybeUnsubscribe(entry); // Prevent double subscriptions.
-            entry.unsubscribe = entry.subscribe.apply(null, args);
-        }
-        catch (e) {
-            // If this Entry has a subscribe function and it threw an exception
-            // (or an unsubscribe function it previously returned now throws),
-            // return false to indicate that we were not able to subscribe (or
-            // unsubscribe), and this Entry should remain dirty.
-            entry.setDirty();
-            return false;
-        }
-    }
-    // Returning true indicates either that there was no entry.subscribe
-    // function or that it succeeded.
-    return true;
-}
-
-var EntryMethods = {
-    setDirty: true,
-    dispose: true,
-    forget: true, // Fully remove parent Entry from LRU cache and computation graph
-};
-function dep(options) {
-    var depsByKey = new Map();
-    var subscribe = options && options.subscribe;
-    function depend(key) {
-        var parent = parentEntrySlot.getValue();
-        if (parent) {
-            var dep_1 = depsByKey.get(key);
-            if (!dep_1) {
-                depsByKey.set(key, dep_1 = new Set);
-            }
-            parent.dependOn(dep_1);
-            if (typeof subscribe === "function") {
-                maybeUnsubscribe(dep_1);
-                dep_1.unsubscribe = subscribe(key);
-            }
-        }
-    }
-    depend.dirty = function dirty(key, entryMethodName) {
-        var dep = depsByKey.get(key);
-        if (dep) {
-            var m_1 = (entryMethodName &&
-                bundle_esm_hasOwnProperty.call(EntryMethods, entryMethodName)) ? entryMethodName : "setDirty";
-            // We have to use toArray(dep).forEach instead of dep.forEach, because
-            // modifying a Set while iterating over it can cause elements in the Set
-            // to be removed from the Set before they've been iterated over.
-            toArray(dep).forEach(function (entry) { return entry[m_1](); });
-            depsByKey.delete(key);
-            maybeUnsubscribe(dep);
-        }
-    };
-    return depend;
-}
-
-function makeDefaultMakeCacheKeyFunction() {
-    var keyTrie = new Trie(typeof WeakMap === "function");
-    return function () {
-        return keyTrie.lookupArray(arguments);
-    };
-}
-// The defaultMakeCacheKey function is remarkably powerful, because it gives
-// a unique object for any shallow-identical list of arguments. If you need
-// to implement a custom makeCacheKey function, you may find it helpful to
-// delegate the final work to defaultMakeCacheKey, which is why we export it
-// here. However, you may want to avoid defaultMakeCacheKey if your runtime
-// does not support WeakMap, or you have the ability to return a string key.
-// In those cases, just write your own custom makeCacheKey functions.
-var defaultMakeCacheKey = makeDefaultMakeCacheKeyFunction();
-var caches = new Set();
-function wrap(originalFunction, options) {
-    if (options === void 0) { options = Object.create(null); }
-    var cache = new Cache(options.max || Math.pow(2, 16), function (entry) { return entry.dispose(); });
-    var keyArgs = options.keyArgs;
-    var makeCacheKey = options.makeCacheKey ||
-        makeDefaultMakeCacheKeyFunction();
-    var optimistic = function () {
-        var key = makeCacheKey.apply(null, keyArgs ? keyArgs.apply(null, arguments) : arguments);
-        if (key === void 0) {
-            return originalFunction.apply(null, arguments);
-        }
-        var entry = cache.get(key);
-        if (!entry) {
-            cache.set(key, entry = new Entry(originalFunction));
-            entry.subscribe = options.subscribe;
-            // Give the Entry the ability to trigger cache.delete(key), even though
-            // the Entry itself does not know about key or cache.
-            entry.forget = function () { return cache.delete(key); };
-        }
-        var value = entry.recompute(Array.prototype.slice.call(arguments));
-        // Move this entry to the front of the least-recently used queue,
-        // since we just finished computing its value.
-        cache.set(key, entry);
-        caches.add(cache);
-        // Clean up any excess entries in the cache, but only if there is no
-        // active parent entry, meaning we're not in the middle of a larger
-        // computation that might be flummoxed by the cleaning.
-        if (!parentEntrySlot.hasValue()) {
-            caches.forEach(function (cache) { return cache.clean(); });
-            caches.clear();
-        }
-        return value;
-    };
-    Object.defineProperty(optimistic, "size", {
-        get: function () {
-            return cache["map"].size;
-        },
-        configurable: false,
-        enumerable: false,
-    });
-    function dirtyKey(key) {
-        var entry = cache.get(key);
-        if (entry) {
-            entry.setDirty();
-        }
-    }
-    optimistic.dirtyKey = dirtyKey;
-    optimistic.dirty = function dirty() {
-        dirtyKey(makeCacheKey.apply(null, arguments));
-    };
-    function peekKey(key) {
-        var entry = cache.get(key);
-        if (entry) {
-            return entry.peek();
-        }
-    }
-    optimistic.peekKey = peekKey;
-    optimistic.peek = function peek() {
-        return peekKey(makeCacheKey.apply(null, arguments));
-    };
-    function forgetKey(key) {
-        return cache.delete(key);
-    }
-    optimistic.forgetKey = forgetKey;
-    optimistic.forget = function forget() {
-        return forgetKey(makeCacheKey.apply(null, arguments));
-    };
-    optimistic.makeCacheKey = makeCacheKey;
-    optimistic.getKey = keyArgs ? function getKey() {
-        return makeCacheKey.apply(null, keyArgs.apply(null, arguments));
-    } : makeCacheKey;
-    return Object.freeze(optimistic);
-}
-
-
-//# sourceMappingURL=bundle.esm.js.map
-
-
-/***/ }),
-
 /***/ 2408:
 /***/ ((__unused_webpack_module, exports) => {
 
@@ -15677,13 +14626,14 @@ function wrappy (fn, cb) {
 /* harmony export */   R: () => (/* binding */ ApolloCache)
 /* harmony export */ });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7582);
-/* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2667);
+/* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6869);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3361);
 
 
 
 var ApolloCache = (function () {
     function ApolloCache() {
+        this.assumeImmutableResults = false;
         this.getFragmentDoc = (0,optimism__WEBPACK_IMPORTED_MODULE_0__/* .wrap */ .re)(_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .getFragmentQueryDocument */ .Yk);
     }
     ApolloCache.prototype.batch = function (options) {
@@ -15773,6 +14723,7 @@ var ApolloCache = (function () {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   C: () => (/* binding */ Cache)
 /* harmony export */ });
+;
 var Cache;
 (function (Cache) {
 })(Cache || (Cache = {}));
@@ -15947,7 +14898,7 @@ function extractFragmentContext(document, fragments) {
 
 /***/ }),
 
-/***/ 521:
+/***/ 9099:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -15959,20 +14910,22 @@ __webpack_require__.d(__webpack_exports__, {
 
 // EXTERNAL MODULE: ./node_modules/tslib/tslib.es6.mjs
 var tslib_es6 = __webpack_require__(7582);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/globals/index.js + 5 modules
-var globals = __webpack_require__(846);
-// EXTERNAL MODULE: ./node_modules/optimism/lib/bundle.esm.js + 1 modules
-var bundle_esm = __webpack_require__(2667);
-// EXTERNAL MODULE: ./node_modules/@wry/equality/lib/equality.esm.js
-var equality_esm = __webpack_require__(2152);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/globals/index.js + 3 modules
+var globals = __webpack_require__(6961);
+// EXTERNAL MODULE: ./node_modules/optimism/lib/index.js + 4 modules
+var lib = __webpack_require__(6869);
+// EXTERNAL MODULE: ./node_modules/@wry/equality/lib/index.js
+var equality_lib = __webpack_require__(20);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/cache/core/cache.js
 var cache = __webpack_require__(1294);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/cache/core/types/common.js
 var common = __webpack_require__(5727);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/storeUtils.js
-var storeUtils = __webpack_require__(1761);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/DocumentTransform.js
+var DocumentTransform = __webpack_require__(8056);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/transform.js
 var transform = __webpack_require__(6487);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/storeUtils.js
+var storeUtils = __webpack_require__(1761);
 // EXTERNAL MODULE: ./node_modules/graphql/language/kinds.mjs
 var kinds = __webpack_require__(7359);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/canUse.js
@@ -15991,8 +14944,8 @@ var fragments = __webpack_require__(3361);
 var maybeDeepFreeze = __webpack_require__(8702);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/objects.js
 var objects = __webpack_require__(3154);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/node_modules/@wry/trie/lib/index.js
-var lib = __webpack_require__(5352);
+// EXTERNAL MODULE: ./node_modules/@wry/trie/lib/index.js
+var trie_lib = __webpack_require__(5028);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/cache/inmemory/helpers.js
 var helpers = __webpack_require__(9641);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/cache/inmemory/entityStore.js
@@ -16089,7 +15042,7 @@ var EntityStore = (function () {
             : newer;
         if (!incoming)
             return;
-        __DEV__ ? (0,globals/* invariant */.kG)(typeof dataId === "string", "store.merge expects a string ID") : (0,globals/* invariant */.kG)(typeof dataId === "string", 1);
+        (0,globals/* invariant */.kG)(typeof dataId === "string", 1);
         var merged = new mergeDeep/* DeepMerger */.w0(storeObjectReconciler).merge(existing, incoming);
         this.data[dataId] = merged;
         if (merged !== existing) {
@@ -16325,8 +15278,8 @@ var CacheGroup = (function () {
         this.resetCaching();
     }
     CacheGroup.prototype.resetCaching = function () {
-        this.d = this.caching ? (0,bundle_esm/* dep */.dP)() : null;
-        this.keyMaker = new lib/* Trie */.B(canUse/* canUseWeakMap */.mr);
+        this.d = this.caching ? (0,lib/* dep */.dP)() : null;
+        this.keyMaker = new trie_lib/* Trie */.B(canUse/* canUseWeakMap */.mr);
     };
     CacheGroup.prototype.depend = function (dataId, storeFieldName) {
         if (this.d) {
@@ -16362,7 +15315,7 @@ function maybeDependOnExistenceOfEntity(store, entityId) {
             var policies = _a.policies, _b = _a.resultCaching, resultCaching = _b === void 0 ? true : _b, seed = _a.seed;
             var _this = _super.call(this, policies, new CacheGroup(resultCaching)) || this;
             _this.stump = new Stump(_this);
-            _this.storageTrie = new lib/* Trie */.B(canUse/* canUseWeakMap */.mr);
+            _this.storageTrie = new trie_lib/* Trie */.B(canUse/* canUseWeakMap */.mr);
             if (seed)
                 _this.replace(seed);
             return _this;
@@ -16413,7 +15366,7 @@ var Layer = (function (_super) {
                     }
                     else if (ownStoreObject !== parentStoreObject) {
                         Object.keys(ownStoreObject).forEach(function (storeFieldName) {
-                            if (!(0,equality_esm/* equal */.D)(ownStoreObject[storeFieldName], parentStoreObject[storeFieldName])) {
+                            if (!(0,equality_lib/* equal */.D)(ownStoreObject[storeFieldName], parentStoreObject[storeFieldName])) {
                                 _this.group.dirty(dataId, storeFieldName);
                             }
                         });
@@ -16457,7 +15410,7 @@ var Stump = (function (_super) {
 function storeObjectReconciler(existingObject, incomingObject, property) {
     var existingValue = existingObject[property];
     var incomingValue = incomingObject[property];
-    return (0,equality_esm/* equal */.D)(existingValue, incomingValue) ? existingValue : incomingValue;
+    return (0,equality_lib/* equal */.D)(existingValue, incomingValue) ? existingValue : incomingValue;
 }
 function supportsResultCaching(store) {
     return !!(store instanceof EntityStore && store.group.caching);
@@ -16495,7 +15448,7 @@ var StoreReader = (function () {
             canonizeResults: (0,helpers/* shouldCanonizeResults */.lg)(config),
         });
         this.canon = config.canon || new object_canon/* ObjectCanon */.h;
-        this.executeSelectionSet = (0,bundle_esm/* wrap */.re)(function (options) {
+        this.executeSelectionSet = (0,lib/* wrap */.re)(function (options) {
             var _a;
             var canonizeResults = options.context.canonizeResults;
             var peekArgs = execSelectionSetKeyArgs(options);
@@ -16518,7 +15471,7 @@ var StoreReader = (function () {
                 }
             }
         });
-        this.executeSubSelectedArray = (0,bundle_esm/* wrap */.re)(function (options) {
+        this.executeSubSelectedArray = (0,lib/* wrap */.re)(function (options) {
             maybeDependOnExistenceOfEntity(options.context.store, options.enclosingRef.__ref);
             return _this.execSubSelectedArrayImpl(options);
         }, {
@@ -16646,7 +15599,7 @@ var StoreReader = (function () {
             else {
                 var fragment = (0,fragments/* getFragmentFromSelection */.hi)(selection, context.lookupFragment);
                 if (!fragment && selection.kind === kinds/* Kind */.h.FRAGMENT_SPREAD) {
-                    throw __DEV__ ? new globals/* InvariantError */.ej("No fragment named ".concat(selection.name.value)) : new globals/* InvariantError */.ej(5);
+                    throw (0,globals/* newInvariantError */._K)(7, selection.name.value);
                 }
                 if (fragment && policies.fragmentMatches(fragment, typename)) {
                     fragment.selectionSet.selections.forEach(workSet.add, workSet);
@@ -16698,7 +15651,7 @@ var StoreReader = (function () {
                     context: context,
                 }), i);
             }
-            if (__DEV__) {
+            if (globalThis.__DEV__ !== false) {
                 assertSelectionSetForIdValue(context.store, field, item);
             }
             return item;
@@ -16728,7 +15681,12 @@ function assertSelectionSetForIdValue(store, field, fieldValue) {
         var workSet_1 = new Set([fieldValue]);
         workSet_1.forEach(function (value) {
             if ((0,objects/* isNonNullObject */.s)(value)) {
-                __DEV__ ? (0,globals/* invariant */.kG)(!(0,storeUtils/* isReference */.Yk)(value), "Missing selection set for object of type ".concat((0,helpers/* getTypenameFromStoreObject */.jp)(store, value), " returned for query field ").concat(field.name.value)) : (0,globals/* invariant */.kG)(!(0,storeUtils/* isReference */.Yk)(value), 6);
+                (0,globals/* invariant */.kG)(
+                    !(0,storeUtils/* isReference */.Yk)(value),
+                    8,
+                    (0,helpers/* getTypenameFromStoreObject */.jp)(store, value),
+                    field.name.value
+                );
                 Object.values(value).forEach(workSet_1.add, workSet_1);
             }
         });
@@ -16737,17 +15695,8 @@ function assertSelectionSetForIdValue(store, field, fieldValue) {
 //# sourceMappingURL=readFromStore.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/cloneDeep.js
 var cloneDeep = __webpack_require__(9487);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/makeUniqueId.js
-var makeUniqueId = __webpack_require__(897);
-;// CONCATENATED MODULE: ./node_modules/@apollo/client/utilities/common/stringifyForDisplay.js
-
-function stringifyForDisplay(value) {
-    var undefId = (0,makeUniqueId/* makeUniqueId */.X)("stringifyForDisplay");
-    return JSON.stringify(value, function (key, value) {
-        return value === void 0 ? undefId : value;
-    }).split(JSON.stringify(undefId)).join("<undefined>");
-}
-//# sourceMappingURL=stringifyForDisplay.js.map
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/stringifyForDisplay.js
+var stringifyForDisplay = __webpack_require__(3887);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/cache/inmemory/reactiveVars.js
 var reactiveVars = __webpack_require__(6438);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/cache/inmemory/key-extractor.js
@@ -16771,7 +15720,7 @@ function keyFieldsFnFromSpecifier(specifier) {
                 helpers/* hasOwn */.RI.call(object, schemaKeyPath[0])) {
                 extracted = extractKeyPath(object, schemaKeyPath, extractKey);
             }
-            __DEV__ ? (0,globals/* invariant */.kG)(extracted !== void 0, "Missing field '".concat(schemaKeyPath.join('.'), "' while extracting keyFields from ").concat(JSON.stringify(object))) : (0,globals/* invariant */.kG)(extracted !== void 0, 2);
+            (0,globals/* invariant */.kG)(extracted !== void 0, 2, schemaKeyPath.join('.'), object);
             return extracted;
         });
         return "".concat(context.typename, ":").concat(JSON.stringify(keyObject));
@@ -17008,7 +15957,7 @@ var Policies = (function () {
         var rootId = "ROOT_" + which.toUpperCase();
         var old = this.rootTypenamesById[rootId];
         if (typename !== old) {
-            __DEV__ ? (0,globals/* invariant */.kG)(!old || old === which, "Cannot change root ".concat(which, " __typename more than once")) : (0,globals/* invariant */.kG)(!old || old === which, 3);
+            (0,globals/* invariant */.kG)(!old || old === which, 3, which);
             if (old)
                 delete this.rootIdsByTypename[old];
             this.rootIdsByTypename[typename] = rootId;
@@ -17034,9 +15983,20 @@ var Policies = (function () {
         if (!helpers/* hasOwn */.RI.call(this.typePolicies, typename)) {
             var policy_1 = this.typePolicies[typename] = Object.create(null);
             policy_1.fields = Object.create(null);
-            var supertypes = this.supertypeMap.get(typename);
-            if (supertypes && supertypes.size) {
-                supertypes.forEach(function (supertype) {
+            var supertypes_1 = this.supertypeMap.get(typename);
+            if (!supertypes_1 && this.fuzzySubtypes.size) {
+                supertypes_1 = this.getSupertypeSet(typename, true);
+                this.fuzzySubtypes.forEach(function (regExp, fuzzy) {
+                    if (regExp.test(typename)) {
+                        var fuzzySupertypes = _this.supertypeMap.get(fuzzy);
+                        if (fuzzySupertypes) {
+                            fuzzySupertypes.forEach(function (supertype) { return supertypes_1.add(supertype); });
+                        }
+                    }
+                });
+            }
+            if (supertypes_1 && supertypes_1.size) {
+                supertypes_1.forEach(function (supertype) {
                     var _a = _this.getTypePolicy(supertype), fields = _a.fields, rest = (0,tslib_es6/* __rest */._T)(_a, ["fields"]);
                     Object.assign(policy_1, rest);
                     Object.assign(policy_1.fields, fields);
@@ -17092,7 +16052,7 @@ var Policies = (function () {
                 if (supertypeSet.has(supertype)) {
                     if (!typenameSupertypeSet.has(supertype)) {
                         if (checkingFuzzySubtypes) {
-                            __DEV__ && globals/* invariant */.kG.warn("Inferring subtype ".concat(typename, " of supertype ").concat(supertype));
+                            globalThis.__DEV__ !== false && globals/* invariant */.kG.warn(4, typename, supertype);
                         }
                         typenameSupertypeSet.add(supertype);
                     }
@@ -17246,8 +16206,8 @@ function normalizeReadFieldOptions(readFieldArgs, objectOrReference, variables) 
             options.from = objectOrReference;
         }
     }
-    if (__DEV__ && options.from === void 0) {
-        __DEV__ && globals/* invariant */.kG.warn("Undefined 'from' passed to readField with arguments ".concat(stringifyForDisplay(Array.from(readFieldArgs))));
+    if (globalThis.__DEV__ !== false && options.from === void 0) {
+        globalThis.__DEV__ !== false && globals/* invariant */.kG.warn(5, (0,stringifyForDisplay/* stringifyForDisplay */.v)(Array.from(readFieldArgs)));
     }
     if (void 0 === options.variables) {
         options.variables = variables;
@@ -17257,7 +16217,7 @@ function normalizeReadFieldOptions(readFieldArgs, objectOrReference, variables) 
 function makeMergeObjectsFunction(store) {
     return function mergeObjects(existing, incoming) {
         if ((0,arrays/* isArray */.k)(existing) || (0,arrays/* isArray */.k)(incoming)) {
-            throw __DEV__ ? new globals/* InvariantError */.ej("Cannot automatically merge arrays") : new globals/* InvariantError */.ej(4);
+            throw (0,globals/* newInvariantError */._K)(6);
         }
         if ((0,objects/* isNonNullObject */.s)(existing) &&
             (0,objects/* isNonNullObject */.s)(incoming)) {
@@ -17329,7 +16289,7 @@ var StoreWriter = (function () {
             context: context,
         });
         if (!(0,storeUtils/* isReference */.Yk)(ref)) {
-            throw __DEV__ ? new globals/* InvariantError */.ej("Could not identify object ".concat(JSON.stringify(result))) : new globals/* InvariantError */.ej(7);
+            throw (0,globals/* newInvariantError */._K)(9, result);
         }
         context.incomingById.forEach(function (_a, dataId) {
             var storeObject = _a.storeObject, mergeTree = _a.mergeTree, fieldNodeSet = _a.fieldNodeSet;
@@ -17341,7 +16301,7 @@ var StoreWriter = (function () {
                 }
                 storeObject = applied;
             }
-            if (__DEV__ && !context.overwrite) {
+            if (globalThis.__DEV__ !== false && !context.overwrite) {
                 var fieldsWithSelectionSets_1 = Object.create(null);
                 fieldNodeSet.forEach(function (field) {
                     if (field.selectionSet) {
@@ -17429,12 +16389,12 @@ var StoreWriter = (function () {
                     _a[storeFieldName] = incomingValue,
                     _a));
             }
-            else if (__DEV__ &&
+            else if (globalThis.__DEV__ !== false &&
                 !context.clientOnly &&
                 !context.deferred &&
                 !transform/* addTypenameToDocument */.Gw.added(field) &&
                 !policies.getReadFunction(typename, field.name.value)) {
-                __DEV__ && globals/* invariant */.kG.error("Missing field '".concat((0,storeUtils/* resultKeyNameFromField */.u2)(field), "' while writing result ").concat(JSON.stringify(result, null, 2)).substring(0, 1000));
+                globalThis.__DEV__ !== false && globals/* invariant */.kG.error(10, (0,storeUtils/* resultKeyNameFromField */.u2)(field), result);
             }
         });
         try {
@@ -17483,7 +16443,7 @@ var StoreWriter = (function () {
     StoreWriter.prototype.processFieldValue = function (value, field, context, mergeTree) {
         var _this = this;
         if (!field.selectionSet || value === null) {
-            return __DEV__ ? (0,cloneDeep/* cloneDeep */.X)(value) : value;
+            return globalThis.__DEV__ !== false ? (0,cloneDeep/* cloneDeep */.X)(value) : value;
         }
         if ((0,arrays/* isArray */.k)(value)) {
             return value.map(function (item, i) {
@@ -17503,7 +16463,7 @@ var StoreWriter = (function () {
         if (typename === void 0) { typename = (0,storeUtils/* getTypenameFromResult */.qw)(result, selectionSet, context.fragmentMap); }
         var fieldMap = new Map();
         var policies = this.cache.policies;
-        var limitingTrie = new lib/* Trie */.B(false);
+        var limitingTrie = new trie_lib/* Trie */.B(false);
         (function flatten(selectionSet, inheritedContext) {
             var visitedNode = limitingTrie.lookup(selectionSet, inheritedContext.clientOnly, inheritedContext.deferred);
             if (visitedNode.visited)
@@ -17538,7 +16498,7 @@ var StoreWriter = (function () {
                 else {
                     var fragment = (0,fragments/* getFragmentFromSelection */.hi)(selection, context.lookupFragment);
                     if (!fragment && selection.kind === kinds/* Kind */.h.FRAGMENT_SPREAD) {
-                        throw __DEV__ ? new globals/* InvariantError */.ej("No fragment named ".concat(selection.name.value)) : new globals/* InvariantError */.ej(8);
+                        throw (0,globals/* newInvariantError */._K)(11, selection.name.value);
                     }
                     if (fragment &&
                         policies.fragmentMatches(fragment, typename, result, context.variables)) {
@@ -17652,7 +16612,7 @@ function warnAboutDataLoss(existingRef, incomingObj, storeFieldName, store) {
         return;
     if ((0,storeUtils/* isReference */.Yk)(existing))
         return;
-    if ((0,equality_esm/* equal */.D)(existing, incoming))
+    if ((0,equality_lib/* equal */.D)(existing, incoming))
         return;
     if (Object.keys(existing).every(function (key) { return store.getFieldValue(incoming, key) !== void 0; })) {
         return;
@@ -17675,10 +16635,9 @@ function warnAboutDataLoss(existingRef, incomingObj, storeFieldName, store) {
             }
         });
     }
-    __DEV__ && globals/* invariant */.kG.warn("Cache data may be lost when replacing the ".concat(fieldName, " field of a ").concat(parentType, " object.\n\nThis could cause additional (usually avoidable) network requests to fetch data that were otherwise cached.\n\nTo address this problem (which is not a bug in Apollo Client), ").concat(childTypenames.length
-        ? "either ensure all objects of type " +
-            childTypenames.join(" and ") + " have an ID or a custom merge function, or "
-        : "", "define a custom merge function for the ").concat(typeDotName, " field, so InMemoryCache can safely merge these objects:\n\n  existing: ").concat(JSON.stringify(existing).slice(0, 1000), "\n  incoming: ").concat(JSON.stringify(incoming).slice(0, 1000), "\n\nFor more information about these options, please refer to the documentation:\n\n  * Ensuring entity objects have IDs: https://go.apollo.dev/c/generating-unique-identifiers\n  * Defining custom merge functions: https://go.apollo.dev/c/merging-non-normalized-objects\n"));
+    globalThis.__DEV__ !== false && globals/* invariant */.kG.warn(12, fieldName, parentType, childTypenames.length
+        ? "either ensure all objects of type " + childTypenames.join(" and ") + " have an ID or a custom merge function, or "
+        : "", typeDotName, existing, incoming);
 }
 //# sourceMappingURL=writeToStore.js.map
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/cache/inmemory/inMemoryCache.js
@@ -17703,7 +16662,8 @@ var InMemoryCache = (function (_super) {
         if (config === void 0) { config = {}; }
         var _this = _super.call(this) || this;
         _this.watches = new Set();
-        _this.typenameDocumentCache = new Map();
+        _this.addTypenameTransform = new DocumentTransform/* DocumentTransform */.A(transform/* addTypenameToDocument */.Gw);
+        _this.assumeImmutableResults = true;
         _this.makeVar = reactiveVars/* makeVar */.QS;
         _this.txCount = 0;
         _this.config = (0,helpers/* normalizeConfig */.jS)(config);
@@ -17739,7 +16699,7 @@ var InMemoryCache = (function (_super) {
                 : previousReader && previousReader.canon,
             fragments: fragments,
         }), fragments);
-        this.maybeBroadcastWatch = (0,bundle_esm/* wrap */.re)(function (c, options) {
+        this.maybeBroadcastWatch = (0,lib/* wrap */.re)(function (c, options) {
             return _this.broadcastWatch(c, options);
         }, {
             max: this.config.resultCacheMaxSize,
@@ -17851,7 +16811,7 @@ var InMemoryCache = (function (_super) {
             return this.policies.identify(object)[0];
         }
         catch (e) {
-            __DEV__ && globals/* invariant */.kG.warn(e);
+            globalThis.__DEV__ !== false && globals/* invariant */.kG.warn(e);
         }
     };
     InMemoryCache.prototype.evict = function (options) {
@@ -17954,28 +16914,25 @@ var InMemoryCache = (function (_super) {
         });
     };
     InMemoryCache.prototype.transformDocument = function (document) {
-        if (this.addTypename) {
-            var result = this.typenameDocumentCache.get(document);
-            if (!result) {
-                result = (0,transform/* addTypenameToDocument */.Gw)(document);
-                this.typenameDocumentCache.set(document, result);
-                this.typenameDocumentCache.set(result, result);
-            }
-            return result;
-        }
-        return document;
-    };
-    InMemoryCache.prototype.transformForLink = function (document) {
-        var fragments = this.config.fragments;
-        return fragments
-            ? fragments.transform(document)
-            : document;
+        return this.addTypenameToDocument(this.addFragmentsToDocument(document));
     };
     InMemoryCache.prototype.broadcastWatches = function (options) {
         var _this = this;
         if (!this.txCount) {
             this.watches.forEach(function (c) { return _this.maybeBroadcastWatch(c, options); });
         }
+    };
+    InMemoryCache.prototype.addFragmentsToDocument = function (document) {
+        var fragments = this.config.fragments;
+        return fragments
+            ? fragments.transform(document)
+            : document;
+    };
+    InMemoryCache.prototype.addTypenameToDocument = function (document) {
+        if (this.addTypename) {
+            return this.addTypenameTransform.transformDocument(document);
+        }
+        return document;
     };
     InMemoryCache.prototype.broadcastWatch = function (c, options) {
         var lastDiff = c.lastDiff;
@@ -17990,7 +16947,7 @@ var InMemoryCache = (function (_super) {
                 return;
             }
         }
-        if (!lastDiff || !(0,equality_esm/* equal */.D)(lastDiff.result, diff.result)) {
+        if (!lastDiff || !(0,equality_lib/* equal */.D)(lastDiff.result, diff.result)) {
             c.callback(c.lastDiff = diff, lastDiff);
         }
     };
@@ -18009,38 +16966,36 @@ var InMemoryCache = (function (_super) {
 /* harmony export */   B: () => (/* binding */ canonicalStringify),
 /* harmony export */   h: () => (/* binding */ ObjectCanon)
 /* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7582);
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
-/* harmony import */ var _wry_trie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5352);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3154);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(320);
-/* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1436);
-
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7582);
+/* harmony import */ var _wry_trie__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5028);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3154);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(320);
+/* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1436);
 
 
 
 
 function shallowCopy(value) {
-    if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .isNonNullObject */ .s)(value)) {
-        return (0,_helpers_js__WEBPACK_IMPORTED_MODULE_3__/* .isArray */ .k)(value)
+    if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .isNonNullObject */ .s)(value)) {
+        return (0,_helpers_js__WEBPACK_IMPORTED_MODULE_2__/* .isArray */ .k)(value)
             ? value.slice(0)
-            : (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)({ __proto__: Object.getPrototypeOf(value) }, value);
+            : (0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({ __proto__: Object.getPrototypeOf(value) }, value);
     }
     return value;
 }
 var ObjectCanon = (function () {
     function ObjectCanon() {
-        this.known = new (_utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .canUseWeakSet */ .sy ? WeakSet : Set)();
-        this.pool = new _wry_trie__WEBPACK_IMPORTED_MODULE_1__/* .Trie */ .B(_utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .canUseWeakMap */ .mr);
+        this.known = new (_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .canUseWeakSet */ .sy ? WeakSet : Set)();
+        this.pool = new _wry_trie__WEBPACK_IMPORTED_MODULE_0__/* .Trie */ .B(_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .canUseWeakMap */ .mr);
         this.passes = new WeakMap();
         this.keysByJSON = new Map();
         this.empty = this.admit({});
     }
     ObjectCanon.prototype.isKnown = function (value) {
-        return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .isNonNullObject */ .s)(value) && this.known.has(value);
+        return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .isNonNullObject */ .s)(value) && this.known.has(value);
     };
     ObjectCanon.prototype.pass = function (value) {
-        if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .isNonNullObject */ .s)(value)) {
+        if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .isNonNullObject */ .s)(value)) {
             var copy = shallowCopy(value);
             this.passes.set(copy, value);
             return copy;
@@ -18049,7 +17004,7 @@ var ObjectCanon = (function () {
     };
     ObjectCanon.prototype.admit = function (value) {
         var _this = this;
-        if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .isNonNullObject */ .s)(value)) {
+        if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .isNonNullObject */ .s)(value)) {
             var original = this.passes.get(value);
             if (original)
                 return original;
@@ -18062,7 +17017,7 @@ var ObjectCanon = (function () {
                     var node = this.pool.lookupArray(array);
                     if (!node.array) {
                         this.known.add(node.array = array);
-                        if (__DEV__) {
+                        if (globalThis.__DEV__ !== false) {
                             Object.freeze(array);
                         }
                     }
@@ -18087,7 +17042,7 @@ var ObjectCanon = (function () {
                         keys.sorted.forEach(function (key, i) {
                             obj_1[key] = array_1[firstValueIndex_1 + i];
                         });
-                        if (__DEV__) {
+                        if (globalThis.__DEV__ !== false) {
                             Object.freeze(obj_1);
                         }
                     }
@@ -18113,7 +17068,7 @@ var ObjectCanon = (function () {
 }());
 
 var canonicalStringify = Object.assign(function (value) {
-    if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .isNonNullObject */ .s)(value)) {
+    if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .isNonNullObject */ .s)(value)) {
         if (stringifyCanon === void 0) {
             resetCanonicalStringify();
         }
@@ -18132,7 +17087,7 @@ var stringifyCanon;
 var stringifyCache;
 function resetCanonicalStringify() {
     stringifyCanon = new ObjectCanon;
-    stringifyCache = new (_utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .canUseWeakMap */ .mr ? WeakMap : Map)();
+    stringifyCache = new (_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .canUseWeakMap */ .mr ? WeakMap : Map)();
 }
 //# sourceMappingURL=object-canon.js.map
 
@@ -18148,8 +17103,8 @@ function resetCanonicalStringify() {
 /* harmony export */   ab: () => (/* binding */ cacheSlot),
 /* harmony export */   li: () => (/* binding */ forgetCache)
 /* harmony export */ });
-/* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2667);
-/* harmony import */ var _wry_context__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(8751);
+/* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6869);
+/* harmony import */ var _wry_context__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2455);
 
 
 var cacheSlot = new _wry_context__WEBPACK_IMPORTED_MODULE_1__/* .Slot */ .g7();
@@ -18218,7 +17173,7 @@ function broadcast(cache) {
 
 /***/ }),
 
-/***/ 6400:
+/***/ 4425:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -18232,25 +17187,30 @@ __webpack_require__.d(__webpack_exports__, {
 
 // EXTERNAL MODULE: ./node_modules/tslib/tslib.es6.mjs
 var tslib_es6 = __webpack_require__(7582);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/globals/index.js + 5 modules
-var globals = __webpack_require__(846);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/globals/index.js + 3 modules
+var globals = __webpack_require__(6961);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/ApolloLink.js + 3 modules
 var ApolloLink = __webpack_require__(3581);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
 var execute = __webpack_require__(7037);
-;// CONCATENATED MODULE: ./node_modules/@apollo/client/version.js
-var version = '3.7.17';
-//# sourceMappingURL=version.js.map
+// EXTERNAL MODULE: ./node_modules/@apollo/client/version.js
+var version = __webpack_require__(9379);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/http/HttpLink.js
 var HttpLink = __webpack_require__(2198);
-// EXTERNAL MODULE: ./node_modules/@wry/equality/lib/equality.esm.js
-var equality_esm = __webpack_require__(2152);
+// EXTERNAL MODULE: ./node_modules/@wry/equality/lib/index.js
+var lib = __webpack_require__(20);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/incrementalResult.js
 var incrementalResult = __webpack_require__(7280);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/directives.js
+var directives = __webpack_require__(9065);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/transform.js
+var transform = __webpack_require__(6487);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/cache/inmemory/object-canon.js
 var object_canon = __webpack_require__(900);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/canUse.js
 var canUse = __webpack_require__(320);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/DocumentTransform.js
+var DocumentTransform = __webpack_require__(8056);
 // EXTERNAL MODULE: ./node_modules/zen-observable-ts/module.js
 var zen_observable_ts_module = __webpack_require__(8216);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/utilities/observables/asyncMap.js
@@ -18329,10 +17289,6 @@ function getGraphQLErrorsFromResult(result) {
 //# sourceMappingURL=errorHandling.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/getFromAST.js
 var getFromAST = __webpack_require__(6765);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/transform.js
-var transform = __webpack_require__(6487);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/directives.js
-var directives = __webpack_require__(9065);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/storeUtils.js
 var storeUtils = __webpack_require__(1761);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/objects.js
@@ -18483,8 +17439,8 @@ var Concast = (function (_super) {
 //# sourceMappingURL=Concast.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/errors/index.js
 var client_errors = __webpack_require__(990);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/core/ObservableQuery.js
-var ObservableQuery = __webpack_require__(4780);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/core/ObservableQuery.js + 1 modules
+var ObservableQuery = __webpack_require__(992);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/core/networkStatus.js
 var core_networkStatus = __webpack_require__(1644);
 // EXTERNAL MODULE: ./node_modules/graphql/language/visitor.mjs
@@ -18761,7 +17717,7 @@ var LocalState = (function () {
                         }
                         else {
                             fragment = fragmentMap[selection.name.value];
-                            __DEV__ ? (0,globals/* invariant */.kG)(fragment, "No fragment named ".concat(selection.name.value)) : (0,globals/* invariant */.kG)(fragment, 11);
+                            (0,globals/* invariant */.kG)(fragment, 16, selection.name.value);
                         }
                         if (fragment && fragment.typeCondition) {
                             typeCondition = fragment.typeCondition.name.value;
@@ -18874,7 +17830,7 @@ var LocalState = (function () {
                     },
                     FragmentSpread: function (spread, _, __, ___, ancestors) {
                         var fragment = fragmentMap[spread.name.value];
-                        __DEV__ ? (0,globals/* invariant */.kG)(fragment, "No fragment named ".concat(spread.name.value)) : (0,globals/* invariant */.kG)(fragment, 12);
+                        (0,globals/* invariant */.kG)(fragment, 17, spread.name.value);
                         var fragmentSelections = collectByDefinition(fragment);
                         if (fragmentSelections.size > 0) {
                             ancestors.forEach(function (node) {
@@ -18943,13 +17899,13 @@ var QueryInfo = (function () {
         }
     }
     QueryInfo.prototype.init = function (query) {
-        var networkStatus = query.networkStatus || core_networkStatus/* NetworkStatus */.I.loading;
+        var networkStatus = query.networkStatus || core_networkStatus/* NetworkStatus */.Ie.loading;
         if (this.variables &&
-            this.networkStatus !== core_networkStatus/* NetworkStatus */.I.loading &&
-            !(0,equality_esm/* equal */.D)(this.variables, query.variables)) {
-            networkStatus = core_networkStatus/* NetworkStatus */.I.setVariables;
+            this.networkStatus !== core_networkStatus/* NetworkStatus */.Ie.loading &&
+            !(0,lib/* equal */.D)(this.variables, query.variables)) {
+            networkStatus = core_networkStatus/* NetworkStatus */.Ie.setVariables;
         }
-        if (!(0,equality_esm/* equal */.D)(query.variables, this.variables)) {
+        if (!(0,lib/* equal */.D)(query.variables, this.variables)) {
             this.lastDiff = void 0;
         }
         Object.assign(this, {
@@ -18974,7 +17930,7 @@ var QueryInfo = (function () {
     QueryInfo.prototype.getDiff = function (variables) {
         if (variables === void 0) { variables = this.variables; }
         var options = this.getDiffOptions(variables);
-        if (this.lastDiff && (0,equality_esm/* equal */.D)(options, this.lastDiff.options)) {
+        if (this.lastDiff && (0,lib/* equal */.D)(options, this.lastDiff.options)) {
             return this.lastDiff.diff;
         }
         this.updateWatch(this.variables = variables);
@@ -19008,7 +17964,7 @@ var QueryInfo = (function () {
         var oldDiff = this.lastDiff && this.lastDiff.diff;
         this.updateLastDiff(diff);
         if (!this.dirty &&
-            !(0,equality_esm/* equal */.D)(oldDiff && oldDiff.result, diff && diff.result)) {
+            !(0,lib/* equal */.D)(oldDiff && oldDiff.result, diff && diff.result)) {
             this.dirty = true;
             if (!this.notifyTimeout) {
                 this.notifyTimeout = setTimeout(function () { return _this.notify(); }, 0);
@@ -19051,7 +18007,7 @@ var QueryInfo = (function () {
         if (!this.dirty || !this.listeners.size) {
             return false;
         }
-        if ((0,core_networkStatus/* isNetworkRequestInFlight */.O)(this.networkStatus) &&
+        if ((0,core_networkStatus/* isNetworkRequestInFlight */.Oj)(this.networkStatus) &&
             this.observableQuery) {
             var fetchPolicy = this.observableQuery.options.fetchPolicy;
             if (fetchPolicy !== "cache-only" &&
@@ -19083,7 +18039,7 @@ var QueryInfo = (function () {
         }
         var watchOptions = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, this.getDiffOptions(variables)), { watcher: this, callback: function (diff) { return _this.setDiff(diff); } });
         if (!this.lastWatch ||
-            !(0,equality_esm/* equal */.D)(watchOptions, this.lastWatch)) {
+            !(0,lib/* equal */.D)(watchOptions, this.lastWatch)) {
             this.cancel();
             this.cancel = this.cache.watch(this.lastWatch = watchOptions);
         }
@@ -19095,8 +18051,8 @@ var QueryInfo = (function () {
         var lastWrite = this.lastWrite;
         return !(lastWrite &&
             lastWrite.dmCount === destructiveMethodCounts.get(this.cache) &&
-            (0,equality_esm/* equal */.D)(variables, lastWrite.variables) &&
-            (0,equality_esm/* equal */.D)(result.data, lastWrite.result.data));
+            (0,lib/* equal */.D)(variables, lastWrite.variables) &&
+            (0,lib/* equal */.D)(result.data, lastWrite.result.data));
     };
     QueryInfo.prototype.markResult = function (result, document, options, cacheWriteBehavior) {
         var _this = this;
@@ -19158,10 +18114,10 @@ var QueryInfo = (function () {
     };
     QueryInfo.prototype.markReady = function () {
         this.networkError = null;
-        return this.networkStatus = core_networkStatus/* NetworkStatus */.I.ready;
+        return this.networkStatus = core_networkStatus/* NetworkStatus */.Ie.ready;
     };
     QueryInfo.prototype.markError = function (error) {
-        this.networkStatus = core_networkStatus/* NetworkStatus */.I.error;
+        this.networkStatus = core_networkStatus/* NetworkStatus */.Ie.error;
         this.lastWrite = void 0;
         this.reset();
         if (error.graphQLErrors) {
@@ -19186,7 +18142,10 @@ function shouldWriteResult(result, errorPolicy) {
     return writeWithErrors;
 }
 //# sourceMappingURL=QueryInfo.js.map
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/print.js
+var print = __webpack_require__(8470);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/core/QueryManager.js
+
 
 
 
@@ -19204,7 +18163,8 @@ function shouldWriteResult(result, errorPolicy) {
 var QueryManager_hasOwnProperty = Object.prototype.hasOwnProperty;
 var QueryManager = (function () {
     function QueryManager(_a) {
-        var cache = _a.cache, link = _a.link, defaultOptions = _a.defaultOptions, _b = _a.queryDeduplication, queryDeduplication = _b === void 0 ? false : _b, onBroadcast = _a.onBroadcast, _c = _a.ssrMode, ssrMode = _c === void 0 ? false : _c, _d = _a.clientAwareness, clientAwareness = _d === void 0 ? {} : _d, localState = _a.localState, assumeImmutableResults = _a.assumeImmutableResults;
+        var cache = _a.cache, link = _a.link, defaultOptions = _a.defaultOptions, documentTransform = _a.documentTransform, _b = _a.queryDeduplication, queryDeduplication = _b === void 0 ? false : _b, onBroadcast = _a.onBroadcast, _c = _a.ssrMode, ssrMode = _c === void 0 ? false : _c, _d = _a.clientAwareness, clientAwareness = _d === void 0 ? {} : _d, localState = _a.localState, _e = _a.assumeImmutableResults, assumeImmutableResults = _e === void 0 ? !!cache.assumeImmutableResults : _e;
+        var _this = this;
         this.clientAwareness = {};
         this.queries = new Map();
         this.fetchCancelFns = new Map();
@@ -19213,6 +18173,7 @@ var QueryManager = (function () {
         this.requestIdCounter = 1;
         this.mutationIdCounter = 1;
         this.inFlightLinkObservables = new Map();
+        var defaultDocumentTransform = new DocumentTransform/* DocumentTransform */.A(function (document) { return _this.cache.transformDocument(document); }, { cache: false });
         this.cache = cache;
         this.link = link;
         this.defaultOptions = defaultOptions || Object.create(null);
@@ -19220,7 +18181,12 @@ var QueryManager = (function () {
         this.clientAwareness = clientAwareness;
         this.localState = localState || new LocalState({ cache: cache });
         this.ssrMode = ssrMode;
-        this.assumeImmutableResults = !!assumeImmutableResults;
+        this.assumeImmutableResults = assumeImmutableResults;
+        this.documentTransform = documentTransform
+            ? defaultDocumentTransform
+                .concat(documentTransform)
+                .concat(defaultDocumentTransform)
+            : defaultDocumentTransform;
         if ((this.onBroadcast = onBroadcast)) {
             this.mutationStore = Object.create(null);
         }
@@ -19230,7 +18196,7 @@ var QueryManager = (function () {
         this.queries.forEach(function (_info, queryId) {
             _this.stopQueryNoBroadcast(queryId);
         });
-        this.cancelPendingFetches(__DEV__ ? new globals/* InvariantError */.ej('QueryManager stopped while query was in flight') : new globals/* InvariantError */.ej(14));
+        this.cancelPendingFetches((0,globals/* newInvariantError */._K)(23));
     };
     QueryManager.prototype.cancelPendingFetches = function (error) {
         this.fetchCancelFns.forEach(function (cancel) { return cancel(error); });
@@ -19240,23 +18206,22 @@ var QueryManager = (function () {
         var _b, _c;
         var mutation = _a.mutation, variables = _a.variables, optimisticResponse = _a.optimisticResponse, updateQueries = _a.updateQueries, _d = _a.refetchQueries, refetchQueries = _d === void 0 ? [] : _d, _e = _a.awaitRefetchQueries, awaitRefetchQueries = _e === void 0 ? false : _e, updateWithProxyFn = _a.update, onQueryUpdated = _a.onQueryUpdated, _f = _a.fetchPolicy, fetchPolicy = _f === void 0 ? ((_b = this.defaultOptions.mutate) === null || _b === void 0 ? void 0 : _b.fetchPolicy) || "network-only" : _f, _g = _a.errorPolicy, errorPolicy = _g === void 0 ? ((_c = this.defaultOptions.mutate) === null || _c === void 0 ? void 0 : _c.errorPolicy) || "none" : _g, keepRootFields = _a.keepRootFields, context = _a.context;
         return (0,tslib_es6/* __awaiter */.mG)(this, void 0, void 0, function () {
-            var mutationId, _h, document, hasClientExports, mutationStoreValue, self;
-            return (0,tslib_es6/* __generator */.Jh)(this, function (_j) {
-                switch (_j.label) {
+            var mutationId, hasClientExports, mutationStoreValue, self;
+            return (0,tslib_es6/* __generator */.Jh)(this, function (_h) {
+                switch (_h.label) {
                     case 0:
-                        __DEV__ ? (0,globals/* invariant */.kG)(mutation, 'mutation option is required. You must specify your GraphQL document in the mutation option.') : (0,globals/* invariant */.kG)(mutation, 15);
-                        __DEV__ ? (0,globals/* invariant */.kG)(fetchPolicy === 'network-only' ||
-                            fetchPolicy === 'no-cache', "Mutations support only 'network-only' or 'no-cache' fetchPolicy strings. The default `network-only` behavior automatically writes mutation results to the cache. Passing `no-cache` skips the cache write.") : (0,globals/* invariant */.kG)(fetchPolicy === 'network-only' ||
-                            fetchPolicy === 'no-cache', 16);
+                        (0,globals/* invariant */.kG)(mutation, 24);
+                        (0,globals/* invariant */.kG)(fetchPolicy === 'network-only' ||
+                            fetchPolicy === 'no-cache', 25);
                         mutationId = this.generateMutationId();
-                        _h = this.transform(mutation), document = _h.document, hasClientExports = _h.hasClientExports;
-                        mutation = this.cache.transformForLink(document);
+                        mutation = this.cache.transformForLink(this.transform(mutation));
+                        hasClientExports = this.getDocumentInfo(mutation).hasClientExports;
                         variables = this.getVariables(mutation, variables);
                         if (!hasClientExports) return [3, 2];
                         return [4, this.localState.addExportedVariables(mutation, variables, context)];
                     case 1:
-                        variables = (_j.sent());
-                        _j.label = 2;
+                        variables = (_h.sent());
+                        _h.label = 2;
                     case 2:
                         mutationStoreValue = this.mutationStore &&
                             (this.mutationStore[mutationId] = {
@@ -19359,7 +18324,7 @@ var QueryManager = (function () {
             if ((0,incrementalResult/* isExecutionPatchIncrementalResult */.GG)(result) && (0,arrays/* isNonEmptyArray */.O)(result.incremental)) {
                 var diff = cache.diff({
                     id: "ROOT_MUTATION",
-                    query: this.transform(mutation.document).asQuery,
+                    query: this.getDocumentInfo(mutation.document).asQuery,
                     variables: mutation.variables,
                     optimistic: false,
                     returnPartialData: true,
@@ -19430,7 +18395,7 @@ var QueryManager = (function () {
                         if (!skipCache) {
                             var diff = cache.diff({
                                 id: "ROOT_MUTATION",
-                                query: _this.transform(mutation.document).asQuery,
+                                query: _this.getDocumentInfo(mutation.document).asQuery,
                                 variables: mutation.variables,
                                 optimistic: false,
                                 returnPartialData: true,
@@ -19483,12 +18448,12 @@ var QueryManager = (function () {
                 _this.markMutationResult((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, mutation), { result: { data: data } }), cache);
             }
             catch (error) {
-                __DEV__ && globals/* invariant */.kG.error(error);
+                globalThis.__DEV__ !== false && globals/* invariant */.kG.error(error);
             }
         }, mutation.mutationId);
     };
     QueryManager.prototype.fetchQuery = function (queryId, options, networkStatus) {
-        return this.fetchQueryObservable(queryId, options, networkStatus).promise;
+        return this.fetchConcastWithInfo(queryId, options, networkStatus).concast.promise;
     };
     QueryManager.prototype.getQueryStore = function () {
         var store = Object.create(null);
@@ -19510,20 +18475,23 @@ var QueryManager = (function () {
         }
     };
     QueryManager.prototype.transform = function (document) {
+        return this.documentTransform.transformDocument(document);
+    };
+    QueryManager.prototype.getDocumentInfo = function (document) {
         var transformCache = this.transformCache;
         if (!transformCache.has(document)) {
-            var transformed = this.cache.transformDocument(document);
-            var noConnection = (0,transform/* removeConnectionDirectiveFromDocument */.Fo)(transformed);
-            var clientQuery = this.localState.clientQuery(transformed);
-            var serverQuery = noConnection && this.localState.serverQuery(noConnection);
-            var cacheEntry_1 = {
-                document: transformed,
-                hasClientExports: (0,directives/* hasClientExports */.mj)(transformed),
-                hasForcedResolvers: this.localState.shouldForceResolvers(transformed),
-                clientQuery: clientQuery,
-                serverQuery: serverQuery,
-                defaultVars: (0,getFromAST/* getDefaultValues */.O4)((0,getFromAST/* getOperationDefinition */.$H)(transformed)),
-                asQuery: (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, transformed), { definitions: transformed.definitions.map(function (def) {
+            var cacheEntry = {
+                hasClientExports: (0,directives/* hasClientExports */.mj)(document),
+                hasForcedResolvers: this.localState.shouldForceResolvers(document),
+                hasNonreactiveDirective: (0,directives/* hasDirectives */.FS)(['nonreactive'], document),
+                clientQuery: this.localState.clientQuery(document),
+                serverQuery: (0,transform/* removeDirectivesFromDocument */.bi)([
+                    { name: 'client', remove: true },
+                    { name: 'connection' },
+                    { name: 'nonreactive' },
+                ], document),
+                defaultVars: (0,getFromAST/* getDefaultValues */.O4)((0,getFromAST/* getOperationDefinition */.$H)(document)),
+                asQuery: (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, document), { definitions: document.definitions.map(function (def) {
                         if (def.kind === "OperationDefinition" &&
                             def.operation !== "query") {
                             return (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, def), { operation: "query" });
@@ -19531,23 +18499,16 @@ var QueryManager = (function () {
                         return def;
                     }) })
             };
-            var add = function (doc) {
-                if (doc && !transformCache.has(doc)) {
-                    transformCache.set(doc, cacheEntry_1);
-                }
-            };
-            add(document);
-            add(transformed);
-            add(clientQuery);
-            add(serverQuery);
+            transformCache.set(document, cacheEntry);
         }
         return transformCache.get(document);
     };
     QueryManager.prototype.getVariables = function (document, variables) {
-        return (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, this.transform(document).defaultVars), variables);
+        return (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, this.getDocumentInfo(document).defaultVars), variables);
     };
     QueryManager.prototype.watchQuery = function (options) {
-        options = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { variables: this.getVariables(options.query, options.variables) });
+        var query = this.transform(options.query);
+        options = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { variables: this.getVariables(query, options.variables) });
         if (typeof options.notifyOnNetworkStatusChange === 'undefined') {
             options.notifyOnNetworkStatusChange = false;
         }
@@ -19557,9 +18518,10 @@ var QueryManager = (function () {
             queryInfo: queryInfo,
             options: options,
         });
+        observable['lastQuery'] = query;
         this.queries.set(observable.queryId, queryInfo);
         queryInfo.init({
-            document: observable.query,
+            document: query,
             observableQuery: observable,
             variables: observable.variables,
         });
@@ -19568,12 +18530,11 @@ var QueryManager = (function () {
     QueryManager.prototype.query = function (options, queryId) {
         var _this = this;
         if (queryId === void 0) { queryId = this.generateQueryId(); }
-        __DEV__ ? (0,globals/* invariant */.kG)(options.query, 'query option is required. You must specify your GraphQL document ' +
-            'in the query option.') : (0,globals/* invariant */.kG)(options.query, 17);
-        __DEV__ ? (0,globals/* invariant */.kG)(options.query.kind === 'Document', 'You must wrap the query string in a "gql" tag.') : (0,globals/* invariant */.kG)(options.query.kind === 'Document', 18);
-        __DEV__ ? (0,globals/* invariant */.kG)(!options.returnPartialData, 'returnPartialData option only supported on watchQuery.') : (0,globals/* invariant */.kG)(!options.returnPartialData, 19);
-        __DEV__ ? (0,globals/* invariant */.kG)(!options.pollInterval, 'pollInterval option only supported on watchQuery.') : (0,globals/* invariant */.kG)(!options.pollInterval, 20);
-        return this.fetchQuery(queryId, options).finally(function () { return _this.stopQuery(queryId); });
+        (0,globals/* invariant */.kG)(options.query, 26);
+        (0,globals/* invariant */.kG)(options.query.kind === 'Document', 27);
+        (0,globals/* invariant */.kG)(!options.returnPartialData, 28);
+        (0,globals/* invariant */.kG)(!options.pollInterval, 29);
+        return this.fetchQuery(queryId, (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { query: this.transform(options.query) })).finally(function () { return _this.stopQuery(queryId); });
     };
     QueryManager.prototype.generateQueryId = function () {
         return String(this.queryIdCounter++);
@@ -19597,10 +18558,10 @@ var QueryManager = (function () {
         if (options === void 0) { options = {
             discardWatches: true,
         }; }
-        this.cancelPendingFetches(__DEV__ ? new globals/* InvariantError */.ej('Store reset while query was in flight (not completed in link chain)') : new globals/* InvariantError */.ej(21));
+        this.cancelPendingFetches((0,globals/* newInvariantError */._K)(30));
         this.queries.forEach(function (queryInfo) {
             if (queryInfo.observableQuery) {
-                queryInfo.networkStatus = core_networkStatus/* NetworkStatus */.I.loading;
+                queryInfo.networkStatus = core_networkStatus/* NetworkStatus */.Ie.loading;
             }
             else {
                 queryInfo.stop();
@@ -19623,7 +18584,7 @@ var QueryManager = (function () {
                     queryNamesAndDocs.set(desc, false);
                 }
                 else if ((0,storeUtils/* isDocumentNode */.JW)(desc)) {
-                    queryNamesAndDocs.set(_this.transform(desc).document, false);
+                    queryNamesAndDocs.set(_this.transform(desc), false);
                 }
                 else if ((0,objects/* isNonNullObject */.s)(desc) && desc.query) {
                     legacyQueryOptions.add(desc);
@@ -19670,10 +18631,10 @@ var QueryManager = (function () {
                 queries.set(queryId, oq);
             });
         }
-        if (__DEV__ && queryNamesAndDocs.size) {
+        if (globalThis.__DEV__ !== false && queryNamesAndDocs.size) {
             queryNamesAndDocs.forEach(function (included, nameOrDoc) {
                 if (!included) {
-                    __DEV__ && globals/* invariant */.kG.warn("Unknown query ".concat(typeof nameOrDoc === "string" ? "named " : "").concat(JSON.stringify(nameOrDoc, null, 2), " requested in refetchQueries options.include array"));
+                    globalThis.__DEV__ !== false && globals/* invariant */.kG.warn(typeof nameOrDoc === "string" ? 31 : 32, nameOrDoc);
                 }
             });
         }
@@ -19702,7 +18663,7 @@ var QueryManager = (function () {
     QueryManager.prototype.startGraphQLSubscription = function (_a) {
         var _this = this;
         var query = _a.query, fetchPolicy = _a.fetchPolicy, errorPolicy = _a.errorPolicy, variables = _a.variables, _b = _a.context, context = _b === void 0 ? {} : _b;
-        query = this.transform(query).document;
+        query = this.transform(query);
         variables = this.getVariables(query, variables);
         var makeObservable = function (variables) {
             return _this.getObservableFromLink(query, context, variables).map(function (result) {
@@ -19732,7 +18693,7 @@ var QueryManager = (function () {
                 return result;
             });
         };
-        if (this.transform(query).hasClientExports) {
+        if (this.getDocumentInfo(query).hasClientExports) {
             var observablePromise_1 = this.localState.addExportedVariables(query, variables, context).then(makeObservable);
             return new zen_observable_ts_module/* Observable */.y(function (observer) {
                 var sub = null;
@@ -19770,9 +18731,9 @@ var QueryManager = (function () {
         var _a;
         if (deduplication === void 0) { deduplication = (_a = context === null || context === void 0 ? void 0 : context.queryDeduplication) !== null && _a !== void 0 ? _a : this.queryDeduplication; }
         var observable;
-        var serverQuery = this.transform(query).serverQuery;
+        var _b = this.getDocumentInfo(query), serverQuery = _b.serverQuery, clientQuery = _b.clientQuery;
         if (serverQuery) {
-            var _b = this, inFlightLinkObservables_1 = _b.inFlightLinkObservables, link = _b.link;
+            var _c = this, inFlightLinkObservables_1 = _c.inFlightLinkObservables, link = _c.link;
             var operation = {
                 query: serverQuery,
                 variables: variables,
@@ -19781,8 +18742,9 @@ var QueryManager = (function () {
             };
             context = operation.context;
             if (deduplication) {
-                var byVariables_1 = inFlightLinkObservables_1.get(serverQuery) || new Map();
-                inFlightLinkObservables_1.set(serverQuery, byVariables_1);
+                var printedServerQuery_1 = (0,print/* print */.S)(serverQuery);
+                var byVariables_1 = inFlightLinkObservables_1.get(printedServerQuery_1) || new Map();
+                inFlightLinkObservables_1.set(printedServerQuery_1, byVariables_1);
                 var varJson_1 = (0,object_canon/* canonicalStringify */.B)(variables);
                 observable = byVariables_1.get(varJson_1);
                 if (!observable) {
@@ -19793,7 +18755,7 @@ var QueryManager = (function () {
                     concast.beforeNext(function () {
                         if (byVariables_1.delete(varJson_1) &&
                             byVariables_1.size < 1) {
-                            inFlightLinkObservables_1.delete(serverQuery);
+                            inFlightLinkObservables_1.delete(printedServerQuery_1);
                         }
                     });
                 }
@@ -19810,7 +18772,6 @@ var QueryManager = (function () {
             ]);
             context = this.prepareContext(context);
         }
-        var clientQuery = this.transform(query).clientQuery;
         if (clientQuery) {
             observable = asyncMap(observable, function (result) {
                 return _this.localState.runResolvers({
@@ -19825,7 +18786,7 @@ var QueryManager = (function () {
     };
     QueryManager.prototype.getResultsFromLink = function (queryInfo, cacheWriteBehavior, options) {
         var requestId = queryInfo.lastRequestId = this.generateRequestId();
-        var linkDocument = this.cache.transformForLink(this.transform(queryInfo.document).document);
+        var linkDocument = this.cache.transformForLink(options.query);
         return asyncMap(this.getObservableFromLink(linkDocument, options.context, options.variables), function (result) {
             var graphQLErrors = getGraphQLErrorsFromResult(result);
             var hasErrors = graphQLErrors.length > 0;
@@ -19841,11 +18802,11 @@ var QueryManager = (function () {
             var aqr = {
                 data: result.data,
                 loading: false,
-                networkStatus: core_networkStatus/* NetworkStatus */.I.ready,
+                networkStatus: core_networkStatus/* NetworkStatus */.Ie.ready,
             };
             if (hasErrors && options.errorPolicy !== "ignore") {
                 aqr.errors = graphQLErrors;
-                aqr.networkStatus = core_networkStatus/* NetworkStatus */.I.error;
+                aqr.networkStatus = core_networkStatus/* NetworkStatus */.Ie.error;
             }
             return aqr;
         }, function (networkError) {
@@ -19858,13 +18819,10 @@ var QueryManager = (function () {
             throw error;
         });
     };
-    QueryManager.prototype.fetchQueryObservable = function (queryId, options, networkStatus) {
-        return this.fetchConcastWithInfo(queryId, options, networkStatus).concast;
-    };
     QueryManager.prototype.fetchConcastWithInfo = function (queryId, options, networkStatus) {
         var _this = this;
-        if (networkStatus === void 0) { networkStatus = core_networkStatus/* NetworkStatus */.I.loading; }
-        var query = this.transform(options.query).document;
+        if (networkStatus === void 0) { networkStatus = core_networkStatus/* NetworkStatus */.Ie.loading; }
+        var query = options.query;
         var variables = this.getVariables(query, options.variables);
         var queryInfo = this.getQuery(queryId);
         var defaults = this.defaultOptions.watchQuery;
@@ -19894,7 +18852,7 @@ var QueryManager = (function () {
             setTimeout(function () { return concast.cancel(reason); });
         });
         var concast, containsDataFromLink;
-        if (this.transform(normalized.query).hasClientExports) {
+        if (this.getDocumentInfo(normalized.query).hasClientExports) {
             concast = new Concast(this.localState
                 .addExportedVariables(normalized.query, normalized.variables, normalized.context)
                 .then(fromVariables).then(function (sourcesWithInfo) { return sourcesWithInfo.sources; }));
@@ -19984,21 +18942,21 @@ var QueryManager = (function () {
         var query = _a.query, variables = _a.variables, fetchPolicy = _a.fetchPolicy, refetchWritePolicy = _a.refetchWritePolicy, errorPolicy = _a.errorPolicy, returnPartialData = _a.returnPartialData, context = _a.context, notifyOnNetworkStatusChange = _a.notifyOnNetworkStatusChange;
         var oldNetworkStatus = queryInfo.networkStatus;
         queryInfo.init({
-            document: this.transform(query).document,
+            document: query,
             variables: variables,
             networkStatus: networkStatus,
         });
         var readCache = function () { return queryInfo.getDiff(variables); };
         var resultsFromCache = function (diff, networkStatus) {
-            if (networkStatus === void 0) { networkStatus = queryInfo.networkStatus || core_networkStatus/* NetworkStatus */.I.loading; }
+            if (networkStatus === void 0) { networkStatus = queryInfo.networkStatus || core_networkStatus/* NetworkStatus */.Ie.loading; }
             var data = diff.result;
-            if (__DEV__ &&
+            if (globalThis.__DEV__ !== false &&
                 !returnPartialData &&
-                !(0,equality_esm/* equal */.D)(data, {})) {
+                !(0,lib/* equal */.D)(data, {})) {
                 (0,ObservableQuery/* logMissingFieldErrors */.DC)(diff.missing);
             }
-            var fromData = function (data) { return zen_observable_ts_module/* Observable */.y.of((0,tslib_es6/* __assign */.pi)({ data: data, loading: (0,core_networkStatus/* isNetworkRequestInFlight */.O)(networkStatus), networkStatus: networkStatus }, (diff.complete ? null : { partial: true }))); };
-            if (data && _this.transform(query).hasForcedResolvers) {
+            var fromData = function (data) { return zen_observable_ts_module/* Observable */.y.of((0,tslib_es6/* __assign */.pi)({ data: data, loading: (0,core_networkStatus/* isNetworkRequestInFlight */.Oj)(networkStatus), networkStatus: networkStatus }, (diff.complete ? null : { partial: true }))); };
+            if (data && _this.getDocumentInfo(query).hasForcedResolvers) {
                 return _this.localState.runResolvers({
                     document: query,
                     remoteResult: { data: data },
@@ -20008,17 +18966,18 @@ var QueryManager = (function () {
                 }).then(function (resolved) { return fromData(resolved.data || void 0); });
             }
             if (errorPolicy === 'none' &&
-                networkStatus === core_networkStatus/* NetworkStatus */.I.refetch &&
+                networkStatus === core_networkStatus/* NetworkStatus */.Ie.refetch &&
                 Array.isArray(diff.missing)) {
                 return fromData(void 0);
             }
             return fromData(data);
         };
         var cacheWriteBehavior = fetchPolicy === "no-cache" ? 0 :
-            (networkStatus === core_networkStatus/* NetworkStatus */.I.refetch &&
+            (networkStatus === core_networkStatus/* NetworkStatus */.Ie.refetch &&
                 refetchWritePolicy !== "merge") ? 1
                 : 2;
         var resultsFromLink = function () { return _this.getResultsFromLink(queryInfo, cacheWriteBehavior, {
+            query: query,
             variables: variables,
             context: context,
             fetchPolicy: fetchPolicy,
@@ -20027,7 +18986,7 @@ var QueryManager = (function () {
         var shouldNotify = notifyOnNetworkStatusChange &&
             typeof oldNetworkStatus === "number" &&
             oldNetworkStatus !== networkStatus &&
-            (0,core_networkStatus/* isNetworkRequestInFlight */.O)(networkStatus);
+            (0,core_networkStatus/* isNetworkRequestInFlight */.Oj)(networkStatus);
         switch (fetchPolicy) {
             default:
             case "cache-first": {
@@ -20102,19 +19061,17 @@ var ApolloClient = (function () {
         var _this = this;
         this.resetStoreCallbacks = [];
         this.clearStoreCallbacks = [];
-        var uri = options.uri, credentials = options.credentials, headers = options.headers, cache = options.cache, _a = options.ssrMode, ssrMode = _a === void 0 ? false : _a, _b = options.ssrForceFetchDelay, ssrForceFetchDelay = _b === void 0 ? 0 : _b, _c = options.connectToDevTools, connectToDevTools = _c === void 0 ? typeof window === 'object' &&
+        if (!options.cache) {
+            throw (0,globals/* newInvariantError */._K)(13);
+        }
+        var uri = options.uri, credentials = options.credentials, headers = options.headers, cache = options.cache, documentTransform = options.documentTransform, _a = options.ssrMode, ssrMode = _a === void 0 ? false : _a, _b = options.ssrForceFetchDelay, ssrForceFetchDelay = _b === void 0 ? 0 : _b, _c = options.connectToDevTools, connectToDevTools = _c === void 0 ? typeof window === 'object' &&
             !window.__APOLLO_CLIENT__ &&
-            __DEV__ : _c, _d = options.queryDeduplication, queryDeduplication = _d === void 0 ? true : _d, defaultOptions = options.defaultOptions, _e = options.assumeImmutableResults, assumeImmutableResults = _e === void 0 ? false : _e, resolvers = options.resolvers, typeDefs = options.typeDefs, fragmentMatcher = options.fragmentMatcher, clientAwarenessName = options.name, clientAwarenessVersion = options.version;
+            globalThis.__DEV__ !== false : _c, _d = options.queryDeduplication, queryDeduplication = _d === void 0 ? true : _d, defaultOptions = options.defaultOptions, _e = options.assumeImmutableResults, assumeImmutableResults = _e === void 0 ? cache.assumeImmutableResults : _e, resolvers = options.resolvers, typeDefs = options.typeDefs, fragmentMatcher = options.fragmentMatcher, clientAwarenessName = options.name, clientAwarenessVersion = options.version;
         var link = options.link;
         if (!link) {
             link = uri
                 ? new HttpLink/* HttpLink */.u({ uri: uri, credentials: credentials, headers: headers })
                 : ApolloLink/* ApolloLink */.i.empty();
-        }
-        if (!cache) {
-            throw __DEV__ ? new globals/* InvariantError */.ej("To initialize Apollo Client, you must specify a 'cache' property " +
-                "in the options object. \n" +
-                "For more information, please visit: https://go.apollo.dev/c/docs") : new globals/* InvariantError */.ej(9);
         }
         this.link = link;
         this.cache = cache;
@@ -20133,7 +19090,7 @@ var ApolloClient = (function () {
         if (connectToDevTools && typeof window === 'object') {
             window.__APOLLO_CLIENT__ = this;
         }
-        if (!hasSuggestedDevtools && connectToDevTools && __DEV__) {
+        if (!hasSuggestedDevtools && connectToDevTools && globalThis.__DEV__ !== false) {
             hasSuggestedDevtools = true;
             if (typeof window !== 'undefined' &&
                 window.document &&
@@ -20152,12 +19109,12 @@ var ApolloClient = (function () {
                     }
                 }
                 if (url) {
-                    __DEV__ && globals/* invariant */.kG.log("Download the Apollo DevTools for a better development " +
-                        "experience: " + url);
+                    globalThis.__DEV__ !== false && globals/* invariant */.kG.log("Download the Apollo DevTools for a better development " +
+                        "experience: %s", url);
                 }
             }
         }
-        this.version = version;
+        this.version = version/* version */.i;
         this.localState = new LocalState({
             cache: cache,
             client: this,
@@ -20168,6 +19125,7 @@ var ApolloClient = (function () {
             cache: this.cache,
             link: this.link,
             defaultOptions: this.defaultOptions,
+            documentTransform: documentTransform,
             queryDeduplication: queryDeduplication,
             ssrMode: ssrMode,
             clientAwareness: {
@@ -20190,6 +19148,13 @@ var ApolloClient = (function () {
             } : void 0,
         });
     }
+    Object.defineProperty(ApolloClient.prototype, "documentTransform", {
+        get: function () {
+            return this.queryManager.documentTransform;
+        },
+        enumerable: false,
+        configurable: true
+    });
     ApolloClient.prototype.stop = function () {
         this.queryManager.stop();
     };
@@ -20208,10 +19173,7 @@ var ApolloClient = (function () {
         if (this.defaultOptions.query) {
             options = (0,mergeOptions/* mergeOptions */.J)(this.defaultOptions.query, options);
         }
-        __DEV__ ? (0,globals/* invariant */.kG)(options.fetchPolicy !== 'cache-and-network', 'The cache-and-network fetchPolicy does not work with client.query, because ' +
-            'client.query can only return a single result. Please use client.watchQuery ' +
-            'to receive multiple results from the cache and the network, or consider ' +
-            'using a different fetchPolicy, such as cache-first or network-only.') : (0,globals/* invariant */.kG)(options.fetchPolicy !== 'cache-and-network', 10);
+        (0,globals/* invariant */.kG)(options.fetchPolicy !== 'cache-and-network', 14);
         if (this.disableNetworkFetches && options.fetchPolicy === 'network-only') {
             options = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { fetchPolicy: 'cache-first' });
         }
@@ -20300,7 +19262,7 @@ var ApolloClient = (function () {
         result.queries = queries;
         result.results = results;
         result.catch(function (error) {
-            __DEV__ && globals/* invariant */.kG.debug("In client.refetchQueries, Promise.all promise rejected with error ".concat(error));
+            globalThis.__DEV__ !== false && globals/* invariant */.kG.debug(15, error);
         });
         return result;
     };
@@ -20336,34 +19298,123 @@ var ApolloClient = (function () {
 
 /***/ }),
 
-/***/ 4780:
+/***/ 992:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   DC: () => (/* binding */ logMissingFieldErrors),
-/* harmony export */   ue: () => (/* binding */ ObservableQuery),
-/* harmony export */   vj: () => (/* binding */ reobserveCacheFirst)
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7582);
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
-/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2152);
-/* harmony import */ var _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1644);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6765);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(9487);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(1436);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(3712);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(8263);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(8216);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(6403);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  ue: () => (/* binding */ ObservableQuery),
+  DC: () => (/* binding */ logMissingFieldErrors),
+  vj: () => (/* binding */ reobserveCacheFirst)
+});
+
+// EXTERNAL MODULE: ./node_modules/tslib/tslib.es6.mjs
+var tslib_es6 = __webpack_require__(7582);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/globals/index.js + 3 modules
+var globals = __webpack_require__(6961);
+// EXTERNAL MODULE: ./node_modules/@wry/equality/lib/index.js
+var lib = __webpack_require__(20);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/core/networkStatus.js
+var core_networkStatus = __webpack_require__(1644);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/getFromAST.js
+var getFromAST = __webpack_require__(6765);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/compact.js
+var compact = __webpack_require__(3712);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/cloneDeep.js
+var cloneDeep = __webpack_require__(9487);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/observables/iteration.js
+var iteration = __webpack_require__(8263);
+// EXTERNAL MODULE: ./node_modules/zen-observable-ts/module.js
+var zen_observable_ts_module = __webpack_require__(8216);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/observables/subclassing.js
+var subclassing = __webpack_require__(6403);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/fragments.js
+var fragments = __webpack_require__(3361);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/directives.js
+var directives = __webpack_require__(9065);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/storeUtils.js
+var storeUtils = __webpack_require__(1761);
+;// CONCATENATED MODULE: ./node_modules/@apollo/client/core/equalByQuery.js
+
+
+
+function equalByQuery(query, _a, _b, variables) {
+    var aData = _a.data, aRest = (0,tslib_es6/* __rest */._T)(_a, ["data"]);
+    var bData = _b.data, bRest = (0,tslib_es6/* __rest */._T)(_b, ["data"]);
+    return ((0,lib/* default */.Z)(aRest, bRest) &&
+        equalBySelectionSet((0,getFromAST/* getMainDefinition */.p$)(query).selectionSet, aData, bData, {
+            fragmentMap: (0,fragments/* createFragmentMap */.F)((0,getFromAST/* getFragmentDefinitions */.kU)(query)),
+            variables: variables,
+        }));
+}
+function equalBySelectionSet(selectionSet, aResult, bResult, context) {
+    if (aResult === bResult) {
+        return true;
+    }
+    var seenSelections = new Set();
+    return selectionSet.selections.every(function (selection) {
+        if (seenSelections.has(selection))
+            return true;
+        seenSelections.add(selection);
+        if (!(0,directives/* shouldInclude */.LZ)(selection, context.variables))
+            return true;
+        if (selectionHasNonreactiveDirective(selection))
+            return true;
+        if ((0,storeUtils/* isField */.My)(selection)) {
+            var resultKey = (0,storeUtils/* resultKeyNameFromField */.u2)(selection);
+            var aResultChild = aResult && aResult[resultKey];
+            var bResultChild = bResult && bResult[resultKey];
+            var childSelectionSet = selection.selectionSet;
+            if (!childSelectionSet) {
+                return (0,lib/* default */.Z)(aResultChild, bResultChild);
+            }
+            var aChildIsArray = Array.isArray(aResultChild);
+            var bChildIsArray = Array.isArray(bResultChild);
+            if (aChildIsArray !== bChildIsArray)
+                return false;
+            if (aChildIsArray && bChildIsArray) {
+                var length_1 = aResultChild.length;
+                if (bResultChild.length !== length_1) {
+                    return false;
+                }
+                for (var i = 0; i < length_1; ++i) {
+                    if (!equalBySelectionSet(childSelectionSet, aResultChild[i], bResultChild[i], context)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return equalBySelectionSet(childSelectionSet, aResultChild, bResultChild, context);
+        }
+        else {
+            var fragment = (0,fragments/* getFragmentFromSelection */.hi)(selection, context.fragmentMap);
+            if (fragment) {
+                if (selectionHasNonreactiveDirective(fragment))
+                    return true;
+                return equalBySelectionSet(fragment.selectionSet, aResult, bResult, context);
+            }
+        }
+    });
+}
+function selectionHasNonreactiveDirective(selection) {
+    return (!!selection.directives && selection.directives.some(directiveIsNonreactive));
+}
+function directiveIsNonreactive(dir) {
+    return dir.name.value === "nonreactive";
+}
+//# sourceMappingURL=equalByQuery.js.map
+;// CONCATENATED MODULE: ./node_modules/@apollo/client/core/ObservableQuery.js
 
 
 
 
 
-var assign = Object.assign, hasOwnProperty = Object.hasOwnProperty;
+
+var ObservableQuery_assign = Object.assign, ObservableQuery_hasOwnProperty = Object.hasOwnProperty;
 var ObservableQuery = (function (_super) {
-    (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__extends */ .ZT)(ObservableQuery, _super);
+    (0,tslib_es6/* __extends */.ZT)(ObservableQuery, _super);
     function ObservableQuery(_a) {
         var queryManager = _a.queryManager, queryInfo = _a.queryInfo, options = _a.options;
         var _this = _super.call(this, function (observer) {
@@ -20400,15 +19451,15 @@ var ObservableQuery = (function (_super) {
         _this.isTornDown = false;
         var _b = queryManager.defaultOptions.watchQuery, _c = _b === void 0 ? {} : _b, _d = _c.fetchPolicy, defaultFetchPolicy = _d === void 0 ? "cache-first" : _d;
         var _e = options.fetchPolicy, fetchPolicy = _e === void 0 ? defaultFetchPolicy : _e, _f = options.initialFetchPolicy, initialFetchPolicy = _f === void 0 ? (fetchPolicy === "standby" ? defaultFetchPolicy : fetchPolicy) : _f;
-        _this.options = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, options), { initialFetchPolicy: initialFetchPolicy, fetchPolicy: fetchPolicy });
+        _this.options = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { initialFetchPolicy: initialFetchPolicy, fetchPolicy: fetchPolicy });
         _this.queryId = queryInfo.queryId || queryManager.generateQueryId();
-        var opDef = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .getOperationDefinition */ .$H)(_this.query);
+        var opDef = (0,getFromAST/* getOperationDefinition */.$H)(_this.query);
         _this.queryName = opDef && opDef.name && opDef.name.value;
         return _this;
     }
     Object.defineProperty(ObservableQuery.prototype, "query", {
         get: function () {
-            return this.queryManager.transform(this.options.query).document;
+            return this.lastQuery || this.options.query;
         },
         enumerable: false,
         configurable: true
@@ -20444,11 +19495,11 @@ var ObservableQuery = (function (_super) {
         var lastResult = this.getLastResult(true);
         var networkStatus = this.queryInfo.networkStatus ||
             (lastResult && lastResult.networkStatus) ||
-            _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.ready;
-        var result = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, lastResult), { loading: (0,_networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .isNetworkRequestInFlight */ .O)(networkStatus), networkStatus: networkStatus });
+            core_networkStatus/* NetworkStatus */.Ie.ready;
+        var result = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, lastResult), { loading: (0,core_networkStatus/* isNetworkRequestInFlight */.Oj)(networkStatus), networkStatus: networkStatus });
         var _a = this.options.fetchPolicy, fetchPolicy = _a === void 0 ? "cache-first" : _a;
         if (skipCacheDataFor(fetchPolicy) ||
-            this.queryManager.transform(this.options.query).hasForcedResolvers) {
+            this.queryManager.getDocumentInfo(this.query).hasForcedResolvers) {
         }
         else if (this.waitForOwnResult) {
             this.queryInfo['updateWatch']();
@@ -20458,23 +19509,23 @@ var ObservableQuery = (function (_super) {
             if (diff.complete || this.options.returnPartialData) {
                 result.data = diff.result;
             }
-            if ((0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(result.data, {})) {
+            if ((0,lib/* equal */.D)(result.data, {})) {
                 result.data = void 0;
             }
             if (diff.complete) {
                 delete result.partial;
                 if (diff.complete &&
-                    result.networkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.loading &&
+                    result.networkStatus === core_networkStatus/* NetworkStatus */.Ie.loading &&
                     (fetchPolicy === 'cache-first' ||
                         fetchPolicy === 'cache-only')) {
-                    result.networkStatus = _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.ready;
+                    result.networkStatus = core_networkStatus/* NetworkStatus */.Ie.ready;
                     result.loading = false;
                 }
             }
             else {
                 result.partial = true;
             }
-            if (__DEV__ &&
+            if (globalThis.__DEV__ !== false &&
                 !diff.complete &&
                 !this.options.partialRefetch &&
                 !result.loading &&
@@ -20489,15 +19540,20 @@ var ObservableQuery = (function (_super) {
         return result;
     };
     ObservableQuery.prototype.isDifferentFromLastResult = function (newResult, variables) {
-        return (!this.last ||
-            !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(this.last.result, newResult) ||
-            (variables && !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(this.last.variables, variables)));
+        if (!this.last) {
+            return true;
+        }
+        var resultIsDifferent = this.queryManager.getDocumentInfo(this.query).hasNonreactiveDirective
+            ? !equalByQuery(this.query, this.last.result, newResult, this.variables)
+            : !(0,lib/* equal */.D)(this.last.result, newResult);
+        return (resultIsDifferent ||
+            (variables && !(0,lib/* equal */.D)(this.last.variables, variables)));
     };
     ObservableQuery.prototype.getLast = function (key, variablesMustMatch) {
         var last = this.last;
         if (last &&
             last[key] &&
-            (!variablesMustMatch || (0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(last.variables, this.variables))) {
+            (!variablesMustMatch || (0,lib/* equal */.D)(last.variables, this.variables))) {
             return last[key];
         }
     };
@@ -20529,33 +19585,41 @@ var ObservableQuery = (function (_super) {
         else {
             reobserveOptions.fetchPolicy = 'network-only';
         }
-        if (__DEV__ && variables && hasOwnProperty.call(variables, "variables")) {
-            var queryDef = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .getQueryDefinition */ .iW)(this.query);
+        if (globalThis.__DEV__ !== false && variables && ObservableQuery_hasOwnProperty.call(variables, "variables")) {
+            var queryDef = (0,getFromAST/* getQueryDefinition */.iW)(this.query);
             var vars = queryDef.variableDefinitions;
             if (!vars || !vars.some(function (v) { return v.variable.name.value === "variables"; })) {
-                __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn("Called refetch(".concat(JSON.stringify(variables), ") for query ").concat(((_a = queryDef.name) === null || _a === void 0 ? void 0 : _a.value) || JSON.stringify(queryDef), ", which does not declare a $variables variable.\nDid you mean to call refetch(variables) instead of refetch({ variables })?"));
+                globalThis.__DEV__ !== false && globals/* invariant */.kG.warn(
+                    18,
+                    variables,
+                    ((_a = queryDef.name) === null || _a === void 0 ? void 0 : _a.value) || queryDef
+                );
             }
         }
-        if (variables && !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(this.options.variables, variables)) {
-            reobserveOptions.variables = this.options.variables = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, this.options.variables), variables);
+        if (variables && !(0,lib/* equal */.D)(this.options.variables, variables)) {
+            reobserveOptions.variables = this.options.variables = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, this.options.variables), variables);
         }
         this.queryInfo.resetLastWrite();
-        return this.reobserve(reobserveOptions, _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.refetch);
+        return this.reobserve(reobserveOptions, core_networkStatus/* NetworkStatus */.Ie.refetch);
     };
     ObservableQuery.prototype.fetchMore = function (fetchMoreOptions) {
         var _this = this;
-        var combinedOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, (fetchMoreOptions.query ? fetchMoreOptions : (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, this.options), { query: this.query }), fetchMoreOptions), { variables: (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, this.options.variables), fetchMoreOptions.variables) }))), { fetchPolicy: "no-cache" });
+        var combinedOptions = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, (fetchMoreOptions.query ? fetchMoreOptions : (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, this.options), { query: this.options.query }), fetchMoreOptions), { variables: (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, this.options.variables), fetchMoreOptions.variables) }))), { fetchPolicy: "no-cache" });
+        combinedOptions.query = this.transformDocument(combinedOptions.query);
         var qid = this.queryManager.generateQueryId();
+        this.lastQuery = fetchMoreOptions.query
+            ? this.transformDocument(this.options.query)
+            : combinedOptions.query;
         var queryInfo = this.queryInfo;
         var originalNetworkStatus = queryInfo.networkStatus;
-        queryInfo.networkStatus = _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.fetchMore;
+        queryInfo.networkStatus = core_networkStatus/* NetworkStatus */.Ie.fetchMore;
         if (combinedOptions.notifyOnNetworkStatusChange) {
             this.observe();
         }
         var updatedQuerySet = new Set();
-        return this.queryManager.fetchQuery(qid, combinedOptions, _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.fetchMore).then(function (fetchMoreResult) {
+        return this.queryManager.fetchQuery(qid, combinedOptions, core_networkStatus/* NetworkStatus */.Ie.fetchMore).then(function (fetchMoreResult) {
             _this.queryManager.removeQuery(qid);
-            if (queryInfo.networkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.fetchMore) {
+            if (queryInfo.networkStatus === core_networkStatus/* NetworkStatus */.Ie.fetchMore) {
                 queryInfo.networkStatus = originalNetworkStatus;
             }
             _this.queryManager.cache.batch({
@@ -20617,7 +19681,7 @@ var ObservableQuery = (function (_super) {
                     options.onError(err);
                     return;
                 }
-                __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.error('Unhandled GraphQL subscription error', err);
+                globalThis.__DEV__ !== false && globals/* invariant */.kG.error(19, err);
             },
         });
         this.subscriptions.add(subscription);
@@ -20630,8 +19694,12 @@ var ObservableQuery = (function (_super) {
     ObservableQuery.prototype.setOptions = function (newOptions) {
         return this.reobserve(newOptions);
     };
+    ObservableQuery.prototype.silentSetOptions = function (newOptions) {
+        var mergedOptions = (0,compact/* compact */.o)(this.options, newOptions || {});
+        ObservableQuery_assign(this.options, mergedOptions);
+    };
     ObservableQuery.prototype.setVariables = function (variables) {
-        if ((0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(this.variables, variables)) {
+        if ((0,lib/* equal */.D)(this.variables, variables)) {
             return this.observers.size
                 ? this.result()
                 : Promise.resolve();
@@ -20643,7 +19711,7 @@ var ObservableQuery = (function (_super) {
         return this.reobserve({
             fetchPolicy: this.options.initialFetchPolicy,
             variables: variables,
-        }, _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.setVariables);
+        }, core_networkStatus/* NetworkStatus */.Ie.setVariables);
     };
     ObservableQuery.prototype.updateQuery = function (mapFn) {
         var queryManager = this.queryManager;
@@ -20716,15 +19784,15 @@ var ObservableQuery = (function (_super) {
             pollingInfo.interval === pollInterval) {
             return;
         }
-        __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(pollInterval, 'Attempted to start a polling query without a polling interval.') : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(pollInterval, 13);
+        (0,globals/* invariant */.kG)(pollInterval, 20);
         var info = pollingInfo || (this.pollingInfo = {});
         info.interval = pollInterval;
         var maybeFetch = function () {
             if (_this.pollingInfo) {
-                if (!(0,_networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .isNetworkRequestInFlight */ .O)(_this.queryInfo.networkStatus)) {
+                if (!(0,core_networkStatus/* isNetworkRequestInFlight */.Oj)(_this.queryInfo.networkStatus)) {
                     _this.reobserve({
                         fetchPolicy: _this.options.initialFetchPolicy === 'no-cache' ? 'no-cache' : 'network-only',
-                    }, _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.poll).then(poll, poll);
+                    }, core_networkStatus/* NetworkStatus */.Ie.poll).then(poll, poll);
                 }
                 else {
                     poll();
@@ -20743,47 +19811,50 @@ var ObservableQuery = (function (_super) {
     };
     ObservableQuery.prototype.updateLastResult = function (newResult, variables) {
         if (variables === void 0) { variables = this.variables; }
-        this.last = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, this.last), { result: this.queryManager.assumeImmutableResults
-                ? newResult
-                : (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .cloneDeep */ .X)(newResult), variables: variables });
-        if (!(0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_6__/* .isNonEmptyArray */ .O)(newResult.errors)) {
-            delete this.last.error;
+        var error = this.getLastError();
+        if (error && this.last && !(0,lib/* equal */.D)(variables, this.last.variables)) {
+            error = void 0;
         }
-        return this.last;
+        return this.last = (0,tslib_es6/* __assign */.pi)({ result: this.queryManager.assumeImmutableResults
+                ? newResult
+                : (0,cloneDeep/* cloneDeep */.X)(newResult), variables: variables }, (error ? { error: error } : null));
     };
     ObservableQuery.prototype.reobserveAsConcast = function (newOptions, newNetworkStatus) {
         var _this = this;
         this.isTornDown = false;
-        var useDisposableConcast = newNetworkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.refetch ||
-            newNetworkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.fetchMore ||
-            newNetworkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.poll;
+        var useDisposableConcast = newNetworkStatus === core_networkStatus/* NetworkStatus */.Ie.refetch ||
+            newNetworkStatus === core_networkStatus/* NetworkStatus */.Ie.fetchMore ||
+            newNetworkStatus === core_networkStatus/* NetworkStatus */.Ie.poll;
         var oldVariables = this.options.variables;
         var oldFetchPolicy = this.options.fetchPolicy;
-        var mergedOptions = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_7__/* .compact */ .o)(this.options, newOptions || {});
+        var mergedOptions = (0,compact/* compact */.o)(this.options, newOptions || {});
         var options = useDisposableConcast
             ? mergedOptions
-            : assign(this.options, mergedOptions);
+            : ObservableQuery_assign(this.options, mergedOptions);
+        var query = this.transformDocument(options.query);
+        this.lastQuery = query;
         if (!useDisposableConcast) {
             this.updatePolling();
             if (newOptions &&
                 newOptions.variables &&
-                !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(newOptions.variables, oldVariables) &&
+                !(0,lib/* equal */.D)(newOptions.variables, oldVariables) &&
                 options.fetchPolicy !== "standby" &&
                 options.fetchPolicy === oldFetchPolicy) {
                 this.applyNextFetchPolicy("variables-changed", options);
                 if (newNetworkStatus === void 0) {
-                    newNetworkStatus = _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.setVariables;
+                    newNetworkStatus = core_networkStatus/* NetworkStatus */.Ie.setVariables;
                 }
             }
         }
-        this.waitForOwnResult && (this.waitForOwnResult = skipCacheDataFor(options.fetchPolicy));
+        var fetchOptions = query === options.query ? options : (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { query: query });
+        this.waitForOwnResult && (this.waitForOwnResult = skipCacheDataFor(fetchOptions.fetchPolicy));
         var finishWaitingForOwnResult = function () {
             if (_this.concast === concast) {
                 _this.waitForOwnResult = false;
             }
         };
-        var variables = options.variables && (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, options.variables);
-        var _a = this.fetch(options, newNetworkStatus), concast = _a.concast, fromLink = _a.fromLink;
+        var variables = fetchOptions.variables && (0,tslib_es6/* __assign */.pi)({}, fetchOptions.variables);
+        var _a = this.fetch(fetchOptions, newNetworkStatus), concast = _a.concast, fromLink = _a.fromLink;
         var observer = {
             next: function (result) {
                 finishWaitingForOwnResult();
@@ -20794,7 +19865,7 @@ var ObservableQuery = (function (_super) {
                 _this.reportError(error, variables);
             },
         };
-        if (!useDisposableConcast && fromLink) {
+        if (!useDisposableConcast && (fromLink || !this.concast)) {
             if (this.concast && this.observer) {
                 this.concast.removeObserver(this.observer);
             }
@@ -20812,17 +19883,18 @@ var ObservableQuery = (function (_super) {
     };
     ObservableQuery.prototype.reportResult = function (result, variables) {
         var lastError = this.getLastError();
-        if (lastError || this.isDifferentFromLastResult(result, variables)) {
-            if (lastError || !result.partial || this.options.returnPartialData) {
-                this.updateLastResult(result, variables);
-            }
-            (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_8__/* .iterateObserversSafely */ .p)(this.observers, 'next', result);
+        var isDifferent = this.isDifferentFromLastResult(result, variables);
+        if (lastError || !result.partial || this.options.returnPartialData) {
+            this.updateLastResult(result, variables);
+        }
+        if (lastError || isDifferent) {
+            (0,iteration/* iterateObserversSafely */.p)(this.observers, "next", result);
         }
     };
     ObservableQuery.prototype.reportError = function (error, variables) {
-        var errorResult = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, this.getLastResult()), { error: error, errors: error.graphQLErrors, networkStatus: _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .I.error, loading: false });
+        var errorResult = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, this.getLastResult()), { error: error, errors: error.graphQLErrors, networkStatus: core_networkStatus/* NetworkStatus */.Ie.error, loading: false });
         this.updateLastResult(errorResult, variables);
-        (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_8__/* .iterateObserversSafely */ .p)(this.observers, 'error', this.last.error = error);
+        (0,iteration/* iterateObserversSafely */.p)(this.observers, 'error', this.last.error = error);
     };
     ObservableQuery.prototype.hasObservers = function () {
         return this.observers.size > 0;
@@ -20842,10 +19914,13 @@ var ObservableQuery = (function (_super) {
         this.observers.clear();
         this.isTornDown = true;
     };
+    ObservableQuery.prototype.transformDocument = function (document) {
+        return this.queryManager.transform(document);
+    };
     return ObservableQuery;
-}(_utilities_index_js__WEBPACK_IMPORTED_MODULE_9__/* .Observable */ .y));
+}(zen_observable_ts_module/* Observable */.y));
 
-(0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_10__/* .fixObservableSubclass */ .D)(ObservableQuery);
+(0,subclassing/* fixObservableSubclass */.D)(ObservableQuery);
 function reobserveCacheFirst(obsQuery) {
     var _a = obsQuery.options, fetchPolicy = _a.fetchPolicy, nextFetchPolicy = _a.nextFetchPolicy;
     if (fetchPolicy === "cache-and-network" ||
@@ -20864,11 +19939,11 @@ function reobserveCacheFirst(obsQuery) {
     return obsQuery.reobserve();
 }
 function defaultSubscriptionObserverErrorCallback(error) {
-    __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.error('Unhandled error', error.message, error.stack);
+    globalThis.__DEV__ !== false && globals/* invariant */.kG.error(21, error.message, error.stack);
 }
 function logMissingFieldErrors(missing) {
-    if (__DEV__ && missing) {
-        __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.debug("Missing cache result fields: ".concat(JSON.stringify(missing)), missing);
+    if (globalThis.__DEV__ !== false && missing) {
+        globalThis.__DEV__ !== false && globals/* invariant */.kG.debug(22, missing);
     }
 }
 function skipCacheDataFor(fetchPolicy) {
@@ -20883,101 +19958,105 @@ function skipCacheDataFor(fetchPolicy) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   $g: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.$g),
-/* harmony export */   Ct: () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_6__.C),
-/* harmony export */   Dp: () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_12__.Dp),
-/* harmony export */   E4: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.E4),
+/* harmony export */   $g: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.$g),
+/* harmony export */   AP: () => (/* reexport safe */ _utilities_index_js__WEBPACK_IMPORTED_MODULE_17__.A),
+/* harmony export */   Ct: () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_5__.C),
+/* harmony export */   Dp: () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_11__.Dp),
+/* harmony export */   E4: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.E4),
 /* harmony export */   HW: () => (/* reexport safe */ graphql_tag__WEBPACK_IMPORTED_MODULE_21__.resetCaches),
-/* harmony export */   Hg: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.Hg),
-/* harmony export */   Ie: () => (/* reexport safe */ _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__.I),
+/* harmony export */   Hg: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.Hg),
+/* harmony export */   Ie: () => (/* reexport safe */ _networkStatus_js__WEBPACK_IMPORTED_MODULE_3__.Ie),
 /* harmony export */   J9: () => (/* reexport safe */ graphql_tag__WEBPACK_IMPORTED_MODULE_21__.disableExperimentalFragmentVariables),
-/* harmony export */   JH: () => (/* reexport safe */ _ApolloClient_js__WEBPACK_IMPORTED_MODULE_2__.J),
-/* harmony export */   LQ: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.LQ),
-/* harmony export */   MS: () => (/* reexport safe */ _errors_index_js__WEBPACK_IMPORTED_MODULE_5__.MS),
-/* harmony export */   PW: () => (/* reexport safe */ _link_utils_index_js__WEBPACK_IMPORTED_MODULE_17__.P),
+/* harmony export */   JH: () => (/* reexport safe */ _ApolloClient_js__WEBPACK_IMPORTED_MODULE_1__.J),
+/* harmony export */   Jp: () => (/* reexport safe */ _networkStatus_js__WEBPACK_IMPORTED_MODULE_3__.Jp),
+/* harmony export */   LQ: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.LQ),
+/* harmony export */   MS: () => (/* reexport safe */ _errors_index_js__WEBPACK_IMPORTED_MODULE_4__.MS),
+/* harmony export */   PW: () => (/* reexport safe */ _link_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.P),
 /* harmony export */   Ps: () => (/* reexport safe */ graphql_tag__WEBPACK_IMPORTED_MODULE_21__.gql),
-/* harmony export */   QS: () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_11__.QS),
-/* harmony export */   Qc: () => (/* reexport safe */ _link_utils_index_js__WEBPACK_IMPORTED_MODULE_14__.Q),
-/* harmony export */   Ri: () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_7__.R),
-/* harmony export */   SC: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.SC),
-/* harmony export */   U2: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.U2),
-/* harmony export */   Vi: () => (/* reexport safe */ _link_utils_index_js__WEBPACK_IMPORTED_MODULE_15__.V),
-/* harmony export */   Vl: () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_12__.Vl),
+/* harmony export */   QS: () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_10__.QS),
+/* harmony export */   Qc: () => (/* reexport safe */ _link_utils_index_js__WEBPACK_IMPORTED_MODULE_13__.Q),
+/* harmony export */   Ri: () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_6__.R),
+/* harmony export */   SC: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.SC),
+/* harmony export */   U2: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.U2),
+/* harmony export */   Vi: () => (/* reexport safe */ _link_utils_index_js__WEBPACK_IMPORTED_MODULE_14__.V),
+/* harmony export */   Vl: () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_11__.Vl),
 /* harmony export */   Yk: () => (/* reexport safe */ _utilities_index_js__WEBPACK_IMPORTED_MODULE_19__.Yk),
 /* harmony export */   _t: () => (/* reexport safe */ graphql_tag__WEBPACK_IMPORTED_MODULE_21__.disableFragmentWarnings),
-/* harmony export */   cA: () => (/* reexport safe */ _errors_index_js__WEBPACK_IMPORTED_MODULE_5__.cA),
-/* harmony export */   cS: () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_12__.cS),
-/* harmony export */   dO: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.dO),
-/* harmony export */   fe: () => (/* reexport safe */ _ApolloClient_js__WEBPACK_IMPORTED_MODULE_1__.f),
-/* harmony export */   gE: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.gE),
-/* harmony export */   h4: () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_8__.h),
-/* harmony export */   ht: () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_12__.ht),
-/* harmony export */   i0: () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_12__.i0),
+/* harmony export */   cA: () => (/* reexport safe */ _errors_index_js__WEBPACK_IMPORTED_MODULE_4__.cA),
+/* harmony export */   cS: () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_11__.cS),
+/* harmony export */   dO: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.dO),
+/* harmony export */   fe: () => (/* reexport safe */ _ApolloClient_js__WEBPACK_IMPORTED_MODULE_0__.f),
+/* harmony export */   gE: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.gE),
+/* harmony export */   h4: () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_7__.h),
+/* harmony export */   ht: () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_11__.ht),
+/* harmony export */   i0: () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_11__.i0),
 /* harmony export */   kQ: () => (/* reexport safe */ _utilities_index_js__WEBPACK_IMPORTED_MODULE_19__.kQ),
-/* harmony export */   p4: () => (/* reexport safe */ _link_utils_index_js__WEBPACK_IMPORTED_MODULE_16__.p),
+/* harmony export */   p4: () => (/* reexport safe */ _link_utils_index_js__WEBPACK_IMPORTED_MODULE_15__.p),
 /* harmony export */   qu: () => (/* reexport safe */ ts_invariant__WEBPACK_IMPORTED_MODULE_20__.U6),
-/* harmony export */   rg: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.rg),
-/* harmony export */   sb: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.sb),
-/* harmony export */   uG: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.uG),
-/* harmony export */   ue: () => (/* reexport safe */ _ObservableQuery_js__WEBPACK_IMPORTED_MODULE_3__.ue),
-/* harmony export */   vR: () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_10__.uG),
-/* harmony export */   ve: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__.ve),
+/* harmony export */   rg: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.rg),
+/* harmony export */   sb: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.sb),
+/* harmony export */   uG: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.uG),
+/* harmony export */   ue: () => (/* reexport safe */ _ObservableQuery_js__WEBPACK_IMPORTED_MODULE_2__.ue),
+/* harmony export */   vR: () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_9__.uG),
+/* harmony export */   ve: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.ve),
 /* harmony export */   wO: () => (/* reexport safe */ graphql_tag__WEBPACK_IMPORTED_MODULE_21__.enableExperimentalFragmentVariables),
 /* harmony export */   y$: () => (/* reexport safe */ _utilities_index_js__WEBPACK_IMPORTED_MODULE_18__.y),
-/* harmony export */   yD: () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_9__.y),
-/* harmony export */   zo: () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_12__.zo)
+/* harmony export */   yD: () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_8__.y),
+/* harmony export */   zo: () => (/* reexport safe */ _link_core_index_js__WEBPACK_IMPORTED_MODULE_11__.zo)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _ApolloClient_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6400);
+	/* harmony import */ var _ApolloClient_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4425);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _ApolloClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4012);
+	/* harmony import */ var _ApolloClient_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4012);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _ObservableQuery_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4780);
+	/* harmony import */ var _ObservableQuery_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(992);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1644);
+	/* harmony import */ var _networkStatus_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1644);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _errors_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(990);
+	/* harmony import */ var _errors_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(990);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(5087);
+	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5087);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(1294);
+	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(1294);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(521);
+	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(9099);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(5727);
+	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(5727);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(9641);
+	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(9641);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(6438);
+	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(6438);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _link_core_index_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(6148);
+	/* harmony import */ var _link_core_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(6148);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _link_http_index_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(5645);
+	/* harmony import */ var _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(5645);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _link_utils_index_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(6261);
+	/* harmony import */ var _link_utils_index_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(6261);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _link_utils_index_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(5933);
+	/* harmony import */ var _link_utils_index_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(5933);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _link_utils_index_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(2824);
+	/* harmony import */ var _link_utils_index_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(2824);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _link_utils_index_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(2782);
+	/* harmony import */ var _link_utils_index_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(2782);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(8056);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(8216);
@@ -21002,8 +20081,7 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 
 
-
-(0,ts_invariant__WEBPACK_IMPORTED_MODULE_20__/* .setVerbosity */ .U6)(_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .DEV */ .Rk ? "log" : "silent");
+(0,ts_invariant__WEBPACK_IMPORTED_MODULE_20__/* .setVerbosity */ .U6)(globalThis.__DEV__ !== false ? "log" : "silent");
 
 //# sourceMappingURL=index.js.map
 
@@ -21014,8 +20092,9 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   I: () => (/* binding */ NetworkStatus),
-/* harmony export */   O: () => (/* binding */ isNetworkRequestInFlight)
+/* harmony export */   Ie: () => (/* binding */ NetworkStatus),
+/* harmony export */   Jp: () => (/* binding */ isNetworkRequestSettled),
+/* harmony export */   Oj: () => (/* binding */ isNetworkRequestInFlight)
 /* harmony export */ });
 var NetworkStatus;
 (function (NetworkStatus) {
@@ -21029,6 +20108,9 @@ var NetworkStatus;
 })(NetworkStatus || (NetworkStatus = {}));
 function isNetworkRequestInFlight(networkStatus) {
     return networkStatus ? networkStatus < 7 : false;
+}
+function isNetworkRequestSettled(networkStatus) {
+    return networkStatus === 7 || networkStatus === 8;
 }
 //# sourceMappingURL=networkStatus.js.map
 
@@ -21045,7 +20127,7 @@ function isNetworkRequestInFlight(networkStatus) {
 /* harmony export */   ls: () => (/* binding */ graphQLResultHasProtocolErrors)
 /* harmony export */ });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7582);
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3154);
 
 
@@ -21103,6 +20185,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   ApolloLink: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.i0),
 /* harmony export */   ApolloProvider: () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.eT),
 /* harmony export */   Cache: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.Ct),
+/* harmony export */   DocumentTransform: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.AP),
 /* harmony export */   DocumentType: () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.n_),
 /* harmony export */   HttpLink: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.uG),
 /* harmony export */   InMemoryCache: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.h4),
@@ -21110,6 +20193,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   NetworkStatus: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.Ie),
 /* harmony export */   Observable: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.y$),
 /* harmony export */   ObservableQuery: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.ue),
+/* harmony export */   SuspenseCache: () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.$h),
 /* harmony export */   checkFetcher: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.U2),
 /* harmony export */   concat: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.zo),
 /* harmony export */   createHttpLink: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.LQ),
@@ -21128,6 +20212,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   getApolloContext: () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.KZ),
 /* harmony export */   gql: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.Ps),
 /* harmony export */   isApolloError: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.MS),
+/* harmony export */   isNetworkRequestSettled: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.Jp),
 /* harmony export */   isReference: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.Yk),
 /* harmony export */   makeReference: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.kQ),
 /* harmony export */   makeVar: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.QS),
@@ -21143,16 +20228,20 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   selectURI: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.rg),
 /* harmony export */   serializeFetchParameter: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.gE),
 /* harmony export */   setLogVerbosity: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.qu),
+/* harmony export */   skipToken: () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.CN),
 /* harmony export */   split: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.Vl),
 /* harmony export */   throwServerError: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.PW),
 /* harmony export */   toPromise: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.Vi),
 /* harmony export */   useApolloClient: () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.xJ),
-/* harmony export */   useFragment_experimental: () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.$W),
+/* harmony export */   useBackgroundQuery: () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.u7),
+/* harmony export */   useFragment: () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.Jc),
 /* harmony export */   useLazyQuery: () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.td),
 /* harmony export */   useMutation: () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.Db),
 /* harmony export */   useQuery: () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.aM),
 /* harmony export */   useReactiveVar: () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.lY),
-/* harmony export */   useSubscription: () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.mU)
+/* harmony export */   useReadQuery: () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.aK),
+/* harmony export */   useSubscription: () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.mU),
+/* harmony export */   useSuspenseQuery: () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.kJ)
 /* harmony export */ });
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6309);
@@ -21176,12 +20265,12 @@ __webpack_require__.d(__webpack_exports__, {
   i: () => (/* binding */ ApolloLink)
 });
 
-// EXTERNAL MODULE: ./node_modules/tslib/tslib.es6.mjs
-var tslib_es6 = __webpack_require__(7582);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/globals/index.js + 5 modules
-var globals = __webpack_require__(846);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/globals/index.js + 3 modules
+var globals = __webpack_require__(6961);
 // EXTERNAL MODULE: ./node_modules/zen-observable-ts/module.js
 var zen_observable_ts_module = __webpack_require__(8216);
+// EXTERNAL MODULE: ./node_modules/tslib/tslib.es6.mjs
+var tslib_es6 = __webpack_require__(7582);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/link/utils/createOperation.js
 
 function createOperation(starting, operation) {
@@ -21239,14 +20328,13 @@ function validateOperation(operation) {
     for (var _i = 0, _a = Object.keys(operation); _i < _a.length; _i++) {
         var key = _a[_i];
         if (OPERATION_FIELDS.indexOf(key) < 0) {
-            throw __DEV__ ? new globals/* InvariantError */.ej("illegal argument: ".concat(key)) : new globals/* InvariantError */.ej(27);
+            throw (0,globals/* newInvariantError */._K)(41, key);
         }
     }
     return operation;
 }
 //# sourceMappingURL=validateOperation.js.map
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/link/core/ApolloLink.js
-
 
 
 
@@ -21259,15 +20347,6 @@ function toLink(handler) {
 function isTerminating(link) {
     return link.request.length <= 1;
 }
-var LinkError = (function (_super) {
-    (0,tslib_es6/* __extends */.ZT)(LinkError, _super);
-    function LinkError(message, link) {
-        var _this = _super.call(this, message) || this;
-        _this.link = link;
-        return _this;
-    }
-    return LinkError;
-}(Error));
 var ApolloLink = (function () {
     function ApolloLink(request) {
         if (request)
@@ -21305,7 +20384,7 @@ var ApolloLink = (function () {
     ApolloLink.concat = function (first, second) {
         var firstLink = toLink(first);
         if (isTerminating(firstLink)) {
-            __DEV__ && globals/* invariant */.kG.warn(new LinkError("You are calling concat on a terminating link, which will have no effect", firstLink));
+            globalThis.__DEV__ !== false && globals/* invariant */.kG.warn(33, firstLink);
             return firstLink;
         }
         var nextLink = toLink(second);
@@ -21329,7 +20408,7 @@ var ApolloLink = (function () {
         return ApolloLink.concat(this, next);
     };
     ApolloLink.prototype.request = function (operation, forward) {
-        throw __DEV__ ? new globals/* InvariantError */.ej('request is not implemented') : new globals/* InvariantError */.ej(22);
+        throw (0,globals/* newInvariantError */._K)(34);
     };
     ApolloLink.prototype.onError = function (error, observer) {
         if (observer && observer.error) {
@@ -21417,7 +20496,7 @@ var from = _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__/* .ApolloLink */ .i.from;
 /* harmony export */   i0: () => (/* reexport safe */ _ApolloLink_js__WEBPACK_IMPORTED_MODULE_6__.i),
 /* harmony export */   zo: () => (/* reexport safe */ _concat_js__WEBPACK_IMPORTED_MODULE_4__.z)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _empty_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6973);
 }
@@ -21497,11 +20576,11 @@ var HttpLink = (function (_super) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   U: () => (/* binding */ checkFetcher)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 
 var checkFetcher = function (fetcher) {
     if (!fetcher && typeof fetch === 'undefined') {
-        throw __DEV__ ? new _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej("\n\"fetch\" has not been found globally and no fetcher has been configured. To fix this, install a fetch package (like https://www.npmjs.com/package/cross-fetch), instantiate the fetcher, and pass it into your HttpLink constructor. For example:\n\nimport fetch from 'cross-fetch';\nimport { ApolloClient, HttpLink } from '@apollo/client';\nconst client = new ApolloClient({\n  link: new HttpLink({ uri: '/graphql', fetch })\n});\n    ") : new _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej(23);
+        throw (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ ._K)(35);
     }
 };
 //# sourceMappingURL=checkFetcher.js.map
@@ -21518,15 +20597,12 @@ var checkFetcher = function (fetcher) {
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7582);
 }
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
-if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(7304);
-}
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(3581);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(9065);
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(9065);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(8216);
@@ -21547,20 +20623,20 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _selectHttpOptionsAndBody_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3453);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _createSignalIfSupported_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(7388);
+	/* harmony import */ var _rewriteURIForGET_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(8663);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _rewriteURIForGET_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(8663);
+	/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(6261);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(6261);
+	/* harmony import */ var _utils_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(4004);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(6765);
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(6487);
 }
-
-
-
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(6765);
+}
 
 
 
@@ -21577,7 +20653,7 @@ var backupFetch = (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* 
 var createHttpLink = function (linkOptions) {
     if (linkOptions === void 0) { linkOptions = {}; }
     var _a = linkOptions.uri, uri = _a === void 0 ? '/graphql' : _a, preferredFetch = linkOptions.fetch, _b = linkOptions.print, print = _b === void 0 ? _selectHttpOptionsAndBody_js__WEBPACK_IMPORTED_MODULE_1__/* .defaultPrinter */ .sb : _b, includeExtensions = linkOptions.includeExtensions, preserveHeaderCase = linkOptions.preserveHeaderCase, useGETForQueries = linkOptions.useGETForQueries, _c = linkOptions.includeUnusedVariables, includeUnusedVariables = _c === void 0 ? false : _c, requestOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__rest */ ._T)(linkOptions, ["uri", "fetch", "print", "includeExtensions", "preserveHeaderCase", "useGETForQueries", "includeUnusedVariables"]);
-    if (__DEV__) {
+    if (globalThis.__DEV__ !== false) {
         (0,_checkFetcher_js__WEBPACK_IMPORTED_MODULE_3__/* .checkFetcher */ .U)(preferredFetch || backupFetch);
     }
     var linkConfig = {
@@ -21606,29 +20682,21 @@ var createHttpLink = function (linkOptions) {
             credentials: context.credentials,
             headers: contextHeaders,
         };
+        if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_6__/* .hasDirectives */ .FS)(['client'], operation.query)) {
+            var transformedQuery = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_7__/* .removeClientSetsFromDocument */ .ob)(operation.query);
+            if (!transformedQuery) {
+                return (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_8__/* .fromError */ .Q)(new Error('HttpLink: Trying to send a client-only query to the server. To send to the server, ensure a non-client field is added to the query or set the `transformOptions.removeClientFields` option to `true`.'));
+            }
+            operation.query = transformedQuery;
+        }
         var _b = (0,_selectHttpOptionsAndBody_js__WEBPACK_IMPORTED_MODULE_1__/* .selectHttpOptionsAndBodyInternal */ .ve)(operation, print, _selectHttpOptionsAndBody_js__WEBPACK_IMPORTED_MODULE_1__/* .fallbackHttpConfig */ .SC, linkConfig, contextConfig), options = _b.options, body = _b.body;
         if (body.variables && !includeUnusedVariables) {
-            var unusedNames_1 = new Set(Object.keys(body.variables));
-            (0,graphql__WEBPACK_IMPORTED_MODULE_6__/* .visit */ .Vn)(operation.query, {
-                Variable: function (node, _key, parent) {
-                    if (parent && parent.kind !== 'VariableDefinition') {
-                        unusedNames_1.delete(node.name.value);
-                    }
-                },
-            });
-            if (unusedNames_1.size) {
-                body.variables = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, body.variables);
-                unusedNames_1.forEach(function (name) {
-                    delete body.variables[name];
-                });
-            }
+            body.variables = (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_9__/* .filterOperationVariables */ .e)(body.variables, operation.query);
         }
         var controller;
-        if (!options.signal) {
-            var _c = (0,_createSignalIfSupported_js__WEBPACK_IMPORTED_MODULE_7__/* .createSignalIfSupported */ .$)(), _controller = _c.controller, signal = _c.signal;
-            controller = _controller;
-            if (controller)
-                options.signal = signal;
+        if (!options.signal && typeof AbortController !== 'undefined') {
+            controller = new AbortController();
+            options.signal = controller.signal;
         }
         var definitionIsMutation = function (d) {
             return d.kind === 'OperationDefinition' && d.operation === 'mutation';
@@ -21636,8 +20704,8 @@ var createHttpLink = function (linkOptions) {
         var definitionIsSubscription = function (d) {
             return d.kind === 'OperationDefinition' && d.operation === 'subscription';
         };
-        var isSubscription = definitionIsSubscription((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_8__/* .getMainDefinition */ .p$)(operation.query));
-        var hasDefer = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_9__/* .hasDirectives */ .FS)(['defer'], operation.query);
+        var isSubscription = definitionIsSubscription((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_10__/* .getMainDefinition */ .p$)(operation.query));
+        var hasDefer = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_6__/* .hasDirectives */ .FS)(['defer'], operation.query);
         if (useGETForQueries &&
             !operation.query.definitions.some(definitionIsMutation)) {
             options.method = 'GET';
@@ -21646,7 +20714,7 @@ var createHttpLink = function (linkOptions) {
             options.headers = options.headers || {};
             var acceptHeader = "multipart/mixed;";
             if (isSubscription && hasDefer) {
-                __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn("Multipart-subscriptions do not support @defer");
+                globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn(36);
             }
             if (isSubscription) {
                 acceptHeader += 'boundary=graphql;subscriptionSpec=1.0,application/json';
@@ -21657,9 +20725,9 @@ var createHttpLink = function (linkOptions) {
             options.headers.accept = acceptHeader;
         }
         if (options.method === 'GET') {
-            var _d = (0,_rewriteURIForGET_js__WEBPACK_IMPORTED_MODULE_10__/* .rewriteURIForGET */ .H)(chosenURI, body), newURI = _d.newURI, parseError = _d.parseError;
+            var _c = (0,_rewriteURIForGET_js__WEBPACK_IMPORTED_MODULE_11__/* .rewriteURIForGET */ .H)(chosenURI, body), newURI = _c.newURI, parseError = _c.parseError;
             if (parseError) {
-                return (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_11__/* .fromError */ .Q)(parseError);
+                return (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_8__/* .fromError */ .Q)(parseError);
             }
             chosenURI = newURI;
         }
@@ -21668,24 +20736,32 @@ var createHttpLink = function (linkOptions) {
                 options.body = (0,_serializeFetchParameter_js__WEBPACK_IMPORTED_MODULE_12__/* .serializeFetchParameter */ .g)(body, 'Payload');
             }
             catch (parseError) {
-                return (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_11__/* .fromError */ .Q)(parseError);
+                return (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_8__/* .fromError */ .Q)(parseError);
             }
         }
         return new _utilities_index_js__WEBPACK_IMPORTED_MODULE_13__/* .Observable */ .y(function (observer) {
             var currentFetch = preferredFetch || (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .wY)(function () { return fetch; }) || backupFetch;
+            var observerNext = observer.next.bind(observer);
             currentFetch(chosenURI, options)
                 .then(function (response) {
                 var _a;
                 operation.setContext({ response: response });
                 var ctype = (_a = response.headers) === null || _a === void 0 ? void 0 : _a.get('content-type');
                 if (ctype !== null && /^multipart\/mixed/i.test(ctype)) {
-                    return (0,_parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_14__/* .readMultipartBody */ .TF)(response, observer);
+                    return (0,_parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_14__/* .readMultipartBody */ .TF)(response, observerNext);
                 }
                 else {
-                    return (0,_parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_14__/* .readJsonBody */ .Wm)(response, operation, observer);
+                    return (0,_parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_14__/* .parseAndCheckHttpResponse */ .dO)(operation)(response).then(observerNext);
                 }
             })
-                .catch(function (err) { return (0,_parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_14__/* .handleError */ .S3)(err, observer); });
+                .then(function () {
+                controller = undefined;
+                observer.complete();
+            })
+                .catch(function (err) {
+                controller = undefined;
+                (0,_parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_14__/* .handleError */ .S3)(err, observer);
+            });
             return function () {
                 if (controller)
                     controller.abort();
@@ -21733,7 +20809,7 @@ var createSignalIfSupported = function () {
 /* harmony export */   uG: () => (/* reexport safe */ _HttpLink_js__WEBPACK_IMPORTED_MODULE_8__.u),
 /* harmony export */   ve: () => (/* reexport safe */ _selectHttpOptionsAndBody_js__WEBPACK_IMPORTED_MODULE_3__.ve)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4805);
 }
@@ -21959,7 +21035,6 @@ function readerIterator(reader) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   S3: () => (/* binding */ handleError),
 /* harmony export */   TF: () => (/* binding */ readMultipartBody),
-/* harmony export */   Wm: () => (/* binding */ readJsonBody),
 /* harmony export */   dO: () => (/* binding */ parseAndCheckHttpResponse)
 /* harmony export */ });
 /* unused harmony exports parseHeaders, parseJsonBody */
@@ -21984,13 +21059,13 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
-function readMultipartBody(response, observer) {
-    var _a, _b, _c, _d, _e;
+function readMultipartBody(response, nextValue) {
+    var _a;
     return (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__awaiter */ .mG)(this, void 0, void 0, function () {
-        var decoder, contentType, delimiter, boundaryVal, boundary, buffer, iterator, running, _f, value, done, chunk, searchFrom, bi, message, i, headers, contentType_1, body, result, next;
-        var _g, _h;
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__generator */ .Jh)(this, function (_j) {
-            switch (_j.label) {
+        var decoder, contentType, delimiter, boundaryVal, boundary, buffer, iterator, running, _b, value, done, chunk, searchFrom, bi, message, i, headers, contentType_1, body, result, next;
+        var _c, _d;
+        return (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__generator */ .Jh)(this, function (_e) {
+            switch (_e.label) {
                 case 0:
                     if (TextDecoder === undefined) {
                         throw new Error("TextDecoder must be defined in the environment: please import a polyfill.");
@@ -22005,12 +21080,12 @@ function readMultipartBody(response, observer) {
                     buffer = "";
                     iterator = (0,_responseIterator_js__WEBPACK_IMPORTED_MODULE_1__/* .responseIterator */ .k)(response);
                     running = true;
-                    _j.label = 1;
+                    _e.label = 1;
                 case 1:
                     if (!running) return [3, 3];
                     return [4, iterator.next()];
                 case 2:
-                    _f = _j.sent(), value = _f.value, done = _f.done;
+                    _b = _e.sent(), value = _b.value, done = _b.done;
                     chunk = typeof value === "string" ? value : decoder.decode(value);
                     searchFrom = buffer.length - boundary.length + 1;
                     running = !done;
@@ -22018,10 +21093,10 @@ function readMultipartBody(response, observer) {
                     bi = buffer.indexOf(boundary, searchFrom);
                     while (bi > -1) {
                         message = void 0;
-                        _g = [
+                        _c = [
                             buffer.slice(0, bi),
                             buffer.slice(bi + boundary.length),
-                        ], message = _g[0], buffer = _g[1];
+                        ], message = _c[0], buffer = _c[1];
                         i = message.indexOf("\r\n\r\n");
                         headers = parseHeaders(message.slice(0, i));
                         contentType_1 = headers["content-type"];
@@ -22031,43 +21106,36 @@ function readMultipartBody(response, observer) {
                         }
                         body = message.slice(i);
                         if (body) {
-                            try {
-                                result = parseJsonBody(response, body);
-                                if (Object.keys(result).length > 1 ||
-                                    "data" in result ||
-                                    "incremental" in result ||
-                                    "errors" in result ||
-                                    "payload" in result) {
-                                    if ((0,_utilities_common_incrementalResult_js__WEBPACK_IMPORTED_MODULE_2__/* .isApolloPayloadResult */ .yU)(result)) {
-                                        next = {};
-                                        if ("payload" in result) {
-                                            next = (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)({}, result.payload);
-                                        }
-                                        if ("errors" in result) {
-                                            next = (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)({}, next), { extensions: (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)({}, ("extensions" in next ? next.extensions : null)), (_h = {}, _h[_errors_index_js__WEBPACK_IMPORTED_MODULE_3__/* .PROTOCOL_ERRORS_SYMBOL */ .YG] = result.errors, _h)) });
-                                        }
-                                        (_b = observer.next) === null || _b === void 0 ? void 0 : _b.call(observer, next);
+                            result = parseJsonBody(response, body);
+                            if (Object.keys(result).length > 1 ||
+                                "data" in result ||
+                                "incremental" in result ||
+                                "errors" in result ||
+                                "payload" in result) {
+                                if ((0,_utilities_common_incrementalResult_js__WEBPACK_IMPORTED_MODULE_2__/* .isApolloPayloadResult */ .yU)(result)) {
+                                    next = {};
+                                    if ("payload" in result) {
+                                        next = (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)({}, result.payload);
                                     }
-                                    else {
-                                        (_c = observer.next) === null || _c === void 0 ? void 0 : _c.call(observer, result);
+                                    if ("errors" in result) {
+                                        next = (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)({}, next), { extensions: (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)({}, ("extensions" in next ? next.extensions : null)), (_d = {}, _d[_errors_index_js__WEBPACK_IMPORTED_MODULE_3__/* .PROTOCOL_ERRORS_SYMBOL */ .YG] = result.errors, _d)) });
                                     }
+                                    nextValue(next);
                                 }
-                                else if (Object.keys(result).length === 1 &&
-                                    "hasNext" in result &&
-                                    !result.hasNext) {
-                                    (_d = observer.complete) === null || _d === void 0 ? void 0 : _d.call(observer);
+                                else {
+                                    nextValue(result);
                                 }
                             }
-                            catch (err) {
-                                handleError(err, observer);
+                            else if (Object.keys(result).length === 1 &&
+                                "hasNext" in result &&
+                                !result.hasNext) {
+                                return [2];
                             }
                         }
                         bi = buffer.indexOf(boundary);
                     }
                     return [3, 1];
-                case 3:
-                    (_e = observer.complete) === null || _e === void 0 ? void 0 : _e.call(observer);
-                    return [2];
+                case 3: return [2];
             }
         });
     });
@@ -22109,22 +21177,10 @@ function parseJsonBody(response, bodyText) {
     }
 }
 function handleError(err, observer) {
-    var _a, _b;
-    if (err.name === "AbortError")
-        return;
     if (err.result && err.result.errors && err.result.data) {
-        (_a = observer.next) === null || _a === void 0 ? void 0 : _a.call(observer, err.result);
+        observer.next(err.result);
     }
-    (_b = observer.error) === null || _b === void 0 ? void 0 : _b.call(observer, err);
-}
-function readJsonBody(response, operation, observer) {
-    parseAndCheckHttpResponse(operation)(response)
-        .then(function (result) {
-        var _a, _b;
-        (_a = observer.next) === null || _a === void 0 ? void 0 : _a.call(observer, result);
-        (_b = observer.complete) === null || _b === void 0 ? void 0 : _b.call(observer);
-    })
-        .catch(function (err) { return handleError(err, observer); });
+    observer.error(err);
 }
 function parseAndCheckHttpResponse(operations) {
     return function (response) {
@@ -22158,7 +21214,7 @@ function parseAndCheckHttpResponse(operations) {
 /* harmony export */   k: () => (/* binding */ responseIterator)
 /* harmony export */ });
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utilities_common_responseIterator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3613);
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3613);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _iterators_async_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1793);
@@ -22179,18 +21235,18 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 function responseIterator(response) {
     var body = response;
-    if ((0,_utilities_common_responseIterator_js__WEBPACK_IMPORTED_MODULE_0__/* .isNodeResponse */ .Ss)(response))
+    if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_0__/* .isNodeResponse */ .Ss)(response))
         body = response.body;
-    if ((0,_utilities_common_responseIterator_js__WEBPACK_IMPORTED_MODULE_0__/* .isAsyncIterableIterator */ .sV)(body))
+    if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_0__/* .isAsyncIterableIterator */ .sV)(body))
         return (0,_iterators_async_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z)(body);
-    if ((0,_utilities_common_responseIterator_js__WEBPACK_IMPORTED_MODULE_0__/* .isReadableStream */ .Os)(body))
+    if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_0__/* .isReadableStream */ .Os)(body))
         return (0,_iterators_reader_js__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z)(body.getReader());
-    if ((0,_utilities_common_responseIterator_js__WEBPACK_IMPORTED_MODULE_0__/* .isStreamableBlob */ .Qe)(body)) {
+    if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_0__/* .isStreamableBlob */ .Qe)(body)) {
         return (0,_iterators_reader_js__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z)(body.stream().getReader());
     }
-    if ((0,_utilities_common_responseIterator_js__WEBPACK_IMPORTED_MODULE_0__/* .isBlob */ .Lj)(body))
+    if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_0__/* .isBlob */ .Lj)(body))
         return (0,_iterators_promise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z)(body.arrayBuffer());
-    if ((0,_utilities_common_responseIterator_js__WEBPACK_IMPORTED_MODULE_0__/* .isNodeReadableStream */ .QV)(body))
+    if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_0__/* .isNodeReadableStream */ .QV)(body))
         return (0,_iterators_nodeStream_js__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Z)(body);
     throw new Error("Unknown body type for responseIterator. Please pass a streamable response.");
 }
@@ -22268,7 +21324,7 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7582);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3486);
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(8470);
 }
 
 
@@ -22322,7 +21378,7 @@ function selectHttpOptionsAndBodyInternal(operation, printer) {
     if (http.includeExtensions)
         body.extensions = extensions;
     if (http.includeQuery)
-        body.query = printer(query, graphql__WEBPACK_IMPORTED_MODULE_1__/* .print */ .S);
+        body.query = printer(query, _utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .print */ .S);
     return {
         options: options,
         body: body,
@@ -22382,7 +21438,7 @@ var selectURI = function (operation, fallbackURI) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   g: () => (/* binding */ serializeFetchParameter)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 
 var serializeFetchParameter = function (p, label) {
     var serialized;
@@ -22390,13 +21446,48 @@ var serializeFetchParameter = function (p, label) {
         serialized = JSON.stringify(p);
     }
     catch (e) {
-        var parseError = __DEV__ ? new _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej("Network request failed. ".concat(label, " is not serializable: ").concat(e.message)) : new _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej(24);
+        var parseError = (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ ._K)(37, label, e.message);
         parseError.parseError = e;
         throw parseError;
     }
     return serialized;
 };
 //# sourceMappingURL=serializeFetchParameter.js.map
+
+/***/ }),
+
+/***/ 4004:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   e: () => (/* binding */ filterOperationVariables)
+/* harmony export */ });
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7582);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7304);
+}
+
+
+function filterOperationVariables(variables, query) {
+    var result = (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .pi)({}, variables);
+    var unusedNames = new Set(Object.keys(variables));
+    (0,graphql__WEBPACK_IMPORTED_MODULE_1__/* .visit */ .Vn)(query, {
+        Variable: function (node, _key, parent) {
+            if (parent &&
+                parent.kind !== 'VariableDefinition') {
+                unusedNames.delete(node.name.value);
+            }
+        },
+    });
+    unusedNames.forEach(function (name) {
+        delete result[name];
+    });
+    return result;
+}
+//# sourceMappingURL=filterOperationVariables.js.map
 
 /***/ }),
 
@@ -22471,7 +21562,7 @@ var throwServerError = function (response, result, message) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   V: () => (/* binding */ toPromise)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 
 function toPromise(observable) {
     var completed = false;
@@ -22479,7 +21570,7 @@ function toPromise(observable) {
         observable.subscribe({
             next: function (data) {
                 if (completed) {
-                    __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn("Promise Wrapper does not support multiple results from Observable");
+                    globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn(40);
                 }
                 else {
                     completed = true;
@@ -22494,69 +21585,299 @@ function toPromise(observable) {
 
 /***/ }),
 
-/***/ 5352:
+/***/ 9770:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   B: () => (/* binding */ Trie)
+/* harmony export */   JO: () => (/* binding */ wrapQueryRef),
+/* harmony export */   fA: () => (/* binding */ unwrapQueryRef),
+/* harmony export */   qZ: () => (/* binding */ InternalQueryReference)
 /* harmony export */ });
-// A [trie](https://en.wikipedia.org/wiki/Trie) data structure that holds
-// object keys weakly, yet can also hold non-object keys, unlike the
-// native `WeakMap`.
-// If no makeData function is supplied, the looked-up data will be an empty,
-// null-prototype Object.
-const defaultMakeData = () => Object.create(null);
-// Useful for processing arguments objects as well as arrays.
-const { forEach, slice } = Array.prototype;
-const { hasOwnProperty } = Object.prototype;
-class Trie {
-    constructor(weakness = true, makeData = defaultMakeData) {
-        this.weakness = weakness;
-        this.makeData = makeData;
-    }
-    lookup(...array) {
-        return this.lookupArray(array);
-    }
-    lookupArray(array) {
-        let node = this;
-        forEach.call(array, key => node = node.getChildTrie(key));
-        return hasOwnProperty.call(node, "data")
-            ? node.data
-            : node.data = this.makeData(slice.call(array));
-    }
-    peek(...array) {
-        return this.peekArray(array);
-    }
-    peekArray(array) {
-        let node = this;
-        for (let i = 0, len = array.length; node && i < len; ++i) {
-            const map = this.weakness && isObjRef(array[i]) ? node.weak : node.strong;
-            node = map && map.get(array[i]);
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7582);
+/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(20);
+/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1644);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1704);
+
+
+
+
+var QUERY_REFERENCE_SYMBOL = Symbol();
+function wrapQueryRef(internalQueryRef) {
+    var _a;
+    return _a = {}, _a[QUERY_REFERENCE_SYMBOL] = internalQueryRef, _a;
+}
+function unwrapQueryRef(queryRef) {
+    return queryRef[QUERY_REFERENCE_SYMBOL];
+}
+var OBSERVED_CHANGED_OPTIONS = [
+    "canonizeResults",
+    "context",
+    "errorPolicy",
+    "fetchPolicy",
+    "refetchWritePolicy",
+    "returnPartialData",
+];
+var InternalQueryReference = (function () {
+    function InternalQueryReference(observable, options) {
+        var _this = this;
+        var _a;
+        this.listeners = new Set();
+        this.status = "loading";
+        this.references = 0;
+        this.handleNext = this.handleNext.bind(this);
+        this.handleError = this.handleError.bind(this);
+        this.dispose = this.dispose.bind(this);
+        this.observable = observable;
+        this.result = observable.getCurrentResult(false);
+        this.key = options.key;
+        if (options.onDispose) {
+            this.onDispose = options.onDispose;
         }
-        return node && node.data;
+        if ((0,_core_index_js__WEBPACK_IMPORTED_MODULE_1__/* .isNetworkRequestSettled */ .Jp)(this.result.networkStatus) ||
+            (this.result.data &&
+                (!this.result.partial || this.watchQueryOptions.returnPartialData))) {
+            this.promise = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .createFulfilledPromise */ .OP)(this.result);
+            this.status = "idle";
+        }
+        else {
+            this.promise = new Promise(function (resolve, reject) {
+                _this.resolve = resolve;
+                _this.reject = reject;
+            });
+        }
+        this.subscription = observable
+            .filter(function (_a) {
+            var data = _a.data;
+            return !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_0__/* .equal */ .D)(data, {});
+        })
+            .subscribe({
+            next: this.handleNext,
+            error: this.handleError,
+        });
+        this.autoDisposeTimeoutId = setTimeout(this.dispose, (_a = options.autoDisposeTimeoutMs) !== null && _a !== void 0 ? _a : 30000);
     }
-    getChildTrie(key) {
-        const map = this.weakness && isObjRef(key)
-            ? this.weak || (this.weak = new WeakMap())
-            : this.strong || (this.strong = new Map());
-        let child = map.get(key);
-        if (!child)
-            map.set(key, child = new Trie(this.weakness, this.makeData));
-        return child;
-    }
-}
-function isObjRef(value) {
-    switch (typeof value) {
-        case "object":
-            if (value === null)
+    Object.defineProperty(InternalQueryReference.prototype, "watchQueryOptions", {
+        get: function () {
+            return this.observable.options;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    InternalQueryReference.prototype.retain = function () {
+        var _this = this;
+        this.references++;
+        clearTimeout(this.autoDisposeTimeoutId);
+        var disposed = false;
+        return function () {
+            if (disposed) {
+                return;
+            }
+            disposed = true;
+            _this.references--;
+            setTimeout(function () {
+                if (!_this.references) {
+                    _this.dispose();
+                }
+            });
+        };
+    };
+    InternalQueryReference.prototype.didChangeOptions = function (watchQueryOptions) {
+        var _this = this;
+        return OBSERVED_CHANGED_OPTIONS.some(function (option) {
+            return !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_0__/* .equal */ .D)(_this.watchQueryOptions[option], watchQueryOptions[option]);
+        });
+    };
+    InternalQueryReference.prototype.applyOptions = function (watchQueryOptions) {
+        var _a = this.watchQueryOptions, currentFetchPolicy = _a.fetchPolicy, currentCanonizeResults = _a.canonizeResults;
+        if (currentFetchPolicy === "standby" &&
+            currentFetchPolicy !== watchQueryOptions.fetchPolicy) {
+            this.initiateFetch(this.observable.reobserve(watchQueryOptions));
+        }
+        else {
+            this.observable.silentSetOptions(watchQueryOptions);
+            if (currentCanonizeResults !== watchQueryOptions.canonizeResults) {
+                this.result = (0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({}, this.result), this.observable.getCurrentResult());
+                this.promise = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .createFulfilledPromise */ .OP)(this.result);
+            }
+        }
+        return this.promise;
+    };
+    InternalQueryReference.prototype.listen = function (listener) {
+        var _this = this;
+        this.listeners.add(listener);
+        return function () {
+            _this.listeners.delete(listener);
+        };
+    };
+    InternalQueryReference.prototype.refetch = function (variables) {
+        return this.initiateFetch(this.observable.refetch(variables));
+    };
+    InternalQueryReference.prototype.fetchMore = function (options) {
+        return this.initiateFetch(this.observable.fetchMore(options));
+    };
+    InternalQueryReference.prototype.dispose = function () {
+        this.subscription.unsubscribe();
+        this.onDispose();
+    };
+    InternalQueryReference.prototype.onDispose = function () {
+    };
+    InternalQueryReference.prototype.handleNext = function (result) {
+        var _a;
+        switch (this.status) {
+            case "loading": {
+                if (result.data === void 0) {
+                    result.data = this.result.data;
+                }
+                this.status = "idle";
+                this.result = result;
+                (_a = this.resolve) === null || _a === void 0 ? void 0 : _a.call(this, result);
                 break;
-        // Fall through to return true...
-        case "function":
-            return true;
+            }
+            case "idle": {
+                if (result.data === this.result.data) {
+                    return;
+                }
+                if (result.data === void 0) {
+                    result.data = this.result.data;
+                }
+                this.result = result;
+                this.promise = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .createFulfilledPromise */ .OP)(result);
+                this.deliver(this.promise);
+                break;
+            }
+        }
+    };
+    InternalQueryReference.prototype.handleError = function (error) {
+        var _a;
+        switch (this.status) {
+            case "loading": {
+                this.status = "idle";
+                (_a = this.reject) === null || _a === void 0 ? void 0 : _a.call(this, error);
+                break;
+            }
+            case "idle": {
+                this.promise = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .createRejectedPromise */ .Ld)(error);
+                this.deliver(this.promise);
+            }
+        }
+    };
+    InternalQueryReference.prototype.deliver = function (promise) {
+        this.listeners.forEach(function (listener) { return listener(promise); });
+    };
+    InternalQueryReference.prototype.initiateFetch = function (returnedPromise) {
+        var _this = this;
+        this.status = "loading";
+        this.promise = new Promise(function (resolve, reject) {
+            _this.resolve = resolve;
+            _this.reject = reject;
+        });
+        this.promise.catch(function () { });
+        returnedPromise
+            .then(function (result) {
+            var _a;
+            if (_this.status === "loading") {
+                _this.status = "idle";
+                _this.result = result;
+                (_a = _this.resolve) === null || _a === void 0 ? void 0 : _a.call(_this, result);
+            }
+        })
+            .catch(function () { });
+        return returnedPromise;
+    };
+    return InternalQueryReference;
+}());
+
+//# sourceMappingURL=QueryReference.js.map
+
+/***/ }),
+
+/***/ 938:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   $: () => (/* binding */ SuspenseCache)
+/* harmony export */ });
+/* harmony import */ var _wry_trie__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5028);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(320);
+/* harmony import */ var _QueryReference_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9770);
+
+
+
+var SuspenseCache = (function () {
+    function SuspenseCache(options) {
+        if (options === void 0) { options = Object.create(null); }
+        this.queryRefs = new _wry_trie__WEBPACK_IMPORTED_MODULE_0__/* .Trie */ .B(_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .canUseWeakMap */ .mr);
+        this.options = options;
     }
-    return false;
+    SuspenseCache.prototype.getQueryRef = function (cacheKey, createObservable) {
+        var ref = this.queryRefs.lookupArray(cacheKey);
+        if (!ref.current) {
+            ref.current = new _QueryReference_js__WEBPACK_IMPORTED_MODULE_2__/* .InternalQueryReference */ .qZ(createObservable(), {
+                key: cacheKey,
+                autoDisposeTimeoutMs: this.options.autoDisposeTimeoutMs,
+                onDispose: function () {
+                    delete ref.current;
+                },
+            });
+        }
+        return ref.current;
+    };
+    return SuspenseCache;
+}());
+
+//# sourceMappingURL=SuspenseCache.js.map
+
+/***/ }),
+
+/***/ 5722:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Y: () => (/* binding */ getSuspenseCache)
+/* harmony export */ });
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _SuspenseCache_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(938);
 }
+
+var suspenseCacheSymbol = Symbol.for("apollo.suspenseCache");
+function getSuspenseCache(client) {
+    var _a;
+    if (!client[suspenseCacheSymbol]) {
+        client[suspenseCacheSymbol] = new _SuspenseCache_js__WEBPACK_IMPORTED_MODULE_0__/* .SuspenseCache */ .$((_a = client.defaultOptions.react) === null || _a === void 0 ? void 0 : _a.suspense);
+    }
+    return client[suspenseCacheSymbol];
+}
+//# sourceMappingURL=getSuspenseCache.js.map
+
+/***/ }),
+
+/***/ 5003:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   $: () => (/* binding */ SuspenseCache)
+/* harmony export */ });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7582);
+/* harmony import */ var _SuspenseCache_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(938);
+
+
+
+var SuspenseCache = (function (_super) {
+    (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__extends */ .ZT)(SuspenseCache, _super);
+    function SuspenseCache() {
+        var _this = _super.call(this) || this;
+        throw new Error("It is no longer necessary to create a `SuspenseCache` instance and pass it into the `ApolloProvider`.\n" +
+            "Please remove this code from your application. \n\n" +
+            "This export will be removed with the final 3.8 release.");
+        return _this;
+    }
+    return SuspenseCache;
+}(_SuspenseCache_js__WEBPACK_IMPORTED_MODULE_1__/* .SuspenseCache */ .$));
+
 //# sourceMappingURL=index.js.map
 
 /***/ }),
@@ -22568,7 +21889,7 @@ function isObjRef(value) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   a: () => (/* binding */ ApolloConsumer)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7294);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _ApolloContext_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5317);
@@ -22579,8 +21900,7 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 var ApolloConsumer = function (props) {
     var ApolloContext = (0,_ApolloContext_js__WEBPACK_IMPORTED_MODULE_2__/* .getApolloContext */ .K)();
     return (react__WEBPACK_IMPORTED_MODULE_1__.createElement(ApolloContext.Consumer, null, function (context) {
-        __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(context && context.client, 'Could not find "client" in the context of ApolloConsumer. ' +
-            'Wrap the root component in an <ApolloProvider>.') : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(context && context.client, 28);
+        (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(context && context.client, 42);
         return props.children(context.client);
     }));
 };
@@ -22593,30 +21913,33 @@ var ApolloConsumer = function (props) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   K: () => (/* binding */ getApolloContext)
+/* harmony export */   K: () => (/* binding */ getApolloContext),
+/* harmony export */   Z: () => (/* binding */ resetApolloContext)
 /* harmony export */ });
-/* unused harmony export resetApolloContext */
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7294);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(320);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(320);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6961);
 
 
-var contextKey = _utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .canUseSymbol */ .aS
-    ? Symbol.for('__APOLLO_CONTEXT__')
-    : '__APOLLO_CONTEXT__';
+
+var contextKey = _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .canUseSymbol */ .aS
+    ? Symbol.for("__APOLLO_CONTEXT__")
+    : "__APOLLO_CONTEXT__";
 function getApolloContext() {
+    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .kG)( true, 43);
     var context = react__WEBPACK_IMPORTED_MODULE_0__.createContext[contextKey];
     if (!context) {
         Object.defineProperty(react__WEBPACK_IMPORTED_MODULE_0__.createContext, contextKey, {
-            value: context = react__WEBPACK_IMPORTED_MODULE_0__.createContext({}),
+            value: (context = react__WEBPACK_IMPORTED_MODULE_0__.createContext({})),
             enumerable: false,
             writable: false,
             configurable: true,
         });
-        context.displayName = 'ApolloContext';
+        context.displayName = "ApolloContext";
     }
     return context;
 }
-
+var resetApolloContext = (/* runtime-dependent pure expression or super */ /^(33[45]|149|179|28|452)$/.test(__webpack_require__.j) ? (getApolloContext) : null);
 //# sourceMappingURL=ApolloContext.js.map
 
 /***/ }),
@@ -22628,7 +21951,10 @@ function getApolloContext() {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   e: () => (/* binding */ ApolloProvider)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7582);
+}
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7294);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _ApolloContext_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5317);
@@ -22636,20 +21962,30 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 
 
+
 var ApolloProvider = function (_a) {
     var client = _a.client, children = _a.children;
     var ApolloContext = (0,_ApolloContext_js__WEBPACK_IMPORTED_MODULE_2__/* .getApolloContext */ .K)();
-    return (react__WEBPACK_IMPORTED_MODULE_1__.createElement(ApolloContext.Consumer, null, function (context) {
-        if (context === void 0) { context = {}; }
-        if (client && context.client !== client) {
-            context = Object.assign({}, context, { client: client });
-        }
-        __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(context.client, 'ApolloProvider was not passed a client instance. Make ' +
-            'sure you pass in your client via the "client" prop.') : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(context.client, 29);
-        return (react__WEBPACK_IMPORTED_MODULE_1__.createElement(ApolloContext.Provider, { value: context }, children));
-    }));
+    var parentContext = react__WEBPACK_IMPORTED_MODULE_1__.useContext(ApolloContext);
+    var context = react__WEBPACK_IMPORTED_MODULE_1__.useMemo(function () {
+        return (0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({}, parentContext), { client: client || parentContext.client });
+    }, [parentContext, client]);
+    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(context.client, 44);
+    return (react__WEBPACK_IMPORTED_MODULE_1__.createElement(ApolloContext.Provider, { value: context }, children));
 };
 //# sourceMappingURL=ApolloProvider.js.map
+
+/***/ }),
+
+/***/ 6843:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   C: () => (/* binding */ skipToken)
+/* harmony export */ });
+var skipToken = Symbol.for('apollo.skipToken');
+//# sourceMappingURL=constants.js.map
 
 /***/ }),
 
@@ -22658,15 +21994,19 @@ var ApolloProvider = function (_a) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   $W: () => (/* reexport safe */ _useFragment_js__WEBPACK_IMPORTED_MODULE_7__.$),
+/* harmony export */   CN: () => (/* reexport safe */ _constants_js__WEBPACK_IMPORTED_MODULE_11__.C),
 /* harmony export */   Db: () => (/* reexport safe */ _useMutation_js__WEBPACK_IMPORTED_MODULE_3__.D),
+/* harmony export */   Jc: () => (/* reexport safe */ _useFragment_js__WEBPACK_IMPORTED_MODULE_7__.J),
+/* harmony export */   aK: () => (/* reexport safe */ _useReadQuery_js__WEBPACK_IMPORTED_MODULE_10__.a),
 /* harmony export */   aM: () => (/* reexport safe */ _useQuery_js__WEBPACK_IMPORTED_MODULE_4__.a),
+/* harmony export */   kJ: () => (/* reexport safe */ _useSuspenseQuery_js__WEBPACK_IMPORTED_MODULE_8__.kJ),
 /* harmony export */   lY: () => (/* reexport safe */ _useReactiveVar_js__WEBPACK_IMPORTED_MODULE_6__.l),
 /* harmony export */   mU: () => (/* reexport safe */ _useSubscription_js__WEBPACK_IMPORTED_MODULE_5__.m),
 /* harmony export */   td: () => (/* reexport safe */ _useLazyQuery_js__WEBPACK_IMPORTED_MODULE_2__.t),
+/* harmony export */   u7: () => (/* reexport safe */ _useBackgroundQuery_js__WEBPACK_IMPORTED_MODULE_9__.u),
 /* harmony export */   xJ: () => (/* reexport safe */ _useApolloClient_js__WEBPACK_IMPORTED_MODULE_1__.x)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6252);
 }
@@ -22688,6 +22028,22 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _useFragment_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(819);
 }
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _useSuspenseQuery_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(8);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _useBackgroundQuery_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(5866);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _useReadQuery_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(9274);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _constants_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(6843);
+}
+
+
+
+
 
 
 
@@ -22700,6 +22056,60 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 /***/ }),
 
+/***/ 5210:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+var react__WEBPACK_IMPORTED_MODULE_0___namespace_cache;
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   $: () => (/* binding */ __use)
+/* harmony export */ });
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1704);
+}
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7294);
+
+
+var useKey = "use";
+var realHook = /*#__PURE__*/ (react__WEBPACK_IMPORTED_MODULE_0___namespace_cache || (react__WEBPACK_IMPORTED_MODULE_0___namespace_cache = __webpack_require__.t(react__WEBPACK_IMPORTED_MODULE_0__, 2)))[useKey];
+var __use = (/* runtime-dependent pure expression or super */ /^(33[45]|149|179|28|452)$/.test(__webpack_require__.j) ? (realHook ||
+    function __use(promise) {
+        var statefulPromise = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .wrapPromiseWithState */ .Bd)(promise);
+        switch (statefulPromise.status) {
+            case "pending":
+                throw statefulPromise;
+            case "rejected":
+                throw statefulPromise.reason;
+            case "fulfilled":
+                return statefulPromise.value;
+        }
+    }) : null);
+//# sourceMappingURL=__use.js.map
+
+/***/ }),
+
+/***/ 2870:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   v: () => (/* binding */ useDeepMemo)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7294);
+/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(20);
+
+
+function useDeepMemo(memoFn, deps) {
+    var ref = react__WEBPACK_IMPORTED_MODULE_0__.useRef();
+    if (!ref.current || !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(ref.current.deps, deps)) {
+        ref.current = { value: memoFn(), deps: deps };
+    }
+    return ref.current.value;
+}
+//# sourceMappingURL=useDeepMemo.js.map
+
+/***/ }),
+
 /***/ 6252:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
@@ -22707,7 +22117,7 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   x: () => (/* binding */ useApolloClient)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7294);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _context_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5317);
@@ -22716,14 +22126,92 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 
 function useApolloClient(override) {
-    var context = (0,react__WEBPACK_IMPORTED_MODULE_1__.useContext)((0,_context_index_js__WEBPACK_IMPORTED_MODULE_2__/* .getApolloContext */ .K)());
+    var context = react__WEBPACK_IMPORTED_MODULE_1__.useContext((0,_context_index_js__WEBPACK_IMPORTED_MODULE_2__/* .getApolloContext */ .K)());
     var client = override || context.client;
-    __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!!client, 'Could not find "client" in the context or passed in as an option. ' +
-        'Wrap the root component in an <ApolloProvider>, or pass an ApolloClient ' +
-        'instance in via options.') : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!!client, 32);
+    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!!client, 47);
     return client;
 }
 //# sourceMappingURL=useApolloClient.js.map
+
+/***/ }),
+
+/***/ 5866:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   u: () => (/* binding */ useBackgroundQuery)
+/* harmony export */ });
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7582);
+}
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7294);
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6252);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _cache_QueryReference_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(9770);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5722);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _useSuspenseQuery_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(8);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(900);
+}
+
+
+
+
+
+
+
+function useBackgroundQuery(query, options) {
+    if (options === void 0) { options = Object.create(null); }
+    var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_1__/* .useApolloClient */ .x)(options.client);
+    var suspenseCache = (0,_cache_index_js__WEBPACK_IMPORTED_MODULE_2__/* .getSuspenseCache */ .Y)(client);
+    var watchQueryOptions = (0,_useSuspenseQuery_js__WEBPACK_IMPORTED_MODULE_3__/* .useWatchQueryOptions */ .U8)({ client: client, query: query, options: options });
+    var fetchPolicy = watchQueryOptions.fetchPolicy, variables = watchQueryOptions.variables;
+    var _a = options.queryKey, queryKey = _a === void 0 ? [] : _a;
+    var didFetchResult = react__WEBPACK_IMPORTED_MODULE_0__.useRef(fetchPolicy !== "standby");
+    didFetchResult.current || (didFetchResult.current = fetchPolicy !== "standby");
+    var cacheKey = (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__spreadArray */ .ev)([
+        query,
+        (0,_cache_index_js__WEBPACK_IMPORTED_MODULE_5__/* .canonicalStringify */ .B)(variables)
+    ], [].concat(queryKey), true);
+    var queryRef = suspenseCache.getQueryRef(cacheKey, function () {
+        return client.watchQuery(watchQueryOptions);
+    });
+    var _b = react__WEBPACK_IMPORTED_MODULE_0__.useState(function () { return new Map([[queryRef.key, queryRef.promise]]); }), promiseCache = _b[0], setPromiseCache = _b[1];
+    if (queryRef.didChangeOptions(watchQueryOptions)) {
+        var promise = queryRef.applyOptions(watchQueryOptions);
+        promiseCache.set(queryRef.key, promise);
+    }
+    react__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () { return queryRef.retain(); }, [queryRef]);
+    var fetchMore = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (options) {
+        var promise = queryRef.fetchMore(options);
+        setPromiseCache(function (promiseCache) {
+            return new Map(promiseCache).set(queryRef.key, queryRef.promise);
+        });
+        return promise;
+    }, [queryRef]);
+    var refetch = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (variables) {
+        var promise = queryRef.refetch(variables);
+        setPromiseCache(function (promiseCache) {
+            return new Map(promiseCache).set(queryRef.key, queryRef.promise);
+        });
+        return promise;
+    }, [queryRef]);
+    queryRef.promiseCache = promiseCache;
+    var wrappedQueryRef = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () { return (0,_cache_QueryReference_js__WEBPACK_IMPORTED_MODULE_6__/* .wrapQueryRef */ .JO)(queryRef); }, [queryRef]);
+    return [
+        didFetchResult.current ? wrappedQueryRef : void 0,
+        { fetchMore: fetchMore, refetch: refetch },
+    ];
+}
+//# sourceMappingURL=useBackgroundQuery.js.map
 
 /***/ }),
 
@@ -22732,13 +22220,13 @@ function useApolloClient(override) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   $: () => (/* binding */ useFragment_experimental)
+/* harmony export */   J: () => (/* binding */ useFragment)
 /* harmony export */ });
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7582);
 }
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7294);
-/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2152);
+/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(20);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(182);
 }
@@ -22754,11 +22242,11 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 
 
-function useFragment_experimental(options) {
+function useFragment(options) {
     var cache = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__/* .useApolloClient */ .x)().cache;
     var fragment = options.fragment, fragmentName = options.fragmentName, from = options.from, _a = options.optimistic, optimistic = _a === void 0 ? true : _a, rest = (0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__rest */ ._T)(options, ["fragment", "fragmentName", "from", "optimistic"]);
-    var diffOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({}, rest), { id: typeof from === "string" ? from : cache.identify(from), query: cache["getFragmentDoc"](fragment, fragmentName), optimistic: optimistic });
-    var resultRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
+    var diffOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({}, rest), { returnPartialData: true, id: typeof from === "string" ? from : cache.identify(from), query: cache["getFragmentDoc"](fragment, fragmentName), optimistic: optimistic });
+    var resultRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef();
     var latestDiff = cache.diff(diffOptions);
     var getSnapshot = function () {
         var latestDiffToResult = diffToResult(latestDiff);
@@ -22768,12 +22256,17 @@ function useFragment_experimental(options) {
             : (resultRef.current = latestDiffToResult);
     };
     return (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_4__/* .useSyncExternalStore */ .$)(function (forceUpdate) {
-        return cache.watch((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({}, diffOptions), { immediate: true, callback: function (diff) {
+        var lastTimeout = 0;
+        var unsubcribe = cache.watch((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({}, diffOptions), { immediate: true, callback: function (diff) {
                 if (!(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(diff, latestDiff)) {
                     resultRef.current = diffToResult((latestDiff = diff));
-                    forceUpdate();
+                    lastTimeout = setTimeout(forceUpdate);
                 }
             } }));
+        return function () {
+            unsubcribe();
+            clearTimeout(lastTimeout);
+        };
     }, getSnapshot, getSnapshot);
 }
 function diffToResult(diff) {
@@ -22816,19 +22309,19 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 
 var EAGER_METHODS = (/* runtime-dependent pure expression or super */ /^(33[45]|149|179|28|452)$/.test(__webpack_require__.j) ? ([
-    'refetch',
-    'reobserve',
-    'fetchMore',
-    'updateQuery',
-    'startPolling',
-    'subscribeToMore',
+    "refetch",
+    "reobserve",
+    "fetchMore",
+    "updateQuery",
+    "startPolling",
+    "subscribeToMore",
 ]) : null);
 function useLazyQuery(query, options) {
     var _a;
-    var execOptionsRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
-    var optionsRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
-    var queryRef = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)();
-    var merged = execOptionsRef.current ? (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .mergeOptions */ .J)(options, execOptionsRef.current) : options;
+    var execOptionsRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef();
+    var optionsRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef();
+    var queryRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef();
+    var merged = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .mergeOptions */ .J)(options, execOptionsRef.current || {});
     var document = (_a = merged === null || merged === void 0 ? void 0 : merged.query) !== null && _a !== void 0 ? _a : query;
     optionsRef.current = merged;
     queryRef.current = document;
@@ -22839,14 +22332,14 @@ function useLazyQuery(query, options) {
     var result = Object.assign(useQueryResult, {
         called: !!execOptionsRef.current,
     });
-    var eagerMethods = (0,react__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
+    var eagerMethods = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
         var eagerMethods = {};
         var _loop_1 = function (key) {
             var method = result[key];
             eagerMethods[key] = function () {
                 if (!execOptionsRef.current) {
                     execOptionsRef.current = Object.create(null);
-                    internalState.forceUpdate();
+                    internalState.forceUpdateState();
                 }
                 return method.apply(this, arguments);
             };
@@ -22858,8 +22351,9 @@ function useLazyQuery(query, options) {
         return eagerMethods;
     }, []);
     Object.assign(result, eagerMethods);
-    var execute = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (executeOptions) {
-        execOptionsRef.current = executeOptions ? (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)({}, executeOptions), { fetchPolicy: executeOptions.fetchPolicy || initialFetchPolicy }) : {
+    var execute = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (executeOptions) {
+        execOptionsRef.current = executeOptions
+            ? (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)({}, executeOptions), { fetchPolicy: executeOptions.fetchPolicy || initialFetchPolicy }) : {
             fetchPolicy: initialFetchPolicy,
         };
         var options = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .mergeOptions */ .J)(optionsRef.current, (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)({ query: queryRef.current }, execOptionsRef.current));
@@ -22887,9 +22381,9 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 }
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7294);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4012);
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4012);
 }
-/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2152);
+/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(20);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _parser_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4692);
 }
@@ -22909,12 +22403,12 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 function useMutation(mutation, options) {
     var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__/* .useApolloClient */ .x)(options === null || options === void 0 ? void 0 : options.client);
     (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_3__/* .verifyDocumentType */ .Vp)(mutation, _parser_index_js__WEBPACK_IMPORTED_MODULE_3__/* .DocumentType */ .n_.Mutation);
-    var _a = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+    var _a = react__WEBPACK_IMPORTED_MODULE_0__.useState({
         called: false,
         loading: false,
         client: client,
     }), result = _a[0], setResult = _a[1];
-    var ref = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)({
+    var ref = react__WEBPACK_IMPORTED_MODULE_0__.useRef({
         result: result,
         mutationId: 0,
         isMounted: true,
@@ -22925,28 +22419,36 @@ function useMutation(mutation, options) {
     {
         Object.assign(ref.current, { client: client, options: options, mutation: mutation });
     }
-    var execute = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function (executeOptions) {
+    var execute = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (executeOptions) {
         if (executeOptions === void 0) { executeOptions = {}; }
         var _a = ref.current, options = _a.options, mutation = _a.mutation;
         var baseOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)({}, options), { mutation: mutation });
         var client = executeOptions.client || ref.current.client;
-        if (!ref.current.result.loading && !baseOptions.ignoreResults && ref.current.isMounted) {
-            setResult(ref.current.result = {
+        if (!ref.current.result.loading &&
+            !baseOptions.ignoreResults &&
+            ref.current.isMounted) {
+            setResult((ref.current.result = {
                 loading: true,
                 error: void 0,
                 data: void 0,
                 called: true,
                 client: client,
-            });
+            }));
         }
         var mutationId = ++ref.current.mutationId;
-        var clientOptions = (0,_core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .mergeOptions */ .J)(baseOptions, executeOptions);
-        return client.mutate(clientOptions).then(function (response) {
-            var _a;
+        var clientOptions = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .mergeOptions */ .J)(baseOptions, executeOptions);
+        return client
+            .mutate(clientOptions)
+            .then(function (response) {
+            var _a, _b;
             var data = response.data, errors = response.errors;
             var error = errors && errors.length > 0
                 ? new _errors_index_js__WEBPACK_IMPORTED_MODULE_6__/* .ApolloError */ .cA({ graphQLErrors: errors })
                 : void 0;
+            var onError = executeOptions.onError || ((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onError);
+            if (error && onError) {
+                onError(error, clientOptions);
+            }
             if (mutationId === ref.current.mutationId &&
                 !clientOptions.ignoreResults) {
                 var result_1 = {
@@ -22957,16 +22459,18 @@ function useMutation(mutation, options) {
                     client: client,
                 };
                 if (ref.current.isMounted && !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(ref.current.result, result_1)) {
-                    setResult(ref.current.result = result_1);
+                    setResult((ref.current.result = result_1));
                 }
             }
-            var onCompleted = executeOptions.onCompleted || ((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onCompleted);
-            onCompleted === null || onCompleted === void 0 ? void 0 : onCompleted(response.data, clientOptions);
+            var onCompleted = executeOptions.onCompleted || ((_b = ref.current.options) === null || _b === void 0 ? void 0 : _b.onCompleted);
+            if (!error) {
+                onCompleted === null || onCompleted === void 0 ? void 0 : onCompleted(response.data, clientOptions);
+            }
             return response;
-        }).catch(function (error) {
+        })
+            .catch(function (error) {
             var _a;
-            if (mutationId === ref.current.mutationId &&
-                ref.current.isMounted) {
+            if (mutationId === ref.current.mutationId && ref.current.isMounted) {
                 var result_2 = {
                     loading: false,
                     error: error,
@@ -22975,7 +22479,7 @@ function useMutation(mutation, options) {
                     client: client,
                 };
                 if (!(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(ref.current.result, result_2)) {
-                    setResult(ref.current.result = result_2);
+                    setResult((ref.current.result = result_2));
                 }
             }
             var onError = executeOptions.onError || ((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onError);
@@ -22986,12 +22490,12 @@ function useMutation(mutation, options) {
             throw error;
         });
     }, []);
-    var reset = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
+    var reset = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () {
         if (ref.current.isMounted) {
             setResult({ called: false, loading: false, client: client });
         }
     }, []);
-    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    react__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () {
         ref.current.isMounted = true;
         return function () {
             ref.current.isMounted = false;
@@ -23012,11 +22516,11 @@ function useMutation(mutation, options) {
 /* harmony export */   a: () => (/* binding */ useQuery)
 /* harmony export */ });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(7582);
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7294);
 /* harmony import */ var _useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(9564);
-/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2152);
-/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(4012);
+/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(20);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(4012);
 /* harmony import */ var _context_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(5317);
 /* harmony import */ var _errors_index_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(990);
 /* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1644);
@@ -23046,34 +22550,33 @@ function useQuery(query, options) {
     return useInternalState((0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .x)(options.client), query).useQuery(options);
 }
 function useInternalState(client, query) {
-    var stateRef = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)();
+    var stateRef = react__WEBPACK_IMPORTED_MODULE_1__.useRef();
     if (!stateRef.current ||
         client !== stateRef.current.client ||
         query !== stateRef.current.query) {
         stateRef.current = new InternalState(client, query, stateRef.current);
     }
     var state = stateRef.current;
-    var _a = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(0), _tick = _a[0], setTick = _a[1];
-    state.forceUpdate = function () {
-        setTick(function (tick) { return tick + 1; });
-    };
+    state.forceUpdateState = react__WEBPACK_IMPORTED_MODULE_1__.useReducer(function (tick) { return tick + 1; }, 0)[1];
     return state;
 }
 var InternalState = (function () {
     function InternalState(client, query, previous) {
+        var _this = this;
         this.client = client;
         this.query = query;
+        this.forceUpdate = function () { return _this.forceUpdateState(); };
         this.ssrDisabledResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .maybeDeepFreeze */ .J)({
             loading: true,
             data: void 0,
             error: void 0,
-            networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus */ .I.loading,
+            networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus */ .Ie.loading,
         });
         this.skipStandbyResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .maybeDeepFreeze */ .J)({
             loading: false,
             data: void 0,
             error: void 0,
-            networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus */ .I.ready,
+            networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus */ .Ie.ready,
         });
         this.toQueryResultCache = new (_utilities_index_js__WEBPACK_IMPORTED_MODULE_6__/* .canUseWeakMap */ .mr ? WeakMap : Map)();
         (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_7__/* .verifyDocumentType */ .Vp)(query, _parser_index_js__WEBPACK_IMPORTED_MODULE_7__/* .DocumentType */ .n_.Query);
@@ -23083,8 +22586,8 @@ var InternalState = (function () {
             this.previousData = previousData;
         }
     }
-    InternalState.prototype.forceUpdate = function () {
-        __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn("Calling default no-op implementation of InternalState#forceUpdate");
+    InternalState.prototype.forceUpdateState = function () {
+        globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn(48);
     };
     InternalState.prototype.executeQuery = function (options) {
         var _this = this;
@@ -23092,7 +22595,7 @@ var InternalState = (function () {
         if (options.query) {
             Object.assign(this, { query: options.query });
         }
-        this.watchQueryOptions = this.createWatchQueryOptions(this.queryHookOptions = options);
+        this.watchQueryOptions = this.createWatchQueryOptions((this.queryHookOptions = options));
         var concast = this.observable.reobserveAsConcast(this.getObsQueryOptions());
         this.previousData = ((_a = this.result) === null || _a === void 0 ? void 0 : _a.data) || this.previousData;
         this.result = void 0;
@@ -23108,19 +22611,20 @@ var InternalState = (function () {
                 },
                 complete: function () {
                     resolve(_this.toQueryResult(result));
-                }
+                },
             });
         });
     };
     InternalState.prototype.useQuery = function (options) {
         var _this = this;
-        this.renderPromises = (0,react__WEBPACK_IMPORTED_MODULE_1__.useContext)((0,_context_index_js__WEBPACK_IMPORTED_MODULE_8__/* .getApolloContext */ .K)()).renderPromises;
+        this.renderPromises = react__WEBPACK_IMPORTED_MODULE_1__.useContext((0,_context_index_js__WEBPACK_IMPORTED_MODULE_8__/* .getApolloContext */ .K)()).renderPromises;
         this.useOptions(options);
         var obsQuery = this.useObservableQuery();
-        var result = (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_9__/* .useSyncExternalStore */ .$)((0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)(function () {
+        var result = (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_9__/* .useSyncExternalStore */ .$)(react__WEBPACK_IMPORTED_MODULE_1__.useCallback(function (handleStoreChange) {
             if (_this.renderPromises) {
                 return function () { };
             }
+            _this.forceUpdate = handleStoreChange;
             var onNext = function () {
                 var previousResult = _this.result;
                 var result = obsQuery.getCurrentResult();
@@ -23142,7 +22646,7 @@ var InternalState = (function () {
                 finally {
                     obsQuery["last"] = last;
                 }
-                if (!hasOwnProperty.call(error, 'graphQLErrors')) {
+                if (!hasOwnProperty.call(error, "graphQLErrors")) {
                     throw error;
                 }
                 var previousResult = _this.result;
@@ -23153,12 +22657,15 @@ var InternalState = (function () {
                         data: (previousResult && previousResult.data),
                         error: error,
                         loading: false,
-                        networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus */ .I.error,
+                        networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus */ .Ie.error,
                     });
                 }
             };
             var subscription = obsQuery.subscribe(onNext, onError);
-            return function () { return setTimeout(function () { return subscription.unsubscribe(); }); };
+            return function () {
+                setTimeout(function () { return subscription.unsubscribe(); });
+                _this.forceUpdate = function () { return _this.forceUpdateState(); };
+            };
         }, [
             obsQuery,
             this.renderPromises,
@@ -23169,7 +22676,7 @@ var InternalState = (function () {
     };
     InternalState.prototype.useOptions = function (options) {
         var _a;
-        var watchQueryOptions = this.createWatchQueryOptions(this.queryHookOptions = options);
+        var watchQueryOptions = this.createWatchQueryOptions((this.queryHookOptions = options));
         var currentWatchQueryOptions = this.watchQueryOptions;
         if (!(0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .D)(watchQueryOptions, currentWatchQueryOptions)) {
             this.watchQueryOptions = watchQueryOptions;
@@ -23179,7 +22686,8 @@ var InternalState = (function () {
                 this.result = void 0;
             }
         }
-        this.onCompleted = options.onCompleted || InternalState.prototype.onCompleted;
+        this.onCompleted =
+            options.onCompleted || InternalState.prototype.onCompleted;
         this.onError = options.onError || InternalState.prototype.onError;
         if ((this.renderPromises || this.client.disableNetworkFetches) &&
             this.queryHookOptions.ssr === false &&
@@ -23187,7 +22695,7 @@ var InternalState = (function () {
             this.result = this.ssrDisabledResult;
         }
         else if (this.queryHookOptions.skip ||
-            this.watchQueryOptions.fetchPolicy === 'standby') {
+            this.watchQueryOptions.fetchPolicy === "standby") {
             this.result = this.skipStandbyResult;
         }
         else if (this.result === this.ssrDisabledResult ||
@@ -23204,7 +22712,7 @@ var InternalState = (function () {
             toMerge.push(this.queryHookOptions.defaultOptions);
         }
         toMerge.push((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_10__/* .compact */ .o)(this.observable && this.observable.options, this.watchQueryOptions));
-        return toMerge.reduce(_core_index_js__WEBPACK_IMPORTED_MODULE_11__/* .mergeOptions */ .J);
+        return toMerge.reduce(_utilities_index_js__WEBPACK_IMPORTED_MODULE_11__/* .mergeOptions */ .J);
     };
     InternalState.prototype.createWatchQueryOptions = function (_a) {
         var _b;
@@ -23212,9 +22720,9 @@ var InternalState = (function () {
         var skip = _a.skip, ssr = _a.ssr, onCompleted = _a.onCompleted, onError = _a.onError, defaultOptions = _a.defaultOptions, otherOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__rest */ ._T)(_a, ["skip", "ssr", "onCompleted", "onError", "defaultOptions"]);
         var watchQueryOptions = Object.assign(otherOptions, { query: this.query });
         if (this.renderPromises &&
-            (watchQueryOptions.fetchPolicy === 'network-only' ||
-                watchQueryOptions.fetchPolicy === 'cache-and-network')) {
-            watchQueryOptions.fetchPolicy = 'cache-first';
+            (watchQueryOptions.fetchPolicy === "network-only" ||
+                watchQueryOptions.fetchPolicy === "cache-and-network")) {
+            watchQueryOptions.fetchPolicy = "cache-first";
         }
         if (!watchQueryOptions.variables) {
             watchQueryOptions.variables = {};
@@ -23223,7 +22731,7 @@ var InternalState = (function () {
             var _c = watchQueryOptions.fetchPolicy, fetchPolicy = _c === void 0 ? this.getDefaultFetchPolicy() : _c, _d = watchQueryOptions.initialFetchPolicy, initialFetchPolicy = _d === void 0 ? fetchPolicy : _d;
             Object.assign(watchQueryOptions, {
                 initialFetchPolicy: initialFetchPolicy,
-                fetchPolicy: 'standby',
+                fetchPolicy: "standby",
             });
         }
         else if (!watchQueryOptions.fetchPolicy) {
@@ -23242,12 +22750,12 @@ var InternalState = (function () {
     InternalState.prototype.onCompleted = function (data) { };
     InternalState.prototype.onError = function (error) { };
     InternalState.prototype.useObservableQuery = function () {
-        var obsQuery = this.observable =
-            this.renderPromises
-                && this.renderPromises.getSSRObservable(this.watchQueryOptions)
-                || this.observable
-                || this.client.watchQuery(this.getObsQueryOptions());
-        this.obsQueryFields = (0,react__WEBPACK_IMPORTED_MODULE_1__.useMemo)(function () { return ({
+        var obsQuery = (this.observable =
+            (this.renderPromises &&
+                this.renderPromises.getSSRObservable(this.watchQueryOptions)) ||
+                this.observable ||
+                this.client.watchQuery(this.getObsQueryOptions()));
+        this.obsQueryFields = react__WEBPACK_IMPORTED_MODULE_1__.useMemo(function () { return ({
             refetch: obsQuery.refetch.bind(obsQuery),
             reobserve: obsQuery.reobserve.bind(obsQuery),
             fetchMore: obsQuery.fetchMore.bind(obsQuery),
@@ -23256,8 +22764,7 @@ var InternalState = (function () {
             stopPolling: obsQuery.stopPolling.bind(obsQuery),
             subscribeToMore: obsQuery.subscribeToMore.bind(obsQuery),
         }); }, [obsQuery]);
-        var ssrAllowed = !(this.queryHookOptions.ssr === false ||
-            this.queryHookOptions.skip);
+        var ssrAllowed = !(this.queryHookOptions.ssr === false || this.queryHookOptions.skip);
         if (this.renderPromises && ssrAllowed) {
             this.renderPromises.registerSSRObservable(obsQuery);
             if (obsQuery.getCurrentResult().loading) {
@@ -23273,21 +22780,25 @@ var InternalState = (function () {
         }
         this.result = nextResult;
         this.forceUpdate();
-        this.handleErrorOrCompleted(nextResult);
+        this.handleErrorOrCompleted(nextResult, previousResult);
     };
-    InternalState.prototype.handleErrorOrCompleted = function (result) {
+    InternalState.prototype.handleErrorOrCompleted = function (result, previousResult) {
         var _this = this;
         if (!result.loading) {
             var error_1 = this.toApolloError(result);
-            Promise.resolve().then(function () {
+            Promise.resolve()
+                .then(function () {
                 if (error_1) {
                     _this.onError(error_1);
                 }
-                else if (result.data) {
+                else if (result.data &&
+                    (previousResult === null || previousResult === void 0 ? void 0 : previousResult.networkStatus) !== result.networkStatus &&
+                    result.networkStatus === _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus */ .Ie.ready) {
                     _this.onCompleted(result.data);
                 }
-            }).catch(function (error) {
-                __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn(error);
+            })
+                .catch(function (error) {
+                globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn(error);
             });
         }
     };
@@ -23298,7 +22809,7 @@ var InternalState = (function () {
     };
     InternalState.prototype.getCurrentResult = function () {
         if (!this.result) {
-            this.handleErrorOrCompleted(this.result = this.observable.getCurrentResult());
+            this.handleErrorOrCompleted((this.result = this.observable.getCurrentResult()));
         }
         return this.result;
     };
@@ -23307,7 +22818,7 @@ var InternalState = (function () {
         if (queryResult)
             return queryResult;
         var data = result.data, partial = result.partial, resultWithoutPartial = (0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__rest */ ._T)(result, ["data", "partial"]);
-        this.toQueryResultCache.set(result, queryResult = (0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__assign */ .pi)({ data: data }, resultWithoutPartial), this.obsQueryFields), { client: this.client, observable: this.observable, variables: this.observable.variables, called: !this.queryHookOptions.skip, previousData: this.previousData }));
+        this.toQueryResultCache.set(result, (queryResult = (0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__assign */ .pi)({ data: data }, resultWithoutPartial), this.obsQueryFields), { client: this.client, observable: this.observable, variables: this.observable.variables, called: !this.queryHookOptions.skip, previousData: this.previousData })));
         if (!queryResult.error && (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_13__/* .isNonEmptyArray */ .O)(result.errors)) {
             queryResult.error = new _errors_index_js__WEBPACK_IMPORTED_MODULE_14__/* .ApolloError */ .cA({ graphQLErrors: result.errors });
         }
@@ -23318,10 +22829,10 @@ var InternalState = (function () {
             this.queryHookOptions.partialRefetch &&
             !result.loading &&
             (!result.data || Object.keys(result.data).length === 0) &&
-            this.observable.options.fetchPolicy !== 'cache-only') {
+            this.observable.options.fetchPolicy !== "cache-only") {
             Object.assign(result, {
                 loading: true,
-                networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus */ .I.refetch,
+                networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus */ .Ie.refetch,
             });
             this.observable.refetch();
         }
@@ -23343,8 +22854,8 @@ var InternalState = (function () {
 
 function useReactiveVar(rv) {
     var value = rv();
-    var setValue = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(value)[1];
-    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    var setValue = react__WEBPACK_IMPORTED_MODULE_0__.useState(value)[1];
+    react__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () {
         var probablySameValue = rv();
         if (value !== probablySameValue) {
             setValue(probablySameValue);
@@ -23359,6 +22870,59 @@ function useReactiveVar(rv) {
 
 /***/ }),
 
+/***/ 9274:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   a: () => (/* binding */ useReadQuery)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7294);
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _cache_QueryReference_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9770);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(5210);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _useSuspenseQuery_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8);
+}
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6961);
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9564);
+}
+
+
+
+
+
+
+function useReadQuery(queryRef) {
+    var internalQueryRef = (0,_cache_QueryReference_js__WEBPACK_IMPORTED_MODULE_2__/* .unwrapQueryRef */ .fA)(queryRef);
+    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .kG)(internalQueryRef.promiseCache, 49);
+    var promiseCache = internalQueryRef.promiseCache, key = internalQueryRef.key;
+    if (!promiseCache.has(key)) {
+        promiseCache.set(key, internalQueryRef.promise);
+    }
+    var promise = (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_3__/* .useSyncExternalStore */ .$)(react__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (forceUpdate) {
+        return internalQueryRef.listen(function (promise) {
+            internalQueryRef.promiseCache.set(internalQueryRef.key, promise);
+            forceUpdate();
+        });
+    }, [internalQueryRef]), function () { return promiseCache.get(key); }, function () { return promiseCache.get(key); });
+    var result = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_4__/* .__use */ .$)(promise);
+    return react__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
+        return {
+            data: result.data,
+            networkStatus: result.networkStatus,
+            error: (0,_useSuspenseQuery_js__WEBPACK_IMPORTED_MODULE_5__/* .toApolloError */ .SU)(result),
+        };
+    }, [result]);
+}
+//# sourceMappingURL=useReadQuery.js.map
+
+/***/ }),
+
 /***/ 5436:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
@@ -23366,9 +22930,9 @@ function useReactiveVar(rv) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   m: () => (/* binding */ useSubscription)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7294);
-/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2152);
+/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(20);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _parser_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4692);
 }
@@ -23380,12 +22944,11 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 
 
-
 function useSubscription(subscription, options) {
-    var hasIssuedDeprecationWarningRef = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)(false);
+    var hasIssuedDeprecationWarningRef = react__WEBPACK_IMPORTED_MODULE_1__.useRef(false);
     var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .x)(options === null || options === void 0 ? void 0 : options.client);
     (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_4__/* .verifyDocumentType */ .Vp)(subscription, _parser_index_js__WEBPACK_IMPORTED_MODULE_4__/* .DocumentType */ .n_.Subscription);
-    var _a = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)({
+    var _a = react__WEBPACK_IMPORTED_MODULE_1__.useState({
         loading: !(options === null || options === void 0 ? void 0 : options.skip),
         error: void 0,
         data: void 0,
@@ -23394,17 +22957,13 @@ function useSubscription(subscription, options) {
     if (!hasIssuedDeprecationWarningRef.current) {
         hasIssuedDeprecationWarningRef.current = true;
         if (options === null || options === void 0 ? void 0 : options.onSubscriptionData) {
-            __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn(options.onData
-                ? "'useSubscription' supports only the 'onSubscriptionData' or 'onData' option, but not both. Only the 'onData' option will be used."
-                : "'onSubscriptionData' is deprecated and will be removed in a future major version. Please use the 'onData' option instead.");
+            globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn(options.onData ? 50 : 51);
         }
         if (options === null || options === void 0 ? void 0 : options.onSubscriptionComplete) {
-            __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn(options.onComplete
-                ? "'useSubscription' supports only the 'onSubscriptionComplete' or 'onComplete' option, but not both. Only the 'onComplete' option will be used."
-                : "'onSubscriptionComplete' is deprecated and will be removed in a future major version. Please use the 'onComplete' option instead.");
+            globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn(options.onComplete ? 52 : 53);
         }
     }
-    var _b = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(function () {
+    var _b = react__WEBPACK_IMPORTED_MODULE_1__.useState(function () {
         if (options === null || options === void 0 ? void 0 : options.skip) {
             return null;
         }
@@ -23415,21 +22974,22 @@ function useSubscription(subscription, options) {
             context: options === null || options === void 0 ? void 0 : options.context,
         });
     }), observable = _b[0], setObservable = _b[1];
-    var canResetObservableRef = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)(false);
-    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(function () {
+    var canResetObservableRef = react__WEBPACK_IMPORTED_MODULE_1__.useRef(false);
+    react__WEBPACK_IMPORTED_MODULE_1__.useEffect(function () {
         return function () {
             canResetObservableRef.current = true;
         };
     }, []);
-    var ref = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)({ client: client, subscription: subscription, options: options });
-    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(function () {
+    var ref = react__WEBPACK_IMPORTED_MODULE_1__.useRef({ client: client, subscription: subscription, options: options });
+    react__WEBPACK_IMPORTED_MODULE_1__.useEffect(function () {
         var _a, _b, _c, _d;
         var shouldResubscribe = options === null || options === void 0 ? void 0 : options.shouldResubscribe;
-        if (typeof shouldResubscribe === 'function') {
+        if (typeof shouldResubscribe === "function") {
             shouldResubscribe = !!shouldResubscribe(options);
         }
         if (options === null || options === void 0 ? void 0 : options.skip) {
-            if (!(options === null || options === void 0 ? void 0 : options.skip) !== !((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.skip) || canResetObservableRef.current) {
+            if (!(options === null || options === void 0 ? void 0 : options.skip) !== !((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.skip) ||
+                canResetObservableRef.current) {
                 setResult({
                     loading: false,
                     data: void 0,
@@ -23463,7 +23023,7 @@ function useSubscription(subscription, options) {
         }
         Object.assign(ref.current, { client: client, subscription: subscription, options: options });
     }, [client, subscription, options, canResetObservableRef.current]);
-    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(function () {
+    react__WEBPACK_IMPORTED_MODULE_1__.useEffect(function () {
         if (!observable) {
             return;
         }
@@ -23484,13 +23044,13 @@ function useSubscription(subscription, options) {
                 if ((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onData) {
                     ref.current.options.onData({
                         client: client,
-                        data: result
+                        data: result,
                     });
                 }
                 else if ((_b = ref.current.options) === null || _b === void 0 ? void 0 : _b.onSubscriptionData) {
                     ref.current.options.onSubscriptionData({
                         client: client,
-                        subscriptionData: result
+                        subscriptionData: result,
                     });
                 }
             },
@@ -23505,7 +23065,6 @@ function useSubscription(subscription, options) {
                     });
                     (_b = (_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onError) === null || _b === void 0 ? void 0 : _b.call(_a, error);
                 }
-                ;
             },
             complete: function () {
                 var _a, _b;
@@ -23532,6 +23091,184 @@ function useSubscription(subscription, options) {
 
 /***/ }),
 
+/***/ 8:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SU: () => (/* binding */ toApolloError),
+/* harmony export */   U8: () => (/* binding */ useWatchQueryOptions),
+/* harmony export */   kJ: () => (/* binding */ useSuspenseQuery)
+/* harmony export */ });
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7582);
+}
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7294);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6961);
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(1644);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(990);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(1436);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6252);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _parser_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(4692);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(5210);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(2870);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5722);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(900);
+}
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _constants_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(6843);
+}
+
+
+
+
+
+
+
+
+
+
+
+function useSuspenseQuery(query, options) {
+    if (options === void 0) { options = Object.create(null); }
+    var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__/* .useApolloClient */ .x)(options.client);
+    var suspenseCache = (0,_cache_index_js__WEBPACK_IMPORTED_MODULE_3__/* .getSuspenseCache */ .Y)(client);
+    var watchQueryOptions = useWatchQueryOptions({ client: client, query: query, options: options });
+    var fetchPolicy = watchQueryOptions.fetchPolicy, variables = watchQueryOptions.variables;
+    var _a = options.queryKey, queryKey = _a === void 0 ? [] : _a;
+    var cacheKey = (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__spreadArray */ .ev)([
+        query,
+        (0,_cache_index_js__WEBPACK_IMPORTED_MODULE_5__/* .canonicalStringify */ .B)(variables)
+    ], [].concat(queryKey), true);
+    var queryRef = suspenseCache.getQueryRef(cacheKey, function () {
+        return client.watchQuery(watchQueryOptions);
+    });
+    var _b = react__WEBPACK_IMPORTED_MODULE_0__.useState(function () { return new Map([[queryRef.key, queryRef.promise]]); }), promiseCache = _b[0], setPromiseCache = _b[1];
+    var promise = promiseCache.get(queryRef.key);
+    if (queryRef.didChangeOptions(watchQueryOptions)) {
+        promise = queryRef.applyOptions(watchQueryOptions);
+        promiseCache.set(queryRef.key, promise);
+    }
+    if (!promise) {
+        promise = queryRef.promise;
+        promiseCache.set(queryRef.key, promise);
+    }
+    react__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () {
+        var dispose = queryRef.retain();
+        var removeListener = queryRef.listen(function (promise) {
+            setPromiseCache(function (promiseCache) {
+                return new Map(promiseCache).set(queryRef.key, promise);
+            });
+        });
+        return function () {
+            removeListener();
+            dispose();
+        };
+    }, [queryRef]);
+    var skipResult = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
+        var error = toApolloError(queryRef.result);
+        return {
+            loading: false,
+            data: queryRef.result.data,
+            networkStatus: error ? _core_index_js__WEBPACK_IMPORTED_MODULE_6__/* .NetworkStatus */ .Ie.error : _core_index_js__WEBPACK_IMPORTED_MODULE_6__/* .NetworkStatus */ .Ie.ready,
+            error: error,
+        };
+    }, [queryRef.result]);
+    var result = fetchPolicy === "standby" ? skipResult : (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_7__/* .__use */ .$)(promise);
+    var fetchMore = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (options) {
+        var promise = queryRef.fetchMore(options);
+        setPromiseCache(function (previousPromiseCache) {
+            return new Map(previousPromiseCache).set(queryRef.key, queryRef.promise);
+        });
+        return promise;
+    }, [queryRef]);
+    var refetch = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (variables) {
+        var promise = queryRef.refetch(variables);
+        setPromiseCache(function (previousPromiseCache) {
+            return new Map(previousPromiseCache).set(queryRef.key, queryRef.promise);
+        });
+        return promise;
+    }, [queryRef]);
+    var subscribeToMore = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (options) { return queryRef.observable.subscribeToMore(options); }, [queryRef]);
+    return react__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
+        return {
+            client: client,
+            data: result.data,
+            error: toApolloError(result),
+            networkStatus: result.networkStatus,
+            fetchMore: fetchMore,
+            refetch: refetch,
+            subscribeToMore: subscribeToMore,
+        };
+    }, [client, fetchMore, refetch, result, subscribeToMore]);
+}
+function validateOptions(options) {
+    var query = options.query, fetchPolicy = options.fetchPolicy, returnPartialData = options.returnPartialData;
+    (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_8__/* .verifyDocumentType */ .Vp)(query, _parser_index_js__WEBPACK_IMPORTED_MODULE_8__/* .DocumentType */ .n_.Query);
+    validateFetchPolicy(fetchPolicy);
+    validatePartialDataReturn(fetchPolicy, returnPartialData);
+}
+function validateFetchPolicy(fetchPolicy) {
+    if (fetchPolicy === void 0) { fetchPolicy = "cache-first"; }
+    var supportedFetchPolicies = [
+        "cache-first",
+        "network-only",
+        "no-cache",
+        "cache-and-network",
+    ];
+    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .kG)(supportedFetchPolicies.includes(fetchPolicy), 54, fetchPolicy);
+}
+function validatePartialDataReturn(fetchPolicy, returnPartialData) {
+    if (fetchPolicy === "no-cache" && returnPartialData) {
+        globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .kG.warn(55);
+    }
+}
+function toApolloError(result) {
+    return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_9__/* .isNonEmptyArray */ .O)(result.errors)
+        ? new _core_index_js__WEBPACK_IMPORTED_MODULE_10__/* .ApolloError */ .cA({ graphQLErrors: result.errors })
+        : result.error;
+}
+function useWatchQueryOptions(_a) {
+    var client = _a.client, query = _a.query, options = _a.options;
+    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_11__/* .useDeepMemo */ .v)(function () {
+        var _a;
+        if (options === _constants_js__WEBPACK_IMPORTED_MODULE_12__/* .skipToken */ .C) {
+            return { query: query, fetchPolicy: "standby" };
+        }
+        var fetchPolicy = options.fetchPolicy ||
+            ((_a = client.defaultOptions.watchQuery) === null || _a === void 0 ? void 0 : _a.fetchPolicy) ||
+            "cache-first";
+        var watchQueryOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)({}, options), { fetchPolicy: fetchPolicy, query: query, notifyOnNetworkStatusChange: false, nextFetchPolicy: void 0 });
+        if (globalThis.__DEV__ !== false) {
+            validateOptions(watchQueryOptions);
+        }
+        if (options.skip) {
+            watchQueryOptions.fetchPolicy = "standby";
+        }
+        return watchQueryOptions;
+    }, [client, options, query]);
+}
+//# sourceMappingURL=useSuspenseQuery.js.map
+
+/***/ }),
+
 /***/ 9564:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
@@ -23540,7 +23277,7 @@ var react__WEBPACK_IMPORTED_MODULE_1___namespace_cache;
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   $: () => (/* binding */ useSyncExternalStore)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7294);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(320);
@@ -23551,38 +23288,41 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 var didWarnUncachedGetSnapshot = false;
 var uSESKey = "useSyncExternalStore";
 var realHook = /*#__PURE__*/ (react__WEBPACK_IMPORTED_MODULE_1___namespace_cache || (react__WEBPACK_IMPORTED_MODULE_1___namespace_cache = __webpack_require__.t(react__WEBPACK_IMPORTED_MODULE_1__, 2)))[uSESKey];
-var useSyncExternalStore = (/* runtime-dependent pure expression or super */ /^(33[45]|149|179|28|452)$/.test(__webpack_require__.j) ? (realHook || (function (subscribe, getSnapshot, getServerSnapshot) {
-    var value = getSnapshot();
-    if (__DEV__ &&
-        !didWarnUncachedGetSnapshot &&
-        value !== getSnapshot()) {
-        didWarnUncachedGetSnapshot = true;
-        __DEV__ && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.error('The result of getSnapshot should be cached to avoid an infinite loop');
-    }
-    var _a = react__WEBPACK_IMPORTED_MODULE_1__.useState({ inst: { value: value, getSnapshot: getSnapshot } }), inst = _a[0].inst, forceUpdate = _a[1];
-    if (_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .canUseLayoutEffect */ .JC) {
-        react__WEBPACK_IMPORTED_MODULE_1__.useLayoutEffect(function () {
-            Object.assign(inst, { value: value, getSnapshot: getSnapshot });
-            if (checkIfSnapshotChanged(inst)) {
-                forceUpdate({ inst: inst });
-            }
-        }, [subscribe, value, getSnapshot]);
-    }
-    else {
-        Object.assign(inst, { value: value, getSnapshot: getSnapshot });
-    }
-    react__WEBPACK_IMPORTED_MODULE_1__.useEffect(function () {
-        if (checkIfSnapshotChanged(inst)) {
-            forceUpdate({ inst: inst });
+var useSyncExternalStore = (/* runtime-dependent pure expression or super */ /^(33[45]|149|179|28|452)$/.test(__webpack_require__.j) ? (realHook ||
+    (function (subscribe, getSnapshot, getServerSnapshot) {
+        var value = getSnapshot();
+        if (globalThis.__DEV__ !== false &&
+            !didWarnUncachedGetSnapshot &&
+            value !== getSnapshot()) {
+            didWarnUncachedGetSnapshot = true;
+            globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.error(56);
         }
-        return subscribe(function handleStoreChange() {
+        var _a = react__WEBPACK_IMPORTED_MODULE_1__.useState({
+            inst: { value: value, getSnapshot: getSnapshot },
+        }), inst = _a[0].inst, forceUpdate = _a[1];
+        if (_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .canUseLayoutEffect */ .JC) {
+            react__WEBPACK_IMPORTED_MODULE_1__.useLayoutEffect(function () {
+                Object.assign(inst, { value: value, getSnapshot: getSnapshot });
+                if (checkIfSnapshotChanged(inst)) {
+                    forceUpdate({ inst: inst });
+                }
+            }, [subscribe, value, getSnapshot]);
+        }
+        else {
+            Object.assign(inst, { value: value, getSnapshot: getSnapshot });
+        }
+        react__WEBPACK_IMPORTED_MODULE_1__.useEffect(function () {
             if (checkIfSnapshotChanged(inst)) {
                 forceUpdate({ inst: inst });
             }
-        });
-    }, [subscribe]);
-    return value;
-})) : null);
+            return subscribe(function handleStoreChange() {
+                if (checkIfSnapshotChanged(inst)) {
+                    forceUpdate({ inst: inst });
+                }
+            });
+        }, [subscribe]);
+        return value;
+    })) : null);
 function checkIfSnapshotChanged(_a) {
     var value = _a.value, getSnapshot = _a.getSnapshot;
     try {
@@ -23601,22 +23341,27 @@ function checkIfSnapshotChanged(_a) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   $W: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.$W),
+/* harmony export */   $h: () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_5__.$),
+/* harmony export */   CN: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.CN),
 /* harmony export */   Db: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.Db),
-/* harmony export */   E2: () => (/* reexport safe */ _parser_index_js__WEBPACK_IMPORTED_MODULE_5__.E2),
+/* harmony export */   E2: () => (/* reexport safe */ _parser_index_js__WEBPACK_IMPORTED_MODULE_6__.E2),
+/* harmony export */   Jc: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.Jc),
 /* harmony export */   KZ: () => (/* reexport safe */ _context_index_js__WEBPACK_IMPORTED_MODULE_3__.K),
-/* harmony export */   ZV: () => (/* reexport safe */ _context_index_js__WEBPACK_IMPORTED_MODULE_3__.K),
+/* harmony export */   ZV: () => (/* reexport safe */ _context_index_js__WEBPACK_IMPORTED_MODULE_3__.Z),
+/* harmony export */   aK: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.aK),
 /* harmony export */   aM: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.aM),
 /* harmony export */   ab: () => (/* reexport safe */ _context_index_js__WEBPACK_IMPORTED_MODULE_2__.a),
 /* harmony export */   eT: () => (/* reexport safe */ _context_index_js__WEBPACK_IMPORTED_MODULE_1__.e),
+/* harmony export */   kJ: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.kJ),
 /* harmony export */   lY: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.lY),
 /* harmony export */   mU: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.mU),
-/* harmony export */   mw: () => (/* reexport safe */ _parser_index_js__WEBPACK_IMPORTED_MODULE_5__.mw),
-/* harmony export */   n_: () => (/* reexport safe */ _parser_index_js__WEBPACK_IMPORTED_MODULE_5__.n_),
+/* harmony export */   mw: () => (/* reexport safe */ _parser_index_js__WEBPACK_IMPORTED_MODULE_6__.mw),
+/* harmony export */   n_: () => (/* reexport safe */ _parser_index_js__WEBPACK_IMPORTED_MODULE_6__.n_),
 /* harmony export */   td: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.td),
+/* harmony export */   u7: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.u7),
 /* harmony export */   xJ: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.xJ)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _context_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3768);
 }
@@ -23630,8 +23375,12 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7604);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _parser_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4692);
+	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5003);
 }
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _parser_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(4692);
+}
+
 
 
 
@@ -23651,7 +23400,7 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 /* harmony export */   mw: () => (/* binding */ operationName),
 /* harmony export */   n_: () => (/* binding */ DocumentType)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 
 var DocumentType;
 (function (DocumentType) {
@@ -23664,13 +23413,13 @@ function operationName(type) {
     var name;
     switch (type) {
         case DocumentType.Query:
-            name = 'Query';
+            name = "Query";
             break;
         case DocumentType.Mutation:
-            name = 'Mutation';
+            name = "Mutation";
             break;
         case DocumentType.Subscription:
-            name = 'Subscription';
+            name = "Subscription";
             break;
     }
     return name;
@@ -23680,41 +23429,43 @@ function parser(document) {
     if (cached)
         return cached;
     var variables, type, name;
-    __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!!document && !!document.kind, "Argument of ".concat(document, " passed to parser was not a valid GraphQL ") +
-        "DocumentNode. You may need to use 'graphql-tag' or another method " +
-        "to convert your operation into a document") : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!!document && !!document.kind, 33);
+    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!!document && !!document.kind, 57, document);
     var fragments = [];
     var queries = [];
     var mutations = [];
     var subscriptions = [];
     for (var _i = 0, _a = document.definitions; _i < _a.length; _i++) {
         var x = _a[_i];
-        if (x.kind === 'FragmentDefinition') {
+        if (x.kind === "FragmentDefinition") {
             fragments.push(x);
             continue;
         }
-        if (x.kind === 'OperationDefinition') {
+        if (x.kind === "OperationDefinition") {
             switch (x.operation) {
-                case 'query':
+                case "query":
                     queries.push(x);
                     break;
-                case 'mutation':
+                case "mutation":
                     mutations.push(x);
                     break;
-                case 'subscription':
+                case "subscription":
                     subscriptions.push(x);
                     break;
             }
         }
     }
-    __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!fragments.length ||
-        (queries.length || mutations.length || subscriptions.length), "Passing only a fragment to 'graphql' is not yet supported. " +
-        "You must include a query, subscription or mutation as well") : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!fragments.length ||
-        (queries.length || mutations.length || subscriptions.length), 34);
-    __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(queries.length + mutations.length + subscriptions.length <= 1, "react-apollo only supports a query, subscription, or a mutation per HOC. " +
-        "".concat(document, " had ").concat(queries.length, " queries, ").concat(subscriptions.length, " ") +
-        "subscriptions and ".concat(mutations.length, " mutations. ") +
-        "You can use 'compose' to join multiple operation types to a component") : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(queries.length + mutations.length + subscriptions.length <= 1, 35);
+    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(!fragments.length ||
+        queries.length ||
+        mutations.length ||
+        subscriptions.length, 58);
+    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(
+        queries.length + mutations.length + subscriptions.length <= 1,
+        59,
+        document,
+        queries.length,
+        subscriptions.length,
+        mutations.length
+    );
     type = queries.length ? DocumentType.Query : DocumentType.Mutation;
     if (!queries.length && !mutations.length)
         type = DocumentType.Subscription;
@@ -23723,16 +23474,14 @@ function parser(document) {
         : mutations.length
             ? mutations
             : subscriptions;
-    __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(definitions.length === 1, "react-apollo only supports one definition per HOC. ".concat(document, " had ") +
-        "".concat(definitions.length, " definitions. ") +
-        "You can use 'compose' to join multiple operation types to a component") : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(definitions.length === 1, 36);
+    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(definitions.length === 1, 60, document, definitions.length);
     var definition = definitions[0];
     variables = definition.variableDefinitions || [];
-    if (definition.name && definition.name.kind === 'Name') {
+    if (definition.name && definition.name.kind === "Name") {
         name = definition.name.value;
     }
     else {
-        name = 'data';
+        name = "data";
     }
     var payload = { name: name, type: type, variables: variables };
     cache.set(document, payload);
@@ -23742,8 +23491,13 @@ function verifyDocumentType(document, type) {
     var operation = parser(document);
     var requiredOperationName = operationName(type);
     var usedOperationName = operationName(operation.type);
-    __DEV__ ? (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(operation.type === type, "Running a ".concat(requiredOperationName, " requires a graphql ") +
-        "".concat(requiredOperationName, ", but a ").concat(usedOperationName, " was used instead.")) : (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(operation.type === type, 37);
+    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(
+        operation.type === type,
+        61,
+        requiredOperationName,
+        requiredOperationName,
+        usedOperationName
+    );
 }
 //# sourceMappingURL=index.js.map
 
@@ -23777,7 +23531,7 @@ function isNonEmptyArray(value) {
 /* harmony export */   sy: () => (/* binding */ canUseWeakSet)
 /* harmony export */ });
 /* unused harmony export canUseDOM */
-/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 
 var canUseWeakMap = typeof WeakMap === 'function' &&
     (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .wY)(function () { return navigator.product; }) !== 'ReactNative';
@@ -23947,18 +23701,16 @@ function makeUniqueId(prefix) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   J: () => (/* binding */ maybeDeepFreeze)
 /* harmony export */ });
-/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _objects_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3154);
+	/* harmony import */ var _objects_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3154);
 }
-
 
 function deepFreeze(value) {
     var workSet = new Set([value]);
     workSet.forEach(function (obj) {
-        if ((0,_objects_js__WEBPACK_IMPORTED_MODULE_1__/* .isNonNullObject */ .s)(obj) && shallowFreeze(obj) === obj) {
+        if ((0,_objects_js__WEBPACK_IMPORTED_MODULE_0__/* .isNonNullObject */ .s)(obj) && shallowFreeze(obj) === obj) {
             Object.getOwnPropertyNames(obj).forEach(function (name) {
-                if ((0,_objects_js__WEBPACK_IMPORTED_MODULE_1__/* .isNonNullObject */ .s)(obj[name]))
+                if ((0,_objects_js__WEBPACK_IMPORTED_MODULE_0__/* .isNonNullObject */ .s)(obj[name]))
                     workSet.add(obj[name]);
             });
         }
@@ -23966,7 +23718,7 @@ function deepFreeze(value) {
     return value;
 }
 function shallowFreeze(obj) {
-    if (__DEV__ && !Object.isFrozen(obj)) {
+    if (globalThis.__DEV__ !== false && !Object.isFrozen(obj)) {
         try {
             Object.freeze(obj);
         }
@@ -23979,7 +23731,7 @@ function shallowFreeze(obj) {
     return obj;
 }
 function maybeDeepFreeze(obj) {
-    if (__DEV__) {
+    if (globalThis.__DEV__ !== false) {
         deepFreeze(obj);
     }
     return obj;
@@ -24095,7 +23847,7 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 function mergeOptions(defaults, options) {
     return (0,_compact_js__WEBPACK_IMPORTED_MODULE_0__/* .compact */ .o)(defaults, options, options.variables && {
-        variables: (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)({}, (defaults && defaults.variables)), options.variables),
+        variables: (0,_compact_js__WEBPACK_IMPORTED_MODULE_0__/* .compact */ .o)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)({}, (defaults && defaults.variables)), options.variables)),
     });
 }
 //# sourceMappingURL=mergeOptions.js.map
@@ -24109,8 +23861,15 @@ function mergeOptions(defaults, options) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   s: () => (/* binding */ isNonNullObject)
 /* harmony export */ });
+/* unused harmony export isPlainObject */
 function isNonNullObject(obj) {
     return obj !== null && typeof obj === 'object';
+}
+function isPlainObject(obj) {
+    return (obj !== null &&
+        typeof obj === 'object' &&
+        (Object.getPrototypeOf(obj) === Object.prototype ||
+            Object.getPrototypeOf(obj) === null));
 }
 //# sourceMappingURL=objects.js.map
 
@@ -24155,23 +23914,48 @@ function isNodeReadableStream(value) {
 
 /***/ }),
 
-/***/ 846:
+/***/ 3887:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   v: () => (/* binding */ stringifyForDisplay)
+/* harmony export */ });
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _makeUniqueId_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(897);
+}
+
+function stringifyForDisplay(value, space) {
+    if (space === void 0) { space = 0; }
+    var undefId = (0,_makeUniqueId_js__WEBPACK_IMPORTED_MODULE_0__/* .makeUniqueId */ .X)("stringifyForDisplay");
+    return JSON.stringify(value, function (key, value) {
+        return value === void 0 ? undefId : value;
+    }, space).split(JSON.stringify(undefId)).join("<undefined>");
+}
+//# sourceMappingURL=stringifyForDisplay.js.map
+
+/***/ }),
+
+/***/ 6961:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  Rk: () => (/* reexport */ DEV),
-  ej: () => (/* reexport */ invariant/* InvariantError */.ej),
-  kG: () => (/* reexport */ invariant/* invariant */.kG),
-  wY: () => (/* reexport */ maybe)
+  kG: () => (/* reexport */ invariant),
+  wY: () => (/* reexport */ maybe),
+  _K: () => (/* reexport */ newInvariantError)
 });
 
-// UNUSED EXPORTS: checkDEV, global
+// UNUSED EXPORTS: DEV, InvariantError, __DEV__, global
 
+// EXTERNAL MODULE: ./node_modules/tslib/tslib.es6.mjs
+var tslib_es6 = __webpack_require__(7582);
 // EXTERNAL MODULE: ./node_modules/ts-invariant/lib/invariant.js
-var invariant = __webpack_require__(6128);
+var lib_invariant = __webpack_require__(6128);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/version.js
+var version = __webpack_require__(9379);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/utilities/globals/maybe.js
 function maybe(thunk) {
     try {
@@ -24187,104 +23971,153 @@ function maybe(thunk) {
     maybe(function () { return self; }) ||
     maybe(function () { return global; }) || maybe(function () { return maybe.constructor("return this")(); }));
 //# sourceMappingURL=global.js.map
-;// CONCATENATED MODULE: ./node_modules/@apollo/client/utilities/globals/DEV.js
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/stringifyForDisplay.js
+var stringifyForDisplay = __webpack_require__(3887);
+;// CONCATENATED MODULE: ./node_modules/@apollo/client/utilities/globals/invariantWrappers.js
 
 
-var __ = "__";
-var GLOBAL_KEY = [__, __].join("DEV");
-function getDEV() {
-    try {
-        return Boolean(__DEV__);
-    }
-    catch (_a) {
-        Object.defineProperty(globals_global, GLOBAL_KEY, {
-            value: maybe(function () { return "production"; }) !== "production",
-            enumerable: false,
-            configurable: true,
-            writable: true,
-        });
-        return globals_global[GLOBAL_KEY];
-    }
+
+
+
+function wrap(fn) {
+    return function (message) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        fn.apply(void 0, (0,tslib_es6/* __spreadArray */.ev)([typeof message === "number" ? getErrorMsg(message) : message], args, false));
+    };
 }
-/* harmony default export */ const DEV = (getDEV());
-//# sourceMappingURL=DEV.js.map
-;// CONCATENATED MODULE: ./node_modules/ts-invariant/process/index.js
-function process_maybe(thunk) {
-  try { return thunk() } catch (_) {}
+var invariant = Object.assign(function invariant(condition, message) {
+    var args = [];
+    for (var _i = 2; _i < arguments.length; _i++) {
+        args[_i - 2] = arguments[_i];
+    }
+    if (!condition) {
+        (0,lib_invariant/* invariant */.kG)(condition, getErrorMsg(message, args));
+    }
+}, {
+    debug: wrap(lib_invariant/* invariant */.kG.debug),
+    log: wrap(lib_invariant/* invariant */.kG.log),
+    warn: wrap(lib_invariant/* invariant */.kG.warn),
+    error: wrap(lib_invariant/* invariant */.kG.error),
+});
+function newInvariantError(message) {
+    var optionalParams = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        optionalParams[_i - 1] = arguments[_i];
+    }
+    return new lib_invariant/* InvariantError */.ej(getErrorMsg(message, optionalParams));
 }
-
-var safeGlobal = (
-  process_maybe(function() { return globalThis }) ||
-  process_maybe(function() { return window }) ||
-  process_maybe(function() { return self }) ||
-  process_maybe(function() { return global }) ||
-  // We don't expect the Function constructor ever to be invoked at runtime, as
-  // long as at least one of globalThis, window, self, or global is defined, so
-  // we are under no obligation to make it easy for static analysis tools to
-  // detect syntactic usage of the Function constructor. If you think you can
-  // improve your static analysis to detect this obfuscation, think again. This
-  // is an arms race you cannot win, at least not in JavaScript.
-  process_maybe(function() { return process_maybe.constructor("return this")() })
-);
-
-var needToRemove = false;
-
-function install() {
-  if (safeGlobal &&
-      !process_maybe(function() { return "production" }) &&
-      !process_maybe(function() { return process })) {
-    Object.defineProperty(safeGlobal, "process", {
-      value: {
-        env: {
-          // This default needs to be "production" instead of "development", to
-          // avoid the problem https://github.com/graphql/graphql-js/pull/2894
-          // will eventually solve, once merged and released.
-          NODE_ENV: "production",
-        },
-      },
-      // Let anyone else change global.process as they see fit, but hide it from
-      // Object.keys(global) enumeration.
-      configurable: true,
-      enumerable: false,
-      writable: true,
+var ApolloErrorMessageHandler = Symbol.for("ApolloErrorMessageHandler_" + version/* version */.i);
+function getErrorMsg(message, messageArgs) {
+    if (messageArgs === void 0) { messageArgs = []; }
+    if (!message)
+        return;
+    var args = messageArgs.map(function (arg) {
+        return typeof arg == "string" ? arg : (0,stringifyForDisplay/* stringifyForDisplay */.v)(arg, 2).slice(0, 1000);
     });
-    needToRemove = true;
-  }
+    return ((globals_global[ApolloErrorMessageHandler] &&
+        globals_global[ApolloErrorMessageHandler](message, args)) ||
+        "An error occured! For more details, see the full error text at https://go.apollo.dev/c/err#".concat(encodeURIComponent(JSON.stringify({
+            version: version/* version */.i,
+            message: message,
+            args: args,
+        }))));
 }
 
-// Call install() at least once, when this module is imported.
-install();
-
-function remove() {
-  if (needToRemove) {
-    delete safeGlobal.process;
-    needToRemove = false;
-  }
-}
-
-// EXTERNAL MODULE: ./node_modules/graphql/language/source.mjs
-var source = __webpack_require__(7926);
-;// CONCATENATED MODULE: ./node_modules/@apollo/client/utilities/globals/fix-graphql.js
-
-
-function removeTemporaryGlobals() {
-    return typeof source/* Source */.H === "function" ? remove() : remove();
-}
-//# sourceMappingURL=fix-graphql.js.map
+//# sourceMappingURL=invariantWrappers.js.map
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/utilities/globals/index.js
 
 
 
-function checkDEV() {
-    __DEV__ ? (0,invariant/* invariant */.kG)("boolean" === typeof DEV, DEV) : (0,invariant/* invariant */.kG)("boolean" === typeof DEV, 39);
-}
 
-removeTemporaryGlobals();
+var DEV = globalThis.__DEV__ !== false;
 
-
-
-checkDEV();
 //# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 8056:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (/* binding */ DocumentTransform)
+/* harmony export */ });
+/* harmony import */ var _wry_trie__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5028);
+/* harmony import */ var _common_canUse_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(320);
+/* harmony import */ var _getFromAST_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6765);
+/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6961);
+
+
+
+
+function identity(document) {
+    return document;
+}
+var DocumentTransform = (function () {
+    function DocumentTransform(transform, options) {
+        if (options === void 0) { options = Object.create(null); }
+        this.resultCache = _common_canUse_js__WEBPACK_IMPORTED_MODULE_2__/* .canUseWeakSet */ .sy
+            ? new WeakSet()
+            : new Set();
+        this.transform = transform;
+        if (options.getCacheKey) {
+            this.getCacheKey = options.getCacheKey;
+        }
+        if (options.cache !== false) {
+            this.stableCacheKeys = new _wry_trie__WEBPACK_IMPORTED_MODULE_0__/* .Trie */ .B(_common_canUse_js__WEBPACK_IMPORTED_MODULE_2__/* .canUseWeakMap */ .mr, function (key) { return ({ key: key }); });
+        }
+    }
+    DocumentTransform.prototype.getCacheKey = function (document) {
+        return [document];
+    };
+    DocumentTransform.identity = function () {
+        return new DocumentTransform(identity, { cache: false });
+    };
+    DocumentTransform.split = function (predicate, left, right) {
+        if (right === void 0) { right = DocumentTransform.identity(); }
+        return new DocumentTransform(function (document) {
+            var documentTransform = predicate(document) ? left : right;
+            return documentTransform.transformDocument(document);
+        }, { cache: false });
+    };
+    DocumentTransform.prototype.transformDocument = function (document) {
+        if (this.resultCache.has(document)) {
+            return document;
+        }
+        var cacheEntry = this.getStableCacheEntry(document);
+        if (cacheEntry && cacheEntry.value) {
+            return cacheEntry.value;
+        }
+        (0,_getFromAST_js__WEBPACK_IMPORTED_MODULE_3__/* .checkDocument */ .A$)(document);
+        var transformedDocument = this.transform(document);
+        this.resultCache.add(transformedDocument);
+        if (cacheEntry) {
+            cacheEntry.value = transformedDocument;
+        }
+        return transformedDocument;
+    };
+    DocumentTransform.prototype.concat = function (otherTransform) {
+        var _this = this;
+        return new DocumentTransform(function (document) {
+            return otherTransform.transformDocument(_this.transformDocument(document));
+        }, { cache: false });
+    };
+    DocumentTransform.prototype.getStableCacheEntry = function (document) {
+        if (!this.stableCacheKeys)
+            return;
+        var cacheKeys = this.getCacheKey(document);
+        if (cacheKeys) {
+            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .kG)(Array.isArray(cacheKeys), 63);
+            return this.stableCacheKeys.lookupArray(cacheKeys);
+        }
+    };
+    return DocumentTransform;
+}());
+
+//# sourceMappingURL=DocumentTransform.js.map
 
 /***/ }),
 
@@ -24298,7 +24131,7 @@ checkDEV();
 /* harmony export */   mj: () => (/* binding */ hasClientExports)
 /* harmony export */ });
 /* unused harmony exports getDirectiveNames, hasAnyDirectives, hasAllDirectives, getInclusionDirectives */
-/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7304);
 }
@@ -24314,7 +24147,7 @@ function shouldInclude(_a, variables) {
         var evaledValue = false;
         if (ifArgument.value.kind === 'Variable') {
             evaledValue = variables && variables[ifArgument.value.name.value];
-            __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(evaledValue !== void 0, "Invalid variable referenced in @".concat(directive.name.value, " directive.")) : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(evaledValue !== void 0, 40);
+            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(evaledValue !== void 0, 64, directive.name.value);
         }
         else {
             evaledValue = ifArgument.value.value;
@@ -24361,13 +24194,12 @@ function getInclusionDirectives(directives) {
                 return;
             var directiveArguments = directive.arguments;
             var directiveName = directive.name.value;
-            __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(directiveArguments && directiveArguments.length === 1, "Incorrect number of arguments for the @".concat(directiveName, " directive.")) : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(directiveArguments && directiveArguments.length === 1, 41);
+            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(directiveArguments && directiveArguments.length === 1, 65, directiveName);
             var ifArgument = directiveArguments[0];
-            __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(ifArgument.name && ifArgument.name.value === 'if', "Invalid argument for the @".concat(directiveName, " directive.")) : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(ifArgument.name && ifArgument.name.value === 'if', 42);
+            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(ifArgument.name && ifArgument.name.value === 'if', 66, directiveName);
             var ifValue = ifArgument.value;
-            __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(ifValue &&
-                (ifValue.kind === 'Variable' || ifValue.kind === 'BooleanValue'), "Argument for the @".concat(directiveName, " directive must be a variable or a boolean value.")) : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(ifValue &&
-                (ifValue.kind === 'Variable' || ifValue.kind === 'BooleanValue'), 43);
+            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(ifValue &&
+                (ifValue.kind === 'Variable' || ifValue.kind === 'BooleanValue'), 67, directiveName);
             result.push({ directive: directive, ifArgument: ifArgument });
         });
     }
@@ -24389,7 +24221,7 @@ function getInclusionDirectives(directives) {
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7582);
 }
-/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 
 
 function getFragmentQueryDocument(document, fragmentName) {
@@ -24397,15 +24229,18 @@ function getFragmentQueryDocument(document, fragmentName) {
     var fragments = [];
     document.definitions.forEach(function (definition) {
         if (definition.kind === 'OperationDefinition') {
-            throw __DEV__ ? new _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej("Found a ".concat(definition.operation, " operation").concat(definition.name ? " named '".concat(definition.name.value, "'") : '', ". ") +
-                'No operations are allowed when using a fragment as a query. Only fragments are allowed.') : new _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej(44);
+            throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ ._K)(
+                68,
+                definition.operation,
+                definition.name ? " named '".concat(definition.name.value, "'") : ''
+            );
         }
         if (definition.kind === 'FragmentDefinition') {
             fragments.push(definition);
         }
     });
     if (typeof actualFragmentName === 'undefined') {
-        __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragments.length === 1, "Found ".concat(fragments.length, " fragments. `fragmentName` must be provided when there is not exactly 1 fragment.")) : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragments.length === 1, 45);
+        (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragments.length === 1, 69, fragments.length);
         actualFragmentName = fragments[0].name.value;
     }
     var query = (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)({}, document), { definitions: (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__spreadArray */ .ev)([
@@ -24446,7 +24281,7 @@ function getFragmentFromSelection(selection, fragmentMap) {
                 return fragmentMap(fragmentName);
             }
             var fragment = fragmentMap && fragmentMap[fragmentName];
-            __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragment, "No fragment named ".concat(fragmentName)) : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragment, 46);
+            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragment, 70, fragmentName);
             return fragment || null;
         }
         default:
@@ -24471,23 +24306,23 @@ function getFragmentFromSelection(selection, fragmentMap) {
 /* harmony export */   pD: () => (/* binding */ getFragmentDefinition),
 /* harmony export */   rY: () => (/* binding */ getOperationName)
 /* harmony export */ });
-/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _storeUtils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1761);
 }
 
 
 function checkDocument(doc) {
-    __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc && doc.kind === 'Document', "Expecting a parsed GraphQL document. Perhaps you need to wrap the query string in a \"gql\" tag? http://docs.apollostack.com/apollo-client/core.html#gql") : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc && doc.kind === 'Document', 47);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc && doc.kind === 'Document', 71);
     var operations = doc.definitions
         .filter(function (d) { return d.kind !== 'FragmentDefinition'; })
         .map(function (definition) {
         if (definition.kind !== 'OperationDefinition') {
-            throw __DEV__ ? new _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej("Schema type definitions not allowed in queries. Found: \"".concat(definition.kind, "\"")) : new _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej(48);
+            throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ ._K)(72, definition.kind);
         }
         return definition;
     });
-    __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(operations.length <= 1, "Ambiguous GraphQL document: contains ".concat(operations.length, " operations")) : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(operations.length <= 1, 49);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(operations.length <= 1, 73, operations.length);
     return doc;
 }
 function getOperationDefinition(doc) {
@@ -24510,14 +24345,14 @@ function getFragmentDefinitions(doc) {
 }
 function getQueryDefinition(doc) {
     var queryDef = getOperationDefinition(doc);
-    __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(queryDef && queryDef.operation === 'query', 'Must contain a query definition.') : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(queryDef && queryDef.operation === 'query', 50);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(queryDef && queryDef.operation === 'query', 74);
     return queryDef;
 }
 function getFragmentDefinition(doc) {
-    __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc.kind === 'Document', "Expecting a parsed GraphQL document. Perhaps you need to wrap the query string in a \"gql\" tag? http://docs.apollostack.com/apollo-client/core.html#gql") : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc.kind === 'Document', 51);
-    __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc.definitions.length <= 1, 'Fragment must have exactly one definition.') : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc.definitions.length <= 1, 52);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc.kind === 'Document', 75);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc.definitions.length <= 1, 76);
     var fragmentDef = doc.definitions[0];
-    __DEV__ ? (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragmentDef.kind === 'FragmentDefinition', 'Must be a fragment definition.') : (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragmentDef.kind === 'FragmentDefinition', 53);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragmentDef.kind === 'FragmentDefinition', 77);
     return fragmentDef;
 }
 function getMainDefinition(queryDoc) {
@@ -24540,7 +24375,7 @@ function getMainDefinition(queryDoc) {
     if (fragmentDefinition) {
         return fragmentDefinition;
     }
-    throw __DEV__ ? new _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej('Expected a parsed GraphQL query with a query, mutation, subscription, or a fragment.') : new _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej(54);
+    throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ ._K)(78);
 }
 function getDefaultValues(definition) {
     var defaultValues = Object.create(null);
@@ -24555,6 +24390,33 @@ function getDefaultValues(definition) {
     return defaultValues;
 }
 //# sourceMappingURL=getFromAST.js.map
+
+/***/ }),
+
+/***/ 8470:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   S: () => (/* binding */ print)
+/* harmony export */ });
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3486);
+}
+/* harmony import */ var _common_canUse_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(320);
+
+
+var printCache = _common_canUse_js__WEBPACK_IMPORTED_MODULE_0__/* .canUseWeakMap */ .mr ? new WeakMap() : undefined;
+var print = function (ast) {
+    var result;
+    result = printCache === null || printCache === void 0 ? void 0 : printCache.get(ast);
+    if (!result) {
+        result = (0,graphql__WEBPACK_IMPORTED_MODULE_1__/* .print */ .S)(ast);
+        printCache === null || printCache === void 0 ? void 0 : printCache.set(ast, result);
+    }
+    return result;
+};
+//# sourceMappingURL=print.js.map
 
 /***/ }),
 
@@ -24575,7 +24437,7 @@ function getDefaultValues(definition) {
 /* harmony export */   vb: () => (/* binding */ valueToObjectRepresentation),
 /* harmony export */   vf: () => (/* binding */ storeKeyNameFromField)
 /* harmony export */ });
-/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 /* harmony import */ var _common_objects_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3154);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _fragments_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3361);
@@ -24653,9 +24515,7 @@ function valueToObjectRepresentation(argObj, name, value, variables) {
         argObj[name.value] = null;
     }
     else {
-        throw __DEV__ ? new _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej("The inline argument \"".concat(name.value, "\" of kind \"").concat(value.kind, "\"") +
-            'is not supported. Use variables instead of inline arguments to ' +
-            'overcome this limitation.') : new _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .ej(55);
+        throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ ._K)(79, name.value, value.kind);
     }
 }
 function storeKeyNameFromField(field, variables) {
@@ -24689,6 +24549,7 @@ var KNOWN_DIRECTIVES = [
     'client',
     'rest',
     'export',
+    'nonreactive',
 ];
 var getStoreKeyName = Object.assign(function (fieldName, args, directives) {
     if (args &&
@@ -24806,14 +24667,14 @@ function isInlineFragment(selection) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Fo: () => (/* binding */ removeConnectionDirectiveFromDocument),
 /* harmony export */   Gw: () => (/* binding */ addTypenameToDocument),
 /* harmony export */   aL: () => (/* binding */ buildQueryFromSelectionSet),
+/* harmony export */   bi: () => (/* binding */ removeDirectivesFromDocument),
 /* harmony export */   ob: () => (/* binding */ removeClientSetsFromDocument)
 /* harmony export */ });
-/* unused harmony exports removeDirectivesFromDocument, removeArgumentsFromDocument, removeFragmentSpreadFromDocument */
+/* unused harmony exports removeConnectionDirectiveFromDocument, removeArgumentsFromDocument, removeFragmentSpreadFromDocument */
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(7582);
-/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(846);
+/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 /* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7359);
 /* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(7304);
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
@@ -24849,19 +24710,30 @@ function nullIfDocIsEmpty(doc) {
         ? null
         : doc;
 }
-function getDirectiveMatcher(directives) {
-    var nameSet = new Set();
-    var tests = [];
-    directives.forEach(function (directive) {
-        if (directive.name) {
-            nameSet.add(directive.name);
-        }
-        else if (directive.test) {
-            tests.push(directive.test);
+function getDirectiveMatcher(configs) {
+    var names = new Map();
+    var tests = new Map();
+    configs.forEach(function (directive) {
+        if (directive) {
+            if (directive.name) {
+                names.set(directive.name, directive);
+            }
+            else if (directive.test) {
+                tests.set(directive.test, directive);
+            }
         }
     });
-    return function (directive) { return (nameSet.has(directive.name.value) ||
-        tests.some(function (test) { return test(directive); })); };
+    return function (directive) {
+        var config = names.get(directive.name.value);
+        if (!config && tests.size) {
+            tests.forEach(function (testConfig, test) {
+                if (test(directive)) {
+                    config = testConfig;
+                }
+            });
+        }
+        return config;
+    };
 }
 function makeInUseGetterFunction(defaultKey) {
     var map = new Map();
@@ -24878,6 +24750,7 @@ function makeInUseGetterFunction(defaultKey) {
     };
 }
 function removeDirectivesFromDocument(directives, doc) {
+    (0,_getFromAST_js__WEBPACK_IMPORTED_MODULE_2__/* .checkDocument */ .A$)(doc);
     var getInUseByOperationName = makeInUseGetterFunction("");
     var getInUseByFragmentName = makeInUseGetterFunction("");
     var getInUse = function (ancestors) {
@@ -24891,7 +24764,7 @@ function removeDirectivesFromDocument(directives, doc) {
                 return getInUseByFragmentName(ancestor.name.value);
             }
         }
-        __DEV__ && _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.error("Could not find operation or fragment");
+        globalThis.__DEV__ !== false && _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.error(80);
         return null;
     };
     var operationCount = 0;
@@ -24901,10 +24774,8 @@ function removeDirectivesFromDocument(directives, doc) {
         }
     }
     var directiveMatcher = getDirectiveMatcher(directives);
-    var hasRemoveDirective = directives.some(function (directive) { return directive.remove; });
-    var shouldRemoveField = function (nodeDirectives) { return (hasRemoveDirective &&
-        nodeDirectives &&
-        nodeDirectives.some(directiveMatcher)); };
+    var shouldRemoveField = function (nodeDirectives) { return ((0,_common_arrays_js__WEBPACK_IMPORTED_MODULE_4__/* .isNonEmptyArray */ .O)(nodeDirectives) &&
+        nodeDirectives.map(directiveMatcher).some(function (config) { return config && config.remove; })); };
     var originalFragmentDefsByPath = new Map();
     var firstVisitMadeChanges = false;
     var fieldOrInlineFragmentVisitor = {
@@ -25069,15 +24940,14 @@ var connectionRemoveConfig = {
         if (willRemove) {
             if (!directive.arguments ||
                 !directive.arguments.some(function (arg) { return arg.name.value === 'key'; })) {
-                __DEV__ && _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn('Removing an @connection directive even though it does not have a key. ' +
-                    'You may want to use the key parameter to specify a store key.');
+                globalThis.__DEV__ !== false && _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn(81);
             }
         }
         return willRemove;
     },
 };
 function removeConnectionDirectiveFromDocument(doc) {
-    return removeDirectivesFromDocument([connectionRemoveConfig], (0,_getFromAST_js__WEBPACK_IMPORTED_MODULE_2__/* .checkDocument */ .A$)(doc));
+    return removeDirectivesFromDocument([connectionRemoveConfig], checkDocument(doc));
 }
 function hasDirectivesInSelectionSet(directives, selectionSet, nestedCheck) {
     if (nestedCheck === void 0) { nestedCheck = true; }
@@ -25229,6 +25099,588 @@ function fixObservableSubclass(subclass) {
     return subclass;
 }
 //# sourceMappingURL=subclassing.js.map
+
+/***/ }),
+
+/***/ 1704:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Bd: () => (/* binding */ wrapPromiseWithState),
+/* harmony export */   Ld: () => (/* binding */ createRejectedPromise),
+/* harmony export */   OP: () => (/* binding */ createFulfilledPromise)
+/* harmony export */ });
+/* unused harmony export isStatefulPromise */
+function createFulfilledPromise(value) {
+    var promise = Promise.resolve(value);
+    promise.status = "fulfilled";
+    promise.value = value;
+    return promise;
+}
+function createRejectedPromise(reason) {
+    var promise = Promise.reject(reason);
+    promise.catch(function () { });
+    promise.status = "rejected";
+    promise.reason = reason;
+    return promise;
+}
+function isStatefulPromise(promise) {
+    return "status" in promise;
+}
+function wrapPromiseWithState(promise) {
+    if (isStatefulPromise(promise)) {
+        return promise;
+    }
+    var pendingPromise = promise;
+    pendingPromise.status = "pending";
+    pendingPromise.then(function (value) {
+        if (pendingPromise.status === "pending") {
+            var fulfilledPromise = pendingPromise;
+            fulfilledPromise.status = "fulfilled";
+            fulfilledPromise.value = value;
+        }
+    }, function (reason) {
+        if (pendingPromise.status === "pending") {
+            var rejectedPromise = pendingPromise;
+            rejectedPromise.status = "rejected";
+            rejectedPromise.reason = reason;
+        }
+    });
+    return promise;
+}
+//# sourceMappingURL=decoration.js.map
+
+/***/ }),
+
+/***/ 9379:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   i: () => (/* binding */ version)
+/* harmony export */ });
+var version = '3.8.0';
+//# sourceMappingURL=version.js.map
+
+/***/ }),
+
+/***/ 2455:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  g7: () => (/* reexport */ Slot)
+});
+
+// UNUSED EXPORTS: asyncFromGen, bind, noContext, setTimeout, wrapYieldingFiberMethods
+
+;// CONCATENATED MODULE: ./node_modules/@wry/context/lib/slot.js
+// This currentContext variable will only be used if the makeSlotClass
+// function is called, which happens only if this is the first copy of the
+// @wry/context package to be imported.
+let currentContext = null;
+// This unique internal object is used to denote the absence of a value
+// for a given Slot, and is never exposed to outside code.
+const MISSING_VALUE = {};
+let idCounter = 1;
+// Although we can't do anything about the cost of duplicated code from
+// accidentally bundling multiple copies of the @wry/context package, we can
+// avoid creating the Slot class more than once using makeSlotClass.
+const makeSlotClass = () => class Slot {
+    constructor() {
+        // If you have a Slot object, you can find out its slot.id, but you cannot
+        // guess the slot.id of a Slot you don't have access to, thanks to the
+        // randomized suffix.
+        this.id = [
+            "slot",
+            idCounter++,
+            Date.now(),
+            Math.random().toString(36).slice(2),
+        ].join(":");
+    }
+    hasValue() {
+        for (let context = currentContext; context; context = context.parent) {
+            // We use the Slot object iself as a key to its value, which means the
+            // value cannot be obtained without a reference to the Slot object.
+            if (this.id in context.slots) {
+                const value = context.slots[this.id];
+                if (value === MISSING_VALUE)
+                    break;
+                if (context !== currentContext) {
+                    // Cache the value in currentContext.slots so the next lookup will
+                    // be faster. This caching is safe because the tree of contexts and
+                    // the values of the slots are logically immutable.
+                    currentContext.slots[this.id] = value;
+                }
+                return true;
+            }
+        }
+        if (currentContext) {
+            // If a value was not found for this Slot, it's never going to be found
+            // no matter how many times we look it up, so we might as well cache
+            // the absence of the value, too.
+            currentContext.slots[this.id] = MISSING_VALUE;
+        }
+        return false;
+    }
+    getValue() {
+        if (this.hasValue()) {
+            return currentContext.slots[this.id];
+        }
+    }
+    withValue(value, callback, 
+    // Given the prevalence of arrow functions, specifying arguments is likely
+    // to be much more common than specifying `this`, hence this ordering:
+    args, thisArg) {
+        const slots = {
+            __proto__: null,
+            [this.id]: value,
+        };
+        const parent = currentContext;
+        currentContext = { parent, slots };
+        try {
+            // Function.prototype.apply allows the arguments array argument to be
+            // omitted or undefined, so args! is fine here.
+            return callback.apply(thisArg, args);
+        }
+        finally {
+            currentContext = parent;
+        }
+    }
+    // Capture the current context and wrap a callback function so that it
+    // reestablishes the captured context when called.
+    static bind(callback) {
+        const context = currentContext;
+        return function () {
+            const saved = currentContext;
+            try {
+                currentContext = context;
+                return callback.apply(this, arguments);
+            }
+            finally {
+                currentContext = saved;
+            }
+        };
+    }
+    // Immediately run a callback function without any captured context.
+    static noContext(callback, 
+    // Given the prevalence of arrow functions, specifying arguments is likely
+    // to be much more common than specifying `this`, hence this ordering:
+    args, thisArg) {
+        if (currentContext) {
+            const saved = currentContext;
+            try {
+                currentContext = null;
+                // Function.prototype.apply allows the arguments array argument to be
+                // omitted or undefined, so args! is fine here.
+                return callback.apply(thisArg, args);
+            }
+            finally {
+                currentContext = saved;
+            }
+        }
+        else {
+            return callback.apply(thisArg, args);
+        }
+    }
+};
+function maybe(fn) {
+    try {
+        return fn();
+    }
+    catch (ignored) { }
+}
+// We store a single global implementation of the Slot class as a permanent
+// non-enumerable property of the globalThis object. This obfuscation does
+// nothing to prevent access to the Slot class, but at least it ensures the
+// implementation (i.e. currentContext) cannot be tampered with, and all copies
+// of the @wry/context package (hopefully just one) will share the same Slot
+// implementation. Since the first copy of the @wry/context package to be
+// imported wins, this technique imposes a steep cost for any future breaking
+// changes to the Slot class.
+const globalKey = "@wry/context:Slot";
+const host = 
+// Prefer globalThis when available.
+// https://github.com/benjamn/wryware/issues/347
+maybe(() => globalThis) ||
+    // Fall back to global, which works in Node.js and may be converted by some
+    // bundlers to the appropriate identifier (window, self, ...) depending on the
+    // bundling target. https://github.com/endojs/endo/issues/576#issuecomment-1178515224
+    maybe(() => global) ||
+    // Otherwise, use a dummy host that's local to this module. We used to fall
+    // back to using the Array constructor as a namespace, but that was flagged in
+    // https://github.com/benjamn/wryware/issues/347, and can be avoided.
+    Object.create(null);
+// Whichever globalHost we're using, make TypeScript happy about the additional
+// globalKey property.
+const globalHost = host;
+const Slot = globalHost[globalKey] ||
+    // Earlier versions of this package stored the globalKey property on the Array
+    // constructor, so we check there as well, to prevent Slot class duplication.
+    Array[globalKey] ||
+    (function (Slot) {
+        try {
+            Object.defineProperty(globalHost, globalKey, {
+                value: Slot,
+                enumerable: false,
+                writable: false,
+                // When it was possible for globalHost to be the Array constructor (a
+                // legacy Slot dedup strategy), it was important for the property to be
+                // configurable:true so it could be deleted. That does not seem to be as
+                // important when globalHost is the global object, but I don't want to
+                // cause similar problems again, and configurable:true seems safest.
+                // https://github.com/endojs/endo/issues/576#issuecomment-1178274008
+                configurable: true
+            });
+        }
+        finally {
+            return Slot;
+        }
+    })(makeSlotClass());
+//# sourceMappingURL=slot.js.map
+;// CONCATENATED MODULE: ./node_modules/@wry/context/lib/index.js
+
+
+const { bind, noContext } = Slot;
+// Like global.setTimeout, except the callback runs with captured context.
+
+function setTimeoutWithContext(callback, delay) {
+    return setTimeout(bind(callback), delay);
+}
+// Turn any generator function into an async function (using yield instead
+// of await), with context automatically preserved across yields.
+function asyncFromGen(genFn) {
+    return function () {
+        const gen = genFn.apply(this, arguments);
+        const boundNext = bind(gen.next);
+        const boundThrow = bind(gen.throw);
+        return new Promise((resolve, reject) => {
+            function invoke(method, argument) {
+                try {
+                    var result = method.call(gen, argument);
+                }
+                catch (error) {
+                    return reject(error);
+                }
+                const next = result.done ? resolve : invokeNext;
+                if (isPromiseLike(result.value)) {
+                    result.value.then(next, result.done ? reject : invokeThrow);
+                }
+                else {
+                    next(result.value);
+                }
+            }
+            const invokeNext = (value) => invoke(boundNext, value);
+            const invokeThrow = (error) => invoke(boundThrow, error);
+            invokeNext();
+        });
+    };
+}
+function isPromiseLike(value) {
+    return value && typeof value.then === "function";
+}
+// If you use the fibers npm package to implement coroutines in Node.js,
+// you should call this function at least once to ensure context management
+// remains coherent across any yields.
+const wrappedFibers = (/* unused pure expression or super */ null && ([]));
+function wrapYieldingFiberMethods(Fiber) {
+    // There can be only one implementation of Fiber per process, so this array
+    // should never grow longer than one element.
+    if (wrappedFibers.indexOf(Fiber) < 0) {
+        const wrap = (obj, method) => {
+            const fn = obj[method];
+            obj[method] = function () {
+                return noContext(fn, arguments, this);
+            };
+        };
+        // These methods can yield, according to
+        // https://github.com/laverdet/node-fibers/blob/ddebed9b8ae3883e57f822e2108e6943e5c8d2a8/fibers.js#L97-L100
+        wrap(Fiber, "yield");
+        wrap(Fiber.prototype, "run");
+        wrap(Fiber.prototype, "throwInto");
+        wrappedFibers.push(Fiber);
+    }
+    return Fiber;
+}
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 20:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   D: () => (/* binding */ equal),
+/* harmony export */   Z: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+const { toString, hasOwnProperty } = Object.prototype;
+const fnToStr = Function.prototype.toString;
+const previousComparisons = new Map();
+/**
+ * Performs a deep equality check on two JavaScript values, tolerating cycles.
+ */
+function equal(a, b) {
+    try {
+        return check(a, b);
+    }
+    finally {
+        previousComparisons.clear();
+    }
+}
+// Allow default imports as well.
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((/* runtime-dependent pure expression or super */ /^(33[45]|149|179|28|452)$/.test(__webpack_require__.j) ? (equal) : null));
+function check(a, b) {
+    // If the two values are strictly equal, our job is easy.
+    if (a === b) {
+        return true;
+    }
+    // Object.prototype.toString returns a representation of the runtime type of
+    // the given value that is considerably more precise than typeof.
+    const aTag = toString.call(a);
+    const bTag = toString.call(b);
+    // If the runtime types of a and b are different, they could maybe be equal
+    // under some interpretation of equality, but for simplicity and performance
+    // we just return false instead.
+    if (aTag !== bTag) {
+        return false;
+    }
+    switch (aTag) {
+        case '[object Array]':
+            // Arrays are a lot like other objects, but we can cheaply compare their
+            // lengths as a short-cut before comparing their elements.
+            if (a.length !== b.length)
+                return false;
+        // Fall through to object case...
+        case '[object Object]': {
+            if (previouslyCompared(a, b))
+                return true;
+            const aKeys = definedKeys(a);
+            const bKeys = definedKeys(b);
+            // If `a` and `b` have a different number of enumerable keys, they
+            // must be different.
+            const keyCount = aKeys.length;
+            if (keyCount !== bKeys.length)
+                return false;
+            // Now make sure they have the same keys.
+            for (let k = 0; k < keyCount; ++k) {
+                if (!hasOwnProperty.call(b, aKeys[k])) {
+                    return false;
+                }
+            }
+            // Finally, check deep equality of all child properties.
+            for (let k = 0; k < keyCount; ++k) {
+                const key = aKeys[k];
+                if (!check(a[key], b[key])) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        case '[object Error]':
+            return a.name === b.name && a.message === b.message;
+        case '[object Number]':
+            // Handle NaN, which is !== itself.
+            if (a !== a)
+                return b !== b;
+        // Fall through to shared +a === +b case...
+        case '[object Boolean]':
+        case '[object Date]':
+            return +a === +b;
+        case '[object RegExp]':
+        case '[object String]':
+            return a == `${b}`;
+        case '[object Map]':
+        case '[object Set]': {
+            if (a.size !== b.size)
+                return false;
+            if (previouslyCompared(a, b))
+                return true;
+            const aIterator = a.entries();
+            const isMap = aTag === '[object Map]';
+            while (true) {
+                const info = aIterator.next();
+                if (info.done)
+                    break;
+                // If a instanceof Set, aValue === aKey.
+                const [aKey, aValue] = info.value;
+                // So this works the same way for both Set and Map.
+                if (!b.has(aKey)) {
+                    return false;
+                }
+                // However, we care about deep equality of values only when dealing
+                // with Map structures.
+                if (isMap && !check(aValue, b.get(aKey))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        case '[object Uint16Array]':
+        case '[object Uint8Array]': // Buffer, in Node.js.
+        case '[object Uint32Array]':
+        case '[object Int32Array]':
+        case '[object Int8Array]':
+        case '[object Int16Array]':
+        case '[object ArrayBuffer]':
+            // DataView doesn't need these conversions, but the equality check is
+            // otherwise the same.
+            a = new Uint8Array(a);
+            b = new Uint8Array(b);
+        // Fall through...
+        case '[object DataView]': {
+            let len = a.byteLength;
+            if (len === b.byteLength) {
+                while (len-- && a[len] === b[len]) {
+                    // Keep looping as long as the bytes are equal.
+                }
+            }
+            return len === -1;
+        }
+        case '[object AsyncFunction]':
+        case '[object GeneratorFunction]':
+        case '[object AsyncGeneratorFunction]':
+        case '[object Function]': {
+            const aCode = fnToStr.call(a);
+            if (aCode !== fnToStr.call(b)) {
+                return false;
+            }
+            // We consider non-native functions equal if they have the same code
+            // (native functions require === because their code is censored).
+            // Note that this behavior is not entirely sound, since !== function
+            // objects with the same code can behave differently depending on
+            // their closure scope. However, any function can behave differently
+            // depending on the values of its input arguments (including this)
+            // and its calling context (including its closure scope), even
+            // though the function object is === to itself; and it is entirely
+            // possible for functions that are not === to behave exactly the
+            // same under all conceivable circumstances. Because none of these
+            // factors are statically decidable in JavaScript, JS function
+            // equality is not well-defined. This ambiguity allows us to
+            // consider the best possible heuristic among various imperfect
+            // options, and equating non-native functions that have the same
+            // code has enormous practical benefits, such as when comparing
+            // functions that are repeatedly passed as fresh function
+            // expressions within objects that are otherwise deeply equal. Since
+            // any function created from the same syntactic expression (in the
+            // same code location) will always stringify to the same code
+            // according to fnToStr.call, we can reasonably expect these
+            // repeatedly passed function expressions to have the same code, and
+            // thus behave "the same" (with all the caveats mentioned above),
+            // even though the runtime function objects are !== to one another.
+            return !endsWith(aCode, nativeCodeSuffix);
+        }
+    }
+    // Otherwise the values are not equal.
+    return false;
+}
+function definedKeys(obj) {
+    // Remember that the second argument to Array.prototype.filter will be
+    // used as `this` within the callback function.
+    return Object.keys(obj).filter(isDefinedKey, obj);
+}
+function isDefinedKey(key) {
+    return this[key] !== void 0;
+}
+const nativeCodeSuffix = "{ [native code] }";
+function endsWith(full, suffix) {
+    const fromIndex = full.length - suffix.length;
+    return fromIndex >= 0 &&
+        full.indexOf(suffix, fromIndex) === fromIndex;
+}
+function previouslyCompared(a, b) {
+    // Though cyclic references can make an object graph appear infinite from the
+    // perspective of a depth-first traversal, the graph still contains a finite
+    // number of distinct object references. We use the previousComparisons cache
+    // to avoid comparing the same pair of object references more than once, which
+    // guarantees termination (even if we end up comparing every object in one
+    // graph to every object in the other graph, which is extremely unlikely),
+    // while still allowing weird isomorphic structures (like rings with different
+    // lengths) a chance to pass the equality test.
+    let bSet = previousComparisons.get(a);
+    if (bSet) {
+        // Return true here because we can be sure false will be returned somewhere
+        // else if the objects are not equivalent.
+        if (bSet.has(b))
+            return true;
+    }
+    else {
+        previousComparisons.set(a, bSet = new Set);
+    }
+    bSet.add(b);
+    return false;
+}
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 5028:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   B: () => (/* binding */ Trie)
+/* harmony export */ });
+// A [trie](https://en.wikipedia.org/wiki/Trie) data structure that holds
+// object keys weakly, yet can also hold non-object keys, unlike the
+// native `WeakMap`.
+// If no makeData function is supplied, the looked-up data will be an empty,
+// null-prototype Object.
+const defaultMakeData = () => Object.create(null);
+// Useful for processing arguments objects as well as arrays.
+const { forEach, slice } = Array.prototype;
+const { hasOwnProperty } = Object.prototype;
+class Trie {
+    constructor(weakness = true, makeData = defaultMakeData) {
+        this.weakness = weakness;
+        this.makeData = makeData;
+    }
+    lookup(...array) {
+        return this.lookupArray(array);
+    }
+    lookupArray(array) {
+        let node = this;
+        forEach.call(array, key => node = node.getChildTrie(key));
+        return hasOwnProperty.call(node, "data")
+            ? node.data
+            : node.data = this.makeData(slice.call(array));
+    }
+    peek(...array) {
+        return this.peekArray(array);
+    }
+    peekArray(array) {
+        let node = this;
+        for (let i = 0, len = array.length; node && i < len; ++i) {
+            const map = this.weakness && isObjRef(array[i]) ? node.weak : node.strong;
+            node = map && map.get(array[i]);
+        }
+        return node && node.data;
+    }
+    getChildTrie(key) {
+        const map = this.weakness && isObjRef(key)
+            ? this.weak || (this.weak = new WeakMap())
+            : this.strong || (this.strong = new Map());
+        let child = map.get(key);
+        if (!child)
+            map.set(key, child = new Trie(this.weakness, this.makeData));
+        return child;
+    }
+}
+function isObjRef(value) {
+    switch (typeof value) {
+        case "object":
+            if (value === null)
+                break;
+        // Fall through to return true...
+        case "function":
+            return true;
+    }
+    return false;
+}
+//# sourceMappingURL=index.js.map
 
 /***/ }),
 
@@ -30238,6 +30690,581 @@ fetch.Promise = global.Promise;
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((/* runtime-dependent pure expression or super */ /^(33[45]|149|179|28|452|474)$/.test(__webpack_require__.j) ? (fetch) : null));
 
 
+
+/***/ }),
+
+/***/ 4939:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   C: () => (/* binding */ Cache)
+/* harmony export */ });
+function defaultDispose() { }
+class Cache {
+    constructor(max = Infinity, dispose = defaultDispose) {
+        this.max = max;
+        this.dispose = dispose;
+        this.map = new Map();
+        this.newest = null;
+        this.oldest = null;
+    }
+    has(key) {
+        return this.map.has(key);
+    }
+    get(key) {
+        const node = this.getNode(key);
+        return node && node.value;
+    }
+    getNode(key) {
+        const node = this.map.get(key);
+        if (node && node !== this.newest) {
+            const { older, newer } = node;
+            if (newer) {
+                newer.older = older;
+            }
+            if (older) {
+                older.newer = newer;
+            }
+            node.older = this.newest;
+            node.older.newer = node;
+            node.newer = null;
+            this.newest = node;
+            if (node === this.oldest) {
+                this.oldest = newer;
+            }
+        }
+        return node;
+    }
+    set(key, value) {
+        let node = this.getNode(key);
+        if (node) {
+            return node.value = value;
+        }
+        node = {
+            key,
+            value,
+            newer: null,
+            older: this.newest
+        };
+        if (this.newest) {
+            this.newest.newer = node;
+        }
+        this.newest = node;
+        this.oldest = this.oldest || node;
+        this.map.set(key, node);
+        return node.value;
+    }
+    clean() {
+        while (this.oldest && this.map.size > this.max) {
+            this.delete(this.oldest.key);
+        }
+    }
+    delete(key) {
+        const node = this.map.get(key);
+        if (node) {
+            if (node === this.newest) {
+                this.newest = node.older;
+            }
+            if (node === this.oldest) {
+                this.oldest = node.newer;
+            }
+            if (node.newer) {
+                node.newer.older = node.older;
+            }
+            if (node.older) {
+                node.older.newer = node.newer;
+            }
+            this.map.delete(key);
+            this.dispose(node.value, key);
+            return true;
+        }
+        return false;
+    }
+}
+//# sourceMappingURL=cache.js.map
+
+/***/ }),
+
+/***/ 6869:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  dP: () => (/* reexport */ dep),
+  re: () => (/* binding */ wrap)
+});
+
+// UNUSED EXPORTS: KeyTrie, asyncFromGen, bindContext, defaultMakeCacheKey, noContext, nonReactive, setTimeout
+
+// EXTERNAL MODULE: ./node_modules/@wry/trie/lib/index.js
+var lib = __webpack_require__(5028);
+// EXTERNAL MODULE: ./node_modules/optimism/lib/cache.js
+var lib_cache = __webpack_require__(4939);
+// EXTERNAL MODULE: ./node_modules/@wry/context/lib/index.js + 1 modules
+var context_lib = __webpack_require__(2455);
+;// CONCATENATED MODULE: ./node_modules/optimism/lib/context.js
+
+const parentEntrySlot = new context_lib/* Slot */.g7();
+function nonReactive(fn) {
+    return parentEntrySlot.withValue(void 0, fn);
+}
+
+//# sourceMappingURL=context.js.map
+;// CONCATENATED MODULE: ./node_modules/optimism/lib/helpers.js
+const { hasOwnProperty: helpers_hasOwnProperty, } = Object.prototype;
+const arrayFromSet = Array.from ||
+    function (set) {
+        const array = [];
+        set.forEach(item => array.push(item));
+        return array;
+    };
+function maybeUnsubscribe(entryOrDep) {
+    const { unsubscribe } = entryOrDep;
+    if (typeof unsubscribe === "function") {
+        entryOrDep.unsubscribe = void 0;
+        unsubscribe();
+    }
+}
+//# sourceMappingURL=helpers.js.map
+;// CONCATENATED MODULE: ./node_modules/optimism/lib/entry.js
+
+
+const emptySetPool = [];
+const POOL_TARGET_SIZE = 100;
+// Since this package might be used browsers, we should avoid using the
+// Node built-in assert module.
+function assert(condition, optionalMessage) {
+    if (!condition) {
+        throw new Error(optionalMessage || "assertion failure");
+    }
+}
+function valueIs(a, b) {
+    const len = a.length;
+    return (
+    // Unknown values are not equal to each other.
+    len > 0 &&
+        // Both values must be ordinary (or both exceptional) to be equal.
+        len === b.length &&
+        // The underlying value or exception must be the same.
+        a[len - 1] === b[len - 1]);
+}
+function valueGet(value) {
+    switch (value.length) {
+        case 0: throw new Error("unknown value");
+        case 1: return value[0];
+        case 2: throw value[1];
+    }
+}
+function valueCopy(value) {
+    return value.slice(0);
+}
+class Entry {
+    constructor(fn) {
+        this.fn = fn;
+        this.parents = new Set();
+        this.childValues = new Map();
+        // When this Entry has children that are dirty, this property becomes
+        // a Set containing other Entry objects, borrowed from emptySetPool.
+        // When the set becomes empty, it gets recycled back to emptySetPool.
+        this.dirtyChildren = null;
+        this.dirty = true;
+        this.recomputing = false;
+        this.value = [];
+        this.deps = null;
+        ++Entry.count;
+    }
+    peek() {
+        if (this.value.length === 1 && !mightBeDirty(this)) {
+            rememberParent(this);
+            return this.value[0];
+        }
+    }
+    // This is the most important method of the Entry API, because it
+    // determines whether the cached this.value can be returned immediately,
+    // or must be recomputed. The overall performance of the caching system
+    // depends on the truth of the following observations: (1) this.dirty is
+    // usually false, (2) this.dirtyChildren is usually null/empty, and thus
+    // (3) valueGet(this.value) is usually returned without recomputation.
+    recompute(args) {
+        assert(!this.recomputing, "already recomputing");
+        rememberParent(this);
+        return mightBeDirty(this)
+            ? reallyRecompute(this, args)
+            : valueGet(this.value);
+    }
+    setDirty() {
+        if (this.dirty)
+            return;
+        this.dirty = true;
+        this.value.length = 0;
+        reportDirty(this);
+        // We can go ahead and unsubscribe here, since any further dirty
+        // notifications we receive will be redundant, and unsubscribing may
+        // free up some resources, e.g. file watchers.
+        maybeUnsubscribe(this);
+    }
+    dispose() {
+        this.setDirty();
+        // Sever any dependency relationships with our own children, so those
+        // children don't retain this parent Entry in their child.parents sets,
+        // thereby preventing it from being fully garbage collected.
+        forgetChildren(this);
+        // Because this entry has been kicked out of the cache (in index.js),
+        // we've lost the ability to find out if/when this entry becomes dirty,
+        // whether that happens through a subscription, because of a direct call
+        // to entry.setDirty(), or because one of its children becomes dirty.
+        // Because of this loss of future information, we have to assume the
+        // worst (that this entry might have become dirty very soon), so we must
+        // immediately mark this entry's parents as dirty. Normally we could
+        // just call entry.setDirty() rather than calling parent.setDirty() for
+        // each parent, but that would leave this entry in parent.childValues
+        // and parent.dirtyChildren, which would prevent the child from being
+        // truly forgotten.
+        eachParent(this, (parent, child) => {
+            parent.setDirty();
+            forgetChild(parent, this);
+        });
+    }
+    forget() {
+        // The code that creates Entry objects in index.ts will replace this method
+        // with one that actually removes the Entry from the cache, which will also
+        // trigger the entry.dispose method.
+        this.dispose();
+    }
+    dependOn(dep) {
+        dep.add(this);
+        if (!this.deps) {
+            this.deps = emptySetPool.pop() || new Set();
+        }
+        this.deps.add(dep);
+    }
+    forgetDeps() {
+        if (this.deps) {
+            arrayFromSet(this.deps).forEach(dep => dep.delete(this));
+            this.deps.clear();
+            emptySetPool.push(this.deps);
+            this.deps = null;
+        }
+    }
+}
+Entry.count = 0;
+function rememberParent(child) {
+    const parent = parentEntrySlot.getValue();
+    if (parent) {
+        child.parents.add(parent);
+        if (!parent.childValues.has(child)) {
+            parent.childValues.set(child, []);
+        }
+        if (mightBeDirty(child)) {
+            reportDirtyChild(parent, child);
+        }
+        else {
+            reportCleanChild(parent, child);
+        }
+        return parent;
+    }
+}
+function reallyRecompute(entry, args) {
+    forgetChildren(entry);
+    // Set entry as the parent entry while calling recomputeNewValue(entry).
+    parentEntrySlot.withValue(entry, recomputeNewValue, [entry, args]);
+    if (maybeSubscribe(entry, args)) {
+        // If we successfully recomputed entry.value and did not fail to
+        // (re)subscribe, then this Entry is no longer explicitly dirty.
+        setClean(entry);
+    }
+    return valueGet(entry.value);
+}
+function recomputeNewValue(entry, args) {
+    entry.recomputing = true;
+    // Set entry.value as unknown.
+    entry.value.length = 0;
+    try {
+        // If entry.fn succeeds, entry.value will become a normal Value.
+        entry.value[0] = entry.fn.apply(null, args);
+    }
+    catch (e) {
+        // If entry.fn throws, entry.value will become exceptional.
+        entry.value[1] = e;
+    }
+    // Either way, this line is always reached.
+    entry.recomputing = false;
+}
+function mightBeDirty(entry) {
+    return entry.dirty || !!(entry.dirtyChildren && entry.dirtyChildren.size);
+}
+function setClean(entry) {
+    entry.dirty = false;
+    if (mightBeDirty(entry)) {
+        // This Entry may still have dirty children, in which case we can't
+        // let our parents know we're clean just yet.
+        return;
+    }
+    reportClean(entry);
+}
+function reportDirty(child) {
+    eachParent(child, reportDirtyChild);
+}
+function reportClean(child) {
+    eachParent(child, reportCleanChild);
+}
+function eachParent(child, callback) {
+    const parentCount = child.parents.size;
+    if (parentCount) {
+        const parents = arrayFromSet(child.parents);
+        for (let i = 0; i < parentCount; ++i) {
+            callback(parents[i], child);
+        }
+    }
+}
+// Let a parent Entry know that one of its children may be dirty.
+function reportDirtyChild(parent, child) {
+    // Must have called rememberParent(child) before calling
+    // reportDirtyChild(parent, child).
+    assert(parent.childValues.has(child));
+    assert(mightBeDirty(child));
+    const parentWasClean = !mightBeDirty(parent);
+    if (!parent.dirtyChildren) {
+        parent.dirtyChildren = emptySetPool.pop() || new Set;
+    }
+    else if (parent.dirtyChildren.has(child)) {
+        // If we already know this child is dirty, then we must have already
+        // informed our own parents that we are dirty, so we can terminate
+        // the recursion early.
+        return;
+    }
+    parent.dirtyChildren.add(child);
+    // If parent was clean before, it just became (possibly) dirty (according to
+    // mightBeDirty), since we just added child to parent.dirtyChildren.
+    if (parentWasClean) {
+        reportDirty(parent);
+    }
+}
+// Let a parent Entry know that one of its children is no longer dirty.
+function reportCleanChild(parent, child) {
+    // Must have called rememberChild(child) before calling
+    // reportCleanChild(parent, child).
+    assert(parent.childValues.has(child));
+    assert(!mightBeDirty(child));
+    const childValue = parent.childValues.get(child);
+    if (childValue.length === 0) {
+        parent.childValues.set(child, valueCopy(child.value));
+    }
+    else if (!valueIs(childValue, child.value)) {
+        parent.setDirty();
+    }
+    removeDirtyChild(parent, child);
+    if (mightBeDirty(parent)) {
+        return;
+    }
+    reportClean(parent);
+}
+function removeDirtyChild(parent, child) {
+    const dc = parent.dirtyChildren;
+    if (dc) {
+        dc.delete(child);
+        if (dc.size === 0) {
+            if (emptySetPool.length < POOL_TARGET_SIZE) {
+                emptySetPool.push(dc);
+            }
+            parent.dirtyChildren = null;
+        }
+    }
+}
+// Removes all children from this entry and returns an array of the
+// removed children.
+function forgetChildren(parent) {
+    if (parent.childValues.size > 0) {
+        parent.childValues.forEach((_value, child) => {
+            forgetChild(parent, child);
+        });
+    }
+    // Remove this parent Entry from any sets to which it was added by the
+    // addToSet method.
+    parent.forgetDeps();
+    // After we forget all our children, this.dirtyChildren must be empty
+    // and therefore must have been reset to null.
+    assert(parent.dirtyChildren === null);
+}
+function forgetChild(parent, child) {
+    child.parents.delete(parent);
+    parent.childValues.delete(child);
+    removeDirtyChild(parent, child);
+}
+function maybeSubscribe(entry, args) {
+    if (typeof entry.subscribe === "function") {
+        try {
+            maybeUnsubscribe(entry); // Prevent double subscriptions.
+            entry.unsubscribe = entry.subscribe.apply(null, args);
+        }
+        catch (e) {
+            // If this Entry has a subscribe function and it threw an exception
+            // (or an unsubscribe function it previously returned now throws),
+            // return false to indicate that we were not able to subscribe (or
+            // unsubscribe), and this Entry should remain dirty.
+            entry.setDirty();
+            return false;
+        }
+    }
+    // Returning true indicates either that there was no entry.subscribe
+    // function or that it succeeded.
+    return true;
+}
+//# sourceMappingURL=entry.js.map
+;// CONCATENATED MODULE: ./node_modules/optimism/lib/dep.js
+
+
+const EntryMethods = {
+    setDirty: true,
+    dispose: true,
+    forget: true, // Fully remove parent Entry from LRU cache and computation graph
+};
+function dep(options) {
+    const depsByKey = new Map();
+    const subscribe = options && options.subscribe;
+    function depend(key) {
+        const parent = parentEntrySlot.getValue();
+        if (parent) {
+            let dep = depsByKey.get(key);
+            if (!dep) {
+                depsByKey.set(key, dep = new Set);
+            }
+            parent.dependOn(dep);
+            if (typeof subscribe === "function") {
+                maybeUnsubscribe(dep);
+                dep.unsubscribe = subscribe(key);
+            }
+        }
+    }
+    depend.dirty = function dirty(key, entryMethodName) {
+        const dep = depsByKey.get(key);
+        if (dep) {
+            const m = (entryMethodName &&
+                helpers_hasOwnProperty.call(EntryMethods, entryMethodName)) ? entryMethodName : "setDirty";
+            // We have to use arrayFromSet(dep).forEach instead of dep.forEach,
+            // because modifying a Set while iterating over it can cause elements in
+            // the Set to be removed from the Set before they've been iterated over.
+            arrayFromSet(dep).forEach(entry => entry[m]());
+            depsByKey.delete(key);
+            maybeUnsubscribe(dep);
+        }
+    };
+    return depend;
+}
+//# sourceMappingURL=dep.js.map
+;// CONCATENATED MODULE: ./node_modules/optimism/lib/index.js
+
+
+
+
+// These helper functions are important for making optimism work with
+// asynchronous code. In order to register parent-child dependencies,
+// optimism needs to know about any currently active parent computations.
+// In ordinary synchronous code, the parent context is implicit in the
+// execution stack, but asynchronous code requires some extra guidance in
+// order to propagate context from one async task segment to the next.
+
+// A lighter-weight dependency, similar to OptimisticWrapperFunction, except
+// with only one argument, no makeCacheKey, no wrapped function to recompute,
+// and no result value. Useful for representing dependency leaves in the graph
+// of computation. Subscriptions are supported.
+
+// The defaultMakeCacheKey function is remarkably powerful, because it gives
+// a unique object for any shallow-identical list of arguments. If you need
+// to implement a custom makeCacheKey function, you may find it helpful to
+// delegate the final work to defaultMakeCacheKey, which is why we export it
+// here. However, you may want to avoid defaultMakeCacheKey if your runtime
+// does not support WeakMap, or you have the ability to return a string key.
+// In those cases, just write your own custom makeCacheKey functions.
+let defaultKeyTrie;
+function defaultMakeCacheKey(...args) {
+    const trie = defaultKeyTrie || (defaultKeyTrie = new lib/* Trie */.B(typeof WeakMap === "function"));
+    return trie.lookupArray(args);
+}
+// If you're paranoid about memory leaks, or you want to avoid using WeakMap
+// under the hood, but you still need the behavior of defaultMakeCacheKey,
+// import this constructor to create your own tries.
+
+const caches = new Set();
+function wrap(originalFunction, { max = Math.pow(2, 16), makeCacheKey = defaultMakeCacheKey, keyArgs, subscribe, } = Object.create(null)) {
+    const cache = new lib_cache/* Cache */.C(max, entry => entry.dispose());
+    const optimistic = function () {
+        const key = makeCacheKey.apply(null, keyArgs ? keyArgs.apply(null, arguments) : arguments);
+        if (key === void 0) {
+            return originalFunction.apply(null, arguments);
+        }
+        let entry = cache.get(key);
+        if (!entry) {
+            cache.set(key, entry = new Entry(originalFunction));
+            entry.subscribe = subscribe;
+            // Give the Entry the ability to trigger cache.delete(key), even though
+            // the Entry itself does not know about key or cache.
+            entry.forget = () => cache.delete(key);
+        }
+        const value = entry.recompute(Array.prototype.slice.call(arguments));
+        // Move this entry to the front of the least-recently used queue,
+        // since we just finished computing its value.
+        cache.set(key, entry);
+        caches.add(cache);
+        // Clean up any excess entries in the cache, but only if there is no
+        // active parent entry, meaning we're not in the middle of a larger
+        // computation that might be flummoxed by the cleaning.
+        if (!parentEntrySlot.hasValue()) {
+            caches.forEach(cache => cache.clean());
+            caches.clear();
+        }
+        return value;
+    };
+    Object.defineProperty(optimistic, "size", {
+        get() {
+            return cache["map"].size;
+        },
+        configurable: false,
+        enumerable: false,
+    });
+    Object.freeze(optimistic.options = {
+        max,
+        makeCacheKey,
+        keyArgs,
+        subscribe,
+    });
+    function dirtyKey(key) {
+        const entry = cache.get(key);
+        if (entry) {
+            entry.setDirty();
+        }
+    }
+    optimistic.dirtyKey = dirtyKey;
+    optimistic.dirty = function dirty() {
+        dirtyKey(makeCacheKey.apply(null, arguments));
+    };
+    function peekKey(key) {
+        const entry = cache.get(key);
+        if (entry) {
+            return entry.peek();
+        }
+    }
+    optimistic.peekKey = peekKey;
+    optimistic.peek = function peek() {
+        return peekKey(makeCacheKey.apply(null, arguments));
+    };
+    function forgetKey(key) {
+        return cache.delete(key);
+    }
+    optimistic.forgetKey = forgetKey;
+    optimistic.forget = function forget() {
+        return forgetKey(makeCacheKey.apply(null, arguments));
+    };
+    optimistic.makeCacheKey = makeCacheKey;
+    optimistic.getKey = keyArgs ? function getKey() {
+        return makeCacheKey.apply(null, keyArgs.apply(null, arguments));
+    } : makeCacheKey;
+    return Object.freeze(optimistic);
+}
+//# sourceMappingURL=index.js.map
 
 /***/ }),
 
