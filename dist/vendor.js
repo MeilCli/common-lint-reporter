@@ -21214,7 +21214,7 @@ function parseAndCheckHttpResponse(operations) {
 /* harmony export */   k: () => (/* binding */ responseIterator)
 /* harmony export */ });
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3613);
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(320);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _iterators_async_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1793);
@@ -21233,20 +21233,39 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 
 
+function isNodeResponse(value) {
+    return !!value.body;
+}
+function isReadableStream(value) {
+    return !!value.getReader;
+}
+function isAsyncIterableIterator(value) {
+    return !!(_utilities_index_js__WEBPACK_IMPORTED_MODULE_0__/* .canUseAsyncIteratorSymbol */ .DN &&
+        value[Symbol.asyncIterator]);
+}
+function isStreamableBlob(value) {
+    return !!value.stream;
+}
+function isBlob(value) {
+    return !!value.arrayBuffer;
+}
+function isNodeReadableStream(value) {
+    return !!value.pipe;
+}
 function responseIterator(response) {
     var body = response;
-    if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_0__/* .isNodeResponse */ .Ss)(response))
+    if (isNodeResponse(response))
         body = response.body;
-    if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_0__/* .isAsyncIterableIterator */ .sV)(body))
+    if (isAsyncIterableIterator(body))
         return (0,_iterators_async_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z)(body);
-    if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_0__/* .isReadableStream */ .Os)(body))
+    if (isReadableStream(body))
         return (0,_iterators_reader_js__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z)(body.getReader());
-    if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_0__/* .isStreamableBlob */ .Qe)(body)) {
+    if (isStreamableBlob(body)) {
         return (0,_iterators_reader_js__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z)(body.stream().getReader());
     }
-    if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_0__/* .isBlob */ .Lj)(body))
+    if (isBlob(body))
         return (0,_iterators_promise_js__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z)(body.arrayBuffer());
-    if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_0__/* .isNodeReadableStream */ .QV)(body))
+    if (isNodeReadableStream(body))
         return (0,_iterators_nodeStream_js__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Z)(body);
     throw new Error("Unknown body type for responseIterator. Please pass a streamable response.");
 }
@@ -23875,45 +23894,6 @@ function isPlainObject(obj) {
 
 /***/ }),
 
-/***/ 3613:
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Lj: () => (/* binding */ isBlob),
-/* harmony export */   Os: () => (/* binding */ isReadableStream),
-/* harmony export */   QV: () => (/* binding */ isNodeReadableStream),
-/* harmony export */   Qe: () => (/* binding */ isStreamableBlob),
-/* harmony export */   Ss: () => (/* binding */ isNodeResponse),
-/* harmony export */   sV: () => (/* binding */ isAsyncIterableIterator)
-/* harmony export */ });
-if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _canUse_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(320);
-}
-
-function isNodeResponse(value) {
-    return !!value.body;
-}
-function isReadableStream(value) {
-    return !!value.getReader;
-}
-function isAsyncIterableIterator(value) {
-    return !!(_canUse_js__WEBPACK_IMPORTED_MODULE_0__/* .canUseAsyncIteratorSymbol */ .DN &&
-        value[Symbol.asyncIterator]);
-}
-function isStreamableBlob(value) {
-    return !!value.stream;
-}
-function isBlob(value) {
-    return !!value.arrayBuffer;
-}
-function isNodeReadableStream(value) {
-    return !!value.pipe;
-}
-//# sourceMappingURL=responseIterator.js.map
-
-/***/ }),
-
 /***/ 3887:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
@@ -25160,7 +25140,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   i: () => (/* binding */ version)
 /* harmony export */ });
-var version = '3.8.0';
+var version = '3.8.1';
 //# sourceMappingURL=version.js.map
 
 /***/ }),
