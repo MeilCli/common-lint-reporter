@@ -14638,10 +14638,13 @@ var ApolloCache = (function () {
     }
     ApolloCache.prototype.batch = function (options) {
         var _this = this;
-        var optimisticId = typeof options.optimistic === "string" ? options.optimistic :
-            options.optimistic === false ? null : void 0;
+        var optimisticId = typeof options.optimistic === "string"
+            ? options.optimistic
+            : options.optimistic === false
+                ? null
+                : void 0;
         var updateResult;
-        this.performTransaction(function () { return updateResult = options.update(_this); }, optimisticId);
+        this.performTransaction(function () { return (updateResult = options.update(_this)); }, optimisticId);
         return updateResult;
     };
     ApolloCache.prototype.recordOptimisticTransaction = function (transaction, optimisticId) {
@@ -14664,7 +14667,7 @@ var ApolloCache = (function () {
     };
     ApolloCache.prototype.readQuery = function (options, optimistic) {
         if (optimistic === void 0) { optimistic = !!options.optimistic; }
-        return this.read((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, options), { rootId: options.id || 'ROOT_QUERY', optimistic: optimistic }));
+        return this.read((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, options), { rootId: options.id || "ROOT_QUERY", optimistic: optimistic }));
     };
     ApolloCache.prototype.readFragment = function (options, optimistic) {
         if (optimistic === void 0) { optimistic = !!options.optimistic; }
@@ -14673,7 +14676,7 @@ var ApolloCache = (function () {
     ApolloCache.prototype.writeQuery = function (_a) {
         var id = _a.id, data = _a.data, options = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__rest */ ._T)(_a, ["id", "data"]);
         return this.write(Object.assign(options, {
-            dataId: id || 'ROOT_QUERY',
+            dataId: id || "ROOT_QUERY",
             result: data,
         }));
     };
@@ -14723,7 +14726,6 @@ var ApolloCache = (function () {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   C: () => (/* binding */ Cache)
 /* harmony export */ });
-;
 var Cache;
 (function (Cache) {
 })(Cache || (Cache = {}));
@@ -14820,17 +14822,19 @@ function defaultDataIdFromObject(_a, context) {
     var __typename = _a.__typename, id = _a.id, _id = _a._id;
     if (typeof __typename === "string") {
         if (context) {
-            context.keyObject =
-                !isNullish(id) ? { id: id } :
-                    !isNullish(_id) ? { _id: _id } :
-                        void 0;
+            context.keyObject = !isNullish(id)
+                ? { id: id }
+                : !isNullish(_id)
+                    ? { _id: _id }
+                    : void 0;
         }
         if (isNullish(id) && !isNullish(_id)) {
             id = _id;
         }
         if (!isNullish(id)) {
-            return "".concat(__typename, ":").concat((typeof id === "number" ||
-                typeof id === "string") ? id : JSON.stringify(id));
+            return "".concat(__typename, ":").concat(typeof id === "number" || typeof id === "string"
+                ? id
+                : JSON.stringify(id));
         }
     }
 }
@@ -14860,13 +14864,15 @@ function fieldNameFromStoreName(storeFieldName) {
 function selectionSetMatchesResult(selectionSet, result, variables) {
     if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .isNonNullObject */ .s)(result)) {
         return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .isArray */ .k)(result)
-            ? result.every(function (item) { return selectionSetMatchesResult(selectionSet, item, variables); })
+            ? result.every(function (item) {
+                return selectionSetMatchesResult(selectionSet, item, variables);
+            })
             : selectionSet.selections.every(function (field) {
                 if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .isField */ .My)(field) && (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .shouldInclude */ .LZ)(field, variables)) {
                     var key = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .resultKeyNameFromField */ .u2)(field);
-                    return hasOwn.call(result, key) &&
+                    return (hasOwn.call(result, key) &&
                         (!field.selectionSet ||
-                            selectionSetMatchesResult(field.selectionSet, result[key], variables));
+                            selectionSetMatchesResult(field.selectionSet, result[key], variables)));
                 }
                 return true;
             });
@@ -14874,12 +14880,10 @@ function selectionSetMatchesResult(selectionSet, result, variables) {
     return false;
 }
 function storeValueIsStoreObject(value) {
-    return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .isNonNullObject */ .s)(value) &&
-        !(0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .isReference */ .Yk)(value) &&
-        !(0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .isArray */ .k)(value);
+    return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .isNonNullObject */ .s)(value) && !(0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .isReference */ .Yk)(value) && !(0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .isArray */ .k)(value);
 }
 function makeProcessedFieldsMerger() {
-    return new _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .DeepMerger */ .w0;
+    return new _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .DeepMerger */ .w0();
 }
 function extractFragmentContext(document, fragments) {
     var fragmentMap = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_6__/* .createFragmentMap */ .F)((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_7__/* .getFragmentDefinitions */ .kU)(document));
@@ -14967,9 +14971,11 @@ var EntityStore = (function () {
         this.data = Object.create(null);
         this.rootIds = Object.create(null);
         this.refs = Object.create(null);
-        this.getFieldValue = function (objectOrReference, storeFieldName) { return (0,maybeDeepFreeze/* maybeDeepFreeze */.J)((0,storeUtils/* isReference */.Yk)(objectOrReference)
-            ? _this.get(objectOrReference.__ref, storeFieldName)
-            : objectOrReference && objectOrReference[storeFieldName]); };
+        this.getFieldValue = function (objectOrReference, storeFieldName) {
+            return (0,maybeDeepFreeze/* maybeDeepFreeze */.J)((0,storeUtils/* isReference */.Yk)(objectOrReference)
+                ? _this.get(objectOrReference.__ref, storeFieldName)
+                : objectOrReference && objectOrReference[storeFieldName]);
+        };
         this.canRead = function (objOrRef) {
             return (0,storeUtils/* isReference */.Yk)(objOrRef)
                 ? _this.has(objOrRef.__ref)
@@ -15034,12 +15040,8 @@ var EntityStore = (function () {
             older = older.__ref;
         if ((0,storeUtils/* isReference */.Yk)(newer))
             newer = newer.__ref;
-        var existing = typeof older === "string"
-            ? this.lookup(dataId = older)
-            : older;
-        var incoming = typeof newer === "string"
-            ? this.lookup(dataId = newer)
-            : newer;
+        var existing = typeof older === "string" ? this.lookup((dataId = older)) : older;
+        var incoming = typeof newer === "string" ? this.lookup((dataId = newer)) : newer;
         if (!incoming)
             return;
         (0,globals/* invariant */.kG)(typeof dataId === "string", 1);
@@ -15052,7 +15054,8 @@ var EntityStore = (function () {
                 if (!existing)
                     fieldsToDirty_1.__exists = 1;
                 Object.keys(incoming).forEach(function (storeFieldName) {
-                    if (!existing || existing[storeFieldName] !== merged[storeFieldName]) {
+                    if (!existing ||
+                        existing[storeFieldName] !== merged[storeFieldName]) {
                         fieldsToDirty_1[storeFieldName] = 1;
                         var fieldName = (0,helpers/* fieldNameFromStoreName */.E_)(storeFieldName);
                         if (fieldName !== storeFieldName &&
@@ -15069,7 +15072,9 @@ var EntityStore = (function () {
                     this.policies.rootTypenamesById[dataId] === merged.__typename) {
                     delete fieldsToDirty_1.__typename;
                 }
-                Object.keys(fieldsToDirty_1).forEach(function (fieldName) { return _this.group.dirty(dataId, fieldName); });
+                Object.keys(fieldsToDirty_1).forEach(function (fieldName) {
+                    return _this.group.dirty(dataId, fieldName);
+                });
             }
         }
     };
@@ -15086,10 +15091,14 @@ var EntityStore = (function () {
                 isReference: storeUtils/* isReference */.Yk,
                 toReference: this.toReference,
                 canRead: this.canRead,
-                readField: function (fieldNameOrOptions, from) { return _this.policies.readField(typeof fieldNameOrOptions === "string" ? {
-                    fieldName: fieldNameOrOptions,
-                    from: from || (0,storeUtils/* makeReference */.kQ)(dataId),
-                } : fieldNameOrOptions, { store: _this }); },
+                readField: function (fieldNameOrOptions, from) {
+                    return _this.policies.readField(typeof fieldNameOrOptions === "string"
+                        ? {
+                            fieldName: fieldNameOrOptions,
+                            from: from || (0,storeUtils/* makeReference */.kQ)(dataId),
+                        }
+                        : fieldNameOrOptions, { store: _this });
+                },
             };
             Object.keys(storeObject).forEach(function (storeFieldName) {
                 var fieldName = (0,helpers/* fieldNameFromStoreName */.E_)(storeFieldName);
@@ -15100,8 +15109,9 @@ var EntityStore = (function () {
                     ? fields
                     : fields[storeFieldName] || fields[fieldName];
                 if (modify) {
-                    var newValue = modify === delModifier ? DELETE :
-                        modify((0,maybeDeepFreeze/* maybeDeepFreeze */.J)(fieldValue), (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, sharedDetails_1), { fieldName: fieldName, storeFieldName: storeFieldName, storage: _this.getStorage(dataId, storeFieldName) }));
+                    var newValue = modify === delModifier
+                        ? DELETE
+                        : modify((0,maybeDeepFreeze/* maybeDeepFreeze */.J)(fieldValue), (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, sharedDetails_1), { fieldName: fieldName, storeFieldName: storeFieldName, storage: _this.getStorage(dataId, storeFieldName) }));
                     if (newValue === INVALIDATE) {
                         _this.group.dirty(dataId, storeFieldName);
                     }
@@ -15143,9 +15153,10 @@ var EntityStore = (function () {
             var storeFieldName = fieldName && args
                 ? this.policies.getStoreFieldName({ typename: typename, fieldName: fieldName, args: args })
                 : fieldName;
-            return this.modify(dataId, storeFieldName ? (_a = {},
-                _a[storeFieldName] = delModifier,
-                _a) : delModifier);
+            return this.modify(dataId, storeFieldName
+                ? (_a = {},
+                    _a[storeFieldName] = delModifier,
+                    _a) : delModifier);
         }
         return false;
     };
@@ -15199,7 +15210,7 @@ var EntityStore = (function () {
         }
     };
     EntityStore.prototype.retain = function (rootId) {
-        return this.rootIds[rootId] = (this.rootIds[rootId] || 0) + 1;
+        return (this.rootIds[rootId] = (this.rootIds[rootId] || 0) + 1);
     };
     EntityStore.prototype.release = function (rootId) {
         if (this.rootIds[rootId] > 0) {
@@ -15242,7 +15253,7 @@ var EntityStore = (function () {
     };
     EntityStore.prototype.findChildRefIds = function (dataId) {
         if (!helpers/* hasOwn */.RI.call(this.refs, dataId)) {
-            var found_1 = this.refs[dataId] = Object.create(null);
+            var found_1 = (this.refs[dataId] = Object.create(null));
             var root = this.data[dataId];
             if (!root)
                 return found_1;
@@ -15301,7 +15312,7 @@ var CacheGroup = (function () {
     return CacheGroup;
 }());
 function makeDepKey(dataId, storeFieldName) {
-    return storeFieldName + '#' + dataId;
+    return storeFieldName + "#" + dataId;
 }
 function maybeDependOnExistenceOfEntity(store, entityId) {
     if (supportsResultCaching(store)) {
@@ -15384,7 +15395,8 @@ var Layer = (function (_super) {
     };
     Layer.prototype.findChildRefIds = function (dataId) {
         var fromParent = this.parent.findChildRefIds(dataId);
-        return helpers/* hasOwn */.RI.call(this.data, dataId) ? (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, fromParent), _super.prototype.findChildRefIds.call(this, dataId)) : fromParent;
+        return helpers/* hasOwn */.RI.call(this.data, dataId)
+            ? (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, fromParent), _super.prototype.findChildRefIds.call(this, dataId)) : fromParent;
     };
     Layer.prototype.getStorage = function () {
         var p = this.parent;
@@ -15430,7 +15442,6 @@ var object_canon = __webpack_require__(900);
 
 
 
-;
 function execSelectionSetKeyArgs(options) {
     return [
         options.selectionSet,
@@ -15447,7 +15458,7 @@ var StoreReader = (function () {
             addTypename: config.addTypename !== false,
             canonizeResults: (0,helpers/* shouldCanonizeResults */.lg)(config),
         });
-        this.canon = config.canon || new object_canon/* ObjectCanon */.h;
+        this.canon = config.canon || new object_canon/* ObjectCanon */.h();
         this.executeSelectionSet = (0,lib/* wrap */.re)(function (options) {
             var _a;
             var canonizeResults = options.context.canonizeResults;
@@ -15469,7 +15480,7 @@ var StoreReader = (function () {
                 if (supportsResultCaching(context.store)) {
                     return context.store.makeCacheKey(selectionSet, (0,storeUtils/* isReference */.Yk)(parent) ? parent.__ref : parent, context.varString, canonizeResults);
                 }
-            }
+            },
         });
         this.executeSubSelectedArray = (0,lib/* wrap */.re)(function (options) {
             maybeDependOnExistenceOfEntity(options.context.store, options.enclosingRef.__ref);
@@ -15481,14 +15492,14 @@ var StoreReader = (function () {
                 if (supportsResultCaching(context.store)) {
                     return context.store.makeCacheKey(field, array, context.varString);
                 }
-            }
+            },
         });
     }
     StoreReader.prototype.resetCanon = function () {
-        this.canon = new object_canon/* ObjectCanon */.h;
+        this.canon = new object_canon/* ObjectCanon */.h();
     };
     StoreReader.prototype.diffQueryAgainstStore = function (_a) {
-        var store = _a.store, query = _a.query, _b = _a.rootId, rootId = _b === void 0 ? 'ROOT_QUERY' : _b, variables = _a.variables, _c = _a.returnPartialData, returnPartialData = _c === void 0 ? true : _c, _d = _a.canonizeResults, canonizeResults = _d === void 0 ? this.config.canonizeResults : _d;
+        var store = _a.store, query = _a.query, _b = _a.rootId, rootId = _b === void 0 ? "ROOT_QUERY" : _b, variables = _a.variables, _c = _a.returnPartialData, returnPartialData = _c === void 0 ? true : _c, _d = _a.canonizeResults, canonizeResults = _d === void 0 ? this.config.canonizeResults : _d;
         var policies = this.config.cache.policies;
         variables = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, (0,getFromAST/* getDefaultValues */.O4)((0,getFromAST/* getQueryDefinition */.iW)(query))), variables);
         var rootRef = (0,storeUtils/* makeReference */.kQ)(rootId);
@@ -15500,7 +15511,9 @@ var StoreReader = (function () {
         });
         var missing;
         if (execResult.missing) {
-            missing = [new common/* MissingFieldError */.y(firstMissing(execResult.missing), execResult.missing, query, variables)];
+            missing = [
+                new common/* MissingFieldError */.y(firstMissing(execResult.missing), execResult.missing, query, variables),
+            ];
             if (!returnPartialData) {
                 throw missing[0];
             }
@@ -15545,7 +15558,9 @@ var StoreReader = (function () {
         function handleMissing(result, resultName) {
             var _a;
             if (result.missing) {
-                missing = missingMerger.merge(missing, (_a = {}, _a[resultName] = result.missing, _a));
+                missing = missingMerger.merge(missing, (_a = {},
+                    _a[resultName] = result.missing,
+                    _a));
             }
             return result.result;
         }
@@ -15610,7 +15625,8 @@ var StoreReader = (function () {
         var finalResult = { result: result, missing: missing };
         var frozen = context.canonizeResults
             ? this.canon.admit(finalResult)
-            : (0,maybeDeepFreeze/* maybeDeepFreeze */.J)(finalResult);
+            :
+                (0,maybeDeepFreeze/* maybeDeepFreeze */.J)(finalResult);
         if (frozen.result) {
             this.knownResults.set(frozen.result, selectionSet);
         }
@@ -15706,64 +15722,68 @@ var reactiveVars = __webpack_require__(6438);
 var specifierInfoCache = Object.create(null);
 function lookupSpecifierInfo(spec) {
     var cacheKey = JSON.stringify(spec);
-    return specifierInfoCache[cacheKey] ||
-        (specifierInfoCache[cacheKey] = Object.create(null));
+    return (specifierInfoCache[cacheKey] ||
+        (specifierInfoCache[cacheKey] = Object.create(null)));
 }
 function keyFieldsFnFromSpecifier(specifier) {
     var info = lookupSpecifierInfo(specifier);
-    return info.keyFieldsFn || (info.keyFieldsFn = function (object, context) {
-        var extract = function (from, key) { return context.readField(key, from); };
-        var keyObject = context.keyObject = collectSpecifierPaths(specifier, function (schemaKeyPath) {
-            var extracted = extractKeyPath(context.storeObject, schemaKeyPath, extract);
-            if (extracted === void 0 &&
-                object !== context.storeObject &&
-                helpers/* hasOwn */.RI.call(object, schemaKeyPath[0])) {
-                extracted = extractKeyPath(object, schemaKeyPath, extractKey);
-            }
-            (0,globals/* invariant */.kG)(extracted !== void 0, 2, schemaKeyPath.join('.'), object);
-            return extracted;
-        });
-        return "".concat(context.typename, ":").concat(JSON.stringify(keyObject));
-    });
+    return (info.keyFieldsFn || (info.keyFieldsFn = function (object, context) {
+            var extract = function (from, key) {
+                return context.readField(key, from);
+            };
+            var keyObject = (context.keyObject = collectSpecifierPaths(specifier, function (schemaKeyPath) {
+                var extracted = extractKeyPath(context.storeObject, schemaKeyPath, extract);
+                if (extracted === void 0 &&
+                    object !== context.storeObject &&
+                    helpers/* hasOwn */.RI.call(object, schemaKeyPath[0])) {
+                    extracted = extractKeyPath(object, schemaKeyPath, extractKey);
+                }
+                (0,globals/* invariant */.kG)(extracted !== void 0, 2, schemaKeyPath.join("."), object);
+                return extracted;
+            }));
+            return "".concat(context.typename, ":").concat(JSON.stringify(keyObject));
+        }));
 }
 function keyArgsFnFromSpecifier(specifier) {
     var info = lookupSpecifierInfo(specifier);
-    return info.keyArgsFn || (info.keyArgsFn = function (args, _a) {
-        var field = _a.field, variables = _a.variables, fieldName = _a.fieldName;
-        var collected = collectSpecifierPaths(specifier, function (keyPath) {
-            var firstKey = keyPath[0];
-            var firstChar = firstKey.charAt(0);
-            if (firstChar === "@") {
-                if (field && (0,arrays/* isNonEmptyArray */.O)(field.directives)) {
-                    var directiveName_1 = firstKey.slice(1);
-                    var d = field.directives.find(function (d) { return d.name.value === directiveName_1; });
-                    var directiveArgs = d && (0,storeUtils/* argumentsObjectFromField */.NC)(d, variables);
-                    return directiveArgs && extractKeyPath(directiveArgs, keyPath.slice(1));
+    return (info.keyArgsFn ||
+        (info.keyArgsFn = function (args, _a) {
+            var field = _a.field, variables = _a.variables, fieldName = _a.fieldName;
+            var collected = collectSpecifierPaths(specifier, function (keyPath) {
+                var firstKey = keyPath[0];
+                var firstChar = firstKey.charAt(0);
+                if (firstChar === "@") {
+                    if (field && (0,arrays/* isNonEmptyArray */.O)(field.directives)) {
+                        var directiveName_1 = firstKey.slice(1);
+                        var d = field.directives.find(function (d) { return d.name.value === directiveName_1; });
+                        var directiveArgs = d && (0,storeUtils/* argumentsObjectFromField */.NC)(d, variables);
+                        return (directiveArgs &&
+                            extractKeyPath(directiveArgs, keyPath.slice(1)));
+                    }
+                    return;
                 }
-                return;
-            }
-            if (firstChar === "$") {
-                var variableName = firstKey.slice(1);
-                if (variables && helpers/* hasOwn */.RI.call(variables, variableName)) {
-                    var varKeyPath = keyPath.slice(0);
-                    varKeyPath[0] = variableName;
-                    return extractKeyPath(variables, varKeyPath);
+                if (firstChar === "$") {
+                    var variableName = firstKey.slice(1);
+                    if (variables && helpers/* hasOwn */.RI.call(variables, variableName)) {
+                        var varKeyPath = keyPath.slice(0);
+                        varKeyPath[0] = variableName;
+                        return extractKeyPath(variables, varKeyPath);
+                    }
+                    return;
                 }
-                return;
+                if (args) {
+                    return extractKeyPath(args, keyPath);
+                }
+            });
+            var suffix = JSON.stringify(collected);
+            if (args || suffix !== "{}") {
+                fieldName += ":" + suffix;
             }
-            if (args) {
-                return extractKeyPath(args, keyPath);
-            }
-        });
-        var suffix = JSON.stringify(collected);
-        if (args || suffix !== "{}") {
-            fieldName += ":" + suffix;
-        }
-        return fieldName;
-    });
+            return fieldName;
+        }));
 }
 function collectSpecifierPaths(specifier, extractor) {
-    var merger = new mergeDeep/* DeepMerger */.w0;
+    var merger = new mergeDeep/* DeepMerger */.w0();
     return getSpecifierPaths(specifier).reduce(function (collected, path) {
         var _a;
         var toMerge = extractor(path);
@@ -15779,7 +15799,7 @@ function collectSpecifierPaths(specifier, extractor) {
 function getSpecifierPaths(spec) {
     var info = lookupSpecifierInfo(spec);
     if (!info.paths) {
-        var paths_1 = info.paths = [];
+        var paths_1 = (info.paths = []);
         var currentPath_1 = [];
         spec.forEach(function (s, i) {
             if ((0,arrays/* isArray */.k)(s)) {
@@ -15813,7 +15833,9 @@ function normalize(value) {
         if ((0,arrays/* isArray */.k)(value)) {
             return value.map(normalize);
         }
-        return collectSpecifierPaths(Object.keys(value).sort(), function (path) { return extractKeyPath(value, path); });
+        return collectSpecifierPaths(Object.keys(value).sort(), function (path) {
+            return extractKeyPath(value, path);
+        });
     }
     return value;
 }
@@ -15828,8 +15850,11 @@ function normalize(value) {
 
 storeUtils/* getStoreKeyName */.PT.setStringify(object_canon/* canonicalStringify */.B);
 function argsFromFieldSpecifier(spec) {
-    return spec.args !== void 0 ? spec.args :
-        spec.field ? (0,storeUtils/* argumentsObjectFromField */.NC)(spec.field, spec.variables) : null;
+    return spec.args !== void 0
+        ? spec.args
+        : spec.field
+            ? (0,storeUtils/* argumentsObjectFromField */.NC)(spec.field, spec.variables)
+            : null;
 }
 var nullKeyFieldsFn = function () { return void 0; };
 var simpleKeyArgsFn = function (_args, context) { return context.fieldName; };
@@ -15863,22 +15888,24 @@ var Policies = (function () {
     Policies.prototype.identify = function (object, partialContext) {
         var _a;
         var policies = this;
-        var typename = partialContext && (partialContext.typename ||
-            ((_a = partialContext.storeObject) === null || _a === void 0 ? void 0 : _a.__typename)) || object.__typename;
+        var typename = (partialContext &&
+            (partialContext.typename || ((_a = partialContext.storeObject) === null || _a === void 0 ? void 0 : _a.__typename))) ||
+            object.__typename;
         if (typename === this.rootTypenamesById.ROOT_QUERY) {
             return ["ROOT_QUERY"];
         }
-        var storeObject = partialContext && partialContext.storeObject || object;
-        var context = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, partialContext), { typename: typename, storeObject: storeObject, readField: partialContext && partialContext.readField || function () {
-                var options = normalizeReadFieldOptions(arguments, storeObject);
-                return policies.readField(options, {
-                    store: policies.cache["data"],
-                    variables: options.variables,
-                });
-            } });
+        var storeObject = (partialContext && partialContext.storeObject) || object;
+        var context = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, partialContext), { typename: typename, storeObject: storeObject, readField: (partialContext && partialContext.readField) ||
+                function () {
+                    var options = normalizeReadFieldOptions(arguments, storeObject);
+                    return policies.readField(options, {
+                        store: policies.cache["data"],
+                        variables: options.variables,
+                    });
+                } });
         var id;
         var policy = typename && this.getTypePolicy(typename);
-        var keyFn = policy && policy.keyFn || this.config.dataIdFromObject;
+        var keyFn = (policy && policy.keyFn) || this.config.dataIdFromObject;
         while (keyFn) {
             var specifierOrId = keyFn((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, object), storeObject), context);
             if ((0,arrays/* isArray */.k)(specifierOrId)) {
@@ -15916,17 +15943,28 @@ var Policies = (function () {
         var keyFields = incoming.keyFields, fields = incoming.fields;
         function setMerge(existing, merge) {
             existing.merge =
-                typeof merge === "function" ? merge :
-                    merge === true ? mergeTrueFn :
-                        merge === false ? mergeFalseFn :
-                            existing.merge;
+                typeof merge === "function"
+                    ? merge
+                    :
+                        merge === true
+                            ? mergeTrueFn
+                            :
+                                merge === false
+                                    ? mergeFalseFn
+                                    : existing.merge;
         }
         setMerge(existing, incoming.merge);
         existing.keyFn =
-            keyFields === false ? nullKeyFieldsFn :
-                (0,arrays/* isArray */.k)(keyFields) ? keyFieldsFnFromSpecifier(keyFields) :
-                    typeof keyFields === "function" ? keyFields :
-                        existing.keyFn;
+            keyFields === false
+                ? nullKeyFieldsFn
+                :
+                    (0,arrays/* isArray */.k)(keyFields)
+                        ? keyFieldsFnFromSpecifier(keyFields)
+                        :
+                            typeof keyFields === "function"
+                                ? keyFields
+                                :
+                                    existing.keyFn;
         if (fields) {
             Object.keys(fields).forEach(function (fieldName) {
                 var existing = _this.getFieldPolicy(typename, fieldName, true);
@@ -15937,10 +15975,16 @@ var Policies = (function () {
                 else {
                     var keyArgs = incoming.keyArgs, read = incoming.read, merge = incoming.merge;
                     existing.keyFn =
-                        keyArgs === false ? simpleKeyArgsFn :
-                            (0,arrays/* isArray */.k)(keyArgs) ? keyArgsFnFromSpecifier(keyArgs) :
-                                typeof keyArgs === "function" ? keyArgs :
-                                    existing.keyFn;
+                        keyArgs === false
+                            ? simpleKeyArgsFn
+                            :
+                                (0,arrays/* isArray */.k)(keyArgs)
+                                    ? keyArgsFnFromSpecifier(keyArgs)
+                                    :
+                                        typeof keyArgs === "function"
+                                            ? keyArgs
+                                            :
+                                                existing.keyFn;
                     if (typeof read === "function") {
                         existing.read = read;
                     }
@@ -15981,7 +16025,7 @@ var Policies = (function () {
     Policies.prototype.getTypePolicy = function (typename) {
         var _this = this;
         if (!helpers/* hasOwn */.RI.call(this.typePolicies, typename)) {
-            var policy_1 = this.typePolicies[typename] = Object.create(null);
+            var policy_1 = (this.typePolicies[typename] = Object.create(null));
             policy_1.fields = Object.create(null);
             var supertypes_1 = this.supertypeMap.get(typename);
             if (!supertypes_1 && this.fuzzySubtypes.size) {
@@ -15990,7 +16034,9 @@ var Policies = (function () {
                     if (regExp.test(typename)) {
                         var fuzzySupertypes = _this.supertypeMap.get(fuzzy);
                         if (fuzzySupertypes) {
-                            fuzzySupertypes.forEach(function (supertype) { return supertypes_1.add(supertype); });
+                            fuzzySupertypes.forEach(function (supertype) {
+                                return supertypes_1.add(supertype);
+                            });
                         }
                     }
                 });
@@ -16014,13 +16060,14 @@ var Policies = (function () {
     Policies.prototype.getFieldPolicy = function (typename, fieldName, createIfMissing) {
         if (typename) {
             var fieldPolicies = this.getTypePolicy(typename).fields;
-            return fieldPolicies[fieldName] || (createIfMissing && (fieldPolicies[fieldName] = Object.create(null)));
+            return (fieldPolicies[fieldName] ||
+                (createIfMissing && (fieldPolicies[fieldName] = Object.create(null))));
         }
     };
     Policies.prototype.getSupertypeSet = function (subtype, createIfMissing) {
         var supertypeSet = this.supertypeMap.get(subtype);
         if (!supertypeSet && createIfMissing) {
-            this.supertypeMap.set(subtype, supertypeSet = new Set());
+            this.supertypeMap.set(subtype, (supertypeSet = new Set()));
         }
         return supertypeSet;
     };
@@ -16033,8 +16080,7 @@ var Policies = (function () {
         var supertype = fragment.typeCondition.name.value;
         if (typename === supertype)
             return true;
-        if (this.usingPossibleTypes &&
-            this.supertypeMap.has(supertype)) {
+        if (this.usingPossibleTypes && this.supertypeMap.has(supertype)) {
             var typenameSupertypeSet = this.getSupertypeSet(typename, true);
             var workQueue_1 = [typenameSupertypeSet];
             var maybeEnqueue_1 = function (subtype) {
@@ -16136,7 +16182,10 @@ var Policies = (function () {
             var readOptions = makeFieldFunctionOptions(this, objectOrReference, options, context, context.store.getStorage((0,storeUtils/* isReference */.Yk)(objectOrReference)
                 ? objectOrReference.__ref
                 : objectOrReference, storeFieldName));
-            return reactiveVars/* cacheSlot */.ab.withValue(this.cache, read, [existing, readOptions]);
+            return reactiveVars/* cacheSlot */.ab.withValue(this.cache, read, [
+                existing,
+                readOptions,
+            ]);
         }
         return existing;
     };
@@ -16164,7 +16213,12 @@ var Policies = (function () {
         if (context.overwrite) {
             existing = void 0;
         }
-        return merge(existing, incoming, makeFieldFunctionOptions(this, void 0, { typename: typename, fieldName: field.name.value, field: field, variables: context.variables }, context, storage || Object.create(null)));
+        return merge(existing, incoming, makeFieldFunctionOptions(this, void 0, {
+            typename: typename,
+            fieldName: field.name.value,
+            field: field,
+            variables: context.variables,
+        }, context, storage || Object.create(null)));
     };
     return Policies;
 }());
@@ -16219,21 +16273,18 @@ function makeMergeObjectsFunction(store) {
         if ((0,arrays/* isArray */.k)(existing) || (0,arrays/* isArray */.k)(incoming)) {
             throw (0,globals/* newInvariantError */._K)(6);
         }
-        if ((0,objects/* isNonNullObject */.s)(existing) &&
-            (0,objects/* isNonNullObject */.s)(incoming)) {
+        if ((0,objects/* isNonNullObject */.s)(existing) && (0,objects/* isNonNullObject */.s)(incoming)) {
             var eType = store.getFieldValue(existing, "__typename");
             var iType = store.getFieldValue(incoming, "__typename");
             var typesDiffer = eType && iType && eType !== iType;
             if (typesDiffer) {
                 return incoming;
             }
-            if ((0,storeUtils/* isReference */.Yk)(existing) &&
-                (0,helpers/* storeValueIsStoreObject */.j)(incoming)) {
+            if ((0,storeUtils/* isReference */.Yk)(existing) && (0,helpers/* storeValueIsStoreObject */.j)(incoming)) {
                 store.merge(existing.__ref, incoming);
                 return existing;
             }
-            if ((0,helpers/* storeValueIsStoreObject */.j)(existing) &&
-                (0,storeUtils/* isReference */.Yk)(incoming)) {
+            if ((0,helpers/* storeValueIsStoreObject */.j)(existing) && (0,storeUtils/* isReference */.Yk)(incoming)) {
                 store.merge(existing, incoming.__ref);
                 return incoming;
             }
@@ -16256,13 +16307,14 @@ function makeMergeObjectsFunction(store) {
 
 
 
-;
 function getContextFlavor(context, clientOnly, deferred) {
     var key = "".concat(clientOnly).concat(deferred);
     var flavored = context.flavors.get(key);
     if (!flavored) {
-        context.flavors.set(key, flavored = (context.clientOnly === clientOnly &&
-            context.deferred === deferred) ? context : (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, context), { clientOnly: clientOnly, deferred: deferred }));
+        context.flavors.set(key, (flavored =
+            context.clientOnly === clientOnly && context.deferred === deferred
+                ? context
+                : (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, context), { clientOnly: clientOnly, deferred: deferred })));
     }
     return flavored;
 }
@@ -16280,12 +16332,12 @@ var StoreWriter = (function () {
         variables = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, (0,getFromAST/* getDefaultValues */.O4)(operationDefinition)), variables);
         var context = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({ store: store, written: Object.create(null), merge: function (existing, incoming) {
                 return merger.merge(existing, incoming);
-            }, variables: variables, varString: (0,object_canon/* canonicalStringify */.B)(variables) }, (0,helpers/* extractFragmentContext */.Is)(query, this.fragments)), { overwrite: !!overwrite, incomingById: new Map, clientOnly: false, deferred: false, flavors: new Map });
+            }, variables: variables, varString: (0,object_canon/* canonicalStringify */.B)(variables) }, (0,helpers/* extractFragmentContext */.Is)(query, this.fragments)), { overwrite: !!overwrite, incomingById: new Map(), clientOnly: false, deferred: false, flavors: new Map() });
         var ref = this.processSelectionSet({
             result: result || Object.create(null),
             dataId: dataId,
             selectionSet: operationDefinition.selectionSet,
-            mergeTree: { map: new Map },
+            mergeTree: { map: new Map() },
             context: context,
         });
         if (!(0,storeUtils/* isReference */.Yk)(ref)) {
@@ -16309,7 +16361,8 @@ var StoreWriter = (function () {
                     }
                 });
                 var hasSelectionSet_1 = function (storeFieldName) {
-                    return fieldsWithSelectionSets_1[(0,helpers/* fieldNameFromStoreName */.E_)(storeFieldName)] === true;
+                    return fieldsWithSelectionSets_1[(0,helpers/* fieldNameFromStoreName */.E_)(storeFieldName)] ===
+                        true;
                 };
                 var hasMergeFunction_1 = function (storeFieldName) {
                     var childTree = mergeTree && mergeTree.map.get(storeFieldName);
@@ -16370,8 +16423,7 @@ var StoreWriter = (function () {
                     : context, childTree);
                 var childTypename = void 0;
                 if (field.selectionSet &&
-                    ((0,storeUtils/* isReference */.Yk)(incomingValue) ||
-                        (0,helpers/* storeValueIsStoreObject */.j)(incomingValue))) {
+                    ((0,storeUtils/* isReference */.Yk)(incomingValue) || (0,helpers/* storeValueIsStoreObject */.j)(incomingValue))) {
                     childTypename = readField("__typename", incomingValue);
                 }
                 var merge = policies.getMergeFunction(typename, field.name.value, childTypename);
@@ -16420,7 +16472,8 @@ var StoreWriter = (function () {
             if (sets.indexOf(selectionSet) >= 0)
                 return dataRef;
             sets.push(selectionSet);
-            if (this.reader && this.reader.isFresh(result, dataRef, selectionSet, context)) {
+            if (this.reader &&
+                this.reader.isFresh(result, dataRef, selectionSet, context)) {
                 return dataRef;
             }
             var previous_1 = context.incomingById.get(dataId);
@@ -16513,8 +16566,10 @@ var StoreWriter = (function () {
         var _a;
         var _this = this;
         if (mergeTree.map.size && !(0,storeUtils/* isReference */.Yk)(incoming)) {
-            var e_1 = (!(0,arrays/* isArray */.k)(incoming) &&
-                ((0,storeUtils/* isReference */.Yk)(existing) || (0,helpers/* storeValueIsStoreObject */.j)(existing))) ? existing : void 0;
+            var e_1 = !(0,arrays/* isArray */.k)(incoming) &&
+                ((0,storeUtils/* isReference */.Yk)(existing) || (0,helpers/* storeValueIsStoreObject */.j)(existing))
+                ? existing
+                : void 0;
             var i_1 = incoming;
             if (e_1 && !getStorageArgs) {
                 getStorageArgs = [(0,storeUtils/* isReference */.Yk)(e_1) ? e_1.__ref : e_1];
@@ -16522,7 +16577,9 @@ var StoreWriter = (function () {
             var changedFields_1;
             var getValue_1 = function (from, name) {
                 return (0,arrays/* isArray */.k)(from)
-                    ? (typeof name === "number" ? from[name] : void 0)
+                    ? typeof name === "number"
+                        ? from[name]
+                        : void 0
                     : context.store.getFieldValue(from, String(name));
             };
             mergeTree.map.forEach(function (childTree, storeFieldName) {
@@ -16535,7 +16592,7 @@ var StoreWriter = (function () {
                 }
                 var aVal = _this.applyMerges(childTree, eVal, iVal, context, getStorageArgs);
                 if (aVal !== iVal) {
-                    changedFields_1 = changedFields_1 || new Map;
+                    changedFields_1 = changedFields_1 || new Map();
                     changedFields_1.set(storeFieldName, aVal);
                 }
                 if (getStorageArgs) {
@@ -16561,7 +16618,7 @@ var emptyMergeTreePool = [];
 function getChildMergeTree(_a, name) {
     var map = _a.map;
     if (!map.has(name)) {
-        map.set(name, emptyMergeTreePool.pop() || { map: new Map });
+        map.set(name, emptyMergeTreePool.pop() || { map: new Map() });
     }
     return map.get(name);
 }
@@ -16570,10 +16627,14 @@ function mergeMergeTrees(left, right) {
         return left;
     if (!left || mergeTreeIsEmpty(left))
         return right;
-    var info = left.info && right.info ? (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, left.info), right.info) : left.info || right.info;
+    var info = left.info && right.info
+        ? (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, left.info), right.info) : left.info || right.info;
     var needToMergeMaps = left.map.size && right.map.size;
-    var map = needToMergeMaps ? new Map :
-        left.map.size ? left.map : right.map;
+    var map = needToMergeMaps
+        ? new Map()
+        : left.map.size
+            ? left.map
+            : right.map;
     var merged = { info: info, map: map };
     if (needToMergeMaps) {
         var remainingRightKeys_1 = new Set(right.map.keys());
@@ -16625,18 +16686,18 @@ function warnAboutDataLoss(existingRef, incomingObj, storeFieldName, store) {
         return;
     warnings.add(typeDotName);
     var childTypenames = [];
-    if (!(0,arrays/* isArray */.k)(existing) &&
-        !(0,arrays/* isArray */.k)(incoming)) {
+    if (!(0,arrays/* isArray */.k)(existing) && !(0,arrays/* isArray */.k)(incoming)) {
         [existing, incoming].forEach(function (child) {
             var typename = store.getFieldValue(child, "__typename");
-            if (typeof typename === "string" &&
-                !childTypenames.includes(typename)) {
+            if (typeof typename === "string" && !childTypenames.includes(typename)) {
                 childTypenames.push(typename);
             }
         });
     }
     globalThis.__DEV__ !== false && globals/* invariant */.kG.warn(12, fieldName, parentType, childTypenames.length
-        ? "either ensure all objects of type " + childTypenames.join(" and ") + " have an ID or a custom merge function, or "
+        ? "either ensure all objects of type " +
+            childTypenames.join(" and ") +
+            " have an ID or a custom merge function, or "
         : "", typeDotName, existing, incoming);
 }
 //# sourceMappingURL=writeToStore.js.map
@@ -16678,10 +16739,10 @@ var InMemoryCache = (function (_super) {
         return _this;
     }
     InMemoryCache.prototype.init = function () {
-        var rootStore = this.data = new EntityStore.Root({
+        var rootStore = (this.data = new EntityStore.Root({
             policies: this.policies,
             resultCaching: this.config.resultCaching,
-        });
+        }));
         this.optimisticData = rootStore.stump;
         this.resetResultCache();
     };
@@ -16689,7 +16750,7 @@ var InMemoryCache = (function (_super) {
         var _this = this;
         var previousReader = this.storeReader;
         var fragments = this.config.fragments;
-        this.storeWriter = new StoreWriter(this, this.storeReader = new StoreReader({
+        this.storeWriter = new StoreWriter(this, (this.storeReader = new StoreReader({
             cache: this,
             addTypename: this.addTypename,
             resultCacheMaxSize: this.config.resultCacheMaxSize,
@@ -16698,7 +16759,7 @@ var InMemoryCache = (function (_super) {
                 ? void 0
                 : previousReader && previousReader.canon,
             fragments: fragments,
-        }), fragments);
+        })), fragments);
         this.maybeBroadcastWatch = (0,lib/* wrap */.re)(function (c, options) {
             return _this.broadcastWatch(c, options);
         }, {
@@ -16709,12 +16770,11 @@ var InMemoryCache = (function (_super) {
                     var optimistic = c.optimistic, id = c.id, variables = c.variables;
                     return store.makeCacheKey(c.query, c.callback, (0,object_canon/* canonicalStringify */.B)({ optimistic: optimistic, id: id, variables: variables }));
                 }
-            }
+            },
         });
-        new Set([
-            this.data.group,
-            this.optimisticData.group,
-        ]).forEach(function (group) { return group.resetCaching(); });
+        new Set([this.data.group, this.optimisticData.group]).forEach(function (group) {
+            return group.resetCaching();
+        });
     };
     InMemoryCache.prototype.restore = function (data) {
         this.init();
@@ -16729,7 +16789,7 @@ var InMemoryCache = (function (_super) {
     InMemoryCache.prototype.read = function (options) {
         var _a = options.returnPartialData, returnPartialData = _a === void 0 ? false : _a;
         try {
-            return this.storeReader.diffQueryAgainstStore((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { store: options.optimistic ? this.optimisticData : this.data, config: this.config, returnPartialData: returnPartialData })).result || null;
+            return (this.storeReader.diffQueryAgainstStore((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { store: options.optimistic ? this.optimisticData : this.data, config: this.config, returnPartialData: returnPartialData })).result || null);
         }
         catch (e) {
             if (e instanceof common/* MissingFieldError */.y) {
@@ -16863,7 +16923,7 @@ var InMemoryCache = (function (_super) {
                 _this.data = _this.optimisticData = layer;
             }
             try {
-                return updateResult = update(_this);
+                return (updateResult = update(_this));
             }
             finally {
                 --_this.txCount;
@@ -16878,7 +16938,7 @@ var InMemoryCache = (function (_super) {
                     return false;
                 } }));
         }
-        if (typeof optimistic === 'string') {
+        if (typeof optimistic === "string") {
             this.optimisticData = this.optimisticData.addLayer(optimistic, perform);
         }
         else if (optimistic === false) {
@@ -16910,7 +16970,7 @@ var InMemoryCache = (function (_super) {
     InMemoryCache.prototype.performTransaction = function (update, optimisticId) {
         return this.batch({
             update: update,
-            optimistic: optimisticId || (optimisticId !== null),
+            optimistic: optimisticId || optimisticId !== null,
         });
     };
     InMemoryCache.prototype.transformDocument = function (document) {
@@ -16924,9 +16984,7 @@ var InMemoryCache = (function (_super) {
     };
     InMemoryCache.prototype.addFragmentsToDocument = function (document) {
         var fragments = this.config.fragments;
-        return fragments
-            ? fragments.transform(document)
-            : document;
+        return fragments ? fragments.transform(document) : document;
     };
     InMemoryCache.prototype.addTypenameToDocument = function (document) {
         if (this.addTypename) {
@@ -16938,8 +16996,7 @@ var InMemoryCache = (function (_super) {
         var lastDiff = c.lastDiff;
         var diff = this.diff(c);
         if (options) {
-            if (c.optimistic &&
-                typeof options.optimistic === "string") {
+            if (c.optimistic && typeof options.optimistic === "string") {
                 diff.fromOptimisticTransaction = true;
             }
             if (options.onWatchUpdated &&
@@ -16948,7 +17005,7 @@ var InMemoryCache = (function (_super) {
             }
         }
         if (!lastDiff || !(0,equality_lib/* equal */.D)(lastDiff.result, diff.result)) {
-            c.callback(c.lastDiff = diff, lastDiff);
+            c.callback((c.lastDiff = diff), lastDiff);
         }
     };
     return InMemoryCache;
@@ -17016,7 +17073,7 @@ var ObjectCanon = (function () {
                     var array = value.map(this.admit, this);
                     var node = this.pool.lookupArray(array);
                     if (!node.array) {
-                        this.known.add(node.array = array);
+                        this.known.add((node.array = array));
                         if (globalThis.__DEV__ !== false) {
                             Object.freeze(array);
                         }
@@ -17037,7 +17094,7 @@ var ObjectCanon = (function () {
                     });
                     var node = this.pool.lookupArray(array_1);
                     if (!node.object) {
-                        var obj_1 = node.object = Object.create(proto_1);
+                        var obj_1 = (node.object = Object.create(proto_1));
                         this.known.add(obj_1);
                         keys.sorted.forEach(function (key, i) {
                             obj_1[key] = array_1[firstValueIndex_1 + i];
@@ -17059,7 +17116,7 @@ var ObjectCanon = (function () {
             keys.sort();
             var json = JSON.stringify(keys);
             if (!(node.keys = this.keysByJSON.get(json))) {
-                this.keysByJSON.set(json, node.keys = { sorted: keys, json: json });
+                this.keysByJSON.set(json, (node.keys = { sorted: keys, json: json }));
             }
         }
         return node.keys;
@@ -17075,7 +17132,7 @@ var canonicalStringify = Object.assign(function (value) {
         var canonical = stringifyCanon.admit(value);
         var json = stringifyCache.get(canonical);
         if (json === void 0) {
-            stringifyCache.set(canonical, json = JSON.stringify(canonical));
+            stringifyCache.set(canonical, (json = JSON.stringify(canonical)));
         }
         return json;
     }
@@ -17086,7 +17143,7 @@ var canonicalStringify = Object.assign(function (value) {
 var stringifyCanon;
 var stringifyCache;
 function resetCanonicalStringify() {
-    stringifyCanon = new ObjectCanon;
+    stringifyCanon = new ObjectCanon();
     stringifyCache = new (_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .canUseWeakMap */ .mr ? WeakMap : Map)();
 }
 //# sourceMappingURL=object-canon.js.map
@@ -17112,10 +17169,10 @@ var cacheInfoMap = new WeakMap();
 function getCacheInfo(cache) {
     var info = cacheInfoMap.get(cache);
     if (!info) {
-        cacheInfoMap.set(cache, info = {
-            vars: new Set,
+        cacheInfoMap.set(cache, (info = {
+            vars: new Set(),
             dep: (0,optimism__WEBPACK_IMPORTED_MODULE_0__/* .dep */ .dP)(),
-        });
+        }));
     }
     return info;
 }
@@ -17156,11 +17213,11 @@ function makeVar(value) {
             listeners.delete(listener);
         };
     };
-    var attach = rv.attachCache = function (cache) {
+    var attach = (rv.attachCache = function (cache) {
         caches.add(cache);
         getCacheInfo(cache).vars.add(rv);
         return rv;
-    };
+    });
     rv.forgetCache = function (cache) { return caches.delete(cache); };
     return rv;
 }
@@ -17230,7 +17287,9 @@ function asyncMap(observable, mapFn, catchFn) {
                 return function (arg) {
                     ++activeCallbackCount;
                     var both = function () { return examiner(arg); };
-                    promiseQueue = promiseQueue.then(both, both).then(function (result) {
+                    promiseQueue = promiseQueue
+                        .then(both, both)
+                        .then(function (result) {
                         --activeCallbackCount;
                         next && next.call(observer, result);
                         if (completed) {
@@ -17239,7 +17298,8 @@ function asyncMap(observable, mapFn, catchFn) {
                     }, function (error) {
                         --activeCallbackCount;
                         throw error;
-                    }).catch(function (caught) {
+                    })
+                        .catch(function (caught) {
                         error && error.call(observer, caught);
                     });
                 };
@@ -17347,8 +17407,7 @@ var Concast = (function (_super) {
                         if (sub)
                             setTimeout(function () { return sub.unsubscribe(); });
                         _this.sub = null;
-                        if (_this.latest &&
-                            _this.latest[0] === "next") {
+                        if (_this.latest && _this.latest[0] === "next") {
                             _this.resolve(_this.latest[1]);
                         }
                         else {
@@ -17358,7 +17417,7 @@ var Concast = (function (_super) {
                         (0,iteration/* iterateObserversSafely */.p)(_this.observers, "complete");
                     }
                     else if (isPromiseLike(value)) {
-                        value.then(function (obs) { return _this.sub = obs.subscribe(_this.handlers); });
+                        value.then(function (obs) { return (_this.sub = obs.subscribe(_this.handlers)); });
                     }
                     else {
                         _this.sub = value.subscribe(_this.handlers);
@@ -17397,9 +17456,7 @@ var Concast = (function (_super) {
             if (method) {
                 method.call(observer, this.latest[1]);
             }
-            if (this.sub === null &&
-                nextOrError === "next" &&
-                observer.complete) {
+            if (this.sub === null && nextOrError === "next" && observer.complete) {
                 observer.complete();
             }
         }
@@ -17411,15 +17468,14 @@ var Concast = (function (_super) {
         }
     };
     Concast.prototype.removeObserver = function (observer) {
-        if (this.observers.delete(observer) &&
-            this.observers.size < 1) {
+        if (this.observers.delete(observer) && this.observers.size < 1) {
             this.handlers.complete();
         }
     };
     Concast.prototype.notify = function (method, arg) {
         var nextResultListeners = this.nextResultListeners;
         if (nextResultListeners.size) {
-            this.nextResultListeners = new Set;
+            this.nextResultListeners = new Set();
             nextResultListeners.forEach(function (listener) { return listener(method, arg); });
         }
     };
@@ -17594,7 +17650,7 @@ var LocalState = (function () {
         return this.fragmentMatcher;
     };
     LocalState.prototype.clientQuery = function (document) {
-        if ((0,directives/* hasDirectives */.FS)(['client'], document)) {
+        if ((0,directives/* hasDirectives */.FS)(["client"], document)) {
             if (this.resolvers) {
                 return document;
             }
@@ -17627,10 +17683,10 @@ var LocalState = (function () {
         (0,visitor/* visit */.Vn)(document, {
             Directive: {
                 enter: function (node) {
-                    if (node.name.value === 'client' && node.arguments) {
+                    if (node.name.value === "client" && node.arguments) {
                         forceResolvers = node.arguments.some(function (arg) {
-                            return arg.name.value === 'always' &&
-                                arg.value.kind === 'BooleanValue' &&
+                            return arg.name.value === "always" &&
+                                arg.value.kind === "BooleanValue" &&
                                 arg.value.value === true;
                         });
                         if (forceResolvers) {
@@ -17666,7 +17722,7 @@ var LocalState = (function () {
                 defaultOperationType = definitionOperation
                     ? definitionOperation.charAt(0).toUpperCase() +
                         definitionOperation.slice(1)
-                    : 'Query';
+                    : "Query";
                 _a = this, cache = _a.cache, client = _a.client;
                 execContext = {
                     fragmentMap: fragmentMap,
@@ -17696,7 +17752,8 @@ var LocalState = (function () {
                 execute = function (selection) { return (0,tslib_es6/* __awaiter */.mG)(_this, void 0, void 0, function () {
                     var fragment, typeCondition;
                     return (0,tslib_es6/* __generator */.Jh)(this, function (_a) {
-                        if (!isClientFieldDescendant && !execContext.selectionsToResolve.has(selection)) {
+                        if (!isClientFieldDescendant &&
+                            !execContext.selectionsToResolve.has(selection)) {
                             return [2];
                         }
                         if (!(0,directives/* shouldInclude */.LZ)(selection, variables)) {
@@ -17705,7 +17762,7 @@ var LocalState = (function () {
                         if ((0,storeUtils/* isField */.My)(selection)) {
                             return [2, this.resolveField(selection, isClientFieldDescendant, rootValue, execContext).then(function (fieldResult) {
                                     var _a;
-                                    if (typeof fieldResult !== 'undefined') {
+                                    if (typeof fieldResult !== "undefined") {
                                         resultsToMerge.push((_a = {},
                                             _a[(0,storeUtils/* resultKeyNameFromField */.u2)(selection)] = fieldResult,
                                             _a));
@@ -17771,9 +17828,9 @@ var LocalState = (function () {
                         if (result === void 0) { result = defaultResult; }
                         if (field.directives) {
                             field.directives.forEach(function (directive) {
-                                if (directive.name.value === 'export' && directive.arguments) {
+                                if (directive.name.value === "export" && directive.arguments) {
                                     directive.arguments.forEach(function (arg) {
-                                        if (arg.name.value === 'as' && arg.value.kind === 'StringValue') {
+                                        if (arg.name.value === "as" && arg.value.kind === "StringValue") {
                                             execContext.exportedVariables[arg.value.value] = result;
                                         }
                                     });
@@ -17786,7 +17843,7 @@ var LocalState = (function () {
                         if (result == null) {
                             return result;
                         }
-                        var isClientField = (_b = (_a = field.directives) === null || _a === void 0 ? void 0 : _a.some(function (d) { return d.name.value === 'client'; })) !== null && _b !== void 0 ? _b : false;
+                        var isClientField = (_b = (_a = field.directives) === null || _a === void 0 ? void 0 : _a.some(function (d) { return d.name.value === "client"; })) !== null && _b !== void 0 ? _b : false;
                         if (Array.isArray(result)) {
                             return _this.resolveSubSelectedArray(field, isClientFieldDescendant || isClientField, result, execContext);
                         }
@@ -17820,7 +17877,7 @@ var LocalState = (function () {
                 selectionsToResolveCache.set(definitionNode, matches_1);
                 (0,visitor/* visit */.Vn)(definitionNode, {
                     Directive: function (node, _, __, ___, ancestors) {
-                        if (node.name.value === 'client') {
+                        if (node.name.value === "client") {
                             ancestors.forEach(function (node) {
                                 if (isSingleASTNode(node) && isSelectionNode(node)) {
                                     matches_1.add(node);
@@ -17843,7 +17900,7 @@ var LocalState = (function () {
                                 matches_1.add(selection);
                             });
                         }
-                    }
+                    },
                 });
             }
             return selectionsToResolveCache.get(definitionNode);
@@ -17862,7 +17919,6 @@ var LocalState = (function () {
 
 
 
-;
 var destructiveMethodCounts = new (canUse/* canUseWeakMap */.mr ? WeakMap : Map)();
 function wrapDestructiveCacheMethod(cache, methodName) {
     var original = cache[methodName];
@@ -17890,7 +17946,7 @@ var QueryInfo = (function () {
         this.stopped = false;
         this.dirty = false;
         this.observableQuery = null;
-        var cache = this.cache = queryManager.cache;
+        var cache = (this.cache = queryManager.cache);
         if (!destructiveMethodCounts.has(cache)) {
             destructiveMethodCounts.set(cache, 0);
             wrapDestructiveCacheMethod(cache, "evict");
@@ -17927,13 +17983,12 @@ var QueryInfo = (function () {
         cancelNotifyTimeout(this);
         this.dirty = false;
     };
-    QueryInfo.prototype.getDiff = function (variables) {
-        if (variables === void 0) { variables = this.variables; }
-        var options = this.getDiffOptions(variables);
+    QueryInfo.prototype.getDiff = function () {
+        var options = this.getDiffOptions();
         if (this.lastDiff && (0,lib/* equal */.D)(options, this.lastDiff.options)) {
             return this.lastDiff.diff;
         }
-        this.updateWatch(this.variables = variables);
+        this.updateWatch(this.variables);
         var oq = this.observableQuery;
         if (oq && oq.options.fetchPolicy === "no-cache") {
             return { complete: false };
@@ -17943,10 +17998,12 @@ var QueryInfo = (function () {
         return diff;
     };
     QueryInfo.prototype.updateLastDiff = function (diff, options) {
-        this.lastDiff = diff ? {
-            diff: diff,
-            options: options || this.getDiffOptions(),
-        } : void 0;
+        this.lastDiff = diff
+            ? {
+                diff: diff,
+                options: options || this.getDiffOptions(),
+            }
+            : void 0;
     };
     QueryInfo.prototype.getDiffOptions = function (variables) {
         var _a;
@@ -17963,8 +18020,7 @@ var QueryInfo = (function () {
         var _this = this;
         var oldDiff = this.lastDiff && this.lastDiff.diff;
         this.updateLastDiff(diff);
-        if (!this.dirty &&
-            !(0,lib/* equal */.D)(oldDiff && oldDiff.result, diff && diff.result)) {
+        if (!this.dirty && !(0,lib/* equal */.D)(oldDiff && oldDiff.result, diff && diff.result)) {
             this.dirty = true;
             if (!this.notifyTimeout) {
                 this.notifyTimeout = setTimeout(function () { return _this.notify(); }, 0);
@@ -17981,7 +18037,7 @@ var QueryInfo = (function () {
         this.observableQuery = oq;
         if (oq) {
             oq["queryInfo"] = this;
-            this.listeners.add(this.oqListener = function () {
+            this.listeners.add((this.oqListener = function () {
                 var diff = _this.getDiff();
                 if (diff.fromOptimisticTransaction) {
                     oq["observe"]();
@@ -17989,7 +18045,7 @@ var QueryInfo = (function () {
                 else {
                     (0,ObservableQuery/* reobserveCacheFirst */.vj)(oq);
                 }
-            });
+            }));
         }
         else {
             delete this.oqListener;
@@ -18007,11 +18063,9 @@ var QueryInfo = (function () {
         if (!this.dirty || !this.listeners.size) {
             return false;
         }
-        if ((0,core_networkStatus/* isNetworkRequestInFlight */.Oj)(this.networkStatus) &&
-            this.observableQuery) {
+        if ((0,core_networkStatus/* isNetworkRequestInFlight */.Oj)(this.networkStatus) && this.observableQuery) {
             var fetchPolicy = this.observableQuery.options.fetchPolicy;
-            if (fetchPolicy !== "cache-only" &&
-                fetchPolicy !== "cache-and-network") {
+            if (fetchPolicy !== "cache-only" && fetchPolicy !== "cache-and-network") {
                 return false;
             }
         }
@@ -18038,10 +18092,9 @@ var QueryInfo = (function () {
             return;
         }
         var watchOptions = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, this.getDiffOptions(variables)), { watcher: this, callback: function (diff) { return _this.setDiff(diff); } });
-        if (!this.lastWatch ||
-            !(0,lib/* equal */.D)(watchOptions, this.lastWatch)) {
+        if (!this.lastWatch || !(0,lib/* equal */.D)(watchOptions, this.lastWatch)) {
             this.cancel();
-            this.cancel = this.cache.watch(this.lastWatch = watchOptions);
+            this.cancel = this.cache.watch((this.lastWatch = watchOptions));
         }
     };
     QueryInfo.prototype.resetLastWrite = function () {
@@ -18061,16 +18114,16 @@ var QueryInfo = (function () {
             ? result.errors.slice(0)
             : [];
         this.reset();
-        if ('incremental' in result && (0,arrays/* isNonEmptyArray */.O)(result.incremental)) {
+        if ("incremental" in result && (0,arrays/* isNonEmptyArray */.O)(result.incremental)) {
             var mergedData = (0,incrementalResult/* mergeIncrementalData */.mT)(this.getDiff().result, result);
             result.data = mergedData;
         }
-        else if ('hasNext' in result && result.hasNext) {
+        else if ("hasNext" in result && result.hasNext) {
             var diff = this.getDiff();
             result.data = merger.merge(diff.result, result.data);
         }
         this.graphQLErrors = graphQLErrors;
-        if (options.fetchPolicy === 'no-cache') {
+        if (options.fetchPolicy === "no-cache") {
             this.updateLastDiff({ result: result.data, complete: true }, this.getDiffOptions(options.variables));
         }
         else if (cacheWriteBehavior !== 0) {
@@ -18090,15 +18143,14 @@ var QueryInfo = (function () {
                         };
                     }
                     else {
-                        if (_this.lastDiff &&
-                            _this.lastDiff.diff.complete) {
+                        if (_this.lastDiff && _this.lastDiff.diff.complete) {
                             result.data = _this.lastDiff.diff.result;
                             return;
                         }
                     }
                     var diffOptions = _this.getDiffOptions(options.variables);
                     var diff = cache.diff(diffOptions);
-                    if (!_this.stopped) {
+                    if (!_this.stopped && (0,lib/* equal */.D)(_this.variables, options.variables)) {
                         _this.updateWatch(options.variables);
                     }
                     _this.updateLastDiff(diff, diffOptions);
@@ -18114,7 +18166,7 @@ var QueryInfo = (function () {
     };
     QueryInfo.prototype.markReady = function () {
         this.networkError = null;
-        return this.networkStatus = core_networkStatus/* NetworkStatus */.Ie.ready;
+        return (this.networkStatus = core_networkStatus/* NetworkStatus */.Ie.ready);
     };
     QueryInfo.prototype.markError = function (error) {
         this.networkStatus = core_networkStatus/* NetworkStatus */.Ie.error;
@@ -18133,8 +18185,7 @@ var QueryInfo = (function () {
 
 function shouldWriteResult(result, errorPolicy) {
     if (errorPolicy === void 0) { errorPolicy = "none"; }
-    var ignoreErrors = errorPolicy === "ignore" ||
-        errorPolicy === "all";
+    var ignoreErrors = errorPolicy === "ignore" || errorPolicy === "all";
     var writeWithErrors = !graphQLResultHasError(result);
     if (!writeWithErrors && ignoreErrors && result.data) {
         writeWithErrors = true;
@@ -18163,8 +18214,8 @@ var print = __webpack_require__(8470);
 var QueryManager_hasOwnProperty = Object.prototype.hasOwnProperty;
 var QueryManager = (function () {
     function QueryManager(_a) {
-        var cache = _a.cache, link = _a.link, defaultOptions = _a.defaultOptions, documentTransform = _a.documentTransform, _b = _a.queryDeduplication, queryDeduplication = _b === void 0 ? false : _b, onBroadcast = _a.onBroadcast, _c = _a.ssrMode, ssrMode = _c === void 0 ? false : _c, _d = _a.clientAwareness, clientAwareness = _d === void 0 ? {} : _d, localState = _a.localState, _e = _a.assumeImmutableResults, assumeImmutableResults = _e === void 0 ? !!cache.assumeImmutableResults : _e;
         var _this = this;
+        var cache = _a.cache, link = _a.link, defaultOptions = _a.defaultOptions, documentTransform = _a.documentTransform, _b = _a.queryDeduplication, queryDeduplication = _b === void 0 ? false : _b, onBroadcast = _a.onBroadcast, _c = _a.ssrMode, ssrMode = _c === void 0 ? false : _c, _d = _a.clientAwareness, clientAwareness = _d === void 0 ? {} : _d, localState = _a.localState, _e = _a.assumeImmutableResults, assumeImmutableResults = _e === void 0 ? !!cache.assumeImmutableResults : _e;
         this.clientAwareness = {};
         this.queries = new Map();
         this.fetchCancelFns = new Map();
@@ -18211,8 +18262,7 @@ var QueryManager = (function () {
                 switch (_h.label) {
                     case 0:
                         (0,globals/* invariant */.kG)(mutation, 24);
-                        (0,globals/* invariant */.kG)(fetchPolicy === 'network-only' ||
-                            fetchPolicy === 'no-cache', 25);
+                        (0,globals/* invariant */.kG)(fetchPolicy === "network-only" || fetchPolicy === "no-cache", 25);
                         mutationId = this.generateMutationId();
                         mutation = this.cache.transformForLink(this.transform(mutation));
                         hasClientExports = this.getDocumentInfo(mutation).hasClientExports;
@@ -18247,7 +18297,7 @@ var QueryManager = (function () {
                         self = this;
                         return [2, new Promise(function (resolve, reject) {
                                 return asyncMap(self.getObservableFromLink(mutation, (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, context), { optimisticResponse: optimisticResponse }), variables, false), function (result) {
-                                    if (graphQLResultHasError(result) && errorPolicy === 'none') {
+                                    if (graphQLResultHasError(result) && errorPolicy === "none") {
                                         throw new client_errors/* ApolloError */.cA({
                                             graphQLErrors: getGraphQLErrorsFromResult(result),
                                         });
@@ -18260,8 +18310,7 @@ var QueryManager = (function () {
                                     if (typeof refetchQueries === "function") {
                                         refetchQueries = refetchQueries(storeResult);
                                     }
-                                    if (errorPolicy === 'ignore' &&
-                                        graphQLResultHasError(storeResult)) {
+                                    if (errorPolicy === "ignore" && graphQLResultHasError(storeResult)) {
                                         delete storeResult.errors;
                                     }
                                     return self.markMutationResult({
@@ -18283,7 +18332,7 @@ var QueryManager = (function () {
                                 }).subscribe({
                                     next: function (storeResult) {
                                         self.broadcastQueries();
-                                        if (!('hasNext' in storeResult) || storeResult.hasNext === false) {
+                                        if (!("hasNext" in storeResult) || storeResult.hasNext === false) {
                                             resolve(storeResult);
                                         }
                                     },
@@ -18296,9 +18345,11 @@ var QueryManager = (function () {
                                             self.cache.removeOptimistic(mutationId);
                                         }
                                         self.broadcastQueries();
-                                        reject(err instanceof client_errors/* ApolloError */.cA ? err : new client_errors/* ApolloError */.cA({
-                                            networkError: err,
-                                        }));
+                                        reject(err instanceof client_errors/* ApolloError */.cA
+                                            ? err
+                                            : new client_errors/* ApolloError */.cA({
+                                                networkError: err,
+                                            }));
                                     },
                                 });
                             })];
@@ -18316,12 +18367,13 @@ var QueryManager = (function () {
             if (!(0,incrementalResult/* isExecutionPatchIncrementalResult */.GG)(result)) {
                 cacheWrites.push({
                     result: result.data,
-                    dataId: 'ROOT_MUTATION',
+                    dataId: "ROOT_MUTATION",
                     query: mutation.document,
                     variables: mutation.variables,
                 });
             }
-            if ((0,incrementalResult/* isExecutionPatchIncrementalResult */.GG)(result) && (0,arrays/* isNonEmptyArray */.O)(result.incremental)) {
+            if ((0,incrementalResult/* isExecutionPatchIncrementalResult */.GG)(result) &&
+                (0,arrays/* isNonEmptyArray */.O)(result.incremental)) {
                 var diff = cache.diff({
                     id: "ROOT_MUTATION",
                     query: this.getDocumentInfo(mutation.document).asQuery,
@@ -18333,11 +18385,11 @@ var QueryManager = (function () {
                 if (diff.result) {
                     mergedData = (0,incrementalResult/* mergeIncrementalData */.mT)(diff.result, result);
                 }
-                if (typeof mergedData !== 'undefined') {
+                if (typeof mergedData !== "undefined") {
                     result.data = mergedData;
                     cacheWrites.push({
                         result: mergedData,
-                        dataId: 'ROOT_MUTATION',
+                        dataId: "ROOT_MUTATION",
                         query: mutation.document,
                         variables: mutation.variables,
                     });
@@ -18362,13 +18414,13 @@ var QueryManager = (function () {
                     if (complete && currentQueryResult) {
                         var nextQueryResult = updater(currentQueryResult, {
                             mutationResult: result,
-                            queryName: document && (0,getFromAST/* getOperationName */.rY)(document) || void 0,
+                            queryName: (document && (0,getFromAST/* getOperationName */.rY)(document)) || void 0,
                             queryVariables: variables,
                         });
                         if (nextQueryResult) {
                             cacheWrites.push({
                                 result: nextQueryResult,
-                                dataId: 'ROOT_QUERY',
+                                dataId: "ROOT_QUERY",
                                 query: document,
                                 variables: variables,
                             });
@@ -18402,10 +18454,10 @@ var QueryManager = (function () {
                             });
                             if (diff.complete) {
                                 result = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, result), { data: diff.result });
-                                if ('incremental' in result) {
+                                if ("incremental" in result) {
                                     delete result.incremental;
                                 }
-                                if ('hasNext' in result) {
+                                if ("hasNext" in result) {
                                     delete result.hasNext;
                                 }
                             }
@@ -18419,7 +18471,7 @@ var QueryManager = (function () {
                     }
                     if (!skipCache && !mutation.keepRootFields && isFinalResult) {
                         cache.modify({
-                            id: 'ROOT_MUTATION',
+                            id: "ROOT_MUTATION",
                             fields: function (value, _a) {
                                 var fieldName = _a.fieldName, DELETE = _a.DELETE;
                                 return fieldName === "__typename" ? value : DELETE;
@@ -18453,7 +18505,8 @@ var QueryManager = (function () {
         }, mutation.mutationId);
     };
     QueryManager.prototype.fetchQuery = function (queryId, options, networkStatus) {
-        return this.fetchConcastWithInfo(queryId, options, networkStatus).concast.promise;
+        return this.fetchConcastWithInfo(queryId, options, networkStatus).concast
+            .promise;
     };
     QueryManager.prototype.getQueryStore = function () {
         var store = Object.create(null);
@@ -18483,12 +18536,12 @@ var QueryManager = (function () {
             var cacheEntry = {
                 hasClientExports: (0,directives/* hasClientExports */.mj)(document),
                 hasForcedResolvers: this.localState.shouldForceResolvers(document),
-                hasNonreactiveDirective: (0,directives/* hasDirectives */.FS)(['nonreactive'], document),
+                hasNonreactiveDirective: (0,directives/* hasDirectives */.FS)(["nonreactive"], document),
                 clientQuery: this.localState.clientQuery(document),
                 serverQuery: (0,transform/* removeDirectivesFromDocument */.bi)([
-                    { name: 'client', remove: true },
-                    { name: 'connection' },
-                    { name: 'nonreactive' },
+                    { name: "client", remove: true },
+                    { name: "connection" },
+                    { name: "nonreactive" },
                 ], document),
                 defaultVars: (0,getFromAST/* getDefaultValues */.O4)((0,getFromAST/* getOperationDefinition */.$H)(document)),
                 asQuery: (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, document), { definitions: document.definitions.map(function (def) {
@@ -18497,7 +18550,7 @@ var QueryManager = (function () {
                             return (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, def), { operation: "query" });
                         }
                         return def;
-                    }) })
+                    }) }),
             };
             transformCache.set(document, cacheEntry);
         }
@@ -18509,7 +18562,7 @@ var QueryManager = (function () {
     QueryManager.prototype.watchQuery = function (options) {
         var query = this.transform(options.query);
         options = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { variables: this.getVariables(query, options.variables) });
-        if (typeof options.notifyOnNetworkStatusChange === 'undefined') {
+        if (typeof options.notifyOnNetworkStatusChange === "undefined") {
             options.notifyOnNetworkStatusChange = false;
         }
         var queryInfo = new QueryInfo(this);
@@ -18518,7 +18571,7 @@ var QueryManager = (function () {
             queryInfo: queryInfo,
             options: options,
         });
-        observable['lastQuery'] = query;
+        observable["lastQuery"] = query;
         this.queries.set(observable.queryId, queryInfo);
         queryInfo.init({
             document: query,
@@ -18531,7 +18584,7 @@ var QueryManager = (function () {
         var _this = this;
         if (queryId === void 0) { queryId = this.generateQueryId(); }
         (0,globals/* invariant */.kG)(options.query, 26);
-        (0,globals/* invariant */.kG)(options.query.kind === 'Document', 27);
+        (0,globals/* invariant */.kG)(options.query.kind === "Document", 27);
         (0,globals/* invariant */.kG)(!options.returnPartialData, 28);
         (0,globals/* invariant */.kG)(!options.pollInterval, 29);
         return this.fetchQuery(queryId, (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { query: this.transform(options.query) })).finally(function () { return _this.stopQuery(queryId); });
@@ -18648,8 +18701,7 @@ var QueryManager = (function () {
             var fetchPolicy = observableQuery.options.fetchPolicy;
             observableQuery.resetLastResults();
             if (includeStandby ||
-                (fetchPolicy !== "standby" &&
-                    fetchPolicy !== "cache-only")) {
+                (fetchPolicy !== "standby" && fetchPolicy !== "cache-only")) {
                 observableQueryPromises.push(observableQuery.refetch());
             }
             _this.getQuery(queryId).setDiff(null);
@@ -18662,17 +18714,17 @@ var QueryManager = (function () {
     };
     QueryManager.prototype.startGraphQLSubscription = function (_a) {
         var _this = this;
-        var query = _a.query, fetchPolicy = _a.fetchPolicy, errorPolicy = _a.errorPolicy, variables = _a.variables, _b = _a.context, context = _b === void 0 ? {} : _b;
+        var query = _a.query, fetchPolicy = _a.fetchPolicy, _b = _a.errorPolicy, errorPolicy = _b === void 0 ? "none" : _b, variables = _a.variables, _c = _a.context, context = _c === void 0 ? {} : _c;
         query = this.transform(query);
         variables = this.getVariables(query, variables);
         var makeObservable = function (variables) {
             return _this.getObservableFromLink(query, context, variables).map(function (result) {
-                if (fetchPolicy !== 'no-cache') {
+                if (fetchPolicy !== "no-cache") {
                     if (shouldWriteResult(result, errorPolicy)) {
                         _this.cache.write({
                             query: query,
                             result: result.data,
-                            dataId: 'ROOT_SUBSCRIPTION',
+                            dataId: "ROOT_SUBSCRIPTION",
                             variables: variables,
                         });
                     }
@@ -18688,16 +18740,23 @@ var QueryManager = (function () {
                     if (hasProtocolErrors) {
                         errors.protocolErrors = result.extensions[client_errors/* PROTOCOL_ERRORS_SYMBOL */.YG];
                     }
-                    throw new client_errors/* ApolloError */.cA(errors);
+                    if (errorPolicy === "none" || hasProtocolErrors) {
+                        throw new client_errors/* ApolloError */.cA(errors);
+                    }
+                }
+                if (errorPolicy === "ignore") {
+                    delete result.errors;
                 }
                 return result;
             });
         };
         if (this.getDocumentInfo(query).hasClientExports) {
-            var observablePromise_1 = this.localState.addExportedVariables(query, variables, context).then(makeObservable);
+            var observablePromise_1 = this.localState
+                .addExportedVariables(query, variables, context)
+                .then(makeObservable);
             return new zen_observable_ts_module/* Observable */.y(function (observer) {
                 var sub = null;
-                observablePromise_1.then(function (observable) { return sub = observable.subscribe(observer); }, observer.error);
+                observablePromise_1.then(function (observable) { return (sub = observable.subscribe(observer)); }, observer.error);
                 return function () { return sub && sub.unsubscribe(); };
             });
         }
@@ -18749,12 +18808,11 @@ var QueryManager = (function () {
                 observable = byVariables_1.get(varJson_1);
                 if (!observable) {
                     var concast = new Concast([
-                        (0,execute/* execute */.h)(link, operation)
+                        (0,execute/* execute */.h)(link, operation),
                     ]);
-                    byVariables_1.set(varJson_1, observable = concast);
+                    byVariables_1.set(varJson_1, (observable = concast));
                     concast.beforeNext(function () {
-                        if (byVariables_1.delete(varJson_1) &&
-                            byVariables_1.size < 1) {
+                        if (byVariables_1.delete(varJson_1) && byVariables_1.size < 1) {
                             inFlightLinkObservables_1.delete(printedServerQuery_1);
                         }
                     });
@@ -18762,14 +18820,12 @@ var QueryManager = (function () {
             }
             else {
                 observable = new Concast([
-                    (0,execute/* execute */.h)(link, operation)
+                    (0,execute/* execute */.h)(link, operation),
                 ]);
             }
         }
         else {
-            observable = new Concast([
-                zen_observable_ts_module/* Observable */.y.of({ data: {} })
-            ]);
+            observable = new Concast([zen_observable_ts_module/* Observable */.y.of({ data: {} })]);
             context = this.prepareContext(context);
         }
         if (clientQuery) {
@@ -18785,7 +18841,7 @@ var QueryManager = (function () {
         return observable;
     };
     QueryManager.prototype.getResultsFromLink = function (queryInfo, cacheWriteBehavior, options) {
-        var requestId = queryInfo.lastRequestId = this.generateRequestId();
+        var requestId = (queryInfo.lastRequestId = this.generateRequestId());
         var linkDocument = this.cache.transformForLink(options.query);
         return asyncMap(this.getObservableFromLink(linkDocument, options.context, options.variables), function (result) {
             var graphQLErrors = getGraphQLErrorsFromResult(result);
@@ -18826,7 +18882,7 @@ var QueryManager = (function () {
         var variables = this.getVariables(query, options.variables);
         var queryInfo = this.getQuery(queryId);
         var defaults = this.defaultOptions.watchQuery;
-        var _a = options.fetchPolicy, fetchPolicy = _a === void 0 ? defaults && defaults.fetchPolicy || "cache-first" : _a, _b = options.errorPolicy, errorPolicy = _b === void 0 ? defaults && defaults.errorPolicy || "none" : _b, _c = options.returnPartialData, returnPartialData = _c === void 0 ? false : _c, _d = options.notifyOnNetworkStatusChange, notifyOnNetworkStatusChange = _d === void 0 ? false : _d, _e = options.context, context = _e === void 0 ? {} : _e;
+        var _a = options.fetchPolicy, fetchPolicy = _a === void 0 ? (defaults && defaults.fetchPolicy) || "cache-first" : _a, _b = options.errorPolicy, errorPolicy = _b === void 0 ? (defaults && defaults.errorPolicy) || "none" : _b, _c = options.returnPartialData, returnPartialData = _c === void 0 ? false : _c, _d = options.notifyOnNetworkStatusChange, notifyOnNetworkStatusChange = _d === void 0 ? false : _d, _e = options.context, context = _e === void 0 ? {} : _e;
         var normalized = Object.assign({}, options, {
             query: query,
             variables: variables,
@@ -18855,7 +18911,8 @@ var QueryManager = (function () {
         if (this.getDocumentInfo(normalized.query).hasClientExports) {
             concast = new Concast(this.localState
                 .addExportedVariables(normalized.query, normalized.variables, normalized.context)
-                .then(fromVariables).then(function (sourcesWithInfo) { return sourcesWithInfo.sources; }));
+                .then(fromVariables)
+                .then(function (sourcesWithInfo) { return sourcesWithInfo.sources; }));
             containsDataFromLink = true;
         }
         else {
@@ -18881,15 +18938,14 @@ var QueryManager = (function () {
                 });
             });
         }
-        var results = new Map;
+        var results = new Map();
         if (updateCache) {
             this.cache.batch({
                 update: updateCache,
-                optimistic: optimistic && removeOptimistic || false,
+                optimistic: (optimistic && removeOptimistic) || false,
                 removeOptimistic: removeOptimistic,
                 onWatchUpdated: function (watch, diff, lastDiff) {
-                    var oq = watch.watcher instanceof QueryInfo &&
-                        watch.watcher.observableQuery;
+                    var oq = watch.watcher instanceof QueryInfo && watch.watcher.observableQuery;
                     if (oq) {
                         if (onQueryUpdated) {
                             includedQueriesById.delete(oq.queryId);
@@ -18946,43 +19002,50 @@ var QueryManager = (function () {
             variables: variables,
             networkStatus: networkStatus,
         });
-        var readCache = function () { return queryInfo.getDiff(variables); };
+        var readCache = function () { return queryInfo.getDiff(); };
         var resultsFromCache = function (diff, networkStatus) {
             if (networkStatus === void 0) { networkStatus = queryInfo.networkStatus || core_networkStatus/* NetworkStatus */.Ie.loading; }
             var data = diff.result;
-            if (globalThis.__DEV__ !== false &&
-                !returnPartialData &&
-                !(0,lib/* equal */.D)(data, {})) {
+            if (globalThis.__DEV__ !== false && !returnPartialData && !(0,lib/* equal */.D)(data, {})) {
                 (0,ObservableQuery/* logMissingFieldErrors */.DC)(diff.missing);
             }
-            var fromData = function (data) { return zen_observable_ts_module/* Observable */.y.of((0,tslib_es6/* __assign */.pi)({ data: data, loading: (0,core_networkStatus/* isNetworkRequestInFlight */.Oj)(networkStatus), networkStatus: networkStatus }, (diff.complete ? null : { partial: true }))); };
+            var fromData = function (data) {
+                return zen_observable_ts_module/* Observable */.y.of((0,tslib_es6/* __assign */.pi)({ data: data, loading: (0,core_networkStatus/* isNetworkRequestInFlight */.Oj)(networkStatus), networkStatus: networkStatus }, (diff.complete ? null : { partial: true })));
+            };
             if (data && _this.getDocumentInfo(query).hasForcedResolvers) {
-                return _this.localState.runResolvers({
+                return _this.localState
+                    .runResolvers({
                     document: query,
                     remoteResult: { data: data },
                     context: context,
                     variables: variables,
                     onlyRunForcedResolvers: true,
-                }).then(function (resolved) { return fromData(resolved.data || void 0); });
+                })
+                    .then(function (resolved) { return fromData(resolved.data || void 0); });
             }
-            if (errorPolicy === 'none' &&
+            if (errorPolicy === "none" &&
                 networkStatus === core_networkStatus/* NetworkStatus */.Ie.refetch &&
                 Array.isArray(diff.missing)) {
                 return fromData(void 0);
             }
             return fromData(data);
         };
-        var cacheWriteBehavior = fetchPolicy === "no-cache" ? 0 :
-            (networkStatus === core_networkStatus/* NetworkStatus */.Ie.refetch &&
-                refetchWritePolicy !== "merge") ? 1
-                : 2;
-        var resultsFromLink = function () { return _this.getResultsFromLink(queryInfo, cacheWriteBehavior, {
-            query: query,
-            variables: variables,
-            context: context,
-            fetchPolicy: fetchPolicy,
-            errorPolicy: errorPolicy,
-        }); };
+        var cacheWriteBehavior = fetchPolicy === "no-cache"
+            ? 0
+            :
+                networkStatus === core_networkStatus/* NetworkStatus */.Ie.refetch &&
+                    refetchWritePolicy !== "merge"
+                    ? 1
+                    : 2;
+        var resultsFromLink = function () {
+            return _this.getResultsFromLink(queryInfo, cacheWriteBehavior, {
+                query: query,
+                variables: variables,
+                context: context,
+                fetchPolicy: fetchPolicy,
+                errorPolicy: errorPolicy,
+            });
+        };
         var shouldNotify = notifyOnNetworkStatusChange &&
             typeof oldNetworkStatus === "number" &&
             oldNetworkStatus !== networkStatus &&
@@ -18992,35 +19055,47 @@ var QueryManager = (function () {
             case "cache-first": {
                 var diff = readCache();
                 if (diff.complete) {
-                    return { fromLink: false, sources: [resultsFromCache(diff, queryInfo.markReady())] };
+                    return {
+                        fromLink: false,
+                        sources: [resultsFromCache(diff, queryInfo.markReady())],
+                    };
                 }
                 if (returnPartialData || shouldNotify) {
-                    return { fromLink: true, sources: [resultsFromCache(diff), resultsFromLink()] };
+                    return {
+                        fromLink: true,
+                        sources: [resultsFromCache(diff), resultsFromLink()],
+                    };
                 }
                 return { fromLink: true, sources: [resultsFromLink()] };
             }
             case "cache-and-network": {
                 var diff = readCache();
                 if (diff.complete || returnPartialData || shouldNotify) {
-                    return { fromLink: true, sources: [resultsFromCache(diff), resultsFromLink()] };
+                    return {
+                        fromLink: true,
+                        sources: [resultsFromCache(diff), resultsFromLink()],
+                    };
                 }
                 return { fromLink: true, sources: [resultsFromLink()] };
             }
             case "cache-only":
-                return { fromLink: false, sources: [resultsFromCache(readCache(), queryInfo.markReady())] };
+                return {
+                    fromLink: false,
+                    sources: [resultsFromCache(readCache(), queryInfo.markReady())],
+                };
             case "network-only":
                 if (shouldNotify) {
-                    return { fromLink: true, sources: [resultsFromCache(readCache()), resultsFromLink()] };
+                    return {
+                        fromLink: true,
+                        sources: [resultsFromCache(readCache()), resultsFromLink()],
+                    };
                 }
                 return { fromLink: true, sources: [resultsFromLink()] };
             case "no-cache":
                 if (shouldNotify) {
                     return {
                         fromLink: true,
-                        sources: [
-                            resultsFromCache(queryInfo.getDiff()),
-                            resultsFromLink(),
-                        ],
+                        sources: [resultsFromCache(queryInfo.getDiff()), resultsFromLink()],
                     };
                 }
                 return { fromLink: true, sources: [resultsFromLink()] };
@@ -19064,7 +19139,7 @@ var ApolloClient = (function () {
         if (!options.cache) {
             throw (0,globals/* newInvariantError */._K)(13);
         }
-        var uri = options.uri, credentials = options.credentials, headers = options.headers, cache = options.cache, documentTransform = options.documentTransform, _a = options.ssrMode, ssrMode = _a === void 0 ? false : _a, _b = options.ssrForceFetchDelay, ssrForceFetchDelay = _b === void 0 ? 0 : _b, _c = options.connectToDevTools, connectToDevTools = _c === void 0 ? typeof window === 'object' &&
+        var uri = options.uri, credentials = options.credentials, headers = options.headers, cache = options.cache, documentTransform = options.documentTransform, _a = options.ssrMode, ssrMode = _a === void 0 ? false : _a, _b = options.ssrForceFetchDelay, ssrForceFetchDelay = _b === void 0 ? 0 : _b, _c = options.connectToDevTools, connectToDevTools = _c === void 0 ? typeof window === "object" &&
             !window.__APOLLO_CLIENT__ &&
             globalThis.__DEV__ !== false : _c, _d = options.queryDeduplication, queryDeduplication = _d === void 0 ? true : _d, defaultOptions = options.defaultOptions, _e = options.assumeImmutableResults, assumeImmutableResults = _e === void 0 ? cache.assumeImmutableResults : _e, resolvers = options.resolvers, typeDefs = options.typeDefs, fragmentMatcher = options.fragmentMatcher, clientAwarenessName = options.name, clientAwarenessVersion = options.version;
         var link = options.link;
@@ -19087,32 +19162,40 @@ var ApolloClient = (function () {
         this.mutate = this.mutate.bind(this);
         this.resetStore = this.resetStore.bind(this);
         this.reFetchObservableQueries = this.reFetchObservableQueries.bind(this);
-        if (connectToDevTools && typeof window === 'object') {
-            window.__APOLLO_CLIENT__ = this;
+        if (connectToDevTools && typeof window === "object") {
+            var windowWithDevTools = window;
+            var devtoolsSymbol = Symbol.for("apollo.devtools");
+            (windowWithDevTools[devtoolsSymbol] =
+                windowWithDevTools[devtoolsSymbol] || []).push(this);
+            windowWithDevTools.__APOLLO_CLIENT__ = this;
         }
         if (!hasSuggestedDevtools && connectToDevTools && globalThis.__DEV__ !== false) {
             hasSuggestedDevtools = true;
-            if (typeof window !== 'undefined' &&
-                window.document &&
-                window.top === window.self &&
-                !window.__APOLLO_DEVTOOLS_GLOBAL_HOOK__) {
-                var nav = window.navigator;
-                var ua = nav && nav.userAgent;
-                var url = void 0;
-                if (typeof ua === "string") {
-                    if (ua.indexOf("Chrome/") > -1) {
-                        url = "https://chrome.google.com/webstore/detail/" +
-                            "apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm";
+            setTimeout(function () {
+                if (typeof window !== "undefined" &&
+                    window.document &&
+                    window.top === window.self &&
+                    !window.__APOLLO_DEVTOOLS_GLOBAL_HOOK__) {
+                    var nav = window.navigator;
+                    var ua = nav && nav.userAgent;
+                    var url = void 0;
+                    if (typeof ua === "string") {
+                        if (ua.indexOf("Chrome/") > -1) {
+                            url =
+                                "https://chrome.google.com/webstore/detail/" +
+                                    "apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm";
+                        }
+                        else if (ua.indexOf("Firefox/") > -1) {
+                            url =
+                                "https://addons.mozilla.org/en-US/firefox/addon/apollo-developer-tools/";
+                        }
                     }
-                    else if (ua.indexOf("Firefox/") > -1) {
-                        url = "https://addons.mozilla.org/en-US/firefox/addon/apollo-developer-tools/";
+                    if (url) {
+                        globalThis.__DEV__ !== false && globals/* invariant */.kG.log("Download the Apollo DevTools for a better development " +
+                            "experience: %s", url);
                     }
                 }
-                if (url) {
-                    globalThis.__DEV__ !== false && globals/* invariant */.kG.log("Download the Apollo DevTools for a better development " +
-                        "experience: %s", url);
-                }
-            }
+            }, 10000);
         }
         this.version = version/* version */.i;
         this.localState = new LocalState({
@@ -19134,18 +19217,20 @@ var ApolloClient = (function () {
             },
             localState: this.localState,
             assumeImmutableResults: assumeImmutableResults,
-            onBroadcast: connectToDevTools ? function () {
-                if (_this.devToolsHookCb) {
-                    _this.devToolsHookCb({
-                        action: {},
-                        state: {
-                            queries: _this.queryManager.getQueryStore(),
-                            mutations: _this.queryManager.mutationStore || {},
-                        },
-                        dataWithOptimisticResults: _this.cache.extract(true),
-                    });
+            onBroadcast: connectToDevTools
+                ? function () {
+                    if (_this.devToolsHookCb) {
+                        _this.devToolsHookCb({
+                            action: {},
+                            state: {
+                                queries: _this.queryManager.getQueryStore(),
+                                mutations: _this.queryManager.mutationStore || {},
+                            },
+                            dataWithOptimisticResults: _this.cache.extract(true),
+                        });
+                    }
                 }
-            } : void 0,
+                : void 0,
         });
     }
     Object.defineProperty(ApolloClient.prototype, "documentTransform", {
@@ -19163,9 +19248,9 @@ var ApolloClient = (function () {
             options = (0,mergeOptions/* mergeOptions */.J)(this.defaultOptions.watchQuery, options);
         }
         if (this.disableNetworkFetches &&
-            (options.fetchPolicy === 'network-only' ||
-                options.fetchPolicy === 'cache-and-network')) {
-            options = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { fetchPolicy: 'cache-first' });
+            (options.fetchPolicy === "network-only" ||
+                options.fetchPolicy === "cache-and-network")) {
+            options = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { fetchPolicy: "cache-first" });
         }
         return this.queryManager.watchQuery(options);
     };
@@ -19173,9 +19258,9 @@ var ApolloClient = (function () {
         if (this.defaultOptions.query) {
             options = (0,mergeOptions/* mergeOptions */.J)(this.defaultOptions.query, options);
         }
-        (0,globals/* invariant */.kG)(options.fetchPolicy !== 'cache-and-network', 14);
-        if (this.disableNetworkFetches && options.fetchPolicy === 'network-only') {
-            options = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { fetchPolicy: 'cache-first' });
+        (0,globals/* invariant */.kG)(options.fetchPolicy !== "cache-and-network", 14);
+        if (this.disableNetworkFetches && options.fetchPolicy === "network-only") {
+            options = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { fetchPolicy: "cache-first" });
         }
         return this.queryManager.query(options);
     };
@@ -19219,18 +19304,22 @@ var ApolloClient = (function () {
     ApolloClient.prototype.resetStore = function () {
         var _this = this;
         return Promise.resolve()
-            .then(function () { return _this.queryManager.clearStore({
-            discardWatches: false,
-        }); })
+            .then(function () {
+            return _this.queryManager.clearStore({
+                discardWatches: false,
+            });
+        })
             .then(function () { return Promise.all(_this.resetStoreCallbacks.map(function (fn) { return fn(); })); })
             .then(function () { return _this.reFetchObservableQueries(); });
     };
     ApolloClient.prototype.clearStore = function () {
         var _this = this;
         return Promise.resolve()
-            .then(function () { return _this.queryManager.clearStore({
-            discardWatches: true,
-        }); })
+            .then(function () {
+            return _this.queryManager.clearStore({
+                discardWatches: true,
+            });
+        })
             .then(function () { return Promise.all(_this.clearStoreCallbacks.map(function (fn) { return fn(); })); });
     };
     ApolloClient.prototype.onResetStore = function (cb) {
@@ -19450,7 +19539,9 @@ var ObservableQuery = (function (_super) {
         _this.waitForOwnResult = skipCacheDataFor(options.fetchPolicy);
         _this.isTornDown = false;
         var _b = queryManager.defaultOptions.watchQuery, _c = _b === void 0 ? {} : _b, _d = _c.fetchPolicy, defaultFetchPolicy = _d === void 0 ? "cache-first" : _d;
-        var _e = options.fetchPolicy, fetchPolicy = _e === void 0 ? defaultFetchPolicy : _e, _f = options.initialFetchPolicy, initialFetchPolicy = _f === void 0 ? (fetchPolicy === "standby" ? defaultFetchPolicy : fetchPolicy) : _f;
+        var _e = options.fetchPolicy, fetchPolicy = _e === void 0 ? defaultFetchPolicy : _e, _f = options.initialFetchPolicy, initialFetchPolicy = _f === void 0 ? fetchPolicy === "standby"
+            ? defaultFetchPolicy
+            : fetchPolicy : _f;
         _this.options = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { initialFetchPolicy: initialFetchPolicy, fetchPolicy: fetchPolicy });
         _this.queryId = queryInfo.queryId || queryManager.generateQueryId();
         var opDef = (0,getFromAST/* getOperationDefinition */.$H)(_this.query);
@@ -19502,7 +19593,7 @@ var ObservableQuery = (function (_super) {
             this.queryManager.getDocumentInfo(this.query).hasForcedResolvers) {
         }
         else if (this.waitForOwnResult) {
-            this.queryInfo['updateWatch']();
+            this.queryInfo["updateWatch"]();
         }
         else {
             var diff = this.queryInfo.getDiff();
@@ -19516,8 +19607,7 @@ var ObservableQuery = (function (_super) {
                 delete result.partial;
                 if (diff.complete &&
                     result.networkStatus === core_networkStatus/* NetworkStatus */.Ie.loading &&
-                    (fetchPolicy === 'cache-first' ||
-                        fetchPolicy === 'cache-only')) {
+                    (fetchPolicy === "cache-first" || fetchPolicy === "cache-only")) {
                     result.networkStatus = core_networkStatus/* NetworkStatus */.Ie.ready;
                     result.loading = false;
                 }
@@ -19543,11 +19633,11 @@ var ObservableQuery = (function (_super) {
         if (!this.last) {
             return true;
         }
-        var resultIsDifferent = this.queryManager.getDocumentInfo(this.query).hasNonreactiveDirective
+        var resultIsDifferent = this.queryManager.getDocumentInfo(this.query)
+            .hasNonreactiveDirective
             ? !equalByQuery(this.query, this.last.result, newResult, this.variables)
             : !(0,lib/* equal */.D)(this.last.result, newResult);
-        return (resultIsDifferent ||
-            (variables && !(0,lib/* equal */.D)(this.last.variables, variables)));
+        return (resultIsDifferent || (variables && !(0,lib/* equal */.D)(this.last.variables, variables)));
     };
     ObservableQuery.prototype.getLast = function (key, variablesMustMatch) {
         var last = this.last;
@@ -19576,14 +19666,14 @@ var ObservableQuery = (function (_super) {
             pollInterval: 0,
         };
         var fetchPolicy = this.options.fetchPolicy;
-        if (fetchPolicy === 'cache-and-network') {
+        if (fetchPolicy === "cache-and-network") {
             reobserveOptions.fetchPolicy = fetchPolicy;
         }
-        else if (fetchPolicy === 'no-cache') {
-            reobserveOptions.fetchPolicy = 'no-cache';
+        else if (fetchPolicy === "no-cache") {
+            reobserveOptions.fetchPolicy = "no-cache";
         }
         else {
-            reobserveOptions.fetchPolicy = 'network-only';
+            reobserveOptions.fetchPolicy = "network-only";
         }
         if (globalThis.__DEV__ !== false && variables && ObservableQuery_hasOwnProperty.call(variables, "variables")) {
             var queryDef = (0,getFromAST/* getQueryDefinition */.iW)(this.query);
@@ -19604,7 +19694,9 @@ var ObservableQuery = (function (_super) {
     };
     ObservableQuery.prototype.fetchMore = function (fetchMoreOptions) {
         var _this = this;
-        var combinedOptions = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, (fetchMoreOptions.query ? fetchMoreOptions : (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, this.options), { query: this.options.query }), fetchMoreOptions), { variables: (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, this.options.variables), fetchMoreOptions.variables) }))), { fetchPolicy: "no-cache" });
+        var combinedOptions = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, (fetchMoreOptions.query
+            ? fetchMoreOptions
+            : (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, this.options), { query: this.options.query }), fetchMoreOptions), { variables: (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, this.options.variables), fetchMoreOptions.variables) }))), { fetchPolicy: "no-cache" });
         combinedOptions.query = this.transformDocument(combinedOptions.query);
         var qid = this.queryManager.generateQueryId();
         this.lastQuery = fetchMoreOptions.query
@@ -19617,7 +19709,9 @@ var ObservableQuery = (function (_super) {
             this.observe();
         }
         var updatedQuerySet = new Set();
-        return this.queryManager.fetchQuery(qid, combinedOptions, core_networkStatus/* NetworkStatus */.Ie.fetchMore).then(function (fetchMoreResult) {
+        return this.queryManager
+            .fetchQuery(qid, combinedOptions, core_networkStatus/* NetworkStatus */.Ie.fetchMore)
+            .then(function (fetchMoreResult) {
             _this.queryManager.removeQuery(qid);
             if (queryInfo.networkStatus === core_networkStatus/* NetworkStatus */.Ie.fetchMore) {
                 queryInfo.networkStatus = originalNetworkStatus;
@@ -19631,10 +19725,12 @@ var ObservableQuery = (function (_super) {
                             variables: _this.variables,
                             returnPartialData: true,
                             optimistic: false,
-                        }, function (previous) { return updateQuery(previous, {
-                            fetchMoreResult: fetchMoreResult.data,
-                            variables: combinedOptions.variables,
-                        }); });
+                        }, function (previous) {
+                            return updateQuery(previous, {
+                                fetchMoreResult: fetchMoreResult.data,
+                                variables: combinedOptions.variables,
+                            });
+                        });
                     }
                     else {
                         cache.writeQuery({
@@ -19649,7 +19745,8 @@ var ObservableQuery = (function (_super) {
                 },
             });
             return fetchMoreResult;
-        }).finally(function () {
+        })
+            .finally(function () {
             if (!updatedQuerySet.has(_this.query)) {
                 reobserveCacheFirst(_this);
             }
@@ -19700,9 +19797,7 @@ var ObservableQuery = (function (_super) {
     };
     ObservableQuery.prototype.setVariables = function (variables) {
         if ((0,lib/* equal */.D)(this.variables, variables)) {
-            return this.observers.size
-                ? this.result()
-                : Promise.resolve();
+            return this.observers.size ? this.result() : Promise.resolve();
         }
         this.options.variables = variables;
         if (!this.observers.size) {
@@ -19765,7 +19860,7 @@ var ObservableQuery = (function (_super) {
     };
     ObservableQuery.prototype.fetch = function (options, newNetworkStatus) {
         this.queryManager.setObservableQuery(this);
-        return this.queryManager['fetchConcastWithInfo'](this.queryId, options, newNetworkStatus);
+        return this.queryManager["fetchConcastWithInfo"](this.queryId, options, newNetworkStatus);
     };
     ObservableQuery.prototype.updatePolling = function () {
         var _this = this;
@@ -19780,8 +19875,7 @@ var ObservableQuery = (function (_super) {
             }
             return;
         }
-        if (pollingInfo &&
-            pollingInfo.interval === pollInterval) {
+        if (pollingInfo && pollingInfo.interval === pollInterval) {
             return;
         }
         (0,globals/* invariant */.kG)(pollInterval, 20);
@@ -19791,14 +19885,15 @@ var ObservableQuery = (function (_super) {
             if (_this.pollingInfo) {
                 if (!(0,core_networkStatus/* isNetworkRequestInFlight */.Oj)(_this.queryInfo.networkStatus)) {
                     _this.reobserve({
-                        fetchPolicy: _this.options.initialFetchPolicy === 'no-cache' ? 'no-cache' : 'network-only',
+                        fetchPolicy: _this.options.initialFetchPolicy === "no-cache"
+                            ? "no-cache"
+                            : "network-only",
                     }, core_networkStatus/* NetworkStatus */.Ie.poll).then(poll, poll);
                 }
                 else {
                     poll();
                 }
             }
-            ;
         };
         var poll = function () {
             var info = _this.pollingInfo;
@@ -19815,9 +19910,9 @@ var ObservableQuery = (function (_super) {
         if (error && this.last && !(0,lib/* equal */.D)(variables, this.last.variables)) {
             error = void 0;
         }
-        return this.last = (0,tslib_es6/* __assign */.pi)({ result: this.queryManager.assumeImmutableResults
+        return (this.last = (0,tslib_es6/* __assign */.pi)({ result: this.queryManager.assumeImmutableResults
                 ? newResult
-                : (0,cloneDeep/* cloneDeep */.X)(newResult), variables: variables }, (error ? { error: error } : null));
+                : (0,cloneDeep/* cloneDeep */.X)(newResult), variables: variables }, (error ? { error: error } : null)));
     };
     ObservableQuery.prototype.reobserveAsConcast = function (newOptions, newNetworkStatus) {
         var _this = this;
@@ -19829,7 +19924,8 @@ var ObservableQuery = (function (_super) {
         var oldFetchPolicy = this.options.fetchPolicy;
         var mergedOptions = (0,compact/* compact */.o)(this.options, newOptions || {});
         var options = useDisposableConcast
-            ? mergedOptions
+            ?
+                mergedOptions
             : ObservableQuery_assign(this.options, mergedOptions);
         var query = this.transformDocument(options.query);
         this.lastQuery = query;
@@ -19878,6 +19974,17 @@ var ObservableQuery = (function (_super) {
     ObservableQuery.prototype.reobserve = function (newOptions, newNetworkStatus) {
         return this.reobserveAsConcast(newOptions, newNetworkStatus).promise;
     };
+    ObservableQuery.prototype.resubscribeAfterError = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        var last = this.last;
+        this.resetLastResults();
+        var subscription = this.subscribe.apply(this, args);
+        this.last = last;
+        return subscription;
+    };
     ObservableQuery.prototype.observe = function () {
         this.reportResult(this.getCurrentResult(false), this.variables);
     };
@@ -19894,7 +20001,7 @@ var ObservableQuery = (function (_super) {
     ObservableQuery.prototype.reportError = function (error, variables) {
         var errorResult = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, this.getLastResult()), { error: error, errors: error.graphQLErrors, networkStatus: core_networkStatus/* NetworkStatus */.Ie.error, loading: false });
         this.updateLastResult(errorResult, variables);
-        (0,iteration/* iterateObserversSafely */.p)(this.observers, 'error', this.last.error = error);
+        (0,iteration/* iterateObserversSafely */.p)(this.observers, "error", (this.last.error = error));
     };
     ObservableQuery.prototype.hasObservers = function () {
         return this.observers.size > 0;
@@ -19923,8 +20030,7 @@ var ObservableQuery = (function (_super) {
 (0,subclassing/* fixObservableSubclass */.D)(ObservableQuery);
 function reobserveCacheFirst(obsQuery) {
     var _a = obsQuery.options, fetchPolicy = _a.fetchPolicy, nextFetchPolicy = _a.nextFetchPolicy;
-    if (fetchPolicy === "cache-and-network" ||
-        fetchPolicy === "network-only") {
+    if (fetchPolicy === "cache-and-network" || fetchPolicy === "network-only") {
         return obsQuery.reobserve({
             fetchPolicy: "cache-first",
             nextFetchPolicy: function () {
@@ -19947,7 +20053,9 @@ function logMissingFieldErrors(missing) {
     }
 }
 function skipCacheDataFor(fetchPolicy) {
-    return fetchPolicy === "network-only" || fetchPolicy === "no-cache" || fetchPolicy === "standby";
+    return (fetchPolicy === "network-only" ||
+        fetchPolicy === "no-cache" ||
+        fetchPolicy === "standby");
 }
 //# sourceMappingURL=ObservableQuery.js.map
 
@@ -20140,22 +20248,24 @@ function graphQLResultHasProtocolErrors(result) {
     return false;
 }
 function isApolloError(err) {
-    return err.hasOwnProperty('graphQLErrors');
+    return err.hasOwnProperty("graphQLErrors");
 }
 var generateErrorMessage = function (err) {
     var errors = (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__spreadArray */ .ev)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__spreadArray */ .ev)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__spreadArray */ .ev)([], err.graphQLErrors, true), err.clientErrors, true), err.protocolErrors, true);
     if (err.networkError)
         errors.push(err.networkError);
-    return errors
-        .map(function (err) { return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .isNonNullObject */ .s)(err) && err.message || 'Error message not found.'; })
-        .join('\n');
+    return (errors
+        .map(function (err) {
+        return ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .isNonNullObject */ .s)(err) && err.message) || "Error message not found.";
+    })
+        .join("\n"));
 };
 var ApolloError = (function (_super) {
     (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__extends */ .ZT)(ApolloError, _super);
     function ApolloError(_a) {
         var graphQLErrors = _a.graphQLErrors, protocolErrors = _a.protocolErrors, clientErrors = _a.clientErrors, networkError = _a.networkError, errorMessage = _a.errorMessage, extraInfo = _a.extraInfo;
         var _this = _super.call(this, errorMessage) || this;
-        _this.name = 'ApolloError';
+        _this.name = "ApolloError";
         _this.graphQLErrors = graphQLErrors || [];
         _this.protocolErrors = protocolErrors || [];
         _this.clientErrors = clientErrors || [];
@@ -20276,7 +20386,7 @@ var tslib_es6 = __webpack_require__(7582);
 function createOperation(starting, operation) {
     var context = (0,tslib_es6/* __assign */.pi)({}, starting);
     var setContext = function (next) {
-        if (typeof next === 'function') {
+        if (typeof next === "function") {
             context = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, context), next(context));
         }
         else {
@@ -20284,11 +20394,11 @@ function createOperation(starting, operation) {
         }
     };
     var getContext = function () { return ((0,tslib_es6/* __assign */.pi)({}, context)); };
-    Object.defineProperty(operation, 'setContext', {
+    Object.defineProperty(operation, "setContext", {
         enumerable: false,
         value: setContext,
     });
-    Object.defineProperty(operation, 'getContext', {
+    Object.defineProperty(operation, "getContext", {
         enumerable: false,
         value: getContext,
     });
@@ -20308,9 +20418,9 @@ function transformOperation(operation) {
     };
     if (!transformedOperation.operationName) {
         transformedOperation.operationName =
-            typeof transformedOperation.query !== 'string'
+            typeof transformedOperation.query !== "string"
                 ? (0,getFromAST/* getOperationName */.rY)(transformedOperation.query) || undefined
-                : '';
+                : "";
     }
     return transformedOperation;
 }
@@ -20319,11 +20429,11 @@ function transformOperation(operation) {
 
 function validateOperation(operation) {
     var OPERATION_FIELDS = [
-        'query',
-        'operationName',
-        'variables',
-        'extensions',
-        'context',
+        "query",
+        "operationName",
+        "variables",
+        "extensions",
+        "context",
     ];
     for (var _i = 0, _a = Object.keys(operation); _i < _a.length; _i++) {
         var key = _a[_i];
@@ -20342,7 +20452,7 @@ function passthrough(op, forward) {
     return (forward ? forward(op) : zen_observable_ts_module/* Observable */.y.of());
 }
 function toLink(handler) {
-    return typeof handler === 'function' ? new ApolloLink(handler) : handler;
+    return typeof handler === "function" ? new ApolloLink(handler) : handler;
 }
 function isTerminating(link) {
     return link.request.length <= 1;
@@ -20579,7 +20689,7 @@ var HttpLink = (function (_super) {
 /* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 
 var checkFetcher = function (fetcher) {
-    if (!fetcher && typeof fetch === 'undefined') {
+    if (!fetcher && typeof fetch === "undefined") {
         throw (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ ._K)(35);
     }
 };
@@ -20652,7 +20762,7 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 var backupFetch = (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .wY)(function () { return fetch; });
 var createHttpLink = function (linkOptions) {
     if (linkOptions === void 0) { linkOptions = {}; }
-    var _a = linkOptions.uri, uri = _a === void 0 ? '/graphql' : _a, preferredFetch = linkOptions.fetch, _b = linkOptions.print, print = _b === void 0 ? _selectHttpOptionsAndBody_js__WEBPACK_IMPORTED_MODULE_1__/* .defaultPrinter */ .sb : _b, includeExtensions = linkOptions.includeExtensions, preserveHeaderCase = linkOptions.preserveHeaderCase, useGETForQueries = linkOptions.useGETForQueries, _c = linkOptions.includeUnusedVariables, includeUnusedVariables = _c === void 0 ? false : _c, requestOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__rest */ ._T)(linkOptions, ["uri", "fetch", "print", "includeExtensions", "preserveHeaderCase", "useGETForQueries", "includeUnusedVariables"]);
+    var _a = linkOptions.uri, uri = _a === void 0 ? "/graphql" : _a, preferredFetch = linkOptions.fetch, _b = linkOptions.print, print = _b === void 0 ? _selectHttpOptionsAndBody_js__WEBPACK_IMPORTED_MODULE_1__/* .defaultPrinter */ .sb : _b, includeExtensions = linkOptions.includeExtensions, preserveHeaderCase = linkOptions.preserveHeaderCase, useGETForQueries = linkOptions.useGETForQueries, _c = linkOptions.includeUnusedVariables, includeUnusedVariables = _c === void 0 ? false : _c, requestOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__rest */ ._T)(linkOptions, ["uri", "fetch", "print", "includeExtensions", "preserveHeaderCase", "useGETForQueries", "includeUnusedVariables"]);
     if (globalThis.__DEV__ !== false) {
         (0,_checkFetcher_js__WEBPACK_IMPORTED_MODULE_3__/* .checkFetcher */ .U)(preferredFetch || backupFetch);
     }
@@ -20669,10 +20779,10 @@ var createHttpLink = function (linkOptions) {
         if (context.clientAwareness) {
             var _a = context.clientAwareness, name_1 = _a.name, version = _a.version;
             if (name_1) {
-                clientAwarenessHeaders['apollographql-client-name'] = name_1;
+                clientAwarenessHeaders["apollographql-client-name"] = name_1;
             }
             if (version) {
-                clientAwarenessHeaders['apollographql-client-version'] = version;
+                clientAwarenessHeaders["apollographql-client-version"] = version;
             }
         }
         var contextHeaders = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, clientAwarenessHeaders), context.headers);
@@ -20682,10 +20792,10 @@ var createHttpLink = function (linkOptions) {
             credentials: context.credentials,
             headers: contextHeaders,
         };
-        if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_6__/* .hasDirectives */ .FS)(['client'], operation.query)) {
+        if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_6__/* .hasDirectives */ .FS)(["client"], operation.query)) {
             var transformedQuery = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_7__/* .removeClientSetsFromDocument */ .ob)(operation.query);
             if (!transformedQuery) {
-                return (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_8__/* .fromError */ .Q)(new Error('HttpLink: Trying to send a client-only query to the server. To send to the server, ensure a non-client field is added to the query or set the `transformOptions.removeClientFields` option to `true`.'));
+                return (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_8__/* .fromError */ .Q)(new Error("HttpLink: Trying to send a client-only query to the server. To send to the server, ensure a non-client field is added to the query or set the `transformOptions.removeClientFields` option to `true`."));
             }
             operation.query = transformedQuery;
         }
@@ -20694,21 +20804,21 @@ var createHttpLink = function (linkOptions) {
             body.variables = (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_9__/* .filterOperationVariables */ .e)(body.variables, operation.query);
         }
         var controller;
-        if (!options.signal && typeof AbortController !== 'undefined') {
+        if (!options.signal && typeof AbortController !== "undefined") {
             controller = new AbortController();
             options.signal = controller.signal;
         }
         var definitionIsMutation = function (d) {
-            return d.kind === 'OperationDefinition' && d.operation === 'mutation';
+            return d.kind === "OperationDefinition" && d.operation === "mutation";
         };
         var definitionIsSubscription = function (d) {
-            return d.kind === 'OperationDefinition' && d.operation === 'subscription';
+            return d.kind === "OperationDefinition" && d.operation === "subscription";
         };
         var isSubscription = definitionIsSubscription((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_10__/* .getMainDefinition */ .p$)(operation.query));
-        var hasDefer = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_6__/* .hasDirectives */ .FS)(['defer'], operation.query);
+        var hasDefer = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_6__/* .hasDirectives */ .FS)(["defer"], operation.query);
         if (useGETForQueries &&
             !operation.query.definitions.some(definitionIsMutation)) {
-            options.method = 'GET';
+            options.method = "GET";
         }
         if (hasDefer || isSubscription) {
             options.headers = options.headers || {};
@@ -20717,14 +20827,15 @@ var createHttpLink = function (linkOptions) {
                 globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn(36);
             }
             if (isSubscription) {
-                acceptHeader += 'boundary=graphql;subscriptionSpec=1.0,application/json';
+                acceptHeader +=
+                    "boundary=graphql;subscriptionSpec=1.0,application/json";
             }
             else if (hasDefer) {
-                acceptHeader += 'deferSpec=20220824,application/json';
+                acceptHeader += "deferSpec=20220824,application/json";
             }
             options.headers.accept = acceptHeader;
         }
-        if (options.method === 'GET') {
+        if (options.method === "GET") {
             var _c = (0,_rewriteURIForGET_js__WEBPACK_IMPORTED_MODULE_11__/* .rewriteURIForGET */ .H)(chosenURI, body), newURI = _c.newURI, parseError = _c.parseError;
             if (parseError) {
                 return (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_8__/* .fromError */ .Q)(parseError);
@@ -20733,7 +20844,7 @@ var createHttpLink = function (linkOptions) {
         }
         else {
             try {
-                options.body = (0,_serializeFetchParameter_js__WEBPACK_IMPORTED_MODULE_12__/* .serializeFetchParameter */ .g)(body, 'Payload');
+                options.body = (0,_serializeFetchParameter_js__WEBPACK_IMPORTED_MODULE_12__/* .serializeFetchParameter */ .g)(body, "Payload");
             }
             catch (parseError) {
                 return (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_8__/* .fromError */ .Q)(parseError);
@@ -20746,7 +20857,7 @@ var createHttpLink = function (linkOptions) {
                 .then(function (response) {
                 var _a;
                 operation.setContext({ response: response });
-                var ctype = (_a = response.headers) === null || _a === void 0 ? void 0 : _a.get('content-type');
+                var ctype = (_a = response.headers) === null || _a === void 0 ? void 0 : _a.get("content-type");
                 if (ctype !== null && /^multipart\/mixed/i.test(ctype)) {
                     return (0,_parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_14__/* .readMultipartBody */ .TF)(response, observerNext);
                 }
@@ -20781,7 +20892,7 @@ var createHttpLink = function (linkOptions) {
 /* harmony export */   $: () => (/* binding */ createSignalIfSupported)
 /* harmony export */ });
 var createSignalIfSupported = function () {
-    if (typeof AbortController === 'undefined')
+    if (typeof AbortController === "undefined")
         return { controller: false, signal: false };
     var controller = new AbortController();
     var signal = controller.signal;
@@ -21289,40 +21400,40 @@ function rewriteURIForGET(chosenURI, body) {
     var addQueryParam = function (key, value) {
         queryParams.push("".concat(key, "=").concat(encodeURIComponent(value)));
     };
-    if ('query' in body) {
-        addQueryParam('query', body.query);
+    if ("query" in body) {
+        addQueryParam("query", body.query);
     }
     if (body.operationName) {
-        addQueryParam('operationName', body.operationName);
+        addQueryParam("operationName", body.operationName);
     }
     if (body.variables) {
         var serializedVariables = void 0;
         try {
-            serializedVariables = (0,_serializeFetchParameter_js__WEBPACK_IMPORTED_MODULE_0__/* .serializeFetchParameter */ .g)(body.variables, 'Variables map');
+            serializedVariables = (0,_serializeFetchParameter_js__WEBPACK_IMPORTED_MODULE_0__/* .serializeFetchParameter */ .g)(body.variables, "Variables map");
         }
         catch (parseError) {
             return { parseError: parseError };
         }
-        addQueryParam('variables', serializedVariables);
+        addQueryParam("variables", serializedVariables);
     }
     if (body.extensions) {
         var serializedExtensions = void 0;
         try {
-            serializedExtensions = (0,_serializeFetchParameter_js__WEBPACK_IMPORTED_MODULE_0__/* .serializeFetchParameter */ .g)(body.extensions, 'Extensions map');
+            serializedExtensions = (0,_serializeFetchParameter_js__WEBPACK_IMPORTED_MODULE_0__/* .serializeFetchParameter */ .g)(body.extensions, "Extensions map");
         }
         catch (parseError) {
             return { parseError: parseError };
         }
-        addQueryParam('extensions', serializedExtensions);
+        addQueryParam("extensions", serializedExtensions);
     }
-    var fragment = '', preFragment = chosenURI;
-    var fragmentStart = chosenURI.indexOf('#');
+    var fragment = "", preFragment = chosenURI;
+    var fragmentStart = chosenURI.indexOf("#");
     if (fragmentStart !== -1) {
         fragment = chosenURI.substr(fragmentStart);
         preFragment = chosenURI.substr(0, fragmentStart);
     }
-    var queryParamsPrefix = preFragment.indexOf('?') === -1 ? '?' : '&';
-    var newURI = preFragment + queryParamsPrefix + queryParams.join('&') + fragment;
+    var queryParamsPrefix = preFragment.indexOf("?") === -1 ? "?" : "&";
+    var newURI = preFragment + queryParamsPrefix + queryParams.join("&") + fragment;
     return { newURI: newURI };
 }
 //# sourceMappingURL=rewriteURIForGET.js.map
@@ -21347,18 +21458,17 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 }
 
 
-;
 var defaultHttpOptions = {
     includeQuery: true,
     includeExtensions: false,
     preserveHeaderCase: false,
 };
 var defaultHeaders = {
-    accept: '*/*',
-    'content-type': 'application/json',
+    accept: "*/*",
+    "content-type": "application/json",
 };
 var defaultOptions = {
-    method: 'POST',
+    method: "POST",
 };
 var fallbackHttpConfig = {
     http: defaultHttpOptions,
@@ -21403,7 +21513,6 @@ function selectHttpOptionsAndBodyInternal(operation, printer) {
         body: body,
     };
 }
-;
 function removeDuplicateHeaders(headers, preserveHeaderCase) {
     if (!preserveHeaderCase) {
         var normalizedHeaders_1 = Object.create(null);
@@ -21414,7 +21523,10 @@ function removeDuplicateHeaders(headers, preserveHeaderCase) {
     }
     var headerData = Object.create(null);
     Object.keys(Object(headers)).forEach(function (name) {
-        headerData[name.toLowerCase()] = { originalName: name, value: headers[name] };
+        headerData[name.toLowerCase()] = {
+            originalName: name,
+            value: headers[name],
+        };
     });
     var normalizedHeaders = Object.create(null);
     Object.keys(headerData).forEach(function (name) {
@@ -21439,11 +21551,11 @@ var selectURI = function (operation, fallbackURI) {
     if (contextURI) {
         return contextURI;
     }
-    else if (typeof fallbackURI === 'function') {
+    else if (typeof fallbackURI === "function") {
         return fallbackURI(operation);
     }
     else {
-        return fallbackURI || '/graphql';
+        return fallbackURI || "/graphql";
     }
 };
 //# sourceMappingURL=selectURI.js.map
@@ -21496,7 +21608,7 @@ function filterOperationVariables(variables, query) {
     (0,graphql__WEBPACK_IMPORTED_MODULE_1__/* .visit */ .Vn)(query, {
         Variable: function (node, _key, parent) {
             if (parent &&
-                parent.kind !== 'VariableDefinition') {
+                parent.kind !== "VariableDefinition") {
                 unusedNames.delete(node.name.value);
             }
         },
@@ -21564,7 +21676,7 @@ function fromPromise(promise) {
 /* harmony export */ });
 var throwServerError = function (response, result, message) {
     var error = new Error(message);
-    error.name = 'ServerError';
+    error.name = "ServerError";
     error.response = response;
     error.statusCode = response.status;
     error.result = result;
@@ -21769,6 +21881,8 @@ var InternalQueryReference = (function () {
     };
     InternalQueryReference.prototype.handleError = function (error) {
         var _a;
+        this.subscription.unsubscribe();
+        this.subscription = this.observable.resubscribeAfterError(this.handleNext, this.handleError);
         switch (this.status) {
             case "loading": {
                 this.status = "idle";
@@ -22003,7 +22117,7 @@ var ApolloProvider = function (_a) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   C: () => (/* binding */ skipToken)
 /* harmony export */ });
-var skipToken = Symbol.for('apollo.skipToken');
+var skipToken = Symbol.for("apollo.skipToken");
 //# sourceMappingURL=constants.js.map
 
 /***/ }),
@@ -22656,15 +22770,8 @@ var InternalState = (function () {
                 _this.setResult(result);
             };
             var onError = function (error) {
-                var last = obsQuery["last"];
                 subscription.unsubscribe();
-                try {
-                    obsQuery.resetLastResults();
-                    subscription = obsQuery.subscribe(onNext, onError);
-                }
-                finally {
-                    obsQuery["last"] = last;
-                }
+                subscription = obsQuery.resubscribeAfterError(onNext, onError);
                 if (!hasOwnProperty.call(error, "graphQLErrors")) {
                     throw error;
                 }
@@ -22870,20 +22977,18 @@ var InternalState = (function () {
 /* harmony export */   l: () => (/* binding */ useReactiveVar)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7294);
+if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9564);
+}
+
 
 function useReactiveVar(rv) {
-    var value = rv();
-    var setValue = react__WEBPACK_IMPORTED_MODULE_0__.useState(value)[1];
-    react__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () {
-        var probablySameValue = rv();
-        if (value !== probablySameValue) {
-            setValue(probablySameValue);
-        }
-        else {
-            return rv.onNextChange(setValue);
-        }
-    }, [value]);
-    return value;
+    return (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_1__/* .useSyncExternalStore */ .$)(react__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (update) {
+        return rv.onNextChange(function onNext() {
+            update();
+            rv.onNextChange(onNext);
+        });
+    }, [rv]), rv, rv);
 }
 //# sourceMappingURL=useReactiveVar.js.map
 
@@ -23552,11 +23657,10 @@ function isNonEmptyArray(value) {
 /* unused harmony export canUseDOM */
 /* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 
-var canUseWeakMap = typeof WeakMap === 'function' &&
-    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .wY)(function () { return navigator.product; }) !== 'ReactNative';
-var canUseWeakSet = typeof WeakSet === 'function';
-var canUseSymbol = typeof Symbol === 'function' &&
-    typeof Symbol.for === 'function';
+var canUseWeakMap = typeof WeakMap === "function" &&
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .wY)(function () { return navigator.product; }) !== "ReactNative";
+var canUseWeakSet = typeof WeakSet === "function";
+var canUseSymbol = typeof Symbol === "function" && typeof Symbol.for === "function";
 var canUseAsyncIteratorSymbol = canUseSymbol && Symbol.asyncIterator;
 var canUseDOM = typeof (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .wY)(function () { return window.document.createElement; }) === "function";
 var usingJSDOM = (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .wY)(function () { return navigator.userAgent.indexOf("jsdom") >= 0; }) || false;
@@ -23579,7 +23683,7 @@ function cloneDeep(value) {
 function cloneDeepHelper(val, seen) {
     switch (toString.call(val)) {
         case "[object Array]": {
-            seen = seen || new Map;
+            seen = seen || new Map();
             if (seen.has(val))
                 return seen.get(val);
             var copy_1 = val.slice(0);
@@ -23590,7 +23694,7 @@ function cloneDeepHelper(val, seen) {
             return copy_1;
         }
         case "[object Object]": {
-            seen = seen || new Map;
+            seen = seen || new Map();
             if (seen.has(val))
                 return seen.get(val);
             var copy_2 = Object.create(Object.getPrototypeOf(val));
@@ -23812,7 +23916,9 @@ var DeepMerger = (function () {
                 if (hasOwnProperty.call(target, sourceKey)) {
                     var targetValue = target[sourceKey];
                     if (source[sourceKey] !== targetValue) {
-                        var result = _this.reconciler.apply(_this, (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__spreadArray */ .ev)([target, source, sourceKey], context, false));
+                        var result = _this.reconciler.apply(_this, (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__spreadArray */ .ev)([target,
+                            source,
+                            sourceKey], context, false));
                         if (result !== targetValue) {
                             target = _this.shallowCopyForMerge(target);
                             target[sourceKey] = result;
@@ -23882,11 +23988,11 @@ function mergeOptions(defaults, options) {
 /* harmony export */ });
 /* unused harmony export isPlainObject */
 function isNonNullObject(obj) {
-    return obj !== null && typeof obj === 'object';
+    return obj !== null && typeof obj === "object";
 }
 function isPlainObject(obj) {
     return (obj !== null &&
-        typeof obj === 'object' &&
+        typeof obj === "object" &&
         (Object.getPrototypeOf(obj) === Object.prototype ||
             Object.getPrototypeOf(obj) === null));
 }
@@ -23910,7 +24016,9 @@ function stringifyForDisplay(value, space) {
     var undefId = (0,_makeUniqueId_js__WEBPACK_IMPORTED_MODULE_0__/* .makeUniqueId */ .X)("stringifyForDisplay");
     return JSON.stringify(value, function (key, value) {
         return value === void 0 ? undefId : value;
-    }, space).split(JSON.stringify(undefId)).join("<undefined>");
+    }, space)
+        .split(JSON.stringify(undefId))
+        .join("<undefined>");
 }
 //# sourceMappingURL=stringifyForDisplay.js.map
 
@@ -23949,7 +24057,9 @@ function maybe(thunk) {
 /* harmony default export */ const globals_global = (maybe(function () { return globalThis; }) ||
     maybe(function () { return window; }) ||
     maybe(function () { return self; }) ||
-    maybe(function () { return global; }) || maybe(function () { return maybe.constructor("return this")(); }));
+    maybe(function () { return global; }) || maybe(function () {
+    return maybe.constructor("return this")();
+}));
 //# sourceMappingURL=global.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/stringifyForDisplay.js
 var stringifyForDisplay = __webpack_require__(3887);
@@ -23999,7 +24109,7 @@ function getErrorMsg(message, messageArgs) {
     });
     return ((globals_global[ApolloErrorMessageHandler] &&
         globals_global[ApolloErrorMessageHandler](message, args)) ||
-        "An error occured! For more details, see the full error text at https://go.apollo.dev/c/err#".concat(encodeURIComponent(JSON.stringify({
+        "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#".concat(encodeURIComponent(JSON.stringify({
             version: version/* version */.i,
             message: message,
             args: args,
@@ -24125,14 +24235,15 @@ function shouldInclude(_a, variables) {
     return getInclusionDirectives(directives).every(function (_a) {
         var directive = _a.directive, ifArgument = _a.ifArgument;
         var evaledValue = false;
-        if (ifArgument.value.kind === 'Variable') {
-            evaledValue = variables && variables[ifArgument.value.name.value];
+        if (ifArgument.value.kind === "Variable") {
+            evaledValue =
+                variables && variables[ifArgument.value.name.value];
             (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(evaledValue !== void 0, 64, directive.name.value);
         }
         else {
             evaledValue = ifArgument.value.value;
         }
-        return directive.name.value === 'skip' ? !evaledValue : evaledValue;
+        return directive.name.value === "skip" ? !evaledValue : evaledValue;
     });
 }
 function getDirectiveNames(root) {
@@ -24144,15 +24255,18 @@ function getDirectiveNames(root) {
     });
     return names;
 }
-var hasAnyDirectives = function (names, root) { return hasDirectives(names, root, false); };
-var hasAllDirectives = function (names, root) { return hasDirectives(names, root, true); };
+var hasAnyDirectives = function (names, root) {
+    return hasDirectives(names, root, false);
+};
+var hasAllDirectives = function (names, root) {
+    return hasDirectives(names, root, true);
+};
 function hasDirectives(names, root, all) {
     var nameSet = new Set(names);
     var uniqueCount = nameSet.size;
     (0,graphql__WEBPACK_IMPORTED_MODULE_1__/* .visit */ .Vn)(root, {
         Directive: function (node) {
-            if (nameSet.delete(node.name.value) &&
-                (!all || !nameSet.size)) {
+            if (nameSet.delete(node.name.value) && (!all || !nameSet.size)) {
                 return graphql__WEBPACK_IMPORTED_MODULE_1__/* .BREAK */ .$_;
             }
         },
@@ -24160,11 +24274,11 @@ function hasDirectives(names, root, all) {
     return all ? !nameSet.size : nameSet.size < uniqueCount;
 }
 function hasClientExports(document) {
-    return document && hasDirectives(['client', 'export'], document, true);
+    return document && hasDirectives(["client", "export"], document, true);
 }
 function isInclusionDirective(_a) {
     var value = _a.name.value;
-    return value === 'skip' || value === 'include';
+    return value === "skip" || value === "include";
 }
 function getInclusionDirectives(directives) {
     var result = [];
@@ -24176,10 +24290,10 @@ function getInclusionDirectives(directives) {
             var directiveName = directive.name.value;
             (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(directiveArguments && directiveArguments.length === 1, 65, directiveName);
             var ifArgument = directiveArguments[0];
-            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(ifArgument.name && ifArgument.name.value === 'if', 66, directiveName);
+            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(ifArgument.name && ifArgument.name.value === "if", 66, directiveName);
             var ifValue = ifArgument.value;
             (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(ifValue &&
-                (ifValue.kind === 'Variable' || ifValue.kind === 'BooleanValue'), 67, directiveName);
+                (ifValue.kind === "Variable" || ifValue.kind === "BooleanValue"), 67, directiveName);
             result.push({ directive: directive, ifArgument: ifArgument });
         });
     }
@@ -24208,32 +24322,32 @@ function getFragmentQueryDocument(document, fragmentName) {
     var actualFragmentName = fragmentName;
     var fragments = [];
     document.definitions.forEach(function (definition) {
-        if (definition.kind === 'OperationDefinition') {
+        if (definition.kind === "OperationDefinition") {
             throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ ._K)(
                 68,
                 definition.operation,
-                definition.name ? " named '".concat(definition.name.value, "'") : ''
+                definition.name ? " named '".concat(definition.name.value, "'") : ""
             );
         }
-        if (definition.kind === 'FragmentDefinition') {
+        if (definition.kind === "FragmentDefinition") {
             fragments.push(definition);
         }
     });
-    if (typeof actualFragmentName === 'undefined') {
+    if (typeof actualFragmentName === "undefined") {
         (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragments.length === 1, 69, fragments.length);
         actualFragmentName = fragments[0].name.value;
     }
     var query = (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)({}, document), { definitions: (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__spreadArray */ .ev)([
             {
-                kind: 'OperationDefinition',
-                operation: 'query',
+                kind: "OperationDefinition",
+                operation: "query",
                 selectionSet: {
-                    kind: 'SelectionSet',
+                    kind: "SelectionSet",
                     selections: [
                         {
-                            kind: 'FragmentSpread',
+                            kind: "FragmentSpread",
                             name: {
-                                kind: 'Name',
+                                kind: "Name",
                                 value: actualFragmentName,
                             },
                         },
@@ -24253,9 +24367,9 @@ function createFragmentMap(fragments) {
 }
 function getFragmentFromSelection(selection, fragmentMap) {
     switch (selection.kind) {
-        case 'InlineFragment':
+        case "InlineFragment":
             return selection;
-        case 'FragmentSpread': {
+        case "FragmentSpread": {
             var fragmentName = selection.name.value;
             if (typeof fragmentMap === "function") {
                 return fragmentMap(fragmentName);
@@ -24293,11 +24407,11 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 
 function checkDocument(doc) {
-    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc && doc.kind === 'Document', 71);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc && doc.kind === "Document", 71);
     var operations = doc.definitions
-        .filter(function (d) { return d.kind !== 'FragmentDefinition'; })
+        .filter(function (d) { return d.kind !== "FragmentDefinition"; })
         .map(function (definition) {
-        if (definition.kind !== 'OperationDefinition') {
+        if (definition.kind !== "OperationDefinition") {
             throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ ._K)(72, definition.kind);
         }
         return definition;
@@ -24308,31 +24422,31 @@ function checkDocument(doc) {
 function getOperationDefinition(doc) {
     checkDocument(doc);
     return doc.definitions.filter(function (definition) {
-        return definition.kind === 'OperationDefinition';
+        return definition.kind === "OperationDefinition";
     })[0];
 }
 function getOperationName(doc) {
     return (doc.definitions
         .filter(function (definition) {
-        return definition.kind === 'OperationDefinition' && !!definition.name;
+        return definition.kind === "OperationDefinition" && !!definition.name;
     })
         .map(function (x) { return x.name.value; })[0] || null);
 }
 function getFragmentDefinitions(doc) {
     return doc.definitions.filter(function (definition) {
-        return definition.kind === 'FragmentDefinition';
+        return definition.kind === "FragmentDefinition";
     });
 }
 function getQueryDefinition(doc) {
     var queryDef = getOperationDefinition(doc);
-    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(queryDef && queryDef.operation === 'query', 74);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(queryDef && queryDef.operation === "query", 74);
     return queryDef;
 }
 function getFragmentDefinition(doc) {
-    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc.kind === 'Document', 75);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc.kind === "Document", 75);
     (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc.definitions.length <= 1, 76);
     var fragmentDef = doc.definitions[0];
-    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragmentDef.kind === 'FragmentDefinition', 77);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragmentDef.kind === "FragmentDefinition", 77);
     return fragmentDef;
 }
 function getMainDefinition(queryDoc) {
@@ -24340,15 +24454,15 @@ function getMainDefinition(queryDoc) {
     var fragmentDefinition;
     for (var _i = 0, _a = queryDoc.definitions; _i < _a.length; _i++) {
         var definition = _a[_i];
-        if (definition.kind === 'OperationDefinition') {
+        if (definition.kind === "OperationDefinition") {
             var operation = definition.operation;
-            if (operation === 'query' ||
-                operation === 'mutation' ||
-                operation === 'subscription') {
+            if (operation === "query" ||
+                operation === "mutation" ||
+                operation === "subscription") {
                 return definition;
             }
         }
-        if (definition.kind === 'FragmentDefinition' && !fragmentDefinition) {
+        if (definition.kind === "FragmentDefinition" && !fragmentDefinition) {
             fragmentDefinition = definition;
         }
     }
@@ -24429,7 +24543,7 @@ function makeReference(id) {
     return { __ref: String(id) };
 }
 function isReference(obj) {
-    return Boolean(obj && typeof obj === 'object' && typeof obj.__ref === 'string');
+    return Boolean(obj && typeof obj === "object" && typeof obj.__ref === "string");
 }
 function isDocumentNode(value) {
     return ((0,_common_objects_js__WEBPACK_IMPORTED_MODULE_1__/* .isNonNullObject */ .s)(value) &&
@@ -24437,31 +24551,31 @@ function isDocumentNode(value) {
         Array.isArray(value.definitions));
 }
 function isStringValue(value) {
-    return value.kind === 'StringValue';
+    return value.kind === "StringValue";
 }
 function isBooleanValue(value) {
-    return value.kind === 'BooleanValue';
+    return value.kind === "BooleanValue";
 }
 function isIntValue(value) {
-    return value.kind === 'IntValue';
+    return value.kind === "IntValue";
 }
 function isFloatValue(value) {
-    return value.kind === 'FloatValue';
+    return value.kind === "FloatValue";
 }
 function isVariable(value) {
-    return value.kind === 'Variable';
+    return value.kind === "Variable";
 }
 function isObjectValue(value) {
-    return value.kind === 'ObjectValue';
+    return value.kind === "ObjectValue";
 }
 function isListValue(value) {
-    return value.kind === 'ListValue';
+    return value.kind === "ListValue";
 }
 function isEnumValue(value) {
-    return value.kind === 'EnumValue';
+    return value.kind === "EnumValue";
 }
 function isNullValue(value) {
-    return value.kind === 'NullValue';
+    return value.kind === "NullValue";
 }
 function valueToObjectRepresentation(argObj, name, value, variables) {
     if (isIntValue(value) || isFloatValue(value)) {
@@ -24523,33 +24637,33 @@ function storeKeyNameFromField(field, variables) {
     return getStoreKeyName(field.name.value, argObj, directivesObj);
 }
 var KNOWN_DIRECTIVES = [
-    'connection',
-    'include',
-    'skip',
-    'client',
-    'rest',
-    'export',
-    'nonreactive',
+    "connection",
+    "include",
+    "skip",
+    "client",
+    "rest",
+    "export",
+    "nonreactive",
 ];
 var getStoreKeyName = Object.assign(function (fieldName, args, directives) {
     if (args &&
         directives &&
-        directives['connection'] &&
-        directives['connection']['key']) {
-        if (directives['connection']['filter'] &&
-            directives['connection']['filter'].length > 0) {
-            var filterKeys = directives['connection']['filter']
-                ? directives['connection']['filter']
+        directives["connection"] &&
+        directives["connection"]["key"]) {
+        if (directives["connection"]["filter"] &&
+            directives["connection"]["filter"].length > 0) {
+            var filterKeys = directives["connection"]["filter"]
+                ? directives["connection"]["filter"]
                 : [];
             filterKeys.sort();
             var filteredArgs_1 = {};
             filterKeys.forEach(function (key) {
                 filteredArgs_1[key] = args[key];
             });
-            return "".concat(directives['connection']['key'], "(").concat(stringify(filteredArgs_1), ")");
+            return "".concat(directives["connection"]["key"], "(").concat(stringify(filteredArgs_1), ")");
         }
         else {
-            return directives['connection']['key'];
+            return directives["connection"]["key"];
         }
     }
     var completeFieldName = fieldName;
@@ -24582,7 +24696,9 @@ var stringify = function defaultStringify(value) {
 };
 function stringifyReplacer(_key, value) {
     if ((0,_common_objects_js__WEBPACK_IMPORTED_MODULE_1__/* .isNonNullObject */ .s)(value) && !Array.isArray(value)) {
-        value = Object.keys(value).sort().reduce(function (copy, key) {
+        value = Object.keys(value)
+            .sort()
+            .reduce(function (copy, key) {
             copy[key] = value[key];
             return copy;
         }, {});
@@ -24608,7 +24724,7 @@ function getTypenameFromResult(result, selectionSet, fragmentMap) {
     for (var _i = 0, _a = selectionSet.selections; _i < _a.length; _i++) {
         var selection = _a[_i];
         if (isField(selection)) {
-            if (selection.name.value === '__typename') {
+            if (selection.name.value === "__typename") {
                 return result[resultKeyNameFromField(selection)];
             }
         }
@@ -24619,24 +24735,24 @@ function getTypenameFromResult(result, selectionSet, fragmentMap) {
             fragments = [selection];
         }
     }
-    if (typeof result.__typename === 'string') {
+    if (typeof result.__typename === "string") {
         return result.__typename;
     }
     if (fragments) {
         for (var _b = 0, fragments_1 = fragments; _b < fragments_1.length; _b++) {
             var selection = fragments_1[_b];
             var typename = getTypenameFromResult(result, (0,_fragments_js__WEBPACK_IMPORTED_MODULE_2__/* .getFragmentFromSelection */ .hi)(selection, fragmentMap).selectionSet, fragmentMap);
-            if (typeof typename === 'string') {
+            if (typeof typename === "string") {
                 return typename;
             }
         }
     }
 }
 function isField(selection) {
-    return selection.kind === 'Field';
+    return selection.kind === "Field";
 }
 function isInlineFragment(selection) {
-    return selection.kind === 'InlineFragment';
+    return selection.kind === "InlineFragment";
 }
 //# sourceMappingURL=storeUtils.js.map
 
@@ -24678,12 +24794,15 @@ var TYPENAME_FIELD = {
     kind: graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.FIELD,
     name: {
         kind: graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.NAME,
-        value: '__typename',
+        value: "__typename",
     },
 };
 function isEmpty(op, fragmentMap) {
-    return !op || op.selectionSet.selections.every(function (selection) { return selection.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.FRAGMENT_SPREAD &&
-        isEmpty(fragmentMap[selection.name.value], fragmentMap); });
+    return (!op ||
+        op.selectionSet.selections.every(function (selection) {
+            return selection.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.FRAGMENT_SPREAD &&
+                isEmpty(fragmentMap[selection.name.value], fragmentMap);
+        }));
 }
 function nullIfDocIsEmpty(doc) {
     return isEmpty((0,_getFromAST_js__WEBPACK_IMPORTED_MODULE_2__/* .getOperationDefinition */ .$H)(doc) || (0,_getFromAST_js__WEBPACK_IMPORTED_MODULE_2__/* .getFragmentDefinition */ .pD)(doc), (0,_fragments_js__WEBPACK_IMPORTED_MODULE_3__/* .createFragmentMap */ .F)((0,_getFromAST_js__WEBPACK_IMPORTED_MODULE_2__/* .getFragmentDefinitions */ .kU)(doc)))
@@ -24721,10 +24840,10 @@ function makeInUseGetterFunction(defaultKey) {
         if (key === void 0) { key = defaultKey; }
         var inUse = map.get(key);
         if (!inUse) {
-            map.set(key, inUse = {
-                variables: new Set,
-                fragmentSpreads: new Set,
-            });
+            map.set(key, (inUse = {
+                variables: new Set(),
+                fragmentSpreads: new Set(),
+            }));
         }
         return inUse;
     };
@@ -24754,8 +24873,12 @@ function removeDirectivesFromDocument(directives, doc) {
         }
     }
     var directiveMatcher = getDirectiveMatcher(directives);
-    var shouldRemoveField = function (nodeDirectives) { return ((0,_common_arrays_js__WEBPACK_IMPORTED_MODULE_4__/* .isNonEmptyArray */ .O)(nodeDirectives) &&
-        nodeDirectives.map(directiveMatcher).some(function (config) { return config && config.remove; })); };
+    var shouldRemoveField = function (nodeDirectives) {
+        return (0,_common_arrays_js__WEBPACK_IMPORTED_MODULE_4__/* .isNonEmptyArray */ .O)(nodeDirectives) &&
+            nodeDirectives
+                .map(directiveMatcher)
+                .some(function (config) { return config && config.remove; });
+    };
     var originalFragmentDefsByPath = new Map();
     var firstVisitMadeChanges = false;
     var fieldOrInlineFragmentVisitor = {
@@ -24804,8 +24927,10 @@ function removeDirectivesFromDocument(directives, doc) {
                     return node;
                 }
                 if (operationCount > 0 &&
-                    node.selectionSet.selections.every(function (selection) { return (selection.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.FIELD &&
-                        selection.name.value === '__typename'); })) {
+                    node.selectionSet.selections.every(function (selection) {
+                        return selection.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.FIELD &&
+                            selection.name.value === "__typename";
+                    })) {
                     getInUseByFragmentName(node.name.value).removed = true;
                     firstVisitMadeChanges = true;
                     return null;
@@ -24855,8 +24980,10 @@ function removeDirectivesFromDocument(directives, doc) {
             allFragmentNamesUsed.add(childFragmentName);
         });
     });
-    var fragmentWillBeRemoved = function (fragmentName) { return !!(!allFragmentNamesUsed.has(fragmentName) ||
-        getInUseByFragmentName(fragmentName).removed); };
+    var fragmentWillBeRemoved = function (fragmentName) {
+        return !!((!allFragmentNamesUsed.has(fragmentName) ||
+            getInUseByFragmentName(fragmentName).removed));
+    };
     var enterVisitor = {
         enter: function (node) {
             if (fragmentWillBeRemoved(node.name.value)) {
@@ -24872,7 +24999,9 @@ function removeDirectivesFromDocument(directives, doc) {
                 if (node.variableDefinitions) {
                     var usedVariableNames_1 = populateTransitiveVars(getInUseByOperationName(node.name && node.name.value)).transitiveVars;
                     if (usedVariableNames_1.size < node.variableDefinitions.length) {
-                        return (0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)({}, node), { variableDefinitions: node.variableDefinitions.filter(function (varDef) { return usedVariableNames_1.has(varDef.variable.name.value); }) });
+                        return (0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)({}, node), { variableDefinitions: node.variableDefinitions.filter(function (varDef) {
+                                return usedVariableNames_1.has(varDef.variable.name.value);
+                            }) });
                     }
                 }
             },
@@ -24884,7 +25013,8 @@ var addTypenameToDocument = Object.assign(function (doc) {
         SelectionSet: {
             enter: function (node, _key, parent) {
                 if (parent &&
-                    parent.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.OPERATION_DEFINITION) {
+                    parent.kind ===
+                        graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.OPERATION_DEFINITION) {
                     return;
                 }
                 var selections = node.selections;
@@ -24893,8 +25023,8 @@ var addTypenameToDocument = Object.assign(function (doc) {
                 }
                 var skip = selections.some(function (selection) {
                     return ((0,_storeUtils_js__WEBPACK_IMPORTED_MODULE_7__/* .isField */ .My)(selection) &&
-                        (selection.name.value === '__typename' ||
-                            selection.name.value.lastIndexOf('__', 0) === 0));
+                        (selection.name.value === "__typename" ||
+                            selection.name.value.lastIndexOf("__", 0) === 0));
                 });
                 if (skip) {
                     return;
@@ -24902,7 +25032,7 @@ var addTypenameToDocument = Object.assign(function (doc) {
                 var field = parent;
                 if ((0,_storeUtils_js__WEBPACK_IMPORTED_MODULE_7__/* .isField */ .My)(field) &&
                     field.directives &&
-                    field.directives.some(function (d) { return d.name.value === 'export'; })) {
+                    field.directives.some(function (d) { return d.name.value === "export"; })) {
                     return;
                 }
                 return (0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)({}, node), { selections: (0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__spreadArray */ .ev)((0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__spreadArray */ .ev)([], selections, true), [TYPENAME_FIELD], false) });
@@ -24916,10 +25046,10 @@ var addTypenameToDocument = Object.assign(function (doc) {
 });
 var connectionRemoveConfig = {
     test: function (directive) {
-        var willRemove = directive.name.value === 'connection';
+        var willRemove = directive.name.value === "connection";
         if (willRemove) {
             if (!directive.arguments ||
-                !directive.arguments.some(function (arg) { return arg.name.value === 'key'; })) {
+                !directive.arguments.some(function (arg) { return arg.name.value === "key"; })) {
                 globalThis.__DEV__ !== false && _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn(81);
             }
         }
@@ -24965,9 +25095,11 @@ function removeArgumentsFromDocument(config, doc) {
     return nullIfDocIsEmpty(visit(doc, {
         OperationDefinition: {
             enter: function (node) {
-                return __assign(__assign({}, node), { variableDefinitions: node.variableDefinitions ? node.variableDefinitions.filter(function (varDef) {
-                        return !config.some(function (arg) { return arg.name === varDef.variable.name.value; });
-                    }) : [] });
+                return __assign(__assign({}, node), { variableDefinitions: node.variableDefinitions
+                        ? node.variableDefinitions.filter(function (varDef) {
+                            return !config.some(function (arg) { return arg.name === varDef.variable.name.value; });
+                        })
+                        : [] });
             },
         },
         Field: {
@@ -25011,13 +25143,13 @@ function removeFragmentSpreadFromDocument(config, doc) {
 function buildQueryFromSelectionSet(document) {
     var definition = (0,_getFromAST_js__WEBPACK_IMPORTED_MODULE_2__/* .getMainDefinition */ .p$)(document);
     var definitionOperation = definition.operation;
-    if (definitionOperation === 'query') {
+    if (definitionOperation === "query") {
         return document;
     }
     var modifiedDoc = (0,graphql__WEBPACK_IMPORTED_MODULE_5__/* .visit */ .Vn)(document, {
         OperationDefinition: {
             enter: function (node) {
-                return (0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)({}, node), { operation: 'query' });
+                return (0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)({}, node), { operation: "query" });
             },
         },
     });
@@ -25027,7 +25159,7 @@ function removeClientSetsFromDocument(document) {
     (0,_getFromAST_js__WEBPACK_IMPORTED_MODULE_2__/* .checkDocument */ .A$)(document);
     var modifiedDoc = removeDirectivesFromDocument([
         {
-            test: function (directive) { return directive.name.value === 'client'; },
+            test: function (directive) { return directive.name.value === "client"; },
             remove: true,
         },
     ], document);
@@ -25140,7 +25272,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   i: () => (/* binding */ version)
 /* harmony export */ });
-var version = '3.8.1';
+var version = "3.8.2";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
