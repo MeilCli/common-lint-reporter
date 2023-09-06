@@ -19162,41 +19162,6 @@ var ApolloClient = (function () {
         this.mutate = this.mutate.bind(this);
         this.resetStore = this.resetStore.bind(this);
         this.reFetchObservableQueries = this.reFetchObservableQueries.bind(this);
-        if (connectToDevTools && typeof window === "object") {
-            var windowWithDevTools = window;
-            var devtoolsSymbol = Symbol.for("apollo.devtools");
-            (windowWithDevTools[devtoolsSymbol] =
-                windowWithDevTools[devtoolsSymbol] || []).push(this);
-            windowWithDevTools.__APOLLO_CLIENT__ = this;
-        }
-        if (!hasSuggestedDevtools && connectToDevTools && globalThis.__DEV__ !== false) {
-            hasSuggestedDevtools = true;
-            setTimeout(function () {
-                if (typeof window !== "undefined" &&
-                    window.document &&
-                    window.top === window.self &&
-                    !window.__APOLLO_DEVTOOLS_GLOBAL_HOOK__) {
-                    var nav = window.navigator;
-                    var ua = nav && nav.userAgent;
-                    var url = void 0;
-                    if (typeof ua === "string") {
-                        if (ua.indexOf("Chrome/") > -1) {
-                            url =
-                                "https://chrome.google.com/webstore/detail/" +
-                                    "apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm";
-                        }
-                        else if (ua.indexOf("Firefox/") > -1) {
-                            url =
-                                "https://addons.mozilla.org/en-US/firefox/addon/apollo-developer-tools/";
-                        }
-                    }
-                    if (url) {
-                        globalThis.__DEV__ !== false && globals/* invariant */.kG.log("Download the Apollo DevTools for a better development " +
-                            "experience: %s", url);
-                    }
-                }
-            }, 10000);
-        }
         this.version = version/* version */.i;
         this.localState = new LocalState({
             cache: cache,
@@ -19232,7 +19197,46 @@ var ApolloClient = (function () {
                 }
                 : void 0,
         });
+        if (connectToDevTools)
+            this.connectToDevTools();
     }
+    ApolloClient.prototype.connectToDevTools = function () {
+        if (typeof window === "object") {
+            var windowWithDevTools = window;
+            var devtoolsSymbol = Symbol.for("apollo.devtools");
+            (windowWithDevTools[devtoolsSymbol] =
+                windowWithDevTools[devtoolsSymbol] || []).push(this);
+            windowWithDevTools.__APOLLO_CLIENT__ = this;
+        }
+        if (!hasSuggestedDevtools && globalThis.__DEV__ !== false) {
+            hasSuggestedDevtools = true;
+            setTimeout(function () {
+                if (typeof window !== "undefined" &&
+                    window.document &&
+                    window.top === window.self &&
+                    !window.__APOLLO_DEVTOOLS_GLOBAL_HOOK__) {
+                    var nav = window.navigator;
+                    var ua = nav && nav.userAgent;
+                    var url = void 0;
+                    if (typeof ua === "string") {
+                        if (ua.indexOf("Chrome/") > -1) {
+                            url =
+                                "https://chrome.google.com/webstore/detail/" +
+                                    "apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm";
+                        }
+                        else if (ua.indexOf("Firefox/") > -1) {
+                            url =
+                                "https://addons.mozilla.org/en-US/firefox/addon/apollo-developer-tools/";
+                        }
+                    }
+                    if (url) {
+                        globalThis.__DEV__ !== false && globals/* invariant */.kG.log("Download the Apollo DevTools for a better development " +
+                            "experience: %s", url);
+                    }
+                }
+            }, 10000);
+        }
+    };
     Object.defineProperty(ApolloClient.prototype, "documentTransform", {
         get: function () {
             return this.queryManager.documentTransform;
@@ -25272,7 +25276,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   i: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.8.2";
+var version = "3.8.3";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
