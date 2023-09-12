@@ -13605,6 +13605,8 @@ export type Organization = Actor & AnnouncementBanner & MemberStatusable & Node 
   announcementUserDismissible?: Maybe<Scalars['Boolean']['output']>;
   /** Determine if this repository owner has any items that can be pinned to their profile. */
   anyPinnableItems: Scalars['Boolean']['output'];
+  /** Identifies the date and time when the organization was archived. */
+  archivedAt?: Maybe<Scalars['DateTime']['output']>;
   /** Audit log entries of the organization */
   auditLog: OrganizationAuditEntryConnection;
   /** A URL pointing to the organization's public avatar. */
@@ -36192,6 +36194,7 @@ export type OrganizationResolvers<ContextType = any, ParentType extends Resolver
   announcementExpiresAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   announcementUserDismissible?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   anyPinnableItems?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, Partial<OrganizationAnyPinnableItemsArgs>>;
+  archivedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   auditLog?: Resolver<ResolversTypes['OrganizationAuditEntryConnection'], ParentType, ContextType, RequireFields<OrganizationAuditLogArgs, 'orderBy'>>;
   avatarUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType, Partial<OrganizationAvatarUrlArgs>>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
