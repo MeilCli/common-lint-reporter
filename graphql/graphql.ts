@@ -21602,6 +21602,8 @@ export type RepositoryRule = Node & {
   id: Scalars['ID']['output'];
   /** The parameters for this rule. */
   parameters?: Maybe<RuleParameters>;
+  /** The repository ruleset associated with this rule configuration */
+  repositoryRuleset?: Maybe<RepositoryRuleset>;
   /** The type of rule. */
   type: RepositoryRuleType;
 };
@@ -39054,6 +39056,7 @@ export type RepositoryOwnerResolvers<ContextType = any, ParentType extends Resol
 export type RepositoryRuleResolvers<ContextType = any, ParentType extends ResolversParentTypes['RepositoryRule'] = ResolversParentTypes['RepositoryRule']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   parameters?: Resolver<Maybe<ResolversTypes['RuleParameters']>, ParentType, ContextType>;
+  repositoryRuleset?: Resolver<Maybe<ResolversTypes['RepositoryRuleset']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['RepositoryRuleType'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
