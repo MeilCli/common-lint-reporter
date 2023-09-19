@@ -24079,7 +24079,12 @@ function wrap(fn) {
         for (var _i = 1; _i < arguments.length; _i++) {
             args[_i - 1] = arguments[_i];
         }
-        fn.apply(void 0, (0,tslib_es6/* __spreadArray */.ev)([typeof message === "number" ? getErrorMsg(message) : message], args, false));
+        if (typeof message === "number") {
+            fn(getErrorMsg(message, args));
+        }
+        else {
+            fn.apply(void 0, (0,tslib_es6/* __spreadArray */.ev)([message], args, false));
+        }
     };
 }
 var invariant = Object.assign(function invariant(condition, message) {
@@ -25276,7 +25281,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   i: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.8.3";
+var version = "3.8.4";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
