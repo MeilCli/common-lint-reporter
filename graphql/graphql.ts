@@ -5307,6 +5307,8 @@ export type Discussion = Closable & Comment & Deletable & Labelable & Lockable &
   id: Scalars['ID']['output'];
   /** Check if this comment was edited and includes an edit with the creation data */
   includesCreatedEdit: Scalars['Boolean']['output'];
+  /** Only return answered/unanswered discussions */
+  isAnswered?: Maybe<Scalars['Boolean']['output']>;
   /** A list of labels associated with the object. */
   labels?: Maybe<LabelConnection>;
   /** The moment the editor made the last edit */
@@ -20711,6 +20713,7 @@ export type RepositoryDiscussionCategoryArgs = {
 /** A repository contains the content for a project. */
 export type RepositoryDiscussionsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
+  answered?: InputMaybe<Scalars['Boolean']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   categoryId?: InputMaybe<Scalars['ID']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -33497,6 +33500,7 @@ export type DiscussionResolvers<ContextType = any, ParentType extends ResolversP
   editor?: Resolver<Maybe<ResolversTypes['Actor']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   includesCreatedEdit?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  isAnswered?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   labels?: Resolver<Maybe<ResolversTypes['LabelConnection']>, ParentType, ContextType, RequireFields<DiscussionLabelsArgs, 'orderBy'>>;
   lastEditedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   locked?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -38748,7 +38752,7 @@ export type RepositoryResolvers<ContextType = any, ParentType extends ResolversP
   discussion?: Resolver<Maybe<ResolversTypes['Discussion']>, ParentType, ContextType, RequireFields<RepositoryDiscussionArgs, 'number'>>;
   discussionCategories?: Resolver<ResolversTypes['DiscussionCategoryConnection'], ParentType, ContextType, RequireFields<RepositoryDiscussionCategoriesArgs, 'filterByAssignable'>>;
   discussionCategory?: Resolver<Maybe<ResolversTypes['DiscussionCategory']>, ParentType, ContextType, RequireFields<RepositoryDiscussionCategoryArgs, 'slug'>>;
-  discussions?: Resolver<ResolversTypes['DiscussionConnection'], ParentType, ContextType, RequireFields<RepositoryDiscussionsArgs, 'categoryId' | 'orderBy' | 'states'>>;
+  discussions?: Resolver<ResolversTypes['DiscussionConnection'], ParentType, ContextType, RequireFields<RepositoryDiscussionsArgs, 'answered' | 'categoryId' | 'orderBy' | 'states'>>;
   diskUsage?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   environment?: Resolver<Maybe<ResolversTypes['Environment']>, ParentType, ContextType, RequireFields<RepositoryEnvironmentArgs, 'name'>>;
   environments?: Resolver<ResolversTypes['EnvironmentConnection'], ParentType, ContextType, RequireFields<RepositoryEnvironmentsArgs, 'orderBy'>>;
