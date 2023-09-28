@@ -3586,6 +3586,8 @@ export type CreateLinkedBranchPayload = {
   __typename?: 'CreateLinkedBranchPayload';
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: Maybe<Scalars['String']['output']>;
+  /** The issue that was linked to. */
+  issue?: Maybe<Issue>;
   /** The new branch issue reference. */
   linkedBranch?: Maybe<LinkedBranch>;
 };
@@ -32850,6 +32852,7 @@ export type CreateIssuePayloadResolvers<ContextType = any, ParentType extends Re
 
 export type CreateLinkedBranchPayloadResolvers<ContextType = any, ParentType extends ResolversParentTypes['CreateLinkedBranchPayload'] = ResolversParentTypes['CreateLinkedBranchPayload']> = {
   clientMutationId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  issue?: Resolver<Maybe<ResolversTypes['Issue']>, ParentType, ContextType>;
   linkedBranch?: Resolver<Maybe<ResolversTypes['LinkedBranch']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
