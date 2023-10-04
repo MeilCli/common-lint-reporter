@@ -2727,7 +2727,7 @@ var SponsorsCountryOrRegionCode;
     SponsorsCountryOrRegionCode["Tn"] = "TN";
     /** Tonga */
     SponsorsCountryOrRegionCode["To"] = "TO";
-    /** Turkey */
+    /** Türkiye */
     SponsorsCountryOrRegionCode["Tr"] = "TR";
     /** Trinidad and Tobago */
     SponsorsCountryOrRegionCode["Tt"] = "TT";
