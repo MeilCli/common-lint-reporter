@@ -23812,7 +23812,7 @@ export enum SponsorsCountryOrRegionCode {
   Tn = 'TN',
   /** Tonga */
   To = 'TO',
-  /** Turkey */
+  /** Türkiye */
   Tr = 'TR',
   /** Trinidad and Tobago */
   Tt = 'TT',
