@@ -17282,48 +17282,31 @@ var zen_observable_ts_module = __webpack_require__(8216);
 
 function asyncMap(observable, mapFn, catchFn) {
     return new zen_observable_ts_module/* Observable */.y(function (observer) {
-        var next = observer.next, error = observer.error, complete = observer.complete;
-        var activeCallbackCount = 0;
-        var completed = false;
         var promiseQueue = {
             then: function (callback) {
                 return new Promise(function (resolve) { return resolve(callback()); });
             },
         };
-        function makeCallback(examiner, delegate) {
-            if (examiner) {
-                return function (arg) {
-                    ++activeCallbackCount;
-                    var both = function () { return examiner(arg); };
-                    promiseQueue = promiseQueue
-                        .then(both, both)
-                        .then(function (result) {
-                        --activeCallbackCount;
-                        next && next.call(observer, result);
-                        if (completed) {
-                            handler.complete();
-                        }
-                    }, function (error) {
-                        --activeCallbackCount;
-                        throw error;
-                    })
-                        .catch(function (caught) {
-                        error && error.call(observer, caught);
-                    });
-                };
-            }
-            else {
-                return function (arg) { return delegate && delegate.call(observer, arg); };
-            }
+        function makeCallback(examiner, key) {
+            return function (arg) {
+                if (examiner) {
+                    var both = function () {
+                        return observer.closed
+                            ? 0
+                            : examiner(arg);
+                    };
+                    promiseQueue = promiseQueue.then(both, both).then(function (result) { return observer.next(result); }, function (error) { return observer.error(error); });
+                }
+                else {
+                    observer[key](arg);
+                }
+            };
         }
         var handler = {
-            next: makeCallback(mapFn, next),
-            error: makeCallback(catchFn, error),
+            next: makeCallback(mapFn, "next"),
+            error: makeCallback(catchFn, "error"),
             complete: function () {
-                completed = true;
-                if (!activeCallbackCount) {
-                    complete && complete.call(observer);
-                }
+                promiseQueue.then(function () { return observer.complete(); });
             },
         };
         var sub = observable.subscribe(handler);
@@ -17950,7 +17933,6 @@ var QueryInfo = (function () {
         this.listeners = new Set();
         this.document = null;
         this.lastRequestId = 1;
-        this.subscriptions = new Set();
         this.stopped = false;
         this.dirty = false;
         this.observableQuery = null;
@@ -18085,7 +18067,6 @@ var QueryInfo = (function () {
             this.reset();
             this.cancel();
             this.cancel = QueryInfo.prototype.cancel;
-            this.subscriptions.forEach(function (sub) { return sub.unsubscribe(); });
             var oq = this.observableQuery;
             if (oq)
                 oq.stopPolling();
@@ -18883,10 +18864,10 @@ var QueryManager = (function () {
             throw error;
         });
     };
-    QueryManager.prototype.fetchConcastWithInfo = function (queryId, options, networkStatus) {
+    QueryManager.prototype.fetchConcastWithInfo = function (queryId, options, networkStatus, query) {
         var _this = this;
         if (networkStatus === void 0) { networkStatus = core_networkStatus/* NetworkStatus */.Ie.loading; }
-        var query = options.query;
+        if (query === void 0) { query = options.query; }
         var variables = this.getVariables(query, options.variables);
         var queryInfo = this.getQuery(queryId);
         var defaults = this.defaultOptions.watchQuery;
@@ -19870,9 +19851,9 @@ var ObservableQuery = (function (_super) {
         }
         return options.fetchPolicy;
     };
-    ObservableQuery.prototype.fetch = function (options, newNetworkStatus) {
+    ObservableQuery.prototype.fetch = function (options, newNetworkStatus, query) {
         this.queryManager.setObservableQuery(this);
-        return this.queryManager["fetchConcastWithInfo"](this.queryId, options, newNetworkStatus);
+        return this.queryManager["fetchConcastWithInfo"](this.queryId, options, newNetworkStatus, query);
     };
     ObservableQuery.prototype.updatePolling = function () {
         var _this = this;
@@ -19954,15 +19935,14 @@ var ObservableQuery = (function (_super) {
                 }
             }
         }
-        var fetchOptions = query === options.query ? options : (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { query: query });
-        this.waitForOwnResult && (this.waitForOwnResult = skipCacheDataFor(fetchOptions.fetchPolicy));
+        this.waitForOwnResult && (this.waitForOwnResult = skipCacheDataFor(options.fetchPolicy));
         var finishWaitingForOwnResult = function () {
             if (_this.concast === concast) {
                 _this.waitForOwnResult = false;
             }
         };
-        var variables = fetchOptions.variables && (0,tslib_es6/* __assign */.pi)({}, fetchOptions.variables);
-        var _a = this.fetch(fetchOptions, newNetworkStatus), concast = _a.concast, fromLink = _a.fromLink;
+        var variables = options.variables && (0,tslib_es6/* __assign */.pi)({}, options.variables);
+        var _a = this.fetch(options, newNetworkStatus, query), concast = _a.concast, fromLink = _a.fromLink;
         var observer = {
             next: function (result) {
                 finishWaitingForOwnResult();
@@ -20315,7 +20295,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   NetworkStatus: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.Ie),
 /* harmony export */   Observable: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.y$),
 /* harmony export */   ObservableQuery: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.ue),
-/* harmony export */   SuspenseCache: () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.$h),
 /* harmony export */   checkFetcher: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.U2),
 /* harmony export */   concat: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.zo),
 /* harmony export */   createHttpLink: () => (/* reexport safe */ _core_index_js__WEBPACK_IMPORTED_MODULE_0__.LQ),
@@ -21999,34 +21978,6 @@ function getSuspenseCache(client) {
 
 /***/ }),
 
-/***/ 5003:
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   $: () => (/* binding */ SuspenseCache)
-/* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7582);
-/* harmony import */ var _SuspenseCache_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(938);
-
-
-
-var SuspenseCache = (function (_super) {
-    (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__extends */ .ZT)(SuspenseCache, _super);
-    function SuspenseCache() {
-        var _this = _super.call(this) || this;
-        throw new Error("It is no longer necessary to create a `SuspenseCache` instance and pass it into the `ApolloProvider`.\n" +
-            "Please remove this code from your application. \n\n" +
-            "This export will be removed with the final 3.8 release.");
-        return _this;
-    }
-    return SuspenseCache;
-}(_SuspenseCache_js__WEBPACK_IMPORTED_MODULE_1__/* .SuspenseCache */ .$));
-
-//# sourceMappingURL=index.js.map
-
-/***/ }),
-
 /***/ 6735:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
@@ -23477,10 +23428,9 @@ function checkIfSnapshotChanged(_a) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   $h: () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_5__.$),
 /* harmony export */   CN: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.CN),
 /* harmony export */   Db: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.Db),
-/* harmony export */   E2: () => (/* reexport safe */ _parser_index_js__WEBPACK_IMPORTED_MODULE_6__.E2),
+/* harmony export */   E2: () => (/* reexport safe */ _parser_index_js__WEBPACK_IMPORTED_MODULE_5__.E2),
 /* harmony export */   Jc: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.Jc),
 /* harmony export */   KZ: () => (/* reexport safe */ _context_index_js__WEBPACK_IMPORTED_MODULE_3__.K),
 /* harmony export */   ZV: () => (/* reexport safe */ _context_index_js__WEBPACK_IMPORTED_MODULE_3__.Z),
@@ -23491,8 +23441,8 @@ function checkIfSnapshotChanged(_a) {
 /* harmony export */   kJ: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.kJ),
 /* harmony export */   lY: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.lY),
 /* harmony export */   mU: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.mU),
-/* harmony export */   mw: () => (/* reexport safe */ _parser_index_js__WEBPACK_IMPORTED_MODULE_6__.mw),
-/* harmony export */   n_: () => (/* reexport safe */ _parser_index_js__WEBPACK_IMPORTED_MODULE_6__.n_),
+/* harmony export */   mw: () => (/* reexport safe */ _parser_index_js__WEBPACK_IMPORTED_MODULE_5__.mw),
+/* harmony export */   n_: () => (/* reexport safe */ _parser_index_js__WEBPACK_IMPORTED_MODULE_5__.n_),
 /* harmony export */   td: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.td),
 /* harmony export */   u7: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.u7),
 /* harmony export */   xJ: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.xJ)
@@ -23511,12 +23461,8 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7604);
 }
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5003);
+	/* harmony import */ var _parser_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4692);
 }
-if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _parser_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(4692);
-}
-
 
 
 
@@ -24050,8 +23996,6 @@ __webpack_require__.d(__webpack_exports__, {
 
 // UNUSED EXPORTS: DEV, InvariantError, __DEV__, global
 
-// EXTERNAL MODULE: ./node_modules/tslib/tslib.es6.mjs
-var tslib_es6 = __webpack_require__(7582);
 // EXTERNAL MODULE: ./node_modules/ts-invariant/lib/invariant.js
 var lib_invariant = __webpack_require__(6128);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/version.js
@@ -24080,7 +24024,6 @@ var stringifyForDisplay = __webpack_require__(3887);
 
 
 
-
 function wrap(fn) {
     return function (message) {
         var args = [];
@@ -24088,11 +24031,14 @@ function wrap(fn) {
             args[_i - 1] = arguments[_i];
         }
         if (typeof message === "number") {
-            fn(getErrorMsg(message, args));
+            var arg0 = message;
+            message = getHandledErrorMsg(arg0);
+            if (!message) {
+                message = getFallbackErrorMsg(arg0, args);
+                args = [];
+            }
         }
-        else {
-            fn.apply(void 0, (0,tslib_es6/* __spreadArray */.ev)([message], args, false));
-        }
+        fn.apply(void 0, [message].concat(args));
     };
 }
 var invariant = Object.assign(function invariant(condition, message) {
@@ -24101,7 +24047,7 @@ var invariant = Object.assign(function invariant(condition, message) {
         args[_i - 2] = arguments[_i];
     }
     if (!condition) {
-        (0,lib_invariant/* invariant */.kG)(condition, getErrorMsg(message, args));
+        (0,lib_invariant/* invariant */.kG)(condition, getHandledErrorMsg(message, args) || getFallbackErrorMsg(message, args));
     }
 }, {
     debug: wrap(lib_invariant/* invariant */.kG.debug),
@@ -24114,23 +24060,31 @@ function newInvariantError(message) {
     for (var _i = 1; _i < arguments.length; _i++) {
         optionalParams[_i - 1] = arguments[_i];
     }
-    return new lib_invariant/* InvariantError */.ej(getErrorMsg(message, optionalParams));
+    return new lib_invariant/* InvariantError */.ej(getHandledErrorMsg(message, optionalParams) ||
+        getFallbackErrorMsg(message, optionalParams));
 }
 var ApolloErrorMessageHandler = Symbol.for("ApolloErrorMessageHandler_" + version/* version */.i);
-function getErrorMsg(message, messageArgs) {
+function stringify(arg) {
+    return typeof arg == "string"
+        ? arg
+        : (0,stringifyForDisplay/* stringifyForDisplay */.v)(arg, 2).slice(0, 1000);
+}
+function getHandledErrorMsg(message, messageArgs) {
     if (messageArgs === void 0) { messageArgs = []; }
     if (!message)
         return;
-    var args = messageArgs.map(function (arg) {
-        return typeof arg == "string" ? arg : (0,stringifyForDisplay/* stringifyForDisplay */.v)(arg, 2).slice(0, 1000);
-    });
-    return ((globals_global[ApolloErrorMessageHandler] &&
-        globals_global[ApolloErrorMessageHandler](message, args)) ||
-        "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#".concat(encodeURIComponent(JSON.stringify({
-            version: version/* version */.i,
-            message: message,
-            args: args,
-        }))));
+    return (globals_global[ApolloErrorMessageHandler] &&
+        globals_global[ApolloErrorMessageHandler](message, messageArgs.map(stringify)));
+}
+function getFallbackErrorMsg(message, messageArgs) {
+    if (messageArgs === void 0) { messageArgs = []; }
+    if (!message)
+        return;
+    return "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#".concat(encodeURIComponent(JSON.stringify({
+        version: version/* version */.i,
+        message: message,
+        args: messageArgs.map(stringify),
+    })));
 }
 
 //# sourceMappingURL=invariantWrappers.js.map
@@ -25289,7 +25243,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   i: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.8.4";
+var version = "3.8.5";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
