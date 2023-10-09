@@ -4946,6 +4946,8 @@ export type DeploymentProtectionRule = {
   __typename?: 'DeploymentProtectionRule';
   /** Identifies the primary key from the database. */
   databaseId?: Maybe<Scalars['Int']['output']>;
+  /** Whether deployments to this environment can be approved by the user who created the deployment. */
+  preventSelfReview?: Maybe<Scalars['Boolean']['output']>;
   /** The teams or users that can review the deployment */
   reviewers: DeploymentReviewerConnection;
   /** The timeout in minutes for this protection rule. */
@@ -26893,6 +26895,8 @@ export type UpdateEnvironmentInput = {
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   /** The node ID of the environment. */
   environmentId: Scalars['ID']['input'];
+  /** Whether deployments to this environment can be approved by the user who created the deployment. */
+  preventSelfReview?: InputMaybe<Scalars['Boolean']['input']>;
   /** The ids of users or teams that can approve deployments to this environment */
   reviewers?: InputMaybe<Array<Scalars['ID']['input']>>;
   /** The wait timer in minutes. */
@@ -33348,6 +33352,7 @@ export type DeploymentEnvironmentChangedEventResolvers<ContextType = any, Parent
 
 export type DeploymentProtectionRuleResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeploymentProtectionRule'] = ResolversParentTypes['DeploymentProtectionRule']> = {
   databaseId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  preventSelfReview?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   reviewers?: Resolver<ResolversTypes['DeploymentReviewerConnection'], ParentType, ContextType, Partial<DeploymentProtectionRuleReviewersArgs>>;
   timeout?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   type?: Resolver<ResolversTypes['DeploymentProtectionRuleType'], ParentType, ContextType>;
