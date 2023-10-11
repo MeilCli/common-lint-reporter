@@ -1989,6 +1989,8 @@ var RepositoryPrivacy;
 /** The rule types supported in rulesets */
 var RepositoryRuleType;
 (function (RepositoryRuleType) {
+    /** Authorization */
+    RepositoryRuleType["Authorization"] = "AUTHORIZATION";
     /** Branch name pattern */
     RepositoryRuleType["BranchNamePattern"] = "BRANCH_NAME_PATTERN";
     /** Committer email pattern */
@@ -2001,6 +2003,16 @@ var RepositoryRuleType;
     RepositoryRuleType["Creation"] = "CREATION";
     /** Only allow users with bypass permissions to delete matching refs. */
     RepositoryRuleType["Deletion"] = "DELETION";
+    /** File path pattern */
+    RepositoryRuleType["FilePathPattern"] = "FILE_PATH_PATTERN";
+    /** Branch is read-only. Users cannot push to the branch. */
+    RepositoryRuleType["LockBranch"] = "LOCK_BRANCH";
+    /** Max ref updates */
+    RepositoryRuleType["MaxRefUpdates"] = "MAX_REF_UPDATES";
+    /** Merges must be performed via a merge queue. */
+    RepositoryRuleType["MergeQueue"] = "MERGE_QUEUE";
+    /** Merge queue locked ref */
+    RepositoryRuleType["MergeQueueLockedRef"] = "MERGE_QUEUE_LOCKED_REF";
     /** Prevent users with push access from force pushing to refs. */
     RepositoryRuleType["NonFastForward"] = "NON_FAST_FORWARD";
     /** Require all commits be made to a non-target branch and submitted via a pull request before they can be merged. */
@@ -2009,14 +2021,28 @@ var RepositoryRuleType;
     RepositoryRuleType["RequiredDeployments"] = "REQUIRED_DEPLOYMENTS";
     /** Prevent merge commits from being pushed to matching refs. */
     RepositoryRuleType["RequiredLinearHistory"] = "REQUIRED_LINEAR_HISTORY";
+    /** When enabled, all conversations on code must be resolved before a pull request can be merged into a branch that matches this rule. */
+    RepositoryRuleType["RequiredReviewThreadResolution"] = "REQUIRED_REVIEW_THREAD_RESOLUTION";
     /** Commits pushed to matching refs must have verified signatures. */
     RepositoryRuleType["RequiredSignatures"] = "REQUIRED_SIGNATURES";
     /** Choose which status checks must pass before branches can be merged into a branch that matches this rule. When enabled, commits must first be pushed to another branch, then merged or pushed directly to a ref that matches this rule after status checks have passed. */
     RepositoryRuleType["RequiredStatusChecks"] = "REQUIRED_STATUS_CHECKS";
+    /** Require all commits be made to a non-target branch and submitted via a pull request and required workflow checks to pass before they can be merged. */
+    RepositoryRuleType["RequiredWorkflowStatusChecks"] = "REQUIRED_WORKFLOW_STATUS_CHECKS";
+    /** Commits pushed to matching refs must have verified signatures. */
+    RepositoryRuleType["RulesetRequiredSignatures"] = "RULESET_REQUIRED_SIGNATURES";
+    /** Secret scanning */
+    RepositoryRuleType["SecretScanning"] = "SECRET_SCANNING";
+    /** Tag */
+    RepositoryRuleType["Tag"] = "TAG";
     /** Tag name pattern */
     RepositoryRuleType["TagNamePattern"] = "TAG_NAME_PATTERN";
     /** Only allow users with bypass permission to update matching refs. */
     RepositoryRuleType["Update"] = "UPDATE";
+    /** Require all changes made to a targeted branch to pass the specified workflows before they can be merged. */
+    RepositoryRuleType["Workflows"] = "WORKFLOWS";
+    /** Workflow files cannot be modified. */
+    RepositoryRuleType["WorkflowUpdates"] = "WORKFLOW_UPDATES";
 })(RepositoryRuleType || (exports.RepositoryRuleType = RepositoryRuleType = {}));
 /** The bypass mode for a specific actor on a ruleset. */
 var RepositoryRulesetBypassActorBypassMode;
