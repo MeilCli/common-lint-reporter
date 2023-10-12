@@ -2251,6 +2251,8 @@ var SocialAccountProvider;
     SocialAccountProvider["Linkedin"] = "LINKEDIN";
     /** Open-source federated microblogging service. */
     SocialAccountProvider["Mastodon"] = "MASTODON";
+    /** JavaScript package registry. */
+    SocialAccountProvider["Npm"] = "NPM";
     /** Social news aggregation and discussion website. */
     SocialAccountProvider["Reddit"] = "REDDIT";
     /** Live-streaming service. */
