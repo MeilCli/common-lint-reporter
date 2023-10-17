@@ -1935,6 +1935,8 @@ var RepositoryLockReason;
     RepositoryLockReason["Rename"] = "RENAME";
     /** The repository is locked due to a trade controls related reason. */
     RepositoryLockReason["TradeRestriction"] = "TRADE_RESTRICTION";
+    /** The repository is locked due to an ownership transfer. */
+    RepositoryLockReason["TransferringOwnership"] = "TRANSFERRING_OWNERSHIP";
 })(RepositoryLockReason || (exports.RepositoryLockReason = RepositoryLockReason = {}));
 /** Possible directions in which to order a list of repository migrations when provided an `orderBy` argument. */
 var RepositoryMigrationOrderDirection;
