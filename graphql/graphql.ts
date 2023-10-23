@@ -14825,6 +14825,8 @@ export type PermissionSource = {
   organization: Organization;
   /** The level of access this source has granted to the user. */
   permission: DefaultRepositoryPermissionField;
+  /** The name of the role this source has granted to the user. */
+  roleName?: Maybe<Scalars['String']['output']>;
   /** The source of this permission. */
   source: PermissionGranter;
 };
@@ -36659,6 +36661,7 @@ export type PermissionGranterResolvers<ContextType = any, ParentType extends Res
 export type PermissionSourceResolvers<ContextType = any, ParentType extends ResolversParentTypes['PermissionSource'] = ResolversParentTypes['PermissionSource']> = {
   organization?: Resolver<ResolversTypes['Organization'], ParentType, ContextType>;
   permission?: Resolver<ResolversTypes['DefaultRepositoryPermissionField'], ParentType, ContextType>;
+  roleName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   source?: Resolver<ResolversTypes['PermissionGranter'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
