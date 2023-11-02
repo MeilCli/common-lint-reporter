@@ -2005,8 +2005,6 @@ var RepositoryRuleType;
     RepositoryRuleType["Creation"] = "CREATION";
     /** Only allow users with bypass permissions to delete matching refs. */
     RepositoryRuleType["Deletion"] = "DELETION";
-    /** File path pattern */
-    RepositoryRuleType["FilePathPattern"] = "FILE_PATH_PATTERN";
     /** Branch is read-only. Users cannot push to the branch. */
     RepositoryRuleType["LockBranch"] = "LOCK_BRANCH";
     /** Max ref updates */
