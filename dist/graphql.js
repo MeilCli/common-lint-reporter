@@ -2017,7 +2017,7 @@ var RepositoryRuleType;
     RepositoryRuleType["NonFastForward"] = "NON_FAST_FORWARD";
     /** Require all commits be made to a non-target branch and submitted via a pull request before they can be merged. */
     RepositoryRuleType["PullRequest"] = "PULL_REQUEST";
-    /** Choose which environments must be successfully deployed to before refs can be merged into a branch that matches this rule. */
+    /** Choose which environments must be successfully deployed to before refs can be pushed into a ref that matches this rule. */
     RepositoryRuleType["RequiredDeployments"] = "REQUIRED_DEPLOYMENTS";
     /** Prevent merge commits from being pushed to matching refs. */
     RepositoryRuleType["RequiredLinearHistory"] = "REQUIRED_LINEAR_HISTORY";
@@ -2025,7 +2025,7 @@ var RepositoryRuleType;
     RepositoryRuleType["RequiredReviewThreadResolution"] = "REQUIRED_REVIEW_THREAD_RESOLUTION";
     /** Commits pushed to matching refs must have verified signatures. */
     RepositoryRuleType["RequiredSignatures"] = "REQUIRED_SIGNATURES";
-    /** Choose which status checks must pass before branches can be merged into a branch that matches this rule. When enabled, commits must first be pushed to another branch, then merged or pushed directly to a ref that matches this rule after status checks have passed. */
+    /** Choose which status checks must pass before the ref is updated. When enabled, commits must first be pushed to another ref where the checks pass. */
     RepositoryRuleType["RequiredStatusChecks"] = "REQUIRED_STATUS_CHECKS";
     /** Require all commits be made to a non-target branch and submitted via a pull request and required workflow checks to pass before they can be merged. */
     RepositoryRuleType["RequiredWorkflowStatusChecks"] = "REQUIRED_WORKFLOW_STATUS_CHECKS";
