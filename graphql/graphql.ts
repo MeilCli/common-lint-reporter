@@ -24155,6 +24155,8 @@ export type Sponsorship = Node & {
    * @deprecated `Sponsorship.maintainer` will be removed. Use `Sponsorship.sponsorable` instead. Removal on 2020-04-01 UTC.
    */
   maintainer: User;
+  /** The platform that was most recently used to pay for the sponsorship. */
+  paymentSource?: Maybe<SponsorshipPaymentSource>;
   /** The privacy level for this sponsorship. */
   privacyLevel: SponsorshipPrivacy;
   /**
@@ -24266,6 +24268,14 @@ export type SponsorshipOrder = {
 export enum SponsorshipOrderField {
   /** Order sponsorship by creation time. */
   CreatedAt = 'CREATED_AT'
+}
+
+/** How payment was made for funding a GitHub Sponsors sponsorship. */
+export enum SponsorshipPaymentSource {
+  /** Payment was made through GitHub. */
+  Github = 'GITHUB',
+  /** Payment was made through Patreon. */
+  Patreon = 'PATREON'
 }
 
 /** The privacy of a sponsorship */
@@ -30181,6 +30191,7 @@ export type ResolversTypes = {
   SponsorshipNewsletterOrderField: SponsorshipNewsletterOrderField;
   SponsorshipOrder: SponsorshipOrder;
   SponsorshipOrderField: SponsorshipOrderField;
+  SponsorshipPaymentSource: SponsorshipPaymentSource;
   SponsorshipPrivacy: SponsorshipPrivacy;
   SquashMergeCommitMessage: SquashMergeCommitMessage;
   SquashMergeCommitTitle: SquashMergeCommitTitle;
@@ -39937,6 +39948,7 @@ export type SponsorshipResolvers<ContextType = any, ParentType extends Resolvers
   isOneTimePayment?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   isSponsorOptedIntoEmail?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   maintainer?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  paymentSource?: Resolver<Maybe<ResolversTypes['SponsorshipPaymentSource']>, ParentType, ContextType>;
   privacyLevel?: Resolver<ResolversTypes['SponsorshipPrivacy'], ParentType, ContextType>;
   sponsor?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   sponsorEntity?: Resolver<Maybe<ResolversTypes['Sponsor']>, ParentType, ContextType>;
