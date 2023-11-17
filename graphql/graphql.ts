@@ -23355,6 +23355,8 @@ export type SponsorsActivity = Node & {
   /** The sponsor's current privacy level. */
   currentPrivacyLevel?: Maybe<SponsorshipPrivacy>;
   id: Scalars['ID']['output'];
+  /** The platform that was used to pay for the sponsorship. */
+  paymentSource?: Maybe<SponsorshipPaymentSource>;
   /** The tier that the sponsorship used to use, for tier change events. */
   previousSponsorsTier?: Maybe<SponsorsTier>;
   /** The user or organization who triggered this activity and was/is sponsoring the sponsorable. */
@@ -39829,6 +39831,7 @@ export type SponsorsActivityResolvers<ContextType = any, ParentType extends Reso
   action?: Resolver<ResolversTypes['SponsorsActivityAction'], ParentType, ContextType>;
   currentPrivacyLevel?: Resolver<Maybe<ResolversTypes['SponsorshipPrivacy']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  paymentSource?: Resolver<Maybe<ResolversTypes['SponsorshipPaymentSource']>, ParentType, ContextType>;
   previousSponsorsTier?: Resolver<Maybe<ResolversTypes['SponsorsTier']>, ParentType, ContextType>;
   sponsor?: Resolver<Maybe<ResolversTypes['Sponsor']>, ParentType, ContextType>;
   sponsorable?: Resolver<ResolversTypes['Sponsorable'], ParentType, ContextType>;
