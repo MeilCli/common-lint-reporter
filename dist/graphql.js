@@ -452,7 +452,7 @@ var EnterpriseMembersCanCreateRepositoriesSettingValue;
     EnterpriseMembersCanCreateRepositoriesSettingValue["All"] = "ALL";
     /** Members will not be able to create public or private repositories. */
     EnterpriseMembersCanCreateRepositoriesSettingValue["Disabled"] = "DISABLED";
-    /** Organization administrators choose whether to allow members to create repositories. */
+    /** Organization owners choose whether to allow members to create repositories. */
     EnterpriseMembersCanCreateRepositoriesSettingValue["NoPolicy"] = "NO_POLICY";
     /** Members will be able to create only private repositories. */
     EnterpriseMembersCanCreateRepositoriesSettingValue["Private"] = "PRIVATE";
@@ -1008,7 +1008,7 @@ var OrgRemoveBillingManagerAuditEntryReason;
 /** The type of membership a user has with an Organization. */
 var OrgRemoveMemberAuditEntryMembershipType;
 (function (OrgRemoveMemberAuditEntryMembershipType) {
-    /** Organization administrators have full access and can change several settings, including the names of repositories that belong to the Organization and Owners team membership. In addition, organization admins can delete the organization and all of its repositories. */
+    /** Organization owners have full access and can change several settings, including the names of repositories that belong to the Organization and Owners team membership. In addition, organization owners can delete the organization and all of its repositories. */
     OrgRemoveMemberAuditEntryMembershipType["Admin"] = "ADMIN";
     /** A billing manager is a user who manages the billing settings for the Organization, such as updating payment information. */
     OrgRemoveMemberAuditEntryMembershipType["BillingManager"] = "BILLING_MANAGER";
@@ -1503,13 +1503,13 @@ var ProjectV2ViewOrderField;
 /** Properties by which project workflows can be ordered. */
 var ProjectV2WorkflowsOrderField;
 (function (ProjectV2WorkflowsOrderField) {
-    /** The workflows' date and time of creation */
+    /** The date and time of the workflow creation */
     ProjectV2WorkflowsOrderField["CreatedAt"] = "CREATED_AT";
-    /** The workflows' name */
+    /** The name of the workflow */
     ProjectV2WorkflowsOrderField["Name"] = "NAME";
-    /** The workflows' number */
+    /** The number of the workflow */
     ProjectV2WorkflowsOrderField["Number"] = "NUMBER";
-    /** The workflows' date and time of update */
+    /** The date and time of the workflow update */
     ProjectV2WorkflowsOrderField["UpdatedAt"] = "UPDATED_AT";
 })(ProjectV2WorkflowsOrderField || (exports.ProjectV2WorkflowsOrderField = ProjectV2WorkflowsOrderField = {}));
 /** The possible methods for updating a pull request's head branch with the base branch. */
