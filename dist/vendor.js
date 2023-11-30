@@ -14634,22 +14634,28 @@ function wrappy (fn, cb) {
 /* harmony export */   R: () => (/* binding */ ApolloCache)
 /* harmony export */ });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7582);
-/* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6869);
+/* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3168);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3361);
 
 
 
-var ApolloCache = (function () {
+var ApolloCache = /** @class */ (function () {
     function ApolloCache() {
         this.assumeImmutableResults = false;
+        // Make sure we compute the same (===) fragment query document every
+        // time we receive the same fragment in readFragment.
         this.getFragmentDoc = (0,optimism__WEBPACK_IMPORTED_MODULE_0__/* .wrap */ .re)(_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .getFragmentQueryDocument */ .Yk);
     }
+    // Transactional API
+    // The batch method is intended to replace/subsume both performTransaction
+    // and recordOptimisticTransaction, but performTransaction came first, so we
+    // provide a default batch implementation that's just another way of calling
+    // performTransaction. Subclasses of ApolloCache (such as InMemoryCache) can
+    // override the batch method to do more interesting things with its options.
     ApolloCache.prototype.batch = function (options) {
         var _this = this;
-        var optimisticId = typeof options.optimistic === "string"
-            ? options.optimistic
-            : options.optimistic === false
-                ? null
+        var optimisticId = typeof options.optimistic === "string" ? options.optimistic
+            : options.optimistic === false ? null
                 : void 0;
         var updateResult;
         this.performTransaction(function () { return (updateResult = options.update(_this)); }, optimisticId);
@@ -14658,9 +14664,14 @@ var ApolloCache = (function () {
     ApolloCache.prototype.recordOptimisticTransaction = function (transaction, optimisticId) {
         this.performTransaction(transaction, optimisticId);
     };
+    // Optional API
+    // Called once per input document, allowing the cache to make static changes
+    // to the query, such as adding __typename fields.
     ApolloCache.prototype.transformDocument = function (document) {
         return document;
     };
+    // Called before each ApolloLink request, allowing the cache to make dynamic
+    // changes to the query, such as filling in missing fragment definitions.
     ApolloCache.prototype.transformForLink = function (document) {
         return document;
     };
@@ -14673,6 +14684,7 @@ var ApolloCache = (function () {
     ApolloCache.prototype.modify = function (options) {
         return false;
     };
+    // DataProxy API
     ApolloCache.prototype.readQuery = function (options, optimistic) {
         if (optimistic === void 0) { optimistic = !!options.optimistic; }
         return this.read((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .pi)({}, options), { rootId: options.id || "ROOT_QUERY", optimistic: optimistic }));
@@ -14750,10 +14762,11 @@ var Cache;
 /* harmony export */ });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7582);
 
-var MissingFieldError = (function (_super) {
+var MissingFieldError = /** @class */ (function (_super) {
     (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__extends */ .ZT)(MissingFieldError, _super);
     function MissingFieldError(message, path, query, variables) {
         var _a;
+        // 'Error' breaks prototype chain here
         var _this = _super.call(this, message) || this;
         _this.message = message;
         _this.path = path;
@@ -14768,6 +14781,8 @@ var MissingFieldError = (function (_super) {
         else {
             _this.missing = _this.path;
         }
+        // We're not using `Object.setPrototypeOf` here as it isn't fully supported
+        // on Android (see issue #3236).
         _this.__proto__ = MissingFieldError.prototype;
         return _this;
     }
@@ -14830,18 +14845,18 @@ function defaultDataIdFromObject(_a, context) {
     var __typename = _a.__typename, id = _a.id, _id = _a._id;
     if (typeof __typename === "string") {
         if (context) {
-            context.keyObject = !isNullish(id)
-                ? { id: id }
-                : !isNullish(_id)
-                    ? { _id: _id }
-                    : void 0;
+            context.keyObject =
+                !isNullish(id) ? { id: id }
+                    : !isNullish(_id) ? { _id: _id }
+                        : void 0;
         }
+        // If there is no object.id, fall back to object._id.
         if (isNullish(id) && !isNullish(_id)) {
             id = _id;
         }
         if (!isNullish(id)) {
-            return "".concat(__typename, ":").concat(typeof id === "number" || typeof id === "string"
-                ? id
+            return "".concat(__typename, ":").concat(typeof id === "number" || typeof id === "string" ?
+                id
                 : JSON.stringify(id));
         }
     }
@@ -14850,6 +14865,8 @@ var defaultConfig = {
     dataIdFromObject: defaultDataIdFromObject,
     addTypename: true,
     resultCaching: true,
+    // Thanks to the shouldCanonizeResults helper, this should be the only line
+    // you have to change to reenable canonization by default in the future.
     canonizeResults: false,
 };
 function normalizeConfig(config) {
@@ -14860,8 +14877,8 @@ function shouldCanonizeResults(config) {
     return value === void 0 ? defaultConfig.canonizeResults : value;
 }
 function getTypenameFromStoreObject(store, objectOrReference) {
-    return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .isReference */ .Yk)(objectOrReference)
-        ? store.get(objectOrReference.__ref, "__typename")
+    return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .isReference */ .Yk)(objectOrReference) ?
+        store.get(objectOrReference.__ref, "__typename")
         : objectOrReference && objectOrReference.__typename;
 }
 var TypeOrFieldNameRegExp = /^[_a-z][_0-9a-z]*/i;
@@ -14871,8 +14888,8 @@ function fieldNameFromStoreName(storeFieldName) {
 }
 function selectionSetMatchesResult(selectionSet, result, variables) {
     if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .isNonNullObject */ .s)(result)) {
-        return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .isArray */ .k)(result)
-            ? result.every(function (item) {
+        return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .isArray */ .k)(result) ?
+            result.every(function (item) {
                 return selectionSetMatchesResult(selectionSet, item, variables);
             })
             : selectionSet.selections.every(function (field) {
@@ -14882,6 +14899,11 @@ function selectionSetMatchesResult(selectionSet, result, variables) {
                         (!field.selectionSet ||
                             selectionSetMatchesResult(field.selectionSet, result[key], variables)));
                 }
+                // If the selection has been skipped with @skip(true) or
+                // @include(false), it should not count against the matching. If
+                // the selection is not a field, it must be a fragment (inline or
+                // named). We will determine if selectionSetMatchesResult for that
+                // fragment when we get to it, so for now we return true.
                 return true;
             });
     }
@@ -14894,6 +14916,8 @@ function makeProcessedFieldsMerger() {
     return new _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .DeepMerger */ .w0();
 }
 function extractFragmentContext(document, fragments) {
+    // FragmentMap consisting only of fragments defined directly in document, not
+    // including other fragments registered in the FragmentRegistry.
     var fragmentMap = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_6__/* .createFragmentMap */ .F)((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_7__/* .getFragmentDefinitions */ .kU)(document));
     return {
         fragmentMap: fragmentMap,
@@ -14924,8 +14948,8 @@ __webpack_require__.d(__webpack_exports__, {
 var tslib_es6 = __webpack_require__(7582);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/globals/index.js + 3 modules
 var globals = __webpack_require__(6961);
-// EXTERNAL MODULE: ./node_modules/optimism/lib/index.js + 4 modules
-var lib = __webpack_require__(6869);
+// EXTERNAL MODULE: ./node_modules/optimism/lib/index.js + 7 modules
+var lib = __webpack_require__(3168);
 // EXTERNAL MODULE: ./node_modules/@wry/equality/lib/index.js
 var equality_lib = __webpack_require__(20);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/cache/core/cache.js
@@ -14971,24 +14995,37 @@ var helpers = __webpack_require__(9641);
 var DELETE = Object.create(null);
 var delModifier = function () { return DELETE; };
 var INVALIDATE = Object.create(null);
-var EntityStore = (function () {
+var EntityStore = /** @class */ (function () {
     function EntityStore(policies, group) {
         var _this = this;
         this.policies = policies;
         this.group = group;
         this.data = Object.create(null);
+        // Maps root entity IDs to the number of times they have been retained, minus
+        // the number of times they have been released. Retained entities keep other
+        // entities they reference (even indirectly) from being garbage collected.
         this.rootIds = Object.create(null);
+        // Lazily tracks { __ref: <dataId> } strings contained by this.data[dataId].
         this.refs = Object.create(null);
+        // Bound function that can be passed around to provide easy access to fields
+        // of Reference objects as well as ordinary objects.
         this.getFieldValue = function (objectOrReference, storeFieldName) {
-            return (0,maybeDeepFreeze/* maybeDeepFreeze */.J)((0,storeUtils/* isReference */.Yk)(objectOrReference)
-                ? _this.get(objectOrReference.__ref, storeFieldName)
+            return (0,maybeDeepFreeze/* maybeDeepFreeze */.J)((0,storeUtils/* isReference */.Yk)(objectOrReference) ?
+                _this.get(objectOrReference.__ref, storeFieldName)
                 : objectOrReference && objectOrReference[storeFieldName]);
         };
+        // Returns true for non-normalized StoreObjects and non-dangling
+        // References, indicating that readField(name, objOrRef) has a chance of
+        // working. Useful for filtering out dangling references from lists.
         this.canRead = function (objOrRef) {
-            return (0,storeUtils/* isReference */.Yk)(objOrRef)
-                ? _this.has(objOrRef.__ref)
+            return (0,storeUtils/* isReference */.Yk)(objOrRef) ?
+                _this.has(objOrRef.__ref)
                 : typeof objOrRef === "object";
         };
+        // Bound function that converts an id or an object with a __typename and
+        // primary key fields to a Reference object. If called with a Reference object,
+        // that same Reference object is returned. Pass true for mergeIntoStore to persist
+        // an object into the store.
         this.toReference = function (objOrIdOrRef, mergeIntoStore) {
             if (typeof objOrIdOrRef === "string") {
                 return (0,storeUtils/* makeReference */.kQ)(objOrIdOrRef);
@@ -15006,6 +15043,9 @@ var EntityStore = (function () {
             }
         };
     }
+    // Although the EntityStore class is abstract, it contains concrete
+    // implementations of the various NormalizedCache interface methods that
+    // are inherited by the Root and Layer subclasses.
     EntityStore.prototype.toObject = function () {
         return (0,tslib_es6/* __assign */.pi)({}, this.data);
     };
@@ -15029,6 +15069,11 @@ var EntityStore = (function () {
         }
     };
     EntityStore.prototype.lookup = function (dataId, dependOnExistence) {
+        // The has method (above) calls lookup with dependOnExistence = true, so
+        // that it can later be invalidated when we add or remove a StoreObject for
+        // this dataId. Any consumer who cares about the contents of the StoreObject
+        // should not rely on this dependency, since the contents could change
+        // without the object being added or removed.
         if (dependOnExistence)
             this.group.depend(dataId, "__exists");
         if (helpers/* hasOwn */.RI.call(this.data, dataId)) {
@@ -15044,32 +15089,54 @@ var EntityStore = (function () {
     EntityStore.prototype.merge = function (older, newer) {
         var _this = this;
         var dataId;
+        // Convert unexpected references to ID strings.
         if ((0,storeUtils/* isReference */.Yk)(older))
             older = older.__ref;
         if ((0,storeUtils/* isReference */.Yk)(newer))
             newer = newer.__ref;
         var existing = typeof older === "string" ? this.lookup((dataId = older)) : older;
         var incoming = typeof newer === "string" ? this.lookup((dataId = newer)) : newer;
+        // If newer was a string ID, but that ID was not defined in this store,
+        // then there are no fields to be merged, so we're done.
         if (!incoming)
             return;
         (0,globals/* invariant */.kG)(typeof dataId === "string", 1);
         var merged = new mergeDeep/* DeepMerger */.w0(storeObjectReconciler).merge(existing, incoming);
+        // Even if merged === existing, existing may have come from a lower
+        // layer, so we always need to set this.data[dataId] on this level.
         this.data[dataId] = merged;
         if (merged !== existing) {
             delete this.refs[dataId];
             if (this.group.caching) {
                 var fieldsToDirty_1 = Object.create(null);
+                // If we added a new StoreObject where there was previously none, dirty
+                // anything that depended on the existence of this dataId, such as the
+                // EntityStore#has method.
                 if (!existing)
                     fieldsToDirty_1.__exists = 1;
+                // Now invalidate dependents who called getFieldValue for any fields
+                // that are changing as a result of this merge.
                 Object.keys(incoming).forEach(function (storeFieldName) {
                     if (!existing ||
                         existing[storeFieldName] !== merged[storeFieldName]) {
+                        // Always dirty the full storeFieldName, which may include
+                        // serialized arguments following the fieldName prefix.
                         fieldsToDirty_1[storeFieldName] = 1;
+                        // Also dirty fieldNameFromStoreName(storeFieldName) if it's
+                        // different from storeFieldName and this field does not have
+                        // keyArgs configured, because that means the cache can't make
+                        // any assumptions about how field values with the same field
+                        // name but different arguments might be interrelated, so it
+                        // must err on the side of invalidating all field values that
+                        // share the same short fieldName, regardless of arguments.
                         var fieldName = (0,helpers/* fieldNameFromStoreName */.E_)(storeFieldName);
                         if (fieldName !== storeFieldName &&
                             !_this.policies.hasKeyArgs(merged.__typename, fieldName)) {
                             fieldsToDirty_1[fieldName] = 1;
                         }
+                        // If merged[storeFieldName] has become undefined, and this is the
+                        // Root layer, actually delete the property from the merged object,
+                        // which is guaranteed to have been created fresh in this method.
                         if (merged[storeFieldName] === void 0 && !(_this instanceof Layer)) {
                             delete merged[storeFieldName];
                         }
@@ -15077,6 +15144,10 @@ var EntityStore = (function () {
                 });
                 if (fieldsToDirty_1.__typename &&
                     !(existing && existing.__typename) &&
+                    // Since we return default root __typename strings
+                    // automatically from store.get, we don't need to dirty the
+                    // ROOT_QUERY.__typename field if merged.__typename is equal
+                    // to the default string (usually "Query").
                     this.policies.rootTypenamesById[dataId] === merged.__typename) {
                     delete fieldsToDirty_1.__typename;
                 }
@@ -15100,8 +15171,8 @@ var EntityStore = (function () {
                 toReference: this.toReference,
                 canRead: this.canRead,
                 readField: function (fieldNameOrOptions, from) {
-                    return _this.policies.readField(typeof fieldNameOrOptions === "string"
-                        ? {
+                    return _this.policies.readField(typeof fieldNameOrOptions === "string" ?
+                        {
                             fieldName: fieldNameOrOptions,
                             from: from || (0,storeUtils/* makeReference */.kQ)(dataId),
                         }
@@ -15113,13 +15184,9 @@ var EntityStore = (function () {
                 var fieldValue = storeObject[storeFieldName];
                 if (fieldValue === void 0)
                     return;
-                var modify = typeof fields === "function"
-                    ? fields
-                    : fields[storeFieldName] || fields[fieldName];
+                var modify = typeof fields === "function" ? fields : (fields[storeFieldName] || fields[fieldName]);
                 if (modify) {
-                    var newValue = modify === delModifier
-                        ? DELETE
-                        : modify((0,maybeDeepFreeze/* maybeDeepFreeze */.J)(fieldValue), (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, sharedDetails_1), { fieldName: fieldName, storeFieldName: storeFieldName, storage: _this.getStorage(dataId, storeFieldName) }));
+                    var newValue = modify === delModifier ? DELETE : (modify((0,maybeDeepFreeze/* maybeDeepFreeze */.J)(fieldValue), (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, sharedDetails_1), { fieldName: fieldName, storeFieldName: storeFieldName, storage: _this.getStorage(dataId, storeFieldName) })));
                     if (newValue === INVALIDATE) {
                         _this.group.dirty(dataId, storeFieldName);
                     }
@@ -15141,6 +15208,7 @@ var EntityStore = (function () {
                                     checkReference(newValue);
                                 }
                                 else if (Array.isArray(newValue)) {
+                                    // Warn about writing "mixed" arrays of Reference and non-Reference objects
                                     var seenReference = false;
                                     var someNonReference = void 0;
                                     for (var _i = 0, newValue_1 = newValue; _i < newValue_1.length; _i++) {
@@ -15151,8 +15219,11 @@ var EntityStore = (function () {
                                                 break;
                                         }
                                         else {
+                                            // Do not warn on primitive values, since those could never be represented
+                                            // by a reference. This is a valid (albeit uncommon) use case.
                                             if (typeof value === "object" && !!value) {
                                                 var id = _this.policies.identify(value)[0];
+                                                // check if object could even be referenced, otherwise we are not interested in it for this warning
                                                 if (id) {
                                                     someNonReference = value;
                                                 }
@@ -15188,18 +15259,23 @@ var EntityStore = (function () {
         }
         return false;
     };
+    // If called with only one argument, removes the entire entity
+    // identified by dataId. If called with a fieldName as well, removes all
+    // fields of that entity whose names match fieldName according to the
+    // fieldNameFromStoreName helper function. If called with a fieldName
+    // and variables, removes all fields of that entity whose names match fieldName
+    // and whose arguments when cached exactly match the variables passed.
     EntityStore.prototype.delete = function (dataId, fieldName, args) {
         var _a;
         var storeObject = this.lookup(dataId);
         if (storeObject) {
             var typename = this.getFieldValue(storeObject, "__typename");
-            var storeFieldName = fieldName && args
-                ? this.policies.getStoreFieldName({ typename: typename, fieldName: fieldName, args: args })
+            var storeFieldName = fieldName && args ?
+                this.policies.getStoreFieldName({ typename: typename, fieldName: fieldName, args: args })
                 : fieldName;
-            return this.modify(dataId, storeFieldName
-                ? (_a = {},
-                    _a[storeFieldName] = delModifier,
-                    _a) : delModifier);
+            return this.modify(dataId, storeFieldName ? (_a = {},
+                _a[storeFieldName] = delModifier,
+                _a) : delModifier);
         }
         return false;
     };
@@ -15212,6 +15288,10 @@ var EntityStore = (function () {
             if (this instanceof Layer && this !== limit) {
                 evicted = this.parent.evict(options, limit) || evicted;
             }
+            // Always invalidate the field to trigger rereading of watched
+            // queries, even if no cache data was modified by the eviction,
+            // because queries may depend on computed fields with custom read
+            // functions, whose values are not stored in the EntityStore.
             if (options.fieldName || evicted) {
                 this.group.dirty(options.id, options.fieldName || "__exists");
             }
@@ -15264,6 +15344,8 @@ var EntityStore = (function () {
         }
         return 0;
     };
+    // Return a Set<string> of all the ID strings that have been retained by
+    // this layer/root *and* any layers/roots beneath it.
     EntityStore.prototype.getRootIdSet = function (ids) {
         if (ids === void 0) { ids = new Set(); }
         Object.keys(this.rootIds).forEach(ids.add, ids);
@@ -15271,17 +15353,29 @@ var EntityStore = (function () {
             this.parent.getRootIdSet(ids);
         }
         else {
+            // Official singleton IDs like ROOT_QUERY and ROOT_MUTATION are
+            // always considered roots for garbage collection, regardless of
+            // their retainment counts in this.rootIds.
             Object.keys(this.policies.rootTypenamesById).forEach(ids.add, ids);
         }
         return ids;
     };
+    // The goal of garbage collection is to remove IDs from the Root layer of the
+    // store that are no longer reachable starting from any IDs that have been
+    // explicitly retained (see retain and release, above). Returns an array of
+    // dataId strings that were removed from the store.
     EntityStore.prototype.gc = function () {
         var _this = this;
         var ids = this.getRootIdSet();
         var snapshot = this.toObject();
         ids.forEach(function (id) {
             if (helpers/* hasOwn */.RI.call(snapshot, id)) {
+                // Because we are iterating over an ECMAScript Set, the IDs we add here
+                // will be visited in later iterations of the forEach loop only if they
+                // were not previously contained by the Set.
                 Object.keys(_this.findChildRefIds(id)).forEach(ids.add, ids);
+                // By removing IDs from the snapshot object here, we protect them from
+                // getting removed from the root store layer below.
                 delete snapshot[id];
             }
         });
@@ -15301,13 +15395,24 @@ var EntityStore = (function () {
             if (!root)
                 return found_1;
             var workSet_1 = new Set([root]);
+            // Within the store, only arrays and objects can contain child entity
+            // references, so we can prune the traversal using this predicate:
             workSet_1.forEach(function (obj) {
                 if ((0,storeUtils/* isReference */.Yk)(obj)) {
                     found_1[obj.__ref] = true;
+                    // In rare cases, a { __ref } Reference object may have other fields.
+                    // This often indicates a mismerging of References with StoreObjects,
+                    // but garbage collection should not be fooled by a stray __ref
+                    // property in a StoreObject (ignoring all the other fields just
+                    // because the StoreObject looks like a Reference). To avoid this
+                    // premature termination of findChildRefIds recursion, we fall through
+                    // to the code below, which will handle any other properties of obj.
                 }
                 if ((0,objects/* isNonNullObject */.s)(obj)) {
                     Object.keys(obj).forEach(function (key) {
                         var child = obj[key];
+                        // No need to add primitive values to the workSet, since they cannot
+                        // contain reference objects.
                         if ((0,objects/* isNonNullObject */.s)(child)) {
                             workSet_1.add(child);
                         }
@@ -15323,7 +15428,20 @@ var EntityStore = (function () {
     return EntityStore;
 }());
 
-var CacheGroup = (function () {
+// A single CacheGroup represents a set of one or more EntityStore objects,
+// typically the Root store in a CacheGroup by itself, and all active Layer
+// stores in a group together. A single EntityStore object belongs to only
+// one CacheGroup, store.group. The CacheGroup is responsible for tracking
+// dependencies, so store.group is helpful for generating unique keys for
+// cached results that need to be invalidated when/if those dependencies
+// change. If we used the EntityStore objects themselves as cache keys (that
+// is, store rather than store.group), the cache would become unnecessarily
+// fragmented by all the different Layer objects. Instead, the CacheGroup
+// approach allows all optimistic Layer objects in the same linked list to
+// belong to one CacheGroup, with the non-optimistic Root object belonging
+// to another CacheGroup, allowing resultCaching dependencies to be tracked
+// separately for optimistic and non-optimistic entity data.
+var CacheGroup = /** @class */ (function () {
     function CacheGroup(caching, parent) {
         if (parent === void 0) { parent = null; }
         this.caching = caching;
@@ -15340,6 +15458,11 @@ var CacheGroup = (function () {
             this.d(makeDepKey(dataId, storeFieldName));
             var fieldName = (0,helpers/* fieldNameFromStoreName */.E_)(storeFieldName);
             if (fieldName !== storeFieldName) {
+                // Fields with arguments that contribute extra identifying
+                // information to the fieldName (thus forming the storeFieldName)
+                // depend not only on the full storeFieldName but also on the
+                // short fieldName, so the field can be invalidated using either
+                // level of specificity.
                 this.d(makeDepKey(dataId, fieldName));
             }
             if (this.parent) {
@@ -15349,21 +15472,41 @@ var CacheGroup = (function () {
     };
     CacheGroup.prototype.dirty = function (dataId, storeFieldName) {
         if (this.d) {
-            this.d.dirty(makeDepKey(dataId, storeFieldName), storeFieldName === "__exists" ? "forget" : "setDirty");
+            this.d.dirty(makeDepKey(dataId, storeFieldName), 
+            // When storeFieldName === "__exists", that means the entity identified
+            // by dataId has either disappeared from the cache or was newly added,
+            // so the result caching system would do well to "forget everything it
+            // knows" about that object. To achieve that kind of invalidation, we
+            // not only dirty the associated result cache entry, but also remove it
+            // completely from the dependency graph. For the optimism implementation
+            // details, see https://github.com/benjamn/optimism/pull/195.
+            storeFieldName === "__exists" ? "forget" : "setDirty");
         }
     };
     return CacheGroup;
 }());
 function makeDepKey(dataId, storeFieldName) {
+    // Since field names cannot have '#' characters in them, this method
+    // of joining the field name and the ID should be unambiguous, and much
+    // cheaper than JSON.stringify([dataId, fieldName]).
     return storeFieldName + "#" + dataId;
 }
 function maybeDependOnExistenceOfEntity(store, entityId) {
     if (supportsResultCaching(store)) {
+        // We use this pseudo-field __exists elsewhere in the EntityStore code to
+        // represent changes in the existence of the entity object identified by
+        // entityId. This dependency gets reliably dirtied whenever an object with
+        // this ID is deleted (or newly created) within this group, so any result
+        // cache entries (for example, StoreReader#executeSelectionSet results) that
+        // depend on __exists for this entityId will get dirtied as well, leading to
+        // the eventual recomputation (instead of reuse) of those result objects the
+        // next time someone reads them from the cache.
         store.group.depend(entityId, "__exists");
     }
 }
 (function (EntityStore) {
-    var Root = (function (_super) {
+    // Refer to this class as EntityStore.Root outside this namespace.
+    var Root = /** @class */ (function (_super) {
         (0,tslib_es6/* __extends */.ZT)(Root, _super);
         function Root(_a) {
             var policies = _a.policies, _b = _a.resultCaching, resultCaching = _b === void 0 ? true : _b, seed = _a.seed;
@@ -15375,9 +15518,13 @@ function maybeDependOnExistenceOfEntity(store, entityId) {
             return _this;
         }
         Root.prototype.addLayer = function (layerId, replay) {
+            // Adding an optimistic Layer on top of the Root actually adds the Layer
+            // on top of the Stump, so the Stump always comes between the Root and
+            // any Layer objects that we've added.
             return this.stump.addLayer(layerId, replay);
         };
         Root.prototype.removeLayer = function () {
+            // Never remove the root layer.
             return this;
         };
         Root.prototype.getStorage = function () {
@@ -15387,7 +15534,9 @@ function maybeDependOnExistenceOfEntity(store, entityId) {
     }(EntityStore));
     EntityStore.Root = Root;
 })(EntityStore || (EntityStore = {}));
-var Layer = (function (_super) {
+// Not exported, since all Layer instances are created by the addLayer method
+// of the EntityStore.Root class.
+var Layer = /** @class */ (function (_super) {
     (0,tslib_es6/* __extends */.ZT)(Layer, _super);
     function Layer(id, parent, replay, group) {
         var _this = _super.call(this, parent.policies, group) || this;
@@ -15403,22 +15552,39 @@ var Layer = (function (_super) {
     };
     Layer.prototype.removeLayer = function (layerId) {
         var _this = this;
+        // Remove all instances of the given id, not just the first one.
         var parent = this.parent.removeLayer(layerId);
         if (layerId === this.id) {
             if (this.group.caching) {
+                // Dirty every ID we're removing. Technically we might be able to avoid
+                // dirtying fields that have values in higher layers, but we don't have
+                // easy access to higher layers here, and we're about to recreate those
+                // layers anyway (see parent.addLayer below).
                 Object.keys(this.data).forEach(function (dataId) {
                     var ownStoreObject = _this.data[dataId];
                     var parentStoreObject = parent["lookup"](dataId);
                     if (!parentStoreObject) {
+                        // The StoreObject identified by dataId was defined in this layer
+                        // but will be undefined in the parent layer, so we can delete the
+                        // whole entity using this.delete(dataId). Since we're about to
+                        // throw this layer away, the only goal of this deletion is to dirty
+                        // the removed fields.
                         _this.delete(dataId);
                     }
                     else if (!ownStoreObject) {
+                        // This layer had an entry for dataId but it was undefined, which
+                        // means the entity was deleted in this layer, and it's about to
+                        // become undeleted when we remove this layer, so we need to dirty
+                        // all fields that are about to be reexposed.
                         _this.group.dirty(dataId, "__exists");
                         Object.keys(parentStoreObject).forEach(function (storeFieldName) {
                             _this.group.dirty(dataId, storeFieldName);
                         });
                     }
                     else if (ownStoreObject !== parentStoreObject) {
+                        // If ownStoreObject is not exactly the same as parentStoreObject,
+                        // dirty any fields whose values will change as a result of this
+                        // removal.
                         Object.keys(ownStoreObject).forEach(function (storeFieldName) {
                             if (!(0,equality_lib/* equal */.D)(ownStoreObject[storeFieldName], parentStoreObject[storeFieldName])) {
                                 _this.group.dirty(dataId, storeFieldName);
@@ -15429,8 +15595,10 @@ var Layer = (function (_super) {
             }
             return parent;
         }
+        // No changes are necessary if the parent chain remains identical.
         if (parent === this.parent)
             return this;
+        // Recreate this layer on top of the new parent.
         return parent.addLayer(this.id, this.replay);
     };
     Layer.prototype.toObject = function () {
@@ -15438,36 +15606,53 @@ var Layer = (function (_super) {
     };
     Layer.prototype.findChildRefIds = function (dataId) {
         var fromParent = this.parent.findChildRefIds(dataId);
-        return helpers/* hasOwn */.RI.call(this.data, dataId)
-            ? (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, fromParent), _super.prototype.findChildRefIds.call(this, dataId)) : fromParent;
+        return helpers/* hasOwn */.RI.call(this.data, dataId) ? (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, fromParent), _super.prototype.findChildRefIds.call(this, dataId)) : fromParent;
     };
     Layer.prototype.getStorage = function () {
         var p = this.parent;
         while (p.parent)
             p = p.parent;
-        return p.getStorage.apply(p, arguments);
+        return p.getStorage.apply(p, 
+        // @ts-expect-error
+        arguments);
     };
     return Layer;
 }(EntityStore));
-var Stump = (function (_super) {
+// Represents a Layer permanently installed just above the Root, which allows
+// reading optimistically (and registering optimistic dependencies) even when
+// no optimistic layers are currently active. The stump.group CacheGroup object
+// is shared by any/all Layer objects added on top of the Stump.
+var Stump = /** @class */ (function (_super) {
     (0,tslib_es6/* __extends */.ZT)(Stump, _super);
     function Stump(root) {
         return _super.call(this, "EntityStore.Stump", root, function () { }, new CacheGroup(root.group.caching, root.group)) || this;
     }
     Stump.prototype.removeLayer = function () {
+        // Never remove the Stump layer.
         return this;
     };
-    Stump.prototype.merge = function () {
-        return this.parent.merge.apply(this.parent, arguments);
+    Stump.prototype.merge = function (older, newer) {
+        // We never want to write any data into the Stump, so we forward any merge
+        // calls to the Root instead. Another option here would be to throw an
+        // exception, but the toReference(object, true) function can sometimes
+        // trigger Stump writes (which used to be Root writes, before the Stump
+        // concept was introduced).
+        return this.parent.merge(older, newer);
     };
     return Stump;
 }(Layer));
 function storeObjectReconciler(existingObject, incomingObject, property) {
     var existingValue = existingObject[property];
     var incomingValue = incomingObject[property];
+    // Wherever there is a key collision, prefer the incoming value, unless
+    // it is deeply equal to the existing value. It's worth checking deep
+    // equality here (even though blindly returning incoming would be
+    // logically correct) because preserving the referential identity of
+    // existing data can prevent needless rereading and rerendering.
     return (0,equality_lib/* equal */.D)(existingValue, incomingValue) ? existingValue : incomingValue;
 }
 function supportsResultCaching(store) {
+    // When result caching is disabled, store.depend will be null.
     return !!(store instanceof EntityStore && store.group.caching);
 }
 //# sourceMappingURL=entityStore.js.map
@@ -15490,10 +15675,12 @@ function execSelectionSetKeyArgs(options) {
         options.selectionSet,
         options.objectOrReference,
         options.context,
+        // We split out this property so we can pass different values
+        // independently without modifying options.context itself.
         options.context.canonizeResults,
     ];
 }
-var StoreReader = (function () {
+var StoreReader = /** @class */ (function () {
     function StoreReader(config) {
         var _this = this;
         this.knownResults = new (canUse/* canUseWeakMap */.mr ? WeakMap : Map)();
@@ -15506,19 +15693,30 @@ var StoreReader = (function () {
             var _a;
             var canonizeResults = options.context.canonizeResults;
             var peekArgs = execSelectionSetKeyArgs(options);
+            // Negate this boolean option so we can find out if we've already read
+            // this result using the other boolean value.
             peekArgs[3] = !canonizeResults;
             var other = (_a = _this.executeSelectionSet).peek.apply(_a, peekArgs);
             if (other) {
                 if (canonizeResults) {
-                    return (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, other), { result: _this.canon.admit(other.result) });
+                    return (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, other), { 
+                        // If we previously read this result without canonizing it, we can
+                        // reuse that result simply by canonizing it now.
+                        result: _this.canon.admit(other.result) });
                 }
+                // If we previously read this result with canonization enabled, we can
+                // return that canonized result as-is.
                 return other;
             }
             maybeDependOnExistenceOfEntity(options.context.store, options.enclosingRef.__ref);
+            // Finally, if we didn't find any useful previous results, run the real
+            // execSelectionSetImpl method with the given options.
             return _this.execSelectionSetImpl(options);
         }, {
             max: this.config.resultCacheMaxSize,
             keyArgs: execSelectionSetKeyArgs,
+            // Note that the parameters of makeCacheKey are determined by the
+            // array returned by keyArgs.
             makeCacheKey: function (selectionSet, parent, context, canonizeResults) {
                 if (supportsResultCaching(context.store)) {
                     return context.store.makeCacheKey(selectionSet, (0,storeUtils/* isReference */.Yk)(parent) ? parent.__ref : parent, context.varString, canonizeResults);
@@ -15541,6 +15739,10 @@ var StoreReader = (function () {
     StoreReader.prototype.resetCanon = function () {
         this.canon = new object_canon/* ObjectCanon */.h();
     };
+    /**
+     * Given a store and a query, return as much of the result as possible and
+     * identify if any data was missing from the store.
+     */
     StoreReader.prototype.diffQueryAgainstStore = function (_a) {
         var store = _a.store, query = _a.query, _b = _a.rootId, rootId = _b === void 0 ? "ROOT_QUERY" : _b, variables = _a.variables, _c = _a.returnPartialData, returnPartialData = _c === void 0 ? true : _c, _d = _a.canonizeResults, canonizeResults = _d === void 0 ? this.config.canonizeResults : _d;
         var policies = this.config.cache.policies;
@@ -15554,6 +15756,10 @@ var StoreReader = (function () {
         });
         var missing;
         if (execResult.missing) {
+            // For backwards compatibility we still report an array of
+            // MissingFieldError objects, even though there will only ever be at most
+            // one of them, now that all missing field error messages are grouped
+            // together in the execResult.missing tree.
             missing = [
                 new common/* MissingFieldError */.y(firstMissing(execResult.missing), execResult.missing, query, variables),
             ];
@@ -15570,13 +15776,18 @@ var StoreReader = (function () {
     StoreReader.prototype.isFresh = function (result, parent, selectionSet, context) {
         if (supportsResultCaching(context.store) &&
             this.knownResults.get(result) === selectionSet) {
-            var latest = this.executeSelectionSet.peek(selectionSet, parent, context, this.canon.isKnown(result));
+            var latest = this.executeSelectionSet.peek(selectionSet, parent, context, 
+            // If result is canonical, then it could only have been previously
+            // cached by the canonizing version of executeSelectionSet, so we can
+            // avoid checking both possibilities here.
+            this.canon.isKnown(result));
             if (latest && result === latest.result) {
                 return true;
             }
         }
         return false;
     };
+    // Uncached version of executeSelectionSet.
     StoreReader.prototype.execSelectionSetImpl = function (_a) {
         var _this = this;
         var selectionSet = _a.selectionSet, objectOrReference = _a.objectOrReference, enclosingRef = _a.enclosingRef, context = _a.context;
@@ -15596,6 +15807,9 @@ var StoreReader = (function () {
         if (this.config.addTypename &&
             typeof typename === "string" &&
             !policies.rootIdsByTypename[typename]) {
+            // Ensure we always include a default value for the __typename
+            // field, if we have one, and this.config.addTypename is true. Note
+            // that this field can be overridden by other merged objects.
             objectsToMerge.push({ __typename: typename });
         }
         function handleMissing(result, resultName) {
@@ -15610,6 +15824,8 @@ var StoreReader = (function () {
         var workSet = new Set(selectionSet.selections);
         workSet.forEach(function (selection) {
             var _a, _b;
+            // Omit fields with directives @skip(if: <truthy value>) or
+            // @include(if: <falsy value>).
             if (!(0,directives/* shouldInclude */.LZ)(selection, variables))
                 return;
             if ((0,storeUtils/* isField */.My)(selection)) {
@@ -15623,8 +15839,8 @@ var StoreReader = (function () {
                 if (fieldValue === void 0) {
                     if (!transform/* addTypenameToDocument */.Gw.added(selection)) {
                         missing = missingMerger.merge(missing, (_a = {},
-                            _a[resultName] = "Can't find field '".concat(selection.name.value, "' on ").concat((0,storeUtils/* isReference */.Yk)(objectOrReference)
-                                ? objectOrReference.__ref + " object"
+                            _a[resultName] = "Can't find field '".concat(selection.name.value, "' on ").concat((0,storeUtils/* isReference */.Yk)(objectOrReference) ?
+                                objectOrReference.__ref + " object"
                                 : "object " + JSON.stringify(objectOrReference, null, 2)),
                             _a));
                     }
@@ -15638,11 +15854,18 @@ var StoreReader = (function () {
                     }), resultName);
                 }
                 else if (!selection.selectionSet) {
+                    // If the field does not have a selection set, then we handle it
+                    // as a scalar value. To keep this.canon from canonicalizing
+                    // this value, we use this.canon.pass to wrap fieldValue in a
+                    // Pass object that this.canon.admit will later unwrap as-is.
                     if (context.canonizeResults) {
                         fieldValue = _this.canon.pass(fieldValue);
                     }
                 }
                 else if (fieldValue != null) {
+                    // In this case, because we know the field has a selection set,
+                    // it must be trying to query a GraphQLObjectType, which is why
+                    // fieldValue must be != null.
                     fieldValue = handleMissing(_this.executeSelectionSet({
                         selectionSet: selection.selectionSet,
                         objectOrReference: fieldValue,
@@ -15666,15 +15889,19 @@ var StoreReader = (function () {
         });
         var result = (0,mergeDeep/* mergeDeepArray */.bw)(objectsToMerge);
         var finalResult = { result: result, missing: missing };
-        var frozen = context.canonizeResults
-            ? this.canon.admit(finalResult)
-            :
-                (0,maybeDeepFreeze/* maybeDeepFreeze */.J)(finalResult);
+        var frozen = context.canonizeResults ?
+            this.canon.admit(finalResult)
+            // Since this.canon is normally responsible for freezing results (only in
+            // development), freeze them manually if canonization is disabled.
+            : (0,maybeDeepFreeze/* maybeDeepFreeze */.J)(finalResult);
+        // Store this result with its selection set so that we can quickly
+        // recognize it again in the StoreReader#isFresh method.
         if (frozen.result) {
             this.knownResults.set(frozen.result, selectionSet);
         }
         return frozen;
     };
+    // Uncached version of executeSubSelectedArray.
     StoreReader.prototype.execSubSelectedArrayImpl = function (_a) {
         var _this = this;
         var field = _a.field, array = _a.array, enclosingRef = _a.enclosingRef, context = _a.context;
@@ -15691,9 +15918,11 @@ var StoreReader = (function () {
             array = array.filter(context.store.canRead);
         }
         array = array.map(function (item, i) {
+            // null value in array
             if (item === null) {
                 return null;
             }
+            // This is a nested array, recurse
             if ((0,arrays/* isArray */.k)(item)) {
                 return handleMissing(_this.executeSubSelectedArray({
                     field: field,
@@ -15702,6 +15931,7 @@ var StoreReader = (function () {
                     context: context,
                 }), i);
             }
+            // This is an object, run the selection set on it
             if (field.selectionSet) {
                 return handleMissing(_this.executeSelectionSet({
                     selectionSet: field.selectionSet,
@@ -15762,8 +15992,12 @@ var reactiveVars = __webpack_require__(6438);
 
 
 
+// Mapping from JSON-encoded KeySpecifier strings to associated information.
 var specifierInfoCache = Object.create(null);
 function lookupSpecifierInfo(spec) {
+    // It's safe to encode KeySpecifier arrays with JSON.stringify, since they're
+    // just arrays of strings or nested KeySpecifier arrays, and the order of the
+    // array elements is important (and suitably preserved by JSON.stringify).
     var cacheKey = JSON.stringify(spec);
     return (specifierInfoCache[cacheKey] ||
         (specifierInfoCache[cacheKey] = Object.create(null)));
@@ -15775,10 +16009,23 @@ function keyFieldsFnFromSpecifier(specifier) {
                 return context.readField(key, from);
             };
             var keyObject = (context.keyObject = collectSpecifierPaths(specifier, function (schemaKeyPath) {
-                var extracted = extractKeyPath(context.storeObject, schemaKeyPath, extract);
+                var extracted = extractKeyPath(context.storeObject, schemaKeyPath, 
+                // Using context.readField to extract paths from context.storeObject
+                // allows the extraction to see through Reference objects and respect
+                // custom read functions.
+                extract);
                 if (extracted === void 0 &&
                     object !== context.storeObject &&
                     helpers/* hasOwn */.RI.call(object, schemaKeyPath[0])) {
+                    // If context.storeObject fails to provide a value for the requested
+                    // path, fall back to the raw result object, if it has a top-level key
+                    // matching the first key in the path (schemaKeyPath[0]). This allows
+                    // key fields included in the written data to be saved in the cache
+                    // even if they are not selected explicitly in context.selectionSet.
+                    // Not being mentioned by context.selectionSet is convenient here,
+                    // since it means these extra fields cannot be affected by field
+                    // aliasing, which is why we can use extractKey instead of
+                    // context.readField for this extraction.
                     extracted = extractKeyPath(object, schemaKeyPath, extractKey);
                 }
                 (0,globals/* invariant */.kG)(extracted !== void 0, 4, schemaKeyPath.join("."), object);
@@ -15787,6 +16034,13 @@ function keyFieldsFnFromSpecifier(specifier) {
             return "".concat(context.typename, ":").concat(JSON.stringify(keyObject));
         }));
 }
+// The keyArgs extraction process is roughly analogous to keyFields extraction,
+// but there are no aliases involved, missing fields are tolerated (by merely
+// omitting them from the key), and drawing from field.directives or variables
+// is allowed (in addition to drawing from the field's arguments object).
+// Concretely, these differences mean passing a different key path extractor
+// function to collectSpecifierPaths, reusing the shared extractKeyPath helper
+// wherever possible.
 function keyArgsFnFromSpecifier(specifier) {
     var info = lookupSpecifierInfo(specifier);
     return (info.keyArgsFn ||
@@ -15798,11 +16052,29 @@ function keyArgsFnFromSpecifier(specifier) {
                 if (firstChar === "@") {
                     if (field && (0,arrays/* isNonEmptyArray */.O)(field.directives)) {
                         var directiveName_1 = firstKey.slice(1);
+                        // If the directive appears multiple times, only the first
+                        // occurrence's arguments will be used. TODO Allow repetition?
+                        // TODO Cache this work somehow, a la aliasMap?
                         var d = field.directives.find(function (d) { return d.name.value === directiveName_1; });
+                        // Fortunately argumentsObjectFromField works for DirectiveNode!
                         var directiveArgs = d && (0,storeUtils/* argumentsObjectFromField */.NC)(d, variables);
+                        // For directives without arguments (d defined, but directiveArgs ===
+                        // null), the presence or absence of the directive still counts as
+                        // part of the field key, so we return null in those cases. If no
+                        // directive with this name was found for this field (d undefined and
+                        // thus directiveArgs undefined), we return undefined, which causes
+                        // this value to be omitted from the key object returned by
+                        // collectSpecifierPaths.
                         return (directiveArgs &&
-                            extractKeyPath(directiveArgs, keyPath.slice(1)));
+                            extractKeyPath(directiveArgs, 
+                            // If keyPath.length === 1, this code calls extractKeyPath with an
+                            // empty path, which works because it uses directiveArgs as the
+                            // extracted value.
+                            keyPath.slice(1)));
                     }
+                    // If the key started with @ but there was no corresponding directive,
+                    // we want to omit this value from the key object, not fall through to
+                    // treating @whatever as a normal argument name.
                     return;
                 }
                 if (firstChar === "$") {
@@ -15812,6 +16084,9 @@ function keyArgsFnFromSpecifier(specifier) {
                         varKeyPath[0] = variableName;
                         return extractKeyPath(variables, varKeyPath);
                     }
+                    // If the key started with $ but there was no corresponding variable, we
+                    // want to omit this value from the key object, not fall through to
+                    // treating $whatever as a normal argument name.
                     return;
                 }
                 if (args) {
@@ -15819,6 +16094,11 @@ function keyArgsFnFromSpecifier(specifier) {
                 }
             });
             var suffix = JSON.stringify(collected);
+            // If no arguments were passed to this field, and it didn't have any other
+            // field key contributions from directives or variables, hide the empty
+            // :{} suffix from the field key. However, a field passed no arguments can
+            // still end up with a non-empty :{...} suffix if its key configuration
+            // refers to directives or variables.
             if (args || suffix !== "{}") {
                 fieldName += ":" + suffix;
             }
@@ -15826,11 +16106,15 @@ function keyArgsFnFromSpecifier(specifier) {
         }));
 }
 function collectSpecifierPaths(specifier, extractor) {
+    // For each path specified by specifier, invoke the extractor, and repeatedly
+    // merge the results together, with appropriate ancestor context.
     var merger = new mergeDeep/* DeepMerger */.w0();
     return getSpecifierPaths(specifier).reduce(function (collected, path) {
         var _a;
         var toMerge = extractor(path);
         if (toMerge !== void 0) {
+            // This path is not expected to contain array indexes, so the toMerge
+            // reconstruction will not contain arrays. TODO Fix this?
             for (var i = path.length - 1; i >= 0; --i) {
                 toMerge = (_a = {}, _a[path[i]] = toMerge, _a);
             }
@@ -15864,14 +16148,28 @@ function extractKey(object, key) {
     return object[key];
 }
 function extractKeyPath(object, path, extract) {
+    // For each key in path, extract the corresponding child property from obj,
+    // flattening arrays if encountered (uncommon for keyFields and keyArgs, but
+    // possible). The final result of path.reduce is normalized so unexpected leaf
+    // objects have their keys safely sorted. That final result is difficult to
+    // type as anything other than any. You're welcome to try to improve the
+    // return type, but keep in mind extractKeyPath is not a public function
+    // (exported only for testing), so the effort may not be worthwhile unless the
+    // limited set of actual callers (see above) pass arguments that TypeScript
+    // can statically type. If we know only that path is some array of strings
+    // (and not, say, a specific tuple of statically known strings), any (or
+    // possibly unknown) is the honest answer.
     extract = extract || extractKey;
     return normalize(path.reduce(function reducer(obj, key) {
-        return (0,arrays/* isArray */.k)(obj)
-            ? obj.map(function (child) { return reducer(child, key); })
+        return (0,arrays/* isArray */.k)(obj) ?
+            obj.map(function (child) { return reducer(child, key); })
             : obj && extract(obj, key);
     }, object));
 }
 function normalize(value) {
+    // Usually the extracted value will be a scalar value, since most primary
+    // key fields are scalar, but just in case we get an object or an array, we
+    // need to do some normalization of the order of (nested) keys.
     if ((0,objects/* isNonNullObject */.s)(value)) {
         if ((0,arrays/* isArray */.k)(value)) {
             return value.map(normalize);
@@ -15889,29 +16187,40 @@ function normalize(value) {
 
 
 
+// Upgrade to a faster version of the default stable JSON.stringify function
+// used by getStoreKeyName. This function is used when computing storeFieldName
+// strings (when no keyArgs has been configured for a field).
 
 
 storeUtils/* getStoreKeyName */.PT.setStringify(object_canon/* canonicalStringify */.B);
 function argsFromFieldSpecifier(spec) {
-    return spec.args !== void 0
-        ? spec.args
-        : spec.field
-            ? (0,storeUtils/* argumentsObjectFromField */.NC)(spec.field, spec.variables)
-            : null;
+    return (spec.args !== void 0 ? spec.args
+        : spec.field ? (0,storeUtils/* argumentsObjectFromField */.NC)(spec.field, spec.variables)
+            : null);
 }
 var nullKeyFieldsFn = function () { return void 0; };
 var simpleKeyArgsFn = function (_args, context) { return context.fieldName; };
+// These merge functions can be selected by specifying merge:true or
+// merge:false in a field policy.
 var mergeTrueFn = function (existing, incoming, _a) {
     var mergeObjects = _a.mergeObjects;
     return mergeObjects(existing, incoming);
 };
 var mergeFalseFn = function (_, incoming) { return incoming; };
-var Policies = (function () {
+var Policies = /** @class */ (function () {
     function Policies(config) {
         this.config = config;
         this.typePolicies = Object.create(null);
         this.toBeAdded = Object.create(null);
+        // Map from subtype names to sets of supertype names. Note that this
+        // representation inverts the structure of possibleTypes (whose keys are
+        // supertypes and whose values are arrays of subtypes) because it tends
+        // to be much more efficient to search upwards than downwards.
         this.supertypeMap = new Map();
+        // Any fuzzy subtypes specified by possibleTypes will be converted to
+        // RegExp objects and recorded here. Every key of this map can also be
+        // found in supertypeMap. In many cases this Map will be empty, which
+        // means no fuzzy subtype checking will happen in fragmentMatches.
         this.fuzzySubtypes = new Map();
         this.rootIdsByTypename = Object.create(null);
         this.rootTypenamesById = Object.create(null);
@@ -15934,9 +16243,15 @@ var Policies = (function () {
         var typename = (partialContext &&
             (partialContext.typename || ((_a = partialContext.storeObject) === null || _a === void 0 ? void 0 : _a.__typename))) ||
             object.__typename;
+        // It should be possible to write root Query fields with writeFragment,
+        // using { __typename: "Query", ... } as the data, but it does not make
+        // sense to allow the same identification behavior for the Mutation and
+        // Subscription types, since application code should never be writing
+        // directly to (or reading directly from) those root objects.
         if (typename === this.rootTypenamesById.ROOT_QUERY) {
             return ["ROOT_QUERY"];
         }
+        // Default context.storeObject to object if not otherwise provided.
         var storeObject = (partialContext && partialContext.storeObject) || object;
         var context = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, partialContext), { typename: typename, storeObject: storeObject, readField: (partialContext && partialContext.readField) ||
                 function () {
@@ -15966,6 +16281,20 @@ var Policies = (function () {
         var _this = this;
         Object.keys(typePolicies).forEach(function (typename) {
             var _a = typePolicies[typename], queryType = _a.queryType, mutationType = _a.mutationType, subscriptionType = _a.subscriptionType, incoming = (0,tslib_es6/* __rest */._T)(_a, ["queryType", "mutationType", "subscriptionType"]);
+            // Though {query,mutation,subscription}Type configurations are rare,
+            // it's important to call setRootTypename as early as possible,
+            // since these configurations should apply consistently for the
+            // entire lifetime of the cache. Also, since only one __typename can
+            // qualify as one of these root types, these three properties cannot
+            // be inherited, unlike the rest of the incoming properties. That
+            // restriction is convenient, because the purpose of this.toBeAdded
+            // is to delay the processing of type/field policies until the first
+            // time they're used, allowing policies to be added in any order as
+            // long as all relevant policies (including policies for supertypes)
+            // have been added by the time a given policy is used for the first
+            // time. In other words, since inheritance doesn't matter for these
+            // properties, there's also no need to delay their processing using
+            // the this.toBeAdded queue.
             if (queryType)
                 _this.setRootTypename("Query", typename);
             if (mutationType)
@@ -15986,28 +16315,28 @@ var Policies = (function () {
         var keyFields = incoming.keyFields, fields = incoming.fields;
         function setMerge(existing, merge) {
             existing.merge =
-                typeof merge === "function"
-                    ? merge
-                    :
-                        merge === true
-                            ? mergeTrueFn
-                            :
-                                merge === false
-                                    ? mergeFalseFn
-                                    : existing.merge;
+                typeof merge === "function" ? merge
+                    // Pass merge:true as a shorthand for a merge implementation
+                    // that returns options.mergeObjects(existing, incoming).
+                    : merge === true ? mergeTrueFn
+                        // Pass merge:false to make incoming always replace existing
+                        // without any warnings about data clobbering.
+                        : merge === false ? mergeFalseFn
+                            : existing.merge;
         }
+        // Type policies can define merge functions, as an alternative to
+        // using field policies to merge child objects.
         setMerge(existing, incoming.merge);
         existing.keyFn =
-            keyFields === false
-                ? nullKeyFieldsFn
-                :
-                    (0,arrays/* isArray */.k)(keyFields)
-                        ? keyFieldsFnFromSpecifier(keyFields)
-                        :
-                            typeof keyFields === "function"
-                                ? keyFields
-                                :
-                                    existing.keyFn;
+            // Pass false to disable normalization for this typename.
+            keyFields === false ? nullKeyFieldsFn
+                // Pass an array of strings to use those fields to compute a
+                // composite ID for objects of this typename.
+                : (0,arrays/* isArray */.k)(keyFields) ? keyFieldsFnFromSpecifier(keyFields)
+                    // Pass a function to take full control over identification.
+                    : typeof keyFields === "function" ? keyFields
+                        // Leave existing.keyFn unchanged if above cases fail.
+                        : existing.keyFn;
         if (fields) {
             Object.keys(fields).forEach(function (fieldName) {
                 var existing = _this.getFieldPolicy(typename, fieldName, true);
@@ -16018,22 +16347,27 @@ var Policies = (function () {
                 else {
                     var keyArgs = incoming.keyArgs, read = incoming.read, merge = incoming.merge;
                     existing.keyFn =
-                        keyArgs === false
-                            ? simpleKeyArgsFn
-                            :
-                                (0,arrays/* isArray */.k)(keyArgs)
-                                    ? keyArgsFnFromSpecifier(keyArgs)
-                                    :
-                                        typeof keyArgs === "function"
-                                            ? keyArgs
-                                            :
-                                                existing.keyFn;
+                        // Pass false to disable argument-based differentiation of
+                        // field identities.
+                        keyArgs === false ? simpleKeyArgsFn
+                            // Pass an array of strings to use named arguments to
+                            // compute a composite identity for the field.
+                            : (0,arrays/* isArray */.k)(keyArgs) ? keyArgsFnFromSpecifier(keyArgs)
+                                // Pass a function to take full control over field identity.
+                                : typeof keyArgs === "function" ? keyArgs
+                                    // Leave existing.keyFn unchanged if above cases fail.
+                                    : existing.keyFn;
                     if (typeof read === "function") {
                         existing.read = read;
                     }
                     setMerge(existing, merge);
                 }
                 if (existing.read && existing.merge) {
+                    // If we have both a read and a merge function, assume
+                    // keyArgs:false, because read and merge together can take
+                    // responsibility for interpreting arguments in and out. This
+                    // default assumption can always be overridden by specifying
+                    // keyArgs explicitly in the FieldPolicy.
                     existing.keyFn = existing.keyFn || simpleKeyArgsFn;
                 }
             });
@@ -16045,9 +16379,13 @@ var Policies = (function () {
         var old = this.rootTypenamesById[rootId];
         if (typename !== old) {
             (0,globals/* invariant */.kG)(!old || old === which, 5, which);
+            // First, delete any old __typename associated with this rootId from
+            // rootIdsByTypename.
             if (old)
                 delete this.rootIdsByTypename[old];
+            // Now make this the only __typename that maps to this rootId.
             this.rootIdsByTypename[typename] = rootId;
+            // Finally, update the __typename associated with this rootId.
             this.rootTypenamesById[rootId] = typename;
         }
     };
@@ -16055,11 +16393,15 @@ var Policies = (function () {
         var _this = this;
         this.usingPossibleTypes = true;
         Object.keys(possibleTypes).forEach(function (supertype) {
+            // Make sure all types have an entry in this.supertypeMap, even if
+            // their supertype set is empty, so we can return false immediately
+            // from policies.fragmentMatches for unknown supertypes.
             _this.getSupertypeSet(supertype, true);
             possibleTypes[supertype].forEach(function (subtype) {
                 _this.getSupertypeSet(subtype, true).add(supertype);
                 var match = subtype.match(helpers/* TypeOrFieldNameRegExp */.$O);
                 if (!match || match[0] !== subtype) {
+                    // TODO Don't interpret just any invalid typename as a RegExp.
                     _this.fuzzySubtypes.set(subtype, new RegExp(subtype));
                 }
             });
@@ -16070,11 +16412,43 @@ var Policies = (function () {
         if (!helpers/* hasOwn */.RI.call(this.typePolicies, typename)) {
             var policy_1 = (this.typePolicies[typename] = Object.create(null));
             policy_1.fields = Object.create(null);
+            // When the TypePolicy for typename is first accessed, instead of
+            // starting with an empty policy object, inherit any properties or
+            // fields from the type policies of the supertypes of typename.
+            //
+            // Any properties or fields defined explicitly within the TypePolicy
+            // for typename will take precedence, and if there are multiple
+            // supertypes, the properties of policies whose types were added
+            // later via addPossibleTypes will take precedence over those of
+            // earlier supertypes. TODO Perhaps we should warn about these
+            // conflicts in development, and recommend defining the property
+            // explicitly in the subtype policy?
+            //
+            // Field policy inheritance is atomic/shallow: you can't inherit a
+            // field policy and then override just its read function, since read
+            // and merge functions often need to cooperate, so changing only one
+            // of them would be a recipe for inconsistency.
+            //
+            // Once the TypePolicy for typename has been accessed, its properties can
+            // still be updated directly using addTypePolicies, but future changes to
+            // inherited supertype policies will not be reflected in this subtype
+            // policy, because this code runs at most once per typename.
             var supertypes_1 = this.supertypeMap.get(typename);
             if (!supertypes_1 && this.fuzzySubtypes.size) {
+                // To make the inheritance logic work for unknown typename strings that
+                // may have fuzzy supertypes, we give this typename an empty supertype
+                // set and then populate it with any fuzzy supertypes that match.
                 supertypes_1 = this.getSupertypeSet(typename, true);
+                // This only works for typenames that are directly matched by a fuzzy
+                // supertype. What if there is an intermediate chain of supertypes?
+                // While possible, that situation can only be solved effectively by
+                // specifying the intermediate relationships via possibleTypes, manually
+                // and in a non-fuzzy way.
                 this.fuzzySubtypes.forEach(function (regExp, fuzzy) {
                     if (regExp.test(typename)) {
+                        // The fuzzy parameter is just the original string version of regExp
+                        // (not a valid __typename string), but we can look up the
+                        // associated supertype(s) in this.supertypeMap.
                         var fuzzySupertypes = _this.supertypeMap.get(fuzzy);
                         if (fuzzySupertypes) {
                             fuzzySupertypes.forEach(function (supertype) {
@@ -16094,6 +16468,8 @@ var Policies = (function () {
         }
         var inbox = this.toBeAdded[typename];
         if (inbox && inbox.length) {
+            // Merge the pending policies into this.typePolicies, in the order they
+            // were originally passed to addTypePolicy.
             inbox.splice(0).forEach(function (policy) {
                 _this.updateTypePolicy(typename, policy);
             });
@@ -16118,9 +16494,12 @@ var Policies = (function () {
         var _this = this;
         if (!fragment.typeCondition)
             return true;
+        // If the fragment has a type condition but the object we're matching
+        // against does not have a __typename, the fragment cannot match.
         if (!typename)
             return false;
         var supertype = fragment.typeCondition.name.value;
+        // Common case: fragment type condition and __typename are the same.
         if (typename === supertype)
             return true;
         if (this.usingPossibleTypes && this.supertypeMap.has(supertype)) {
@@ -16134,8 +16513,16 @@ var Policies = (function () {
                     workQueue_1.push(supertypeSet);
                 }
             };
+            // We need to check fuzzy subtypes only if we encountered fuzzy
+            // subtype strings in addPossibleTypes, and only while writing to
+            // the cache, since that's when selectionSetMatchesResult gives a
+            // strong signal of fragment matching. The StoreReader class calls
+            // policies.fragmentMatches without passing a result object, so
+            // needToCheckFuzzySubtypes is always false while reading.
             var needToCheckFuzzySubtypes = !!(result && this.fuzzySubtypes.size);
             var checkingFuzzySubtypes = false;
+            // It's important to keep evaluating workQueue.length each time through
+            // the loop, because the queue can grow while we're iterating over it.
             for (var i = 0; i < workQueue_1.length; ++i) {
                 var supertypeSet = workQueue_1[i];
                 if (supertypeSet.has(supertype)) {
@@ -16143,16 +16530,33 @@ var Policies = (function () {
                         if (checkingFuzzySubtypes) {
                             globalThis.__DEV__ !== false && globals/* invariant */.kG.warn(6, typename, supertype);
                         }
+                        // Record positive results for faster future lookup.
+                        // Unfortunately, we cannot safely cache negative results,
+                        // because new possibleTypes data could always be added to the
+                        // Policies class.
                         typenameSupertypeSet.add(supertype);
                     }
                     return true;
                 }
                 supertypeSet.forEach(maybeEnqueue_1);
                 if (needToCheckFuzzySubtypes &&
+                    // Start checking fuzzy subtypes only after exhausting all
+                    // non-fuzzy subtypes (after the final iteration of the loop).
                     i === workQueue_1.length - 1 &&
+                    // We could wait to compare fragment.selectionSet to result
+                    // after we verify the supertype, but this check is often less
+                    // expensive than that search, and we will have to do the
+                    // comparison anyway whenever we find a potential match.
                     (0,helpers/* selectionSetMatchesResult */.RC)(fragment.selectionSet, result, variables)) {
+                    // We don't always need to check fuzzy subtypes (if no result
+                    // was provided, or !this.fuzzySubtypes.size), but, when we do,
+                    // we only want to check them once.
                     needToCheckFuzzySubtypes = false;
                     checkingFuzzySubtypes = true;
+                    // If we find any fuzzy subtypes that match typename, extend the
+                    // workQueue to search through the supertypes of those fuzzy
+                    // subtypes. Otherwise the for-loop will terminate and we'll
+                    // return false below.
                     this.fuzzySubtypes.forEach(function (regExp, fuzzyString) {
                         var match = typename.match(regExp);
                         if (match && match[0] === typename) {
@@ -16187,21 +16591,28 @@ var Policies = (function () {
                     keyFn = keyArgsFnFromSpecifier(specifierOrString);
                 }
                 else {
+                    // If the custom keyFn returns a falsy value, fall back to
+                    // fieldName instead.
                     storeFieldName = specifierOrString || fieldName;
                     break;
                 }
             }
         }
         if (storeFieldName === void 0) {
-            storeFieldName = fieldSpec.field
-                ? (0,storeUtils/* storeKeyNameFromField */.vf)(fieldSpec.field, fieldSpec.variables)
-                : (0,storeUtils/* getStoreKeyName */.PT)(fieldName, argsFromFieldSpecifier(fieldSpec));
+            storeFieldName =
+                fieldSpec.field ?
+                    (0,storeUtils/* storeKeyNameFromField */.vf)(fieldSpec.field, fieldSpec.variables)
+                    : (0,storeUtils/* getStoreKeyName */.PT)(fieldName, argsFromFieldSpecifier(fieldSpec));
         }
+        // Returning false from a keyArgs function is like configuring
+        // keyArgs: false, but more dynamic.
         if (storeFieldName === false) {
             return fieldName;
         }
-        return fieldName === (0,helpers/* fieldNameFromStoreName */.E_)(storeFieldName)
-            ? storeFieldName
+        // Make sure custom field names start with the actual field.name.value
+        // of the field, so we can always figure out which properties of a
+        // StoreObject correspond to which original field names.
+        return fieldName === (0,helpers/* fieldNameFromStoreName */.E_)(storeFieldName) ? storeFieldName
             : fieldName + ":" + storeFieldName;
     };
     Policies.prototype.readField = function (options, context) {
@@ -16222,9 +16633,10 @@ var Policies = (function () {
         var policy = this.getFieldPolicy(options.typename, fieldName, false);
         var read = policy && policy.read;
         if (read) {
-            var readOptions = makeFieldFunctionOptions(this, objectOrReference, options, context, context.store.getStorage((0,storeUtils/* isReference */.Yk)(objectOrReference)
-                ? objectOrReference.__ref
+            var readOptions = makeFieldFunctionOptions(this, objectOrReference, options, context, context.store.getStorage((0,storeUtils/* isReference */.Yk)(objectOrReference) ?
+                objectOrReference.__ref
                 : objectOrReference, storeFieldName));
+            // Call read(existing, readOptions) with cacheSlot holding this.cache.
             return reactiveVars/* cacheSlot */.ab.withValue(this.cache, read, [
                 existing,
                 readOptions,
@@ -16248,15 +16660,35 @@ var Policies = (function () {
     Policies.prototype.runMergeFunction = function (existing, incoming, _a, context, storage) {
         var field = _a.field, typename = _a.typename, merge = _a.merge;
         if (merge === mergeTrueFn) {
+            // Instead of going to the trouble of creating a full
+            // FieldFunctionOptions object and calling mergeTrueFn, we can
+            // simply call mergeObjects, as mergeTrueFn would.
             return makeMergeObjectsFunction(context.store)(existing, incoming);
         }
         if (merge === mergeFalseFn) {
+            // Likewise for mergeFalseFn, whose implementation is even simpler.
             return incoming;
         }
+        // If cache.writeQuery or cache.writeFragment was called with
+        // options.overwrite set to true, we still call merge functions, but
+        // the existing data is always undefined, so the merge function will
+        // not attempt to combine the incoming data with the existing data.
         if (context.overwrite) {
             existing = void 0;
         }
-        return merge(existing, incoming, makeFieldFunctionOptions(this, void 0, {
+        return merge(existing, incoming, makeFieldFunctionOptions(this, 
+        // Unlike options.readField for read functions, we do not fall
+        // back to the current object if no foreignObjOrRef is provided,
+        // because it's not clear what the current object should be for
+        // merge functions: the (possibly undefined) existing object, or
+        // the incoming object? If you think your merge function needs
+        // to read sibling fields in order to produce a new value for
+        // the current field, you might want to rethink your strategy,
+        // because that's a recipe for making merge behavior sensitive
+        // to the order in which fields are written into the cache.
+        // However, readField(name, ref) is useful for merge functions
+        // that need to deduplicate child objects and references.
+        void 0, {
             typename: typename,
             fieldName: field.name.value,
             field: field,
@@ -16294,11 +16726,16 @@ function normalizeReadFieldOptions(readFieldArgs, objectOrReference, variables) 
     if (typeof fieldNameOrOptions === "string") {
         options = {
             fieldName: fieldNameOrOptions,
+            // Default to objectOrReference only when no second argument was
+            // passed for the from parameter, not when undefined is explicitly
+            // passed as the second argument.
             from: argc > 1 ? from : objectOrReference,
         };
     }
     else {
         options = (0,tslib_es6/* __assign */.pi)({}, fieldNameOrOptions);
+        // Default to objectOrReference only when fieldNameOrOptions.from is
+        // actually omitted, rather than just undefined.
         if (!helpers/* hasOwn */.RI.call(options, "from")) {
             options.from = objectOrReference;
         }
@@ -16316,6 +16753,10 @@ function makeMergeObjectsFunction(store) {
         if ((0,arrays/* isArray */.k)(existing) || (0,arrays/* isArray */.k)(incoming)) {
             throw (0,globals/* newInvariantError */._K)(8);
         }
+        // These dynamic checks are necessary because the parameters of a
+        // custom merge function can easily have the any type, so the type
+        // system cannot always enforce the StoreObject | Reference parameter
+        // types of options.mergeObjects.
         if ((0,objects/* isNonNullObject */.s)(existing) && (0,objects/* isNonNullObject */.s)(incoming)) {
             var eType = store.getFieldValue(existing, "__typename");
             var iType = store.getFieldValue(incoming, "__typename");
@@ -16324,10 +16765,17 @@ function makeMergeObjectsFunction(store) {
                 return incoming;
             }
             if ((0,storeUtils/* isReference */.Yk)(existing) && (0,helpers/* storeValueIsStoreObject */.j)(incoming)) {
+                // Update the normalized EntityStore for the entity identified by
+                // existing.__ref, preferring/overwriting any fields contributed by the
+                // newer incoming StoreObject.
                 store.merge(existing.__ref, incoming);
                 return existing;
             }
             if ((0,helpers/* storeValueIsStoreObject */.j)(existing) && (0,storeUtils/* isReference */.Yk)(incoming)) {
+                // Update the normalized EntityStore for the entity identified by
+                // incoming.__ref, taking fields from the older existing object only if
+                // those fields are not already present in the newer StoreObject
+                // identified by incoming.__ref.
                 store.merge(existing, incoming.__ref);
                 return incoming;
             }
@@ -16350,18 +16798,23 @@ function makeMergeObjectsFunction(store) {
 
 
 
+// Since there are only four possible combinations of context.clientOnly and
+// context.deferred values, we should need at most four "flavors" of any given
+// WriteContext. To avoid creating multiple copies of the same context, we cache
+// the contexts in the context.flavors Map (shared by all flavors) according to
+// their clientOnly and deferred values (always in that order).
 function getContextFlavor(context, clientOnly, deferred) {
     var key = "".concat(clientOnly).concat(deferred);
     var flavored = context.flavors.get(key);
     if (!flavored) {
         context.flavors.set(key, (flavored =
-            context.clientOnly === clientOnly && context.deferred === deferred
-                ? context
+            context.clientOnly === clientOnly && context.deferred === deferred ?
+                context
                 : (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, context), { clientOnly: clientOnly, deferred: deferred })));
     }
     return flavored;
 }
-var StoreWriter = (function () {
+var StoreWriter = /** @class */ (function () {
     function StoreWriter(cache, reader, fragments) {
         this.cache = cache;
         this.reader = reader;
@@ -16386,14 +16839,21 @@ var StoreWriter = (function () {
         if (!(0,storeUtils/* isReference */.Yk)(ref)) {
             throw (0,globals/* newInvariantError */._K)(11, result);
         }
+        // So far, the store has not been modified, so now it's time to process
+        // context.incomingById and merge those incoming fields into context.store.
         context.incomingById.forEach(function (_a, dataId) {
             var storeObject = _a.storeObject, mergeTree = _a.mergeTree, fieldNodeSet = _a.fieldNodeSet;
             var entityRef = (0,storeUtils/* makeReference */.kQ)(dataId);
             if (mergeTree && mergeTree.map.size) {
                 var applied = _this.applyMerges(mergeTree, entityRef, storeObject, context);
                 if ((0,storeUtils/* isReference */.Yk)(applied)) {
+                    // Assume References returned by applyMerges have already been merged
+                    // into the store. See makeMergeObjectsFunction in policies.ts for an
+                    // example of how this can happen.
                     return;
                 }
+                // Otherwise, applyMerges returned a StoreObject, whose fields we should
+                // merge into the store (see store.merge statement below).
                 storeObject = applied;
             }
             if (globalThis.__DEV__ !== false && !context.overwrite) {
@@ -16412,6 +16872,10 @@ var StoreWriter = (function () {
                     return Boolean(childTree && childTree.info && childTree.info.merge);
                 };
                 Object.keys(storeObject).forEach(function (storeFieldName) {
+                    // If a merge function was defined for this field, trust that it
+                    // did the right thing about (not) clobbering data. If the field
+                    // has no selection set, it's a scalar field, so it doesn't need
+                    // a merge function (even if it's an object, like JSON data).
                     if (hasSelectionSet_1(storeFieldName) &&
                         !hasMergeFunction_1(storeFieldName)) {
                         warnAboutDataLoss(entityRef, storeObject, storeFieldName, context.store);
@@ -16420,20 +16884,41 @@ var StoreWriter = (function () {
             }
             store.merge(dataId, storeObject);
         });
+        // Any IDs written explicitly to the cache will be retained as
+        // reachable root IDs for garbage collection purposes. Although this
+        // logic includes root IDs like ROOT_QUERY and ROOT_MUTATION, their
+        // retainment counts are effectively ignored because cache.gc() always
+        // includes them in its root ID set.
         store.retain(ref.__ref);
         return ref;
     };
     StoreWriter.prototype.processSelectionSet = function (_a) {
         var _this = this;
-        var dataId = _a.dataId, result = _a.result, selectionSet = _a.selectionSet, context = _a.context, mergeTree = _a.mergeTree;
+        var dataId = _a.dataId, result = _a.result, selectionSet = _a.selectionSet, context = _a.context, 
+        // This object allows processSelectionSet to report useful information
+        // to its callers without explicitly returning that information.
+        mergeTree = _a.mergeTree;
         var policies = this.cache.policies;
+        // This variable will be repeatedly updated using context.merge to
+        // accumulate all fields that need to be written into the store.
         var incoming = Object.create(null);
+        // If typename was not passed in, infer it. Note that typename is
+        // always passed in for tricky-to-infer cases such as "Query" for
+        // ROOT_QUERY.
         var typename = (dataId && policies.rootTypenamesById[dataId]) ||
             (0,storeUtils/* getTypenameFromResult */.qw)(result, selectionSet, context.fragmentMap) ||
             (dataId && context.store.get(dataId, "__typename"));
         if ("string" === typeof typename) {
             incoming.__typename = typename;
         }
+        // This readField function will be passed as context.readField in the
+        // KeyFieldsContext object created within policies.identify (called below).
+        // In addition to reading from the existing context.store (thanks to the
+        // policies.readField(options, context) line at the very bottom), this
+        // version of readField can read from Reference objects that are currently
+        // pending in context.incomingById, which is important whenever keyFields
+        // need to be extracted from a child object that processSelectionSet has
+        // turned into a Reference.
         var readField = function () {
             var options = normalizeReadFieldOptions(arguments, incoming, context.variables);
             if ((0,storeUtils/* isReference */.Yk)(options.from)) {
@@ -16448,7 +16933,11 @@ var StoreWriter = (function () {
             return policies.readField(options, context);
         };
         var fieldNodeSet = new Set();
-        this.flattenFields(selectionSet, result, context, typename).forEach(function (context, field) {
+        this.flattenFields(selectionSet, result, 
+        // This WriteContext will be the default context value for fields returned
+        // by the flattenFields method, but some fields may be assigned a modified
+        // context, depending on the presence of @client and other directives.
+        context, typename).forEach(function (context, field) {
             var _a;
             var resultFieldKey = (0,storeUtils/* resultKeyNameFromField */.u2)(field);
             var value = result[resultFieldKey];
@@ -16461,10 +16950,18 @@ var StoreWriter = (function () {
                     variables: context.variables,
                 });
                 var childTree = getChildMergeTree(mergeTree, storeFieldName);
-                var incomingValue = _this.processFieldValue(value, field, field.selectionSet
-                    ? getContextFlavor(context, false, false)
+                var incomingValue = _this.processFieldValue(value, field, 
+                // Reset context.clientOnly and context.deferred to their default
+                // values before processing nested selection sets.
+                field.selectionSet ?
+                    getContextFlavor(context, false, false)
                     : context, childTree);
+                // To determine if this field holds a child object with a merge function
+                // defined in its type policy (see PR #7070), we need to figure out the
+                // child object's __typename.
                 var childTypename = void 0;
+                // The field's value can be an object that has a __typename only if the
+                // field has a selection set. Otherwise incomingValue is scalar.
                 if (field.selectionSet &&
                     ((0,storeUtils/* isReference */.Yk)(incomingValue) || (0,helpers/* storeValueIsStoreObject */.j)(incomingValue))) {
                     childTypename = readField("__typename", incomingValue);
@@ -16472,6 +16969,7 @@ var StoreWriter = (function () {
                 var merge = policies.getMergeFunction(typename, field.name.value, childTypename);
                 if (merge) {
                     childTree.info = {
+                        // TODO Check compatibility against any existing childTree.field?
                         field: field,
                         typename: typename,
                         merge: merge,
@@ -16488,10 +16986,15 @@ var StoreWriter = (function () {
                 !context.clientOnly &&
                 !context.deferred &&
                 !transform/* addTypenameToDocument */.Gw.added(field) &&
+                // If the field has a read function, it may be a synthetic field or
+                // provide a default value, so its absence from the written data should
+                // not be cause for alarm.
                 !policies.getReadFunction(typename, field.name.value)) {
                 globalThis.__DEV__ !== false && globals/* invariant */.kG.error(12, (0,storeUtils/* resultKeyNameFromField */.u2)(field), result);
             }
         });
+        // Identify the result object, even if dataId was already provided,
+        // since we always need keyObject below.
         try {
             var _b = policies.identify(result, {
                 typename: typename,
@@ -16500,21 +17003,37 @@ var StoreWriter = (function () {
                 storeObject: incoming,
                 readField: readField,
             }), id = _b[0], keyObject = _b[1];
+            // If dataId was not provided, fall back to the id just generated by
+            // policies.identify.
             dataId = dataId || id;
+            // Write any key fields that were used during identification, even if
+            // they were not mentioned in the original query.
             if (keyObject) {
+                // TODO Reverse the order of the arguments?
                 incoming = context.merge(incoming, keyObject);
             }
         }
         catch (e) {
+            // If dataId was provided, tolerate failure of policies.identify.
             if (!dataId)
                 throw e;
         }
         if ("string" === typeof dataId) {
             var dataRef = (0,storeUtils/* makeReference */.kQ)(dataId);
+            // Avoid processing the same entity object using the same selection
+            // set more than once. We use an array instead of a Set since most
+            // entity IDs will be written using only one selection set, so the
+            // size of this array is likely to be very small, meaning indexOf is
+            // likely to be faster than Set.prototype.has.
             var sets = context.written[dataId] || (context.written[dataId] = []);
             if (sets.indexOf(selectionSet) >= 0)
                 return dataRef;
             sets.push(selectionSet);
+            // If we're about to write a result object into the store, but we
+            // happen to know that the exact same (===) result object would be
+            // returned if we were to reread the result with the same inputs,
+            // then we can skip the rest of the processSelectionSet work for
+            // this object, and immediately return a Reference to it.
             if (this.reader &&
                 this.reader.isFresh(result, dataRef, selectionSet, context)) {
                 return dataRef;
@@ -16528,6 +17047,9 @@ var StoreWriter = (function () {
             else {
                 context.incomingById.set(dataId, {
                     storeObject: incoming,
+                    // Save a reference to mergeTree only if it is not empty, because
+                    // empty MergeTrees may be recycled by maybeRecycleChildMergeTree and
+                    // reused for entirely different parts of the result tree.
                     mergeTree: mergeTreeIsEmpty(mergeTree) ? void 0 : mergeTree,
                     fieldNodeSet: fieldNodeSet,
                 });
@@ -16539,6 +17061,9 @@ var StoreWriter = (function () {
     StoreWriter.prototype.processFieldValue = function (value, field, context, mergeTree) {
         var _this = this;
         if (!field.selectionSet || value === null) {
+            // In development, we need to clone scalar values so that they can be
+            // safely frozen with maybeDeepFreeze in readFromStore.ts. In production,
+            // it's cheaper to store the scalar values directly in the cache.
             return globalThis.__DEV__ !== false ? (0,cloneDeep/* cloneDeep */.X)(value) : value;
         }
         if ((0,arrays/* isArray */.k)(value)) {
@@ -16555,13 +17080,20 @@ var StoreWriter = (function () {
             mergeTree: mergeTree,
         });
     };
+    // Implements https://spec.graphql.org/draft/#sec-Field-Collection, but with
+    // some additions for tracking @client and @defer directives.
     StoreWriter.prototype.flattenFields = function (selectionSet, result, context, typename) {
         if (typename === void 0) { typename = (0,storeUtils/* getTypenameFromResult */.qw)(result, selectionSet, context.fragmentMap); }
         var fieldMap = new Map();
         var policies = this.cache.policies;
-        var limitingTrie = new trie_lib/* Trie */.B(false);
+        var limitingTrie = new trie_lib/* Trie */.B(false); // No need for WeakMap, since limitingTrie does not escape.
         (function flatten(selectionSet, inheritedContext) {
-            var visitedNode = limitingTrie.lookup(selectionSet, inheritedContext.clientOnly, inheritedContext.deferred);
+            var visitedNode = limitingTrie.lookup(selectionSet, 
+            // Because we take inheritedClientOnly and inheritedDeferred into
+            // consideration here (in addition to selectionSet), it's possible for
+            // the same selection set to be flattened more than once, if it appears
+            // in the query with different @client and/or @directive configurations.
+            inheritedContext.clientOnly, inheritedContext.deferred);
             if (visitedNode.visited)
                 return;
             visitedNode.visited = true;
@@ -16569,7 +17101,11 @@ var StoreWriter = (function () {
                 if (!(0,directives/* shouldInclude */.LZ)(selection, context.variables))
                     return;
                 var clientOnly = inheritedContext.clientOnly, deferred = inheritedContext.deferred;
-                if (!(clientOnly && deferred) &&
+                if (
+                // Since the presence of @client or @defer on this field can only
+                // cause clientOnly or deferred to become true, we can skip the
+                // forEach loop if both clientOnly and deferred are already true.
+                !(clientOnly && deferred) &&
                     (0,arrays/* isNonEmptyArray */.O)(selection.directives)) {
                     selection.directives.forEach(function (dir) {
                         var name = dir.name.value;
@@ -16577,15 +17113,24 @@ var StoreWriter = (function () {
                             clientOnly = true;
                         if (name === "defer") {
                             var args = (0,storeUtils/* argumentsObjectFromField */.NC)(dir, context.variables);
+                            // The @defer directive takes an optional args.if boolean
+                            // argument, similar to @include(if: boolean). Note that
+                            // @defer(if: false) does not make context.deferred false, but
+                            // instead behaves as if there was no @defer directive.
                             if (!args || args.if !== false) {
                                 deferred = true;
                             }
+                            // TODO In the future, we may want to record args.label using
+                            // context.deferred, if a label is specified.
                         }
                     });
                 }
                 if ((0,storeUtils/* isField */.My)(selection)) {
                     var existing = fieldMap.get(selection);
                     if (existing) {
+                        // If this field has been visited along another recursive path
+                        // before, the final context should have clientOnly or deferred set
+                        // to true only if *all* paths have the directive (hence the &&).
                         clientOnly = clientOnly && existing.clientOnly;
                         deferred = deferred && existing.deferred;
                     }
@@ -16609,25 +17154,45 @@ var StoreWriter = (function () {
         var _a;
         var _this = this;
         if (mergeTree.map.size && !(0,storeUtils/* isReference */.Yk)(incoming)) {
-            var e_1 = !(0,arrays/* isArray */.k)(incoming) &&
-                ((0,storeUtils/* isReference */.Yk)(existing) || (0,helpers/* storeValueIsStoreObject */.j)(existing))
-                ? existing
+            var e_1 = 
+            // Items in the same position in different arrays are not
+            // necessarily related to each other, so when incoming is an array
+            // we process its elements as if there was no existing data.
+            (!(0,arrays/* isArray */.k)(incoming) &&
+                // Likewise, existing must be either a Reference or a StoreObject
+                // in order for its fields to be safe to merge with the fields of
+                // the incoming object.
+                ((0,storeUtils/* isReference */.Yk)(existing) || (0,helpers/* storeValueIsStoreObject */.j)(existing))) ?
+                existing
                 : void 0;
+            // This narrowing is implied by mergeTree.map.size > 0 and
+            // !isReference(incoming), though TypeScript understandably cannot
+            // hope to infer this type.
             var i_1 = incoming;
+            // The options.storage objects provided to read and merge functions
+            // are derived from the identity of the parent object plus a
+            // sequence of storeFieldName strings/numbers identifying the nested
+            // field name path of each field value to be merged.
             if (e_1 && !getStorageArgs) {
                 getStorageArgs = [(0,storeUtils/* isReference */.Yk)(e_1) ? e_1.__ref : e_1];
             }
+            // It's possible that applying merge functions to this subtree will
+            // not change the incoming data, so this variable tracks the fields
+            // that did change, so we can create a new incoming object when (and
+            // only when) at least one incoming field has changed. We use a Map
+            // to preserve the type of numeric keys.
             var changedFields_1;
             var getValue_1 = function (from, name) {
-                return (0,arrays/* isArray */.k)(from)
-                    ? typeof name === "number"
-                        ? from[name]
+                return ((0,arrays/* isArray */.k)(from) ?
+                    typeof name === "number" ?
+                        from[name]
                         : void 0
-                    : context.store.getFieldValue(from, String(name));
+                    : context.store.getFieldValue(from, String(name)));
             };
             mergeTree.map.forEach(function (childTree, storeFieldName) {
                 var eVal = getValue_1(e_1, storeFieldName);
                 var iVal = getValue_1(i_1, storeFieldName);
+                // If we have no incoming data, leave any existing data untouched.
                 if (void 0 === iVal)
                     return;
                 if (getStorageArgs) {
@@ -16643,6 +17208,7 @@ var StoreWriter = (function () {
                 }
             });
             if (changedFields_1) {
+                // Shallow clone i so we can add changed fields to it.
                 incoming = ((0,arrays/* isArray */.k)(i_1) ? i_1.slice(0) : (0,tslib_es6/* __assign */.pi)({}, i_1));
                 changedFields_1.forEach(function (value, name) {
                     incoming[name] = value;
@@ -16670,13 +17236,10 @@ function mergeMergeTrees(left, right) {
         return left;
     if (!left || mergeTreeIsEmpty(left))
         return right;
-    var info = left.info && right.info
-        ? (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, left.info), right.info) : left.info || right.info;
+    var info = left.info && right.info ? (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, left.info), right.info) : left.info || right.info;
     var needToMergeMaps = left.map.size && right.map.size;
-    var map = needToMergeMaps
-        ? new Map()
-        : left.map.size
-            ? left.map
+    var map = needToMergeMaps ? new Map()
+        : left.map.size ? left.map
             : right.map;
     var merged = { info: info, map: map };
     if (needToMergeMaps) {
@@ -16703,6 +17266,8 @@ function maybeRecycleChildMergeTree(_a, name) {
     }
 }
 var warnings = new Set();
+// Note that this function is unused in production, and thus should be
+// pruned by any well-configured minifier.
 function warnAboutDataLoss(existingRef, incomingObj, storeFieldName, store) {
     var getChild = function (objOrRef) {
         var child = store.getFieldValue(objOrRef, storeFieldName);
@@ -16714,10 +17279,17 @@ function warnAboutDataLoss(existingRef, incomingObj, storeFieldName, store) {
     var incoming = getChild(incomingObj);
     if (!incoming)
         return;
+    // It's always safe to replace a reference, since it refers to data
+    // safely stored elsewhere.
     if ((0,storeUtils/* isReference */.Yk)(existing))
         return;
+    // If the values are structurally equivalent, we do not need to worry
+    // about incoming replacing existing.
     if ((0,equality_lib/* equal */.D)(existing, incoming))
         return;
+    // If we're replacing every key of the existing object, then the
+    // existing data would be overwritten even if the objects were
+    // normalized, so warning would not be helpful here.
     if (Object.keys(existing).every(function (key) { return store.getFieldValue(incoming, key) !== void 0; })) {
         return;
     }
@@ -16725,10 +17297,13 @@ function warnAboutDataLoss(existingRef, incomingObj, storeFieldName, store) {
         store.getFieldValue(incomingObj, "__typename");
     var fieldName = (0,helpers/* fieldNameFromStoreName */.E_)(storeFieldName);
     var typeDotName = "".concat(parentType, ".").concat(fieldName);
+    // Avoid warning more than once for the same type and field name.
     if (warnings.has(typeDotName))
         return;
     warnings.add(typeDotName);
     var childTypenames = [];
+    // Arrays do not have __typename fields, and always need a custom merge
+    // function, even if their elements are normalized entities.
     if (!(0,arrays/* isArray */.k)(existing) && !(0,arrays/* isArray */.k)(incoming)) {
         [existing, incoming].forEach(function (child) {
             var typename = store.getFieldValue(child, "__typename");
@@ -16737,8 +17312,8 @@ function warnAboutDataLoss(existingRef, incomingObj, storeFieldName, store) {
             }
         });
     }
-    globalThis.__DEV__ !== false && globals/* invariant */.kG.warn(14, fieldName, parentType, childTypenames.length
-        ? "either ensure all objects of type " +
+    globalThis.__DEV__ !== false && globals/* invariant */.kG.warn(14, fieldName, parentType, childTypenames.length ?
+        "either ensure all objects of type " +
             childTypenames.join(" and ") +
             " have an ID or a custom merge function, or "
         : "", typeDotName, existing, incoming);
@@ -16747,6 +17322,7 @@ function warnAboutDataLoss(existingRef, incomingObj, storeFieldName, store) {
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/cache/inmemory/inMemoryCache.js
 
 
+// Make builtins like Map and Set safe to use with non-extensible objects.
 
 
 
@@ -16760,13 +17336,15 @@ function warnAboutDataLoss(existingRef, incomingObj, storeFieldName, store) {
 
 
 
-var InMemoryCache = (function (_super) {
+var InMemoryCache = /** @class */ (function (_super) {
     (0,tslib_es6/* __extends */.ZT)(InMemoryCache, _super);
     function InMemoryCache(config) {
         if (config === void 0) { config = {}; }
         var _this = _super.call(this) || this;
         _this.watches = new Set();
         _this.addTypenameTransform = new DocumentTransform/* DocumentTransform */.A(transform/* addTypenameToDocument */.Gw);
+        // Override the default value, since InMemoryCache result objects are frozen
+        // in development and expected to remain logically immutable in production.
         _this.assumeImmutableResults = true;
         _this.makeVar = reactiveVars/* makeVar */.QS;
         _this.txCount = 0;
@@ -16782,10 +17360,18 @@ var InMemoryCache = (function (_super) {
         return _this;
     }
     InMemoryCache.prototype.init = function () {
+        // Passing { resultCaching: false } in the InMemoryCache constructor options
+        // will completely disable dependency tracking, which will improve memory
+        // usage but worsen the performance of repeated reads.
         var rootStore = (this.data = new EntityStore.Root({
             policies: this.policies,
             resultCaching: this.config.resultCaching,
         }));
+        // When no optimistic writes are currently active, cache.optimisticData ===
+        // cache.data, so there are no additional layers on top of the actual data.
+        // When an optimistic update happens, this.optimisticData will become a
+        // linked list of EntityStore Layer objects that terminates with the
+        // original this.data cache object.
         this.optimisticData = rootStore.stump;
         this.resetResultCache();
     };
@@ -16793,14 +17379,15 @@ var InMemoryCache = (function (_super) {
         var _this = this;
         var previousReader = this.storeReader;
         var fragments = this.config.fragments;
+        // The StoreWriter is mostly stateless and so doesn't really need to be
+        // reset, but it does need to have its writer.storeReader reference updated,
+        // so it's simpler to update this.storeWriter as well.
         this.storeWriter = new StoreWriter(this, (this.storeReader = new StoreReader({
             cache: this,
             addTypename: this.addTypename,
             resultCacheMaxSize: this.config.resultCacheMaxSize,
             canonizeResults: (0,helpers/* shouldCanonizeResults */.lg)(this.config),
-            canon: resetResultIdentities
-                ? void 0
-                : previousReader && previousReader.canon,
+            canon: resetResultIdentities ? void 0 : (previousReader && previousReader.canon),
             fragments: fragments,
         })), fragments);
         this.maybeBroadcastWatch = (0,lib/* wrap */.re)(function (c, options) {
@@ -16808,19 +17395,34 @@ var InMemoryCache = (function (_super) {
         }, {
             max: this.config.resultCacheMaxSize,
             makeCacheKey: function (c) {
+                // Return a cache key (thus enabling result caching) only if we're
+                // currently using a data store that can track cache dependencies.
                 var store = c.optimistic ? _this.optimisticData : _this.data;
                 if (supportsResultCaching(store)) {
                     var optimistic = c.optimistic, id = c.id, variables = c.variables;
-                    return store.makeCacheKey(c.query, c.callback, (0,object_canon/* canonicalStringify */.B)({ optimistic: optimistic, id: id, variables: variables }));
+                    return store.makeCacheKey(c.query, 
+                    // Different watches can have the same query, optimistic
+                    // status, rootId, and variables, but if their callbacks are
+                    // different, the (identical) result needs to be delivered to
+                    // each distinct callback. The easiest way to achieve that
+                    // separation is to include c.callback in the cache key for
+                    // maybeBroadcastWatch calls. See issue #5733.
+                    c.callback, (0,object_canon/* canonicalStringify */.B)({ optimistic: optimistic, id: id, variables: variables }));
                 }
             },
         });
+        // Since we have thrown away all the cached functions that depend on the
+        // CacheGroup dependencies maintained by EntityStore, we should also reset
+        // all CacheGroup dependency information.
         new Set([this.data.group, this.optimisticData.group]).forEach(function (group) {
             return group.resetCaching();
         });
     };
     InMemoryCache.prototype.restore = function (data) {
         this.init();
+        // Since calling this.init() discards/replaces the entire StoreReader, along
+        // with the result caches it maintains, this.data.replace(data) won't have
+        // to bother deleting the old data.
         if (data)
             this.data.replace(data);
         return this;
@@ -16830,12 +17432,33 @@ var InMemoryCache = (function (_super) {
         return (optimistic ? this.optimisticData : this.data).extract();
     };
     InMemoryCache.prototype.read = function (options) {
-        var _a = options.returnPartialData, returnPartialData = _a === void 0 ? false : _a;
+        var 
+        // Since read returns data or null, without any additional metadata
+        // about whether/where there might have been missing fields, the
+        // default behavior cannot be returnPartialData = true (like it is
+        // for the diff method), since defaulting to true would violate the
+        // integrity of the T in the return type. However, partial data may
+        // be useful in some cases, so returnPartialData:true may be
+        // specified explicitly.
+        _a = options.returnPartialData, 
+        // Since read returns data or null, without any additional metadata
+        // about whether/where there might have been missing fields, the
+        // default behavior cannot be returnPartialData = true (like it is
+        // for the diff method), since defaulting to true would violate the
+        // integrity of the T in the return type. However, partial data may
+        // be useful in some cases, so returnPartialData:true may be
+        // specified explicitly.
+        returnPartialData = _a === void 0 ? false : _a;
         try {
             return (this.storeReader.diffQueryAgainstStore((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { store: options.optimistic ? this.optimisticData : this.data, config: this.config, returnPartialData: returnPartialData })).result || null);
         }
         catch (e) {
             if (e instanceof common/* MissingFieldError */.y) {
+                // Swallow MissingFieldError and return null, so callers do not need to
+                // worry about catching "normal" exceptions resulting from incomplete
+                // cache data. Unexpected errors will be re-thrown. If you need more
+                // information about which fields were missing, use cache.diff instead,
+                // and examine diffResult.missing.
                 return null;
             }
             throw e;
@@ -16854,10 +17477,20 @@ var InMemoryCache = (function (_super) {
     };
     InMemoryCache.prototype.modify = function (options) {
         if (helpers/* hasOwn */.RI.call(options, "id") && !options.id) {
+            // To my knowledge, TypeScript does not currently provide a way to
+            // enforce that an optional property?:type must *not* be undefined
+            // when present. That ability would be useful here, because we want
+            // options.id to default to ROOT_QUERY only when no options.id was
+            // provided. If the caller attempts to pass options.id with a
+            // falsy/undefined value (perhaps because cache.identify failed), we
+            // should not assume the goal was to modify the ROOT_QUERY object.
+            // We could throw, but it seems natural to return false to indicate
+            // that nothing was modified.
             return false;
         }
-        var store = options.optimistic
-            ? this.optimisticData
+        var store = ((options.optimistic) // Defaults to false.
+        ) ?
+            this.optimisticData
             : this.data;
         try {
             ++this.txCount;
@@ -16875,6 +17508,16 @@ var InMemoryCache = (function (_super) {
     InMemoryCache.prototype.watch = function (watch) {
         var _this = this;
         if (!this.watches.size) {
+            // In case we previously called forgetCache(this) because
+            // this.watches became empty (see below), reattach this cache to any
+            // reactive variables on which it previously depended. It might seem
+            // paradoxical that we're able to recall something we supposedly
+            // forgot, but the point of calling forgetCache(this) is to silence
+            // useless broadcasts while this.watches is empty, and to allow the
+            // cache to be garbage collected. If, however, we manage to call
+            // recallCache(this) here, this cache object must not have been
+            // garbage collected yet, and should resume receiving updates from
+            // reactive variables, now that it has a watcher to notify.
             (0,reactiveVars/* recallCache */._v)(this);
         }
         this.watches.add(watch);
@@ -16882,9 +17525,15 @@ var InMemoryCache = (function (_super) {
             this.maybeBroadcastWatch(watch);
         }
         return function () {
+            // Once we remove the last watch from this.watches, cache.broadcastWatches
+            // no longer does anything, so we preemptively tell the reactive variable
+            // system to exclude this cache from future broadcasts.
             if (_this.watches.delete(watch) && !_this.watches.size) {
                 (0,reactiveVars/* forgetCache */.li)(_this);
             }
+            // Remove this watch from the LRU cache managed by the
+            // maybeBroadcastWatch OptimisticWrapperFunction, to prevent memory
+            // leaks involving the closure of watch.callback.
             _this.maybeBroadcastWatch.forget(watch);
         };
     };
@@ -16901,12 +17550,30 @@ var InMemoryCache = (function (_super) {
         }
         return ids;
     };
+    // Call this method to ensure the given root ID remains in the cache after
+    // garbage collection, along with its transitive child entities. Note that
+    // the cache automatically retains all directly written entities. By default,
+    // the retainment persists after optimistic updates are removed. Pass true
+    // for the optimistic argument if you would prefer for the retainment to be
+    // discarded when the top-most optimistic layer is removed. Returns the
+    // resulting (non-negative) retainment count.
     InMemoryCache.prototype.retain = function (rootId, optimistic) {
         return (optimistic ? this.optimisticData : this.data).retain(rootId);
     };
+    // Call this method to undo the effect of the retain method, above. Once the
+    // retainment count falls to zero, the given ID will no longer be preserved
+    // during garbage collection, though it may still be preserved by other safe
+    // entities that refer to it. Returns the resulting (non-negative) retainment
+    // count, in case that's useful.
     InMemoryCache.prototype.release = function (rootId, optimistic) {
         return (optimistic ? this.optimisticData : this.data).release(rootId);
     };
+    // Returns the canonical ID for a given StoreObject, obeying typePolicies
+    // and keyFields (and dataIdFromObject, if you still use that). At minimum,
+    // the object must contain a __typename and any primary key fields required
+    // to identify entities of that type. If you pass a query result object, be
+    // sure that none of the primary key fields have been renamed by aliasing.
+    // If you pass a Reference object, its __ref ID string will be returned.
     InMemoryCache.prototype.identify = function (object) {
         if ((0,storeUtils/* isReference */.Yk)(object))
             return object.__ref;
@@ -16920,12 +17587,21 @@ var InMemoryCache = (function (_super) {
     InMemoryCache.prototype.evict = function (options) {
         if (!options.id) {
             if (helpers/* hasOwn */.RI.call(options, "id")) {
+                // See comment in modify method about why we return false when
+                // options.id exists but is falsy/undefined.
                 return false;
             }
             options = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { id: "ROOT_QUERY" });
         }
         try {
+            // It's unlikely that the eviction will end up invoking any other
+            // cache update operations while it's running, but {in,de}crementing
+            // this.txCount still seems like a good idea, for uniformity with
+            // the other update methods.
             ++this.txCount;
+            // Pass this.data as a limit on the depth of the eviction, so evictions
+            // during optimistic updates (when this.data is temporarily set equal to
+            // this.optimisticData) do not escape their optimistic Layer.
             return this.optimisticData.evict(options, this.data);
         }
         finally {
@@ -16939,11 +17615,19 @@ var InMemoryCache = (function (_super) {
         this.init();
         object_canon/* canonicalStringify */.B.reset();
         if (options && options.discardWatches) {
+            // Similar to what happens in the unsubscribe function returned by
+            // cache.watch, applied to all current watches.
             this.watches.forEach(function (watch) { return _this.maybeBroadcastWatch.forget(watch); });
             this.watches.clear();
             (0,reactiveVars/* forgetCache */.li)(this);
         }
         else {
+            // Calling this.init() above unblocks all maybeBroadcastWatch caching, so
+            // this.broadcastWatches() triggers a broadcast to every current watcher
+            // (letting them know their data is now missing). This default behavior is
+            // convenient because it means the watches do not have to be manually
+            // reestablished after resetting the cache. To prevent this broadcast and
+            // cancel all watches, pass true for options.discardWatches.
             this.broadcastWatches();
         }
         return Promise.resolve();
@@ -16976,36 +17660,66 @@ var InMemoryCache = (function (_super) {
         };
         var alreadyDirty = new Set();
         if (onWatchUpdated && !this.txCount) {
+            // If an options.onWatchUpdated callback is provided, we want to call it
+            // with only the Cache.WatchOptions objects affected by options.update,
+            // but there might be dirty watchers already waiting to be broadcast that
+            // have nothing to do with the update. To prevent including those watchers
+            // in the post-update broadcast, we perform this initial broadcast to
+            // collect the dirty watchers, so we can re-dirty them later, after the
+            // post-update broadcast, allowing them to receive their pending
+            // broadcasts the next time broadcastWatches is called, just as they would
+            // if we never called cache.batch.
             this.broadcastWatches((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { onWatchUpdated: function (watch) {
                     alreadyDirty.add(watch);
                     return false;
                 } }));
         }
         if (typeof optimistic === "string") {
+            // Note that there can be multiple layers with the same optimistic ID.
+            // When removeOptimistic(id) is called for that id, all matching layers
+            // will be removed, and the remaining layers will be reapplied.
             this.optimisticData = this.optimisticData.addLayer(optimistic, perform);
         }
         else if (optimistic === false) {
+            // Ensure both this.data and this.optimisticData refer to the root
+            // (non-optimistic) layer of the cache during the update. Note that
+            // this.data could be a Layer if we are currently executing an optimistic
+            // update function, but otherwise will always be an EntityStore.Root
+            // instance.
             perform(this.data);
         }
         else {
+            // Otherwise, leave this.data and this.optimisticData unchanged and run
+            // the update with broadcast batching.
             perform();
         }
         if (typeof removeOptimistic === "string") {
             this.optimisticData = this.optimisticData.removeLayer(removeOptimistic);
         }
+        // Note: if this.txCount > 0, then alreadyDirty.size === 0, so this code
+        // takes the else branch and calls this.broadcastWatches(options), which
+        // does nothing when this.txCount > 0.
         if (onWatchUpdated && alreadyDirty.size) {
             this.broadcastWatches((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { onWatchUpdated: function (watch, diff) {
                     var result = onWatchUpdated.call(this, watch, diff);
                     if (result !== false) {
+                        // Since onWatchUpdated did not return false, this diff is
+                        // about to be broadcast to watch.callback, so we don't need
+                        // to re-dirty it with the other alreadyDirty watches below.
                         alreadyDirty.delete(watch);
                     }
                     return result;
                 } }));
+            // Silently re-dirty any watches that were already dirty before the update
+            // was performed, and were not broadcast just now.
             if (alreadyDirty.size) {
                 alreadyDirty.forEach(function (watch) { return _this.maybeBroadcastWatch.dirty(watch); });
             }
         }
         else {
+            // If alreadyDirty is empty or we don't have an onWatchUpdated
+            // function, we don't need to go to the trouble of wrapping
+            // options.onWatchUpdated.
             this.broadcastWatches(options);
         }
         return updateResult;
@@ -17035,8 +17749,20 @@ var InMemoryCache = (function (_super) {
         }
         return document;
     };
+    // This method is wrapped by maybeBroadcastWatch, which is called by
+    // broadcastWatches, so that we compute and broadcast results only when
+    // the data that would be broadcast might have changed. It would be
+    // simpler to check for changes after recomputing a result but before
+    // broadcasting it, but this wrapping approach allows us to skip both
+    // the recomputation and the broadcast, in most cases.
     InMemoryCache.prototype.broadcastWatch = function (c, options) {
         var lastDiff = c.lastDiff;
+        // Both WatchOptions and DiffOptions extend ReadOptions, and DiffOptions
+        // currently requires no additional properties, so we can use c (a
+        // WatchOptions object) as DiffOptions, without having to allocate a new
+        // object, and without having to enumerate the relevant properties (query,
+        // variables, etc.) explicitly. There will be some additional properties
+        // (lastDiff, callback, etc.), but cache.diff ignores them.
         var diff = this.diff(c);
         if (options) {
             if (c.optimistic && typeof options.optimistic === "string") {
@@ -17044,6 +17770,8 @@ var InMemoryCache = (function (_super) {
             }
             if (options.onWatchUpdated &&
                 options.onWatchUpdated.call(this, c, diff, lastDiff) === false) {
+                // Returning false from the onWatchUpdated callback will prevent
+                // calling c.callback(diff) for this watcher.
                 return;
             }
         }
@@ -17077,18 +17805,81 @@ var InMemoryCache = (function (_super) {
 
 function shallowCopy(value) {
     if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .isNonNullObject */ .s)(value)) {
-        return (0,_helpers_js__WEBPACK_IMPORTED_MODULE_2__/* .isArray */ .k)(value)
-            ? value.slice(0)
+        return (0,_helpers_js__WEBPACK_IMPORTED_MODULE_2__/* .isArray */ .k)(value) ?
+            value.slice(0)
             : (0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({ __proto__: Object.getPrototypeOf(value) }, value);
     }
     return value;
 }
-var ObjectCanon = (function () {
+// When programmers talk about the "canonical form" of an object, they
+// usually have the following meaning in mind, which I've copied from
+// https://en.wiktionary.org/wiki/canonical_form:
+//
+// 1. A standard or normal presentation of a mathematical entity [or
+//    object]. A canonical form is an element of a set of representatives
+//    of equivalence classes of forms such that there is a function or
+//    procedure which projects every element of each equivalence class
+//    onto that one element, the canonical form of that equivalence
+//    class. The canonical form is expected to be simpler than the rest of
+//    the forms in some way.
+//
+// That's a long-winded way of saying any two objects that have the same
+// canonical form may be considered equivalent, even if they are !==,
+// which usually means the objects are structurally equivalent (deeply
+// equal), but don't necessarily use the same memory.
+//
+// Like a literary or musical canon, this ObjectCanon class represents a
+// collection of unique canonical items (JavaScript objects), with the
+// important property that canon.admit(a) === canon.admit(b) if a and b
+// are deeply equal to each other. In terms of the definition above, the
+// canon.admit method is the "function or procedure which projects every"
+// object "onto that one element, the canonical form."
+//
+// In the worst case, the canonicalization process may involve looking at
+// every property in the provided object tree, so it takes the same order
+// of time as deep equality checking. Fortunately, already-canonicalized
+// objects are returned immediately from canon.admit, so the presence of
+// canonical subtrees tends to speed up canonicalization.
+//
+// Since consumers of canonical objects can check for deep equality in
+// constant time, canonicalizing cache results can massively improve the
+// performance of application code that skips re-rendering unchanged
+// results, such as "pure" UI components in a framework like React.
+//
+// Of course, since canonical objects may be shared widely between
+// unrelated consumers, it's important to think of them as immutable, even
+// though they are not actually frozen with Object.freeze in production,
+// due to the extra performance overhead that comes with frozen objects.
+//
+// Custom scalar objects whose internal class name is neither Array nor
+// Object can be included safely in the admitted tree, but they will not
+// be replaced with a canonical version (to put it another way, they are
+// assumed to be canonical already).
+//
+// If we ignore custom objects, no detection of cycles or repeated object
+// references is currently required by the StoreReader class, since
+// GraphQL result objects are JSON-serializable trees (and thus contain
+// neither cycles nor repeated subtrees), so we can avoid the complexity
+// of keeping track of objects we've already seen during the recursion of
+// the admit method.
+//
+// In the future, we may consider adding additional cases to the switch
+// statement to handle other common object types, such as "[object Date]"
+// objects, as needed.
+var ObjectCanon = /** @class */ (function () {
     function ObjectCanon() {
+        // Set of all canonical objects this ObjectCanon has admitted, allowing
+        // canon.admit to return previously-canonicalized objects immediately.
         this.known = new (_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .canUseWeakSet */ .sy ? WeakSet : Set)();
+        // Efficient storage/lookup structure for canonical objects.
         this.pool = new _wry_trie__WEBPACK_IMPORTED_MODULE_0__/* .Trie */ .B(_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .canUseWeakMap */ .mr);
+        // Make the ObjectCanon assume this value has already been
+        // canonicalized.
         this.passes = new WeakMap();
+        // Arrays that contain the same elements in a different order can share
+        // the same SortedKeysInfo object, to save memory.
         this.keysByJSON = new Map();
+        // This has to come last because it depends on keysByJSON.
         this.empty = this.admit({});
     }
     ObjectCanon.prototype.isKnown = function (value) {
@@ -17114,9 +17905,15 @@ var ObjectCanon = (function () {
                     if (this.known.has(value))
                         return value;
                     var array = value.map(this.admit, this);
+                    // Arrays are looked up in the Trie using their recursively
+                    // canonicalized elements, and the known version of the array is
+                    // preserved as node.array.
                     var node = this.pool.lookupArray(array);
                     if (!node.array) {
                         this.known.add((node.array = array));
+                        // Since canonical arrays may be shared widely between
+                        // unrelated consumers, it's important to regard them as
+                        // immutable, even if they are not frozen in production.
                         if (globalThis.__DEV__ !== false) {
                             Object.freeze(array);
                         }
@@ -17135,6 +17932,14 @@ var ObjectCanon = (function () {
                     keys.sorted.forEach(function (key) {
                         array_1.push(_this.admit(value[key]));
                     });
+                    // Objects are looked up in the Trie by their prototype (which
+                    // is *not* recursively canonicalized), followed by a JSON
+                    // representation of their (sorted) keys, followed by the
+                    // sequence of recursively canonicalized values corresponding to
+                    // those keys. To keep the final results unambiguous with other
+                    // sequences (such as arrays that just happen to contain [proto,
+                    // keys.json, value1, value2, ...]), the known version of the
+                    // object is stored as node.object.
                     var node = this.pool.lookupArray(array_1);
                     if (!node.object) {
                         var obj_1 = (node.object = Object.create(proto_1));
@@ -17142,6 +17947,9 @@ var ObjectCanon = (function () {
                         keys.sorted.forEach(function (key, i) {
                             obj_1[key] = array_1[firstValueIndex_1 + i];
                         });
+                        // Since canonical objects may be shared widely between
+                        // unrelated consumers, it's important to regard them as
+                        // immutable, even if they are not frozen in production.
                         if (globalThis.__DEV__ !== false) {
                             Object.freeze(obj_1);
                         }
@@ -17152,6 +17960,10 @@ var ObjectCanon = (function () {
         }
         return value;
     };
+    // It's worthwhile to cache the sorting of arrays of strings, since the
+    // same initial unsorted arrays tend to be encountered many times.
+    // Fortunately, we can reuse the Trie machinery to look up the sorted
+    // arrays in linear time (which is faster than sorting large arrays).
     ObjectCanon.prototype.sortedKeys = function (obj) {
         var keys = Object.keys(obj);
         var node = this.pool.lookupArray(keys);
@@ -17167,6 +17979,9 @@ var ObjectCanon = (function () {
     return ObjectCanon;
 }());
 
+// Since the keys of canonical objects are always created in lexicographically
+// sorted order, we can use the ObjectCanon to implement a fast and stable
+// version of JSON.stringify, which automatically sorts object keys.
 var canonicalStringify = Object.assign(function (value) {
     if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .isNonNullObject */ .s)(value)) {
         if (stringifyCanon === void 0) {
@@ -17183,6 +17998,7 @@ var canonicalStringify = Object.assign(function (value) {
 }, {
     reset: resetCanonicalStringify,
 });
+// Can be reset by calling canonicalStringify.reset().
 var stringifyCanon;
 var stringifyCache;
 function resetCanonicalStringify() {
@@ -17203,11 +18019,11 @@ function resetCanonicalStringify() {
 /* harmony export */   ab: () => (/* binding */ cacheSlot),
 /* harmony export */   li: () => (/* binding */ forgetCache)
 /* harmony export */ });
-/* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6869);
-/* harmony import */ var _wry_context__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2455);
+/* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3168);
 
-
-var cacheSlot = new _wry_context__WEBPACK_IMPORTED_MODULE_1__/* .Slot */ .g7();
+// Contextual Slot that acquires its value when custom read functions are
+// called in Policies#readField.
+var cacheSlot = new optimism__WEBPACK_IMPORTED_MODULE_0__/* .Slot */ .g7();
 var cacheInfoMap = new WeakMap();
 function getCacheInfo(cache) {
     var info = cacheInfoMap.get(cache);
@@ -17222,6 +18038,14 @@ function getCacheInfo(cache) {
 function forgetCache(cache) {
     getCacheInfo(cache).vars.forEach(function (rv) { return rv.forgetCache(cache); });
 }
+// Calling forgetCache(cache) serves to silence broadcasts and allows the
+// cache to be garbage collected. However, the varsByCache WeakMap
+// preserves the set of reactive variables that were previously associated
+// with this cache, which makes it possible to "recall" the cache at a
+// later time, by reattaching it to those variables. If the cache has been
+// garbage collected in the meantime, because it is no longer reachable,
+// you won't be able to call recallCache(cache), and the cache will
+// automatically disappear from the varsByCache WeakMap.
 function recallCache(cache) {
     getCacheInfo(cache).vars.forEach(function (rv) { return rv.attachCache(cache); });
 }
@@ -17233,15 +18057,24 @@ function makeVar(value) {
             if (value !== newValue) {
                 value = newValue;
                 caches.forEach(function (cache) {
+                    // Invalidate any fields with custom read functions that
+                    // consumed this variable, so query results involving those
+                    // fields will be recomputed the next time we read them.
                     getCacheInfo(cache).dep.dirty(rv);
+                    // Broadcast changes to any caches that have previously read
+                    // from this variable.
                     broadcast(cache);
                 });
+                // Finally, notify any listeners added via rv.onNextChange.
                 var oldListeners = Array.from(listeners);
                 listeners.clear();
                 oldListeners.forEach(function (listener) { return listener(value); });
             }
         }
         else {
+            // When reading from the variable, obtain the current cache from
+            // context via cacheSlot. This isn't entirely foolproof, but it's
+            // the same system that powers varDep.
             var cache = cacheSlot.getValue();
             if (cache) {
                 attach(cache);
@@ -17315,9 +18148,14 @@ var DocumentTransform = __webpack_require__(8056);
 var zen_observable_ts_module = __webpack_require__(8216);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/utilities/observables/asyncMap.js
 
+// Like Observable.prototype.map, except that the mapping function can
+// optionally return a Promise (or be async).
 function asyncMap(observable, mapFn, catchFn) {
     return new zen_observable_ts_module/* Observable */.y(function (observer) {
         var promiseQueue = {
+            // Normally we would initialize promiseQueue to Promise.resolve(), but
+            // in this case, for backwards compatibility, we need to be careful to
+            // invoke the first callback synchronously.
             then: function (callback) {
                 return new Promise(function (resolve) { return resolve(callback()); });
             },
@@ -17326,8 +18164,10 @@ function asyncMap(observable, mapFn, catchFn) {
             return function (arg) {
                 if (examiner) {
                     var both = function () {
-                        return observer.closed
-                            ? 0
+                        // If the observer is closed, we don't want to continue calling the
+                        // mapping function - it's result will be swallowed anyways.
+                        return observer.closed ?
+                            /* will be swallowed */ 0
                             : examiner(arg);
                     };
                     promiseQueue = promiseQueue.then(both, both).then(function (result) { return observer.next(result); }, function (error) { return observer.error(error); });
@@ -17341,7 +18181,9 @@ function asyncMap(observable, mapFn, catchFn) {
             next: makeCallback(mapFn, "next"),
             error: makeCallback(catchFn, "error"),
             complete: function () {
-                promiseQueue.then(function () { return observer.complete(); });
+                // no need to reassign `promiseQueue`, after `observer.complete`,
+                // the observer will be closed and short-circuit everything anyways
+                /*promiseQueue = */ promiseQueue.then(function () { return observer.complete(); });
             },
         };
         var sub = observable.subscribe(handler);
@@ -17359,9 +18201,7 @@ function graphQLResultHasError(result) {
     return (0,arrays/* isNonEmptyArray */.O)(errors);
 }
 function getGraphQLErrorsFromResult(result) {
-    var graphQLErrors = (0,arrays/* isNonEmptyArray */.O)(result.errors)
-        ? result.errors.slice(0)
-        : [];
+    var graphQLErrors = (0,arrays/* isNonEmptyArray */.O)(result.errors) ? result.errors.slice(0) : [];
     if ((0,incrementalResult/* isExecutionPatchIncrementalResult */.GG)(result) &&
         (0,arrays/* isNonEmptyArray */.O)(result.incremental)) {
         result.incremental.forEach(function (incrementalResult) {
@@ -17393,18 +18233,54 @@ var subclassing = __webpack_require__(6403);
 function isPromiseLike(value) {
     return value && typeof value.then === "function";
 }
-var Concast = (function (_super) {
+// A Concast<T> observable concatenates the given sources into a single
+// non-overlapping sequence of Ts, automatically unwrapping any promises,
+// and broadcasts the T elements of that sequence to any number of
+// subscribers, all without creating a bunch of intermediary Observable
+// wrapper objects.
+//
+// Even though any number of observers can subscribe to the Concast, each
+// source observable is guaranteed to receive at most one subscribe call,
+// and the results are multicast to all observers.
+//
+// In addition to broadcasting every next/error message to this.observers,
+// the Concast stores the most recent message using this.latest, so any
+// new observers can immediately receive the latest message, even if it
+// was originally delivered in the past. This behavior means we can assume
+// every active observer in this.observers has received the same most
+// recent message.
+//
+// With the exception of this.latest replay, a Concast is a "hot"
+// observable in the sense that it does not replay past results from the
+// beginning of time for each new observer.
+//
+// Could we have used some existing RxJS class instead? Concast<T> is
+// similar to a BehaviorSubject<T>, because it is multicast and redelivers
+// the latest next/error message to new subscribers. Unlike Subject<T>,
+// Concast<T> does not expose an Observer<T> interface (this.handlers is
+// intentionally private), since Concast<T> gets its inputs from the
+// concatenated sources. If we ever switch to RxJS, there may be some
+// value in reusing their code, but for now we use zen-observable, which
+// does not contain any Subject implementations.
+var Concast = /** @class */ (function (_super) {
     (0,tslib_es6/* __extends */.ZT)(Concast, _super);
+    // Not only can the individual elements of the iterable be promises, but
+    // also the iterable itself can be wrapped in a promise.
     function Concast(sources) {
         var _this = _super.call(this, function (observer) {
             _this.addObserver(observer);
             return function () { return _this.removeObserver(observer); };
         }) || this;
+        // Active observers receiving broadcast messages. Thanks to this.latest,
+        // we can assume all observers in this Set have received the same most
+        // recent message, though possibly at different times in the past.
         _this.observers = new Set();
         _this.promise = new Promise(function (resolve, reject) {
             _this.resolve = resolve;
             _this.reject = reject;
         });
+        // Bound handler functions that can be reused for every internal
+        // subscription.
         _this.handlers = {
             next: function (result) {
                 if (_this.sub !== null) {
@@ -17416,6 +18292,9 @@ var Concast = (function (_super) {
             error: function (error) {
                 var sub = _this.sub;
                 if (sub !== null) {
+                    // Delay unsubscribing from the underlying subscription slightly,
+                    // so that immediately subscribing another observer can keep the
+                    // subscription active.
                     if (sub)
                         setTimeout(function () { return sub.unsubscribe(); });
                     _this.sub = null;
@@ -17428,6 +18307,11 @@ var Concast = (function (_super) {
             complete: function () {
                 var _a = _this, sub = _a.sub, _b = _a.sources, sources = _b === void 0 ? [] : _b;
                 if (sub !== null) {
+                    // If complete is called before concast.start, this.sources may be
+                    // undefined, so we use a default value of [] for sources. That works
+                    // here because it falls into the if (!value) {...} block, which
+                    // appropriately terminates the Concast, even if this.sources might
+                    // eventually have been initialized to a non-empty array.
                     var value = sources.shift();
                     if (!value) {
                         if (sub)
@@ -17440,6 +18324,12 @@ var Concast = (function (_super) {
                             _this.resolve();
                         }
                         _this.notify("complete");
+                        // We do not store this.latest = ["complete"], because doing so
+                        // discards useful information about the previous next (or
+                        // error) message. Instead, if new observers subscribe after
+                        // this Concast has completed, they will receive the final
+                        // 'next' message (unless there was an error) immediately
+                        // followed by a 'complete' message (see addObserver).
                         (0,iteration/* iterateObserversSafely */.p)(_this.observers, "complete");
                     }
                     else if (isPromiseLike(value)) {
@@ -17452,12 +18342,19 @@ var Concast = (function (_super) {
             },
         };
         _this.nextResultListeners = new Set();
+        // A public way to abort observation and broadcast.
         _this.cancel = function (reason) {
             _this.reject(reason);
             _this.sources = [];
             _this.handlers.complete();
         };
+        // Suppress rejection warnings for this.promise, since it's perfectly
+        // acceptable to pay no attention to this.promise if you're consuming
+        // the results through the normal observable API.
         _this.promise.catch(function (_) { });
+        // If someone accidentally tries to create a Concast using a subscriber
+        // function, recover by creating an Observable from that subscriber and
+        // using it as the source.
         if (typeof sources === "function") {
             sources = [new zen_observable_ts_module/* Observable */.y(sources)];
         }
@@ -17472,7 +18369,14 @@ var Concast = (function (_super) {
     Concast.prototype.start = function (sources) {
         if (this.sub !== void 0)
             return;
+        // In practice, sources is most often simply an Array of observables.
+        // TODO Consider using sources[Symbol.iterator]() to take advantage
+        // of the laziness of non-Array iterables.
         this.sources = Array.from(sources);
+        // Calling this.handlers.complete() kicks off consumption of the first
+        // source observable. It's tempting to do this step lazily in
+        // addObserver, but this.promise can be accessed without calling
+        // addObserver, so consumption needs to begin eagerly.
         this.handlers.complete();
     };
     Concast.prototype.deliverLastMessage = function (observer) {
@@ -17482,6 +18386,9 @@ var Concast = (function (_super) {
             if (method) {
                 method.call(observer, this.latest[1]);
             }
+            // If the subscription is already closed, and the last message was
+            // a 'next' message, simulate delivery of the final 'complete'
+            // message again.
             if (this.sub === null && nextOrError === "next" && observer.complete) {
                 observer.complete();
             }
@@ -17489,22 +18396,36 @@ var Concast = (function (_super) {
     };
     Concast.prototype.addObserver = function (observer) {
         if (!this.observers.has(observer)) {
+            // Immediately deliver the most recent message, so we can always
+            // be sure all observers have the latest information.
             this.deliverLastMessage(observer);
             this.observers.add(observer);
         }
     };
     Concast.prototype.removeObserver = function (observer) {
         if (this.observers.delete(observer) && this.observers.size < 1) {
+            // In case there are still any listeners in this.nextResultListeners, and
+            // no error or completion has been broadcast yet, make sure those
+            // observers have a chance to run and then remove themselves from
+            // this.observers.
             this.handlers.complete();
         }
     };
     Concast.prototype.notify = function (method, arg) {
         var nextResultListeners = this.nextResultListeners;
         if (nextResultListeners.size) {
+            // Replacing this.nextResultListeners first ensures it does not grow while
+            // we are iterating over it, potentially leading to infinite loops.
             this.nextResultListeners = new Set();
             nextResultListeners.forEach(function (listener) { return listener(method, arg); });
         }
     };
+    // We need a way to run callbacks just *before* the next result (or error or
+    // completion) is delivered by this Concast, so we can be sure any code that
+    // runs as a result of delivering that result/error observes the effects of
+    // running the callback(s). It was tempting to reuse the Observer type instead
+    // of introducing NextResultListener, but that messes with the sizing and
+    // maintenance of this.observers, and ends up being more code overall.
     Concast.prototype.beforeNext = function (callback) {
         var called = false;
         this.nextResultListeners.add(function (method, arg) {
@@ -17517,6 +18438,8 @@ var Concast = (function (_super) {
     return Concast;
 }(zen_observable_ts_module/* Observable */.y));
 
+// Necessary because the Concast constructor has a different signature
+// than the Observable constructor.
 (0,subclassing/* fixObservableSubclass */.D)(Concast);
 //# sourceMappingURL=Concast.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/errors/index.js
@@ -17624,7 +18547,7 @@ var reactiveVars = __webpack_require__(6438);
 
 
 
-var LocalState = (function () {
+var LocalState = /** @class */ (function () {
     function LocalState(_a) {
         var cache = _a.cache, client = _a.client, resolvers = _a.resolvers, fragmentMatcher = _a.fragmentMatcher;
         this.selectionsToResolveCache = new WeakMap();
@@ -17658,14 +18581,18 @@ var LocalState = (function () {
     LocalState.prototype.getResolvers = function () {
         return this.resolvers || {};
     };
+    // Run local client resolvers against the incoming query and remote data.
+    // Locally resolved field values are merged with the incoming remote data,
+    // and returned. Note that locally resolved fields will overwrite
+    // remote data using the same field name.
     LocalState.prototype.runResolvers = function (_a) {
         var document = _a.document, remoteResult = _a.remoteResult, context = _a.context, variables = _a.variables, _b = _a.onlyRunForcedResolvers, onlyRunForcedResolvers = _b === void 0 ? false : _b;
         return (0,tslib_es6/* __awaiter */.mG)(this, void 0, void 0, function () {
             return (0,tslib_es6/* __generator */.Jh)(this, function (_c) {
                 if (document) {
-                    return [2, this.resolveDocument(document, remoteResult.data, context, variables, this.fragmentMatcher, onlyRunForcedResolvers).then(function (localResult) { return ((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, remoteResult), { data: localResult.result })); })];
+                    return [2 /*return*/, this.resolveDocument(document, remoteResult.data, context, variables, this.fragmentMatcher, onlyRunForcedResolvers).then(function (localResult) { return ((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, remoteResult), { data: localResult.result })); })];
                 }
-                return [2, remoteResult];
+                return [2 /*return*/, remoteResult];
             });
         });
     };
@@ -17675,6 +18602,8 @@ var LocalState = (function () {
     LocalState.prototype.getFragmentMatcher = function () {
         return this.fragmentMatcher;
     };
+    // Client queries contain everything in the incoming document (if a @client
+    // directive is found).
     LocalState.prototype.clientQuery = function (document) {
         if ((0,directives/* hasDirectives */.FS)(["client"], document)) {
             if (this.resolvers) {
@@ -17683,24 +18612,30 @@ var LocalState = (function () {
         }
         return null;
     };
+    // Server queries are stripped of all @client based selection sets.
     LocalState.prototype.serverQuery = function (document) {
         return (0,transform/* removeClientSetsFromDocument */.ob)(document);
     };
     LocalState.prototype.prepareContext = function (context) {
         var cache = this.cache;
-        return (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, context), { cache: cache, getCacheKey: function (obj) {
+        return (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, context), { cache: cache, 
+            // Getting an entry's cache key is useful for local state resolvers.
+            getCacheKey: function (obj) {
                 return cache.identify(obj);
             } });
     };
+    // To support `@client @export(as: "someVar")` syntax, we'll first resolve
+    // @client @export fields locally, then pass the resolved values back to be
+    // used alongside the original operation variables.
     LocalState.prototype.addExportedVariables = function (document, variables, context) {
         if (variables === void 0) { variables = {}; }
         if (context === void 0) { context = {}; }
         return (0,tslib_es6/* __awaiter */.mG)(this, void 0, void 0, function () {
             return (0,tslib_es6/* __generator */.Jh)(this, function (_a) {
                 if (document) {
-                    return [2, this.resolveDocument(document, this.buildRootValueFromCache(document, variables) || {}, this.prepareContext(context), variables).then(function (data) { return ((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, variables), data.exportedVariables)); })];
+                    return [2 /*return*/, this.resolveDocument(document, this.buildRootValueFromCache(document, variables) || {}, this.prepareContext(context), variables).then(function (data) { return ((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, variables), data.exportedVariables)); })];
                 }
-                return [2, (0,tslib_es6/* __assign */.pi)({}, variables)];
+                return [2 /*return*/, (0,tslib_es6/* __assign */.pi)({}, variables)];
             });
         });
     };
@@ -17724,6 +18659,7 @@ var LocalState = (function () {
         });
         return forceResolvers;
     };
+    // Query the cache and return matching data.
     LocalState.prototype.buildRootValueFromCache = function (document, variables) {
         return this.cache.diff({
             query: (0,transform/* buildQueryFromSelectionSet */.aL)(document),
@@ -17745,8 +18681,8 @@ var LocalState = (function () {
                 fragmentMap = (0,graphql_fragments/* createFragmentMap */.F)(fragments);
                 selectionsToResolve = this.collectSelectionsToResolve(mainDefinition, fragmentMap);
                 definitionOperation = mainDefinition.operation;
-                defaultOperationType = definitionOperation
-                    ? definitionOperation.charAt(0).toUpperCase() +
+                defaultOperationType = definitionOperation ?
+                    definitionOperation.charAt(0).toUpperCase() +
                         definitionOperation.slice(1)
                     : "Query";
                 _a = this, cache = _a.cache, client = _a.client;
@@ -17761,7 +18697,7 @@ var LocalState = (function () {
                     onlyRunForcedResolvers: onlyRunForcedResolvers,
                 };
                 isClientFieldDescendant = false;
-                return [2, this.resolveSelectionSet(mainDefinition.selectionSet, isClientFieldDescendant, rootValue, execContext).then(function (result) { return ({
+                return [2 /*return*/, this.resolveSelectionSet(mainDefinition.selectionSet, isClientFieldDescendant, rootValue, execContext).then(function (result) { return ({
                         result: result,
                         exportedVariables: execContext.exportedVariables,
                     }); })];
@@ -17780,13 +18716,16 @@ var LocalState = (function () {
                     return (0,tslib_es6/* __generator */.Jh)(this, function (_a) {
                         if (!isClientFieldDescendant &&
                             !execContext.selectionsToResolve.has(selection)) {
-                            return [2];
+                            // Skip selections without @client directives
+                            // (still processing if one of the ancestors or one of the child fields has @client directive)
+                            return [2 /*return*/];
                         }
                         if (!(0,directives/* shouldInclude */.LZ)(selection, variables)) {
-                            return [2];
+                            // Skip this entirely.
+                            return [2 /*return*/];
                         }
                         if ((0,storeUtils/* isField */.My)(selection)) {
-                            return [2, this.resolveField(selection, isClientFieldDescendant, rootValue, execContext).then(function (fieldResult) {
+                            return [2 /*return*/, this.resolveField(selection, isClientFieldDescendant, rootValue, execContext).then(function (fieldResult) {
                                     var _a;
                                     if (typeof fieldResult !== "undefined") {
                                         resultsToMerge.push((_a = {},
@@ -17799,21 +18738,22 @@ var LocalState = (function () {
                             fragment = selection;
                         }
                         else {
+                            // This is a named fragment.
                             fragment = fragmentMap[selection.name.value];
                             (0,globals/* invariant */.kG)(fragment, 18, selection.name.value);
                         }
                         if (fragment && fragment.typeCondition) {
                             typeCondition = fragment.typeCondition.name.value;
                             if (execContext.fragmentMatcher(rootValue, typeCondition, context)) {
-                                return [2, this.resolveSelectionSet(fragment.selectionSet, isClientFieldDescendant, rootValue, execContext).then(function (fragmentResult) {
+                                return [2 /*return*/, this.resolveSelectionSet(fragment.selectionSet, isClientFieldDescendant, rootValue, execContext).then(function (fragmentResult) {
                                         resultsToMerge.push(fragmentResult);
                                     })];
                             }
                         }
-                        return [2];
+                        return [2 /*return*/];
                     });
                 }); };
-                return [2, Promise.all(selectionSet.selections.map(execute)).then(function () {
+                return [2 /*return*/, Promise.all(selectionSet.selections.map(execute)).then(function () {
                         return (0,mergeDeep/* mergeDeepArray */.bw)(resultsToMerge);
                     })];
             });
@@ -17825,7 +18765,7 @@ var LocalState = (function () {
             var _this = this;
             return (0,tslib_es6/* __generator */.Jh)(this, function (_a) {
                 if (!rootValue) {
-                    return [2, null];
+                    return [2 /*return*/, null];
                 }
                 variables = execContext.variables;
                 fieldName = field.name.value;
@@ -17833,6 +18773,10 @@ var LocalState = (function () {
                 aliasUsed = fieldName !== aliasedFieldName;
                 defaultResult = rootValue[aliasedFieldName] || rootValue[fieldName];
                 resultPromise = Promise.resolve(defaultResult);
+                // Usually all local resolvers are run when passing through here, but
+                // if we've specifically identified that we only want to run forced
+                // resolvers (that is, resolvers for fields marked with
+                // `@client(always: true)`), then we'll skip running non-forced resolvers.
                 if (!execContext.onlyRunForcedResolvers ||
                     this.shouldForceResolvers(field)) {
                     resolverType = rootValue.__typename || execContext.defaultOperationType;
@@ -17840,7 +18784,10 @@ var LocalState = (function () {
                     if (resolverMap) {
                         resolve = resolverMap[aliasUsed ? fieldName : aliasedFieldName];
                         if (resolve) {
-                            resultPromise = Promise.resolve(reactiveVars/* cacheSlot */.ab.withValue(this.cache, resolve, [
+                            resultPromise = Promise.resolve(
+                            // In case the resolve function accesses reactive variables,
+                            // set cacheSlot to the current cache instance.
+                            reactiveVars/* cacheSlot */.ab.withValue(this.cache, resolve, [
                                 rootValue,
                                 (0,storeUtils/* argumentsObjectFromField */.NC)(field, variables),
                                 execContext.context,
@@ -17849,9 +18796,11 @@ var LocalState = (function () {
                         }
                     }
                 }
-                return [2, resultPromise.then(function (result) {
+                return [2 /*return*/, resultPromise.then(function (result) {
                         var _a, _b;
                         if (result === void 0) { result = defaultResult; }
+                        // If an @export directive is associated with the current field, store
+                        // the `as` export variable name and current result for later use.
                         if (field.directives) {
                             field.directives.forEach(function (directive) {
                                 if (directive.name.value === "export" && directive.arguments) {
@@ -17863,16 +18812,21 @@ var LocalState = (function () {
                                 }
                             });
                         }
+                        // Handle all scalar types here.
                         if (!field.selectionSet) {
                             return result;
                         }
+                        // From here down, the field has a selection set, which means it's trying
+                        // to query a GraphQLObjectType.
                         if (result == null) {
+                            // Basically any field in a GraphQL response can be null, or missing
                             return result;
                         }
                         var isClientField = (_b = (_a = field.directives) === null || _a === void 0 ? void 0 : _a.some(function (d) { return d.name.value === "client"; })) !== null && _b !== void 0 ? _b : false;
                         if (Array.isArray(result)) {
                             return _this.resolveSubSelectedArray(field, isClientFieldDescendant || isClientField, result, execContext);
                         }
+                        // Returned value is an object, and the query has a sub-selection. Recurse.
                         if (field.selectionSet) {
                             return _this.resolveSelectionSet(field.selectionSet, isClientFieldDescendant || isClientField, result, execContext);
                         }
@@ -17886,14 +18840,19 @@ var LocalState = (function () {
             if (item === null) {
                 return null;
             }
+            // This is a nested array, recurse.
             if (Array.isArray(item)) {
                 return _this.resolveSubSelectedArray(field, isClientFieldDescendant, item, execContext);
             }
+            // This is an object, run the selection set on it.
             if (field.selectionSet) {
                 return _this.resolveSelectionSet(field.selectionSet, isClientFieldDescendant, item, execContext);
             }
         }));
     };
+    // Collect selection nodes on paths from document root down to all @client directives.
+    // This function takes into account transitive fragment spreads.
+    // Complexity equals to a single `visit` over the full document.
     LocalState.prototype.collectSelectionsToResolve = function (mainDefinition, fragmentMap) {
         var isSingleASTNode = function (node) { return !Array.isArray(node); };
         var selectionsToResolveCache = this.selectionsToResolveCache;
@@ -17916,6 +18875,8 @@ var LocalState = (function () {
                         (0,globals/* invariant */.kG)(fragment, 19, spread.name.value);
                         var fragmentSelections = collectByDefinition(fragment);
                         if (fragmentSelections.size > 0) {
+                            // Fragment for this spread contains @client directive (either directly or transitively)
+                            // Collect selection nodes on paths from the root down to fields with the @client directive
                             ancestors.forEach(function (node) {
                                 if (isSingleASTNode(node) && isSelectionNode(node)) {
                                     matches_1.add(node);
@@ -17950,7 +18911,13 @@ function wrapDestructiveCacheMethod(cache, methodName) {
     var original = cache[methodName];
     if (typeof original === "function") {
         cache[methodName] = function () {
-            destructiveMethodCounts.set(cache, (destructiveMethodCounts.get(cache) + 1) % 1e15);
+            destructiveMethodCounts.set(cache, 
+            // The %1e15 allows the count to wrap around to 0 safely every
+            // quadrillion evictions, so there's no risk of overflow. To be
+            // clear, this is more of a pedantic principle than something
+            // that matters in any conceivable practical scenario.
+            (destructiveMethodCounts.get(cache) + 1) % 1e15);
+            // @ts-expect-error this is just too generic to be typed correctly
             return original.apply(this, arguments);
         };
     }
@@ -17961,7 +18928,19 @@ function cancelNotifyTimeout(info) {
         info["notifyTimeout"] = void 0;
     }
 }
-var QueryInfo = (function () {
+// A QueryInfo object represents a single query managed by the
+// QueryManager, which tracks all QueryInfo objects by queryId in its
+// this.queries Map. QueryInfo objects store the latest results and errors
+// for the given query, and are responsible for reporting those results to
+// the corresponding ObservableQuery, via the QueryInfo.notify method.
+// Results are reported asynchronously whenever setDiff marks the
+// QueryInfo object as dirty, though a call to the QueryManager's
+// broadcastQueries method may trigger the notification before it happens
+// automatically. This class used to be a simple interface type without
+// any field privacy or meaningful methods, which is why it still has so
+// many public fields. The effort to lock down and simplify the QueryInfo
+// interface is ongoing, and further improvements are welcome.
+var QueryInfo = /** @class */ (function () {
     function QueryInfo(queryManager, queryId) {
         if (queryId === void 0) { queryId = queryManager.generateQueryId(); }
         this.queryId = queryId;
@@ -17972,6 +18951,11 @@ var QueryInfo = (function () {
         this.dirty = false;
         this.observableQuery = null;
         var cache = (this.cache = queryManager.cache);
+        // Track how often cache.evict is called, since we want eviction to
+        // override the feud-stopping logic in the markResult method, by
+        // causing shouldWrite to return true. Wrapping the cache.evict method
+        // is a bit of a hack, but it saves us from having to make eviction
+        // counting an official part of the ApolloCache API.
         if (!destructiveMethodCounts.has(cache)) {
             destructiveMethodCounts.set(cache, 0);
             wrapDestructiveCacheMethod(cache, "evict");
@@ -18023,12 +19007,13 @@ var QueryInfo = (function () {
         return diff;
     };
     QueryInfo.prototype.updateLastDiff = function (diff, options) {
-        this.lastDiff = diff
-            ? {
-                diff: diff,
-                options: options || this.getDiffOptions(),
-            }
-            : void 0;
+        this.lastDiff =
+            diff ?
+                {
+                    diff: diff,
+                    options: options || this.getDiffOptions(),
+                }
+                : void 0;
     };
     QueryInfo.prototype.getDiffOptions = function (variables) {
         var _a;
@@ -18065,9 +19050,22 @@ var QueryInfo = (function () {
             this.listeners.add((this.oqListener = function () {
                 var diff = _this.getDiff();
                 if (diff.fromOptimisticTransaction) {
+                    // If this diff came from an optimistic transaction, deliver the
+                    // current cache data to the ObservableQuery, but don't perform a
+                    // reobservation, since oq.reobserveCacheFirst might make a network
+                    // request, and we never want to trigger network requests in the
+                    // middle of optimistic updates.
                     oq["observe"]();
                 }
                 else {
+                    // Otherwise, make the ObservableQuery "reobserve" the latest data
+                    // using a temporary fetch policy of "cache-first", so complete cache
+                    // results have a chance to be delivered without triggering additional
+                    // network requests, even when options.fetchPolicy is "network-only"
+                    // or "cache-and-network". All other fetch policies are preserved by
+                    // this method, and are handled by calling oq.reobserve(). If this
+                    // reobservation is spurious, isDifferentFromLastResult still has a
+                    // chance to catch it before delivery to ObservableQuery subscribers.
                     (0,ObservableQuery/* reobserveCacheFirst */.vj)(oq);
                 }
             }));
@@ -18099,14 +19097,19 @@ var QueryInfo = (function () {
     QueryInfo.prototype.stop = function () {
         if (!this.stopped) {
             this.stopped = true;
+            // Cancel the pending notify timeout
             this.reset();
             this.cancel();
+            // Revert back to the no-op version of cancel inherited from
+            // QueryInfo.prototype.
             this.cancel = QueryInfo.prototype.cancel;
             var oq = this.observableQuery;
             if (oq)
                 oq.stopPolling();
         }
     };
+    // This method is a no-op by default, until/unless overridden by the
+    // updateWatch method.
     QueryInfo.prototype.cancel = function () { };
     QueryInfo.prototype.updateWatch = function (variables) {
         var _this = this;
@@ -18127,6 +19130,9 @@ var QueryInfo = (function () {
     QueryInfo.prototype.shouldWrite = function (result, variables) {
         var lastWrite = this.lastWrite;
         return !(lastWrite &&
+            // If cache.evict has been called since the last time we wrote this
+            // data into the cache, there's a chance writing this result into
+            // the cache will repair what was evicted.
             lastWrite.dmCount === destructiveMethodCounts.get(this.cache) &&
             (0,lib/* equal */.D)(variables, lastWrite.variables) &&
             (0,lib/* equal */.D)(result.data, lastWrite.result.data));
@@ -18134,13 +19140,18 @@ var QueryInfo = (function () {
     QueryInfo.prototype.markResult = function (result, document, options, cacheWriteBehavior) {
         var _this = this;
         var merger = new mergeDeep/* DeepMerger */.w0();
-        var graphQLErrors = (0,arrays/* isNonEmptyArray */.O)(result.errors)
-            ? result.errors.slice(0)
-            : [];
+        var graphQLErrors = (0,arrays/* isNonEmptyArray */.O)(result.errors) ? result.errors.slice(0) : [];
+        // Cancel the pending notify timeout (if it exists) to prevent extraneous network
+        // requests. To allow future notify timeouts, diff and dirty are reset as well.
         this.reset();
         if ("incremental" in result && (0,arrays/* isNonEmptyArray */.O)(result.incremental)) {
             var mergedData = (0,incrementalResult/* mergeIncrementalData */.mT)(this.getDiff().result, result);
             result.data = mergedData;
+            // Detect the first chunk of a deferred query and merge it with existing
+            // cache data. This ensures a `cache-first` fetch policy that returns
+            // partial cache data or a `cache-and-network` fetch policy that already
+            // has full data in the cache does not complain when trying to merge the
+            // initial deferred server data with existing cache data.
         }
         else if ("hasNext" in result && result.hasNext) {
             var diff = this.getDiff();
@@ -18150,15 +19161,19 @@ var QueryInfo = (function () {
         if (options.fetchPolicy === "no-cache") {
             this.updateLastDiff({ result: result.data, complete: true }, this.getDiffOptions(options.variables));
         }
-        else if (cacheWriteBehavior !== 0) {
+        else if (cacheWriteBehavior !== 0 /* CacheWriteBehavior.FORBID */) {
             if (shouldWriteResult(result, options.errorPolicy)) {
+                // Using a transaction here so we have a chance to read the result
+                // back from the cache before the watch callback fires as a result
+                // of writeQuery, so we can store the new diff quietly and ignore
+                // it when we receive it redundantly from the watch callback.
                 this.cache.performTransaction(function (cache) {
                     if (_this.shouldWrite(result, options.variables)) {
                         cache.writeQuery({
                             query: document,
                             data: result.data,
                             variables: options.variables,
-                            overwrite: cacheWriteBehavior === 1,
+                            overwrite: cacheWriteBehavior === 1 /* CacheWriteBehavior.OVERWRITE */,
                         });
                         _this.lastWrite = {
                             result: result,
@@ -18167,16 +19182,65 @@ var QueryInfo = (function () {
                         };
                     }
                     else {
+                        // If result is the same as the last result we received from
+                        // the network (and the variables match too), avoid writing
+                        // result into the cache again. The wisdom of skipping this
+                        // cache write is far from obvious, since any cache write
+                        // could be the one that puts the cache back into a desired
+                        // state, fixing corruption or missing data. However, if we
+                        // always write every network result into the cache, we enable
+                        // feuds between queries competing to update the same data in
+                        // incompatible ways, which can lead to an endless cycle of
+                        // cache broadcasts and useless network requests. As with any
+                        // feud, eventually one side must step back from the brink,
+                        // letting the other side(s) have the last word(s). There may
+                        // be other points where we could break this cycle, such as
+                        // silencing the broadcast for cache.writeQuery (not a good
+                        // idea, since it just delays the feud a bit) or somehow
+                        // avoiding the network request that just happened (also bad,
+                        // because the server could return useful new data). All
+                        // options considered, skipping this cache write seems to be
+                        // the least damaging place to break the cycle, because it
+                        // reflects the intuition that we recently wrote this exact
+                        // result into the cache, so the cache *should* already/still
+                        // contain this data. If some other query has clobbered that
+                        // data in the meantime, that's too bad, but there will be no
+                        // winners if every query blindly reverts to its own version
+                        // of the data. This approach also gives the network a chance
+                        // to return new data, which will be written into the cache as
+                        // usual, notifying only those queries that are directly
+                        // affected by the cache updates, as usual. In the future, an
+                        // even more sophisticated cache could perhaps prevent or
+                        // mitigate the clobbering somehow, but that would make this
+                        // particular cache write even less important, and thus
+                        // skipping it would be even safer than it is today.
                         if (_this.lastDiff && _this.lastDiff.diff.complete) {
+                            // Reuse data from the last good (complete) diff that we
+                            // received, when possible.
                             result.data = _this.lastDiff.diff.result;
                             return;
                         }
+                        // If the previous this.diff was incomplete, fall through to
+                        // re-reading the latest data with cache.diff, below.
                     }
                     var diffOptions = _this.getDiffOptions(options.variables);
                     var diff = cache.diff(diffOptions);
+                    // In case the QueryManager stops this QueryInfo before its
+                    // results are delivered, it's important to avoid restarting the
+                    // cache watch when markResult is called. We also avoid updating
+                    // the watch if we are writing a result that doesn't match the current
+                    // variables to avoid race conditions from broadcasting the wrong
+                    // result.
                     if (!_this.stopped && (0,lib/* equal */.D)(_this.variables, options.variables)) {
+                        // Any time we're about to update this.diff, we need to make
+                        // sure we've started watching the cache.
                         _this.updateWatch(options.variables);
                     }
+                    // If we're allowed to write to the cache, and we can read a
+                    // complete result from the cache, update result.data to be the
+                    // result from the cache, rather than the raw network result.
+                    // Set without setDiff to avoid triggering a notify call, since
+                    // we have other ways of notifying for this result.
                     _this.updateLastDiff(diff, diffOptions);
                     if (diff.complete) {
                         result.data = diff.result;
@@ -18236,19 +19300,29 @@ var print = __webpack_require__(8470);
 
 
 var QueryManager_hasOwnProperty = Object.prototype.hasOwnProperty;
-var QueryManager = (function () {
+var QueryManager = /** @class */ (function () {
     function QueryManager(_a) {
-        var _this = this;
         var cache = _a.cache, link = _a.link, defaultOptions = _a.defaultOptions, documentTransform = _a.documentTransform, _b = _a.queryDeduplication, queryDeduplication = _b === void 0 ? false : _b, onBroadcast = _a.onBroadcast, _c = _a.ssrMode, ssrMode = _c === void 0 ? false : _c, _d = _a.clientAwareness, clientAwareness = _d === void 0 ? {} : _d, localState = _a.localState, _e = _a.assumeImmutableResults, assumeImmutableResults = _e === void 0 ? !!cache.assumeImmutableResults : _e;
+        var _this = this;
         this.clientAwareness = {};
+        // All the queries that the QueryManager is currently managing (not
+        // including mutations and subscriptions).
         this.queries = new Map();
+        // Maps from queryId strings to Promise rejection functions for
+        // currently active queries and fetches.
+        // Use protected instead of private field so
+        // @apollo/experimental-nextjs-app-support can access type info.
         this.fetchCancelFns = new Map();
         this.transformCache = new (canUse/* canUseWeakMap */.mr ? WeakMap : Map)();
         this.queryIdCounter = 1;
         this.requestIdCounter = 1;
         this.mutationIdCounter = 1;
+        // Use protected instead of private field so
+        // @apollo/experimental-nextjs-app-support can access type info.
         this.inFlightLinkObservables = new Map();
-        var defaultDocumentTransform = new DocumentTransform/* DocumentTransform */.A(function (document) { return _this.cache.transformDocument(document); }, { cache: false });
+        var defaultDocumentTransform = new DocumentTransform/* DocumentTransform */.A(function (document) { return _this.cache.transformDocument(document); }, 
+        // Allow the apollo cache to manage its own transform caches
+        { cache: false });
         this.cache = cache;
         this.link = link;
         this.defaultOptions = defaultOptions || Object.create(null);
@@ -18257,15 +19331,24 @@ var QueryManager = (function () {
         this.localState = localState || new LocalState({ cache: cache });
         this.ssrMode = ssrMode;
         this.assumeImmutableResults = assumeImmutableResults;
-        this.documentTransform = documentTransform
-            ? defaultDocumentTransform
-                .concat(documentTransform)
-                .concat(defaultDocumentTransform)
-            : defaultDocumentTransform;
+        this.documentTransform =
+            documentTransform ?
+                defaultDocumentTransform
+                    .concat(documentTransform)
+                    // The custom document transform may add new fragment spreads or new
+                    // field selections, so we want to give the cache a chance to run
+                    // again. For example, the InMemoryCache adds __typename to field
+                    // selections and fragments from the fragment registry.
+                    .concat(defaultDocumentTransform)
+                : defaultDocumentTransform;
         if ((this.onBroadcast = onBroadcast)) {
             this.mutationStore = Object.create(null);
         }
     }
+    /**
+     * Call this method to terminate any active query processes, making it safe
+     * to dispose of this QueryManager instance.
+     */
     QueryManager.prototype.stop = function () {
         var _this = this;
         this.queries.forEach(function (_info, queryId) {
@@ -18291,8 +19374,8 @@ var QueryManager = (function () {
                         mutation = this.cache.transformForLink(this.transform(mutation));
                         hasClientExports = this.getDocumentInfo(mutation).hasClientExports;
                         variables = this.getVariables(mutation, variables);
-                        if (!hasClientExports) return [3, 2];
-                        return [4, this.localState.addExportedVariables(mutation, variables, context)];
+                        if (!hasClientExports) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.localState.addExportedVariables(mutation, variables, context)];
                     case 1:
                         variables = (_h.sent());
                         _h.label = 2;
@@ -18319,7 +19402,7 @@ var QueryManager = (function () {
                         }
                         this.broadcastQueries();
                         self = this;
-                        return [2, new Promise(function (resolve, reject) {
+                        return [2 /*return*/, new Promise(function (resolve, reject) {
                                 return asyncMap(self.getObservableFromLink(mutation, (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, context), { optimisticResponse: optimisticResponse }), variables, false), function (result) {
                                     if (graphQLResultHasError(result) && errorPolicy === "none") {
                                         throw new client_errors/* ApolloError */.cA({
@@ -18356,6 +19439,11 @@ var QueryManager = (function () {
                                 }).subscribe({
                                     next: function (storeResult) {
                                         self.broadcastQueries();
+                                        // Since mutations might receive multiple payloads from the
+                                        // ApolloLink chain (e.g. when used with @defer),
+                                        // we resolve with a SingleExecutionResult or after the final
+                                        // ExecutionPatchResult has arrived and we have assembled the
+                                        // multipart response into a single result.
                                         if (!("hasNext" in storeResult) || storeResult.hasNext === false) {
                                             resolve(storeResult);
                                         }
@@ -18369,11 +19457,9 @@ var QueryManager = (function () {
                                             self.cache.removeOptimistic(mutationId);
                                         }
                                         self.broadcastQueries();
-                                        reject(err instanceof client_errors/* ApolloError */.cA
-                                            ? err
-                                            : new client_errors/* ApolloError */.cA({
-                                                networkError: err,
-                                            }));
+                                        reject(err instanceof client_errors/* ApolloError */.cA ? err : (new client_errors/* ApolloError */.cA({
+                                            networkError: err,
+                                        })));
                                     },
                                 });
                             })];
@@ -18400,6 +19486,9 @@ var QueryManager = (function () {
                 (0,arrays/* isNonEmptyArray */.O)(result.incremental)) {
                 var diff = cache.diff({
                     id: "ROOT_MUTATION",
+                    // The cache complains if passed a mutation where it expects a
+                    // query, so we transform mutations and subscriptions to queries
+                    // (only once, thanks to this.transformCache).
                     query: this.getDocumentInfo(mutation.document).asQuery,
                     variables: mutation.variables,
                     optimistic: false,
@@ -18410,6 +19499,8 @@ var QueryManager = (function () {
                     mergedData = (0,incrementalResult/* mergeIncrementalData */.mT)(diff.result, result);
                 }
                 if (typeof mergedData !== "undefined") {
+                    // cast the ExecutionPatchResult to FetchResult here since
+                    // ExecutionPatchResult never has `data` when returned from the server
                     result.data = mergedData;
                     cacheWrites.push({
                         result: mergedData,
@@ -18429,6 +19520,7 @@ var QueryManager = (function () {
                     }
                     var updater = updateQueries_1[queryName];
                     var _b = _this.queries.get(queryId), document = _b.document, variables = _b.variables;
+                    // Read the current query result from the store.
                     var _c = cache.diff({
                         query: document,
                         variables: variables,
@@ -18436,11 +19528,13 @@ var QueryManager = (function () {
                         optimistic: false,
                     }), currentQueryResult = _c.result, complete = _c.complete;
                     if (complete && currentQueryResult) {
+                        // Run our reducer using the current query result and the mutation result.
                         var nextQueryResult = updater(currentQueryResult, {
                             mutationResult: result,
                             queryName: (document && (0,getFromAST/* getOperationName */.rY)(document)) || void 0,
                             queryVariables: variables,
                         });
+                        // Write the modified result back into the store if we got a new result.
                         if (nextQueryResult) {
                             cacheWrites.push({
                                 result: nextQueryResult,
@@ -18464,13 +19558,25 @@ var QueryManager = (function () {
                     if (!skipCache) {
                         cacheWrites.forEach(function (write) { return cache.write(write); });
                     }
+                    // If the mutation has some writes associated with it then we need to
+                    // apply those writes to the store by running this reducer again with
+                    // a write action.
                     var update = mutation.update;
+                    // Determine whether result is a SingleExecutionResult,
+                    // or the final ExecutionPatchResult.
                     var isFinalResult = !(0,incrementalResult/* isExecutionPatchResult */.M0)(result) ||
                         ((0,incrementalResult/* isExecutionPatchIncrementalResult */.GG)(result) && !result.hasNext);
                     if (update) {
                         if (!skipCache) {
+                            // Re-read the ROOT_MUTATION data we just wrote into the cache
+                            // (the first cache.write call in the cacheWrites.forEach loop
+                            // above), so field read functions have a chance to run for
+                            // fields within mutation result objects.
                             var diff = cache.diff({
                                 id: "ROOT_MUTATION",
+                                // The cache complains if passed a mutation where it expects a
+                                // query, so we transform mutations and subscriptions to queries
+                                // (only once, thanks to this.transformCache).
                                 query: _this.getDocumentInfo(mutation.document).asQuery,
                                 variables: mutation.variables,
                                 optimistic: false,
@@ -18486,6 +19592,9 @@ var QueryManager = (function () {
                                 }
                             }
                         }
+                        // If we've received the whole response,
+                        // either a SingleExecutionResult or the final ExecutionPatchResult,
+                        // call the update function.
                         if (isFinalResult) {
                             update(cache, result, {
                                 context: mutation.context,
@@ -18493,6 +19602,8 @@ var QueryManager = (function () {
                             });
                         }
                     }
+                    // TODO Do this with cache.evict({ id: 'ROOT_MUTATION' }) but make it
+                    // shallow to allow rolling back optimistic evictions.
                     if (!skipCache && !mutation.keepRootFields && isFinalResult) {
                         cache.modify({
                             id: "ROOT_MUTATION",
@@ -18504,11 +19615,21 @@ var QueryManager = (function () {
                     }
                 },
                 include: mutation.refetchQueries,
+                // Write the final mutation.result to the root layer of the cache.
                 optimistic: false,
+                // Remove the corresponding optimistic layer at the same time as we
+                // write the final non-optimistic result.
                 removeOptimistic: mutation.removeOptimistic,
+                // Let the caller of client.mutate optionally determine the refetching
+                // behavior for watched queries after the mutation.update function runs.
+                // If no onQueryUpdated function was provided for this mutation, pass
+                // null instead of undefined to disable the default refetching behavior.
                 onQueryUpdated: mutation.onQueryUpdated || null,
             }).forEach(function (result) { return results_1.push(result); });
             if (mutation.awaitRefetchQueries || mutation.onQueryUpdated) {
+                // Returning a promise here makes the mutation await that promise, so we
+                // include results in that promise's work if awaitRefetchQueries or an
+                // onQueryUpdated function was specified.
                 return Promise.all(results_1).then(function () { return result; });
             }
         }
@@ -18516,8 +19637,8 @@ var QueryManager = (function () {
     };
     QueryManager.prototype.markMutationOptimistic = function (optimisticResponse, mutation) {
         var _this = this;
-        var data = typeof optimisticResponse === "function"
-            ? optimisticResponse(mutation.variables)
+        var data = typeof optimisticResponse === "function" ?
+            optimisticResponse(mutation.variables)
             : optimisticResponse;
         return this.cache.recordOptimisticTransaction(function (cache) {
             try {
@@ -18558,6 +19679,11 @@ var QueryManager = (function () {
         var transformCache = this.transformCache;
         if (!transformCache.has(document)) {
             var cacheEntry = {
+                // TODO These three calls (hasClientExports, shouldForceResolvers, and
+                // usesNonreactiveDirective) are performing independent full traversals
+                // of the transformed document. We should consider merging these
+                // traversals into a single pass in the future, though the work is
+                // cached after the first time.
                 hasClientExports: (0,directives/* hasClientExports */.mj)(document),
                 hasForcedResolvers: this.localState.shouldForceResolvers(document),
                 hasNonreactiveDirective: (0,directives/* hasDirectives */.FS)(["nonreactive"], document),
@@ -18568,6 +19694,8 @@ var QueryManager = (function () {
                     { name: "nonreactive" },
                 ], document),
                 defaultVars: (0,getFromAST/* getDefaultValues */.O4)((0,getFromAST/* getOperationDefinition */.$H)(document)),
+                // Transform any mutation or subscription operations to query operations
+                // so we can read/write them from/to the cache.
                 asQuery: (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, document), { definitions: document.definitions.map(function (def) {
                         if (def.kind === "OperationDefinition" &&
                             def.operation !== "query") {
@@ -18585,6 +19713,9 @@ var QueryManager = (function () {
     };
     QueryManager.prototype.watchQuery = function (options) {
         var query = this.transform(options.query);
+        // assign variable default values if supplied
+        // NOTE: We don't modify options.query here with the transformed query to
+        // ensure observable.options.query is set to the raw untransformed query.
         options = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { variables: this.getVariables(query, options.variables) });
         if (typeof options.notifyOnNetworkStatusChange === "undefined") {
             options.notifyOnNetworkStatusChange = false;
@@ -18597,6 +19728,8 @@ var QueryManager = (function () {
         });
         observable["lastQuery"] = query;
         this.queries.set(observable.queryId, queryInfo);
+        // We give queryInfo the transformed query to ensure the first cache diff
+        // uses the transformed query instead of the raw query
         queryInfo.init({
             document: query,
             observableQuery: observable,
@@ -18635,9 +19768,16 @@ var QueryManager = (function () {
         if (options === void 0) { options = {
             discardWatches: true,
         }; }
+        // Before we have sent the reset action to the store, we can no longer
+        // rely on the results returned by in-flight requests since these may
+        // depend on values that previously existed in the data portion of the
+        // store. So, we cancel the promises and observers that we have issued
+        // so far and not yet resolved (in the case of queries).
         this.cancelPendingFetches((0,globals/* newInvariantError */._K)(32));
         this.queries.forEach(function (queryInfo) {
             if (queryInfo.observableQuery) {
+                // Set loading to true so listeners don't trigger unless they want
+                // results with partial data.
                 queryInfo.networkStatus = core_networkStatus/* NetworkStatus */.Ie.loading;
             }
             else {
@@ -18647,6 +19787,7 @@ var QueryManager = (function () {
         if (this.mutationStore) {
             this.mutationStore = Object.create(null);
         }
+        // begin removing data from the store
         return this.cache.reset(options);
     };
     QueryManager.prototype.getObservableQueries = function (include) {
@@ -18693,6 +19834,9 @@ var QueryManager = (function () {
         });
         if (legacyQueryOptions.size) {
             legacyQueryOptions.forEach(function (options) {
+                // We will be issuing a fresh network request for this query, so we
+                // pre-allocate a new query ID here, using a special prefix to enable
+                // cleaning up these temporary queries later, after fetching.
                 var queryId = (0,makeUniqueId/* makeUniqueId */.X)("legacyOneTimeQuery");
                 var queryInfo = _this.getQuery(queryId).init({
                     document: options.query,
@@ -18744,6 +19888,8 @@ var QueryManager = (function () {
         var makeObservable = function (variables) {
             return _this.getObservableFromLink(query, context, variables).map(function (result) {
                 if (fetchPolicy !== "no-cache") {
+                    // the subscription interface should handle not sending us results we no longer subscribe to.
+                    // XXX I don't think we ever send in an object with errors, but we might in the future...
                     if (shouldWriteResult(result, errorPolicy)) {
                         _this.cache.write({
                             query: query,
@@ -18764,6 +19910,9 @@ var QueryManager = (function () {
                     if (hasProtocolErrors) {
                         errors.protocolErrors = result.extensions[client_errors/* PROTOCOL_ERRORS_SYMBOL */.YG];
                     }
+                    // `errorPolicy` is a mechanism for handling GraphQL errors, according
+                    // to our documentation, so we throw protocol errors regardless of the
+                    // set error policy.
                     if (errorPolicy === "none" || hasProtocolErrors) {
                         throw new client_errors/* ApolloError */.cA(errors);
                     }
@@ -18795,6 +19944,11 @@ var QueryManager = (function () {
         this.removeQuery(queryId);
     };
     QueryManager.prototype.removeQuery = function (queryId) {
+        // teardown all links
+        // Both `QueryManager.fetchRequest` and `QueryManager.query` create separate promises
+        // that each add their reject functions to fetchCancelFns.
+        // A query created with `QueryManager.query()` could trigger a `QueryManager.fetchRequest`.
+        // The same queryId could have two rejection fns for two promises
         this.fetchCancelFns.delete(queryId);
         if (this.queries.has(queryId)) {
             this.getQuery(queryId).stop();
@@ -18809,7 +19963,9 @@ var QueryManager = (function () {
     QueryManager.prototype.getLocalState = function () {
         return this.localState;
     };
-    QueryManager.prototype.getObservableFromLink = function (query, context, variables, deduplication) {
+    QueryManager.prototype.getObservableFromLink = function (query, context, variables, 
+    // Prefer context.queryDeduplication if specified.
+    deduplication) {
         var _this = this;
         var _a;
         if (deduplication === void 0) { deduplication = (_a = context === null || context === void 0 ? void 0 : context.queryDeduplication) !== null && _a !== void 0 ? _a : this.queryDeduplication; }
@@ -18866,16 +20022,25 @@ var QueryManager = (function () {
     };
     QueryManager.prototype.getResultsFromLink = function (queryInfo, cacheWriteBehavior, options) {
         var requestId = (queryInfo.lastRequestId = this.generateRequestId());
+        // Performing transformForLink here gives this.cache a chance to fill in
+        // missing fragment definitions (for example) before sending this document
+        // through the link chain.
         var linkDocument = this.cache.transformForLink(options.query);
         return asyncMap(this.getObservableFromLink(linkDocument, options.context, options.variables), function (result) {
             var graphQLErrors = getGraphQLErrorsFromResult(result);
             var hasErrors = graphQLErrors.length > 0;
+            // If we interrupted this request by calling getResultsFromLink again
+            // with the same QueryInfo object, we ignore the old results.
             if (requestId >= queryInfo.lastRequestId) {
                 if (hasErrors && options.errorPolicy === "none") {
+                    // Throwing here effectively calls observer.error.
                     throw queryInfo.markError(new client_errors/* ApolloError */.cA({
                         graphQLErrors: graphQLErrors,
                     }));
                 }
+                // Use linkDocument rather than queryInfo.document so the
+                // operation/fragments used to write the result are the same as the
+                // ones used to obtain it from the link.
                 queryInfo.markResult(result, linkDocument, options, cacheWriteBehavior);
                 queryInfo.markReady();
             }
@@ -18890,16 +20055,19 @@ var QueryManager = (function () {
             }
             return aqr;
         }, function (networkError) {
-            var error = (0,client_errors/* isApolloError */.MS)(networkError)
-                ? networkError
-                : new client_errors/* ApolloError */.cA({ networkError: networkError });
+            var error = (0,client_errors/* isApolloError */.MS)(networkError) ? networkError : (new client_errors/* ApolloError */.cA({ networkError: networkError }));
+            // Avoid storing errors from older interrupted queries.
             if (requestId >= queryInfo.lastRequestId) {
                 queryInfo.markError(error);
             }
             throw error;
         });
     };
-    QueryManager.prototype.fetchConcastWithInfo = function (queryId, options, networkStatus, query) {
+    QueryManager.prototype.fetchConcastWithInfo = function (queryId, options, 
+    // The initial networkStatus for this fetch, most often
+    // NetworkStatus.loading, but also possibly fetchMore, poll, refetch,
+    // or setVariables.
+    networkStatus, query) {
         var _this = this;
         if (networkStatus === void 0) { networkStatus = core_networkStatus/* NetworkStatus */.Ie.loading; }
         if (query === void 0) { query = options.query; }
@@ -18917,26 +20085,49 @@ var QueryManager = (function () {
             context: context,
         });
         var fromVariables = function (variables) {
+            // Since normalized is always a fresh copy of options, it's safe to
+            // modify its properties here, rather than creating yet another new
+            // WatchQueryOptions object.
             normalized.variables = variables;
             var sourcesWithInfo = _this.fetchQueryByPolicy(queryInfo, normalized, networkStatus);
-            if (normalized.fetchPolicy !== "standby" &&
+            if (
+            // If we're in standby, postpone advancing options.fetchPolicy using
+            // applyNextFetchPolicy.
+            normalized.fetchPolicy !== "standby" &&
+                // The "standby" policy currently returns [] from fetchQueryByPolicy, so
+                // this is another way to detect when nothing was done/fetched.
                 sourcesWithInfo.sources.length > 0 &&
                 queryInfo.observableQuery) {
                 queryInfo.observableQuery["applyNextFetchPolicy"]("after-fetch", options);
             }
             return sourcesWithInfo;
         };
+        // This cancel function needs to be set before the concast is created,
+        // in case concast creation synchronously cancels the request.
         var cleanupCancelFn = function () { return _this.fetchCancelFns.delete(queryId); };
         this.fetchCancelFns.set(queryId, function (reason) {
             cleanupCancelFn();
+            // This delay ensures the concast variable has been initialized.
             setTimeout(function () { return concast.cancel(reason); });
         });
         var concast, containsDataFromLink;
+        // If the query has @export(as: ...) directives, then we need to
+        // process those directives asynchronously. When there are no
+        // @export directives (the common case), we deliberately avoid
+        // wrapping the result of this.fetchQueryByPolicy in a Promise,
+        // since the timing of result delivery is (unfortunately) important
+        // for backwards compatibility. TODO This code could be simpler if
+        // we deprecated and removed LocalState.
         if (this.getDocumentInfo(normalized.query).hasClientExports) {
             concast = new Concast(this.localState
                 .addExportedVariables(normalized.query, normalized.variables, normalized.context)
                 .then(fromVariables)
                 .then(function (sourcesWithInfo) { return sourcesWithInfo.sources; }));
+            // there is just no way we can synchronously get the *right* value here,
+            // so we will assume `true`, which is the behaviour before the bug fix in
+            // #10597. This means that bug is not fixed in that case, and is probably
+            // un-fixable with reasonable effort for the edge case of @export as
+            // directives.
             containsDataFromLink = true;
         }
         else {
@@ -18966,23 +20157,71 @@ var QueryManager = (function () {
         if (updateCache) {
             this.cache.batch({
                 update: updateCache,
+                // Since you can perform any combination of cache reads and/or writes in
+                // the cache.batch update function, its optimistic option can be either
+                // a boolean or a string, representing three distinct modes of
+                // operation:
+                //
+                // * false: read/write only the root layer
+                // * true: read/write the topmost layer
+                // * string: read/write a fresh optimistic layer with that ID string
+                //
+                // When typeof optimistic === "string", a new optimistic layer will be
+                // temporarily created within cache.batch with that string as its ID. If
+                // we then pass that same string as the removeOptimistic option, we can
+                // make cache.batch immediately remove the optimistic layer after
+                // running the updateCache function, triggering only one broadcast.
+                //
+                // However, the refetchQueries method accepts only true or false for its
+                // optimistic option (not string). We interpret true to mean a temporary
+                // optimistic layer should be created, to allow efficiently rolling back
+                // the effect of the updateCache function, which involves passing a
+                // string instead of true as the optimistic option to cache.batch, when
+                // refetchQueries receives optimistic: true.
+                //
+                // In other words, we are deliberately not supporting the use case of
+                // writing to an *existing* optimistic layer (using the refetchQueries
+                // updateCache function), since that would potentially interfere with
+                // other optimistic updates in progress. Instead, you can read/write
+                // only the root layer by passing optimistic: false to refetchQueries,
+                // or you can read/write a brand new optimistic layer that will be
+                // automatically removed by passing optimistic: true.
                 optimistic: (optimistic && removeOptimistic) || false,
+                // The removeOptimistic option can also be provided by itself, even if
+                // optimistic === false, to remove some previously-added optimistic
+                // layer safely and efficiently, like we do in markMutationResult.
+                //
+                // If an explicit removeOptimistic string is provided with optimistic:
+                // true, the removeOptimistic string will determine the ID of the
+                // temporary optimistic layer, in case that ever matters.
                 removeOptimistic: removeOptimistic,
                 onWatchUpdated: function (watch, diff, lastDiff) {
                     var oq = watch.watcher instanceof QueryInfo && watch.watcher.observableQuery;
                     if (oq) {
                         if (onQueryUpdated) {
+                            // Since we're about to handle this query now, remove it from
+                            // includedQueriesById, in case it was added earlier because of
+                            // options.include.
                             includedQueriesById.delete(oq.queryId);
                             var result = onQueryUpdated(oq, diff, lastDiff);
                             if (result === true) {
+                                // The onQueryUpdated function requested the default refetching
+                                // behavior by returning true.
                                 result = oq.refetch();
                             }
+                            // Record the result in the results Map, as long as onQueryUpdated
+                            // did not return false to skip/ignore this result.
                             if (result !== false) {
                                 results.set(oq, result);
                             }
+                            // Allow the default cache broadcast to happen, except when
+                            // onQueryUpdated returns false.
                             return result;
                         }
                         if (onQueryUpdated !== null) {
+                            // If we don't have an onQueryUpdated function, and onQueryUpdated
+                            // was not disabled by passing null, make sure this query is
+                            // "included" like any other options.include-specified query.
                             includedQueriesById.set(oq.queryId, { oq: oq, lastDiff: lastDiff, diff: diff });
                         }
                     }
@@ -18993,14 +20232,17 @@ var QueryManager = (function () {
             includedQueriesById.forEach(function (_a, queryId) {
                 var oq = _a.oq, lastDiff = _a.lastDiff, diff = _a.diff;
                 var result;
+                // If onQueryUpdated is provided, we want to use it for all included
+                // queries, even the QueryOptions ones.
                 if (onQueryUpdated) {
                     if (!diff) {
                         var info = oq["queryInfo"];
-                        info.reset();
+                        info.reset(); // Force info.getDiff() to read from cache.
                         diff = info.getDiff();
                     }
                     result = onQueryUpdated(oq, diff, lastDiff);
                 }
+                // Otherwise, we fall back to refetching.
                 if (!onQueryUpdated || result === true) {
                     result = oq.refetch();
                 }
@@ -19013,11 +20255,22 @@ var QueryManager = (function () {
             });
         }
         if (removeOptimistic) {
+            // In case no updateCache callback was provided (so cache.batch was not
+            // called above, and thus did not already remove the optimistic layer),
+            // remove it here. Since this is a no-op when the layer has already been
+            // removed, we do it even if we called cache.batch above, since it's
+            // possible this.cache is an instance of some ApolloCache subclass other
+            // than InMemoryCache, and does not fully support the removeOptimistic
+            // option for cache.batch.
             this.cache.removeOptimistic(removeOptimistic);
         }
         return results;
     };
-    QueryManager.prototype.fetchQueryByPolicy = function (queryInfo, _a, networkStatus) {
+    QueryManager.prototype.fetchQueryByPolicy = function (queryInfo, _a, 
+    // The initial networkStatus for this fetch, most often
+    // NetworkStatus.loading, but also possibly fetchMore, poll, refetch,
+    // or setVariables.
+    networkStatus) {
         var _this = this;
         var query = _a.query, variables = _a.variables, fetchPolicy = _a.fetchPolicy, refetchWritePolicy = _a.refetchWritePolicy, errorPolicy = _a.errorPolicy, returnPartialData = _a.returnPartialData, context = _a.context, notifyOnNetworkStatusChange = _a.notifyOnNetworkStatusChange;
         var oldNetworkStatus = queryInfo.networkStatus;
@@ -19047,6 +20300,10 @@ var QueryManager = (function () {
                 })
                     .then(function (resolved) { return fromData(resolved.data || void 0); });
             }
+            // Resolves https://github.com/apollographql/apollo-client/issues/10317.
+            // If errorPolicy is 'none' and notifyOnNetworkStatusChange is true,
+            // data was incorrectly returned from the cache on refetch:
+            // if diff.missing exists, we should not return cache data.
             if (errorPolicy === "none" &&
                 networkStatus === core_networkStatus/* NetworkStatus */.Ie.refetch &&
                 Array.isArray(diff.missing)) {
@@ -19054,13 +20311,13 @@ var QueryManager = (function () {
             }
             return fromData(data);
         };
-        var cacheWriteBehavior = fetchPolicy === "no-cache"
-            ? 0
-            :
-                networkStatus === core_networkStatus/* NetworkStatus */.Ie.refetch &&
-                    refetchWritePolicy !== "merge"
-                    ? 1
-                    : 2;
+        var cacheWriteBehavior = fetchPolicy === "no-cache" ? 0 /* CacheWriteBehavior.FORBID */
+            // Watched queries must opt into overwriting existing data on refetch,
+            // by passing refetchWritePolicy: "overwrite" in their WatchQueryOptions.
+            : (networkStatus === core_networkStatus/* NetworkStatus */.Ie.refetch &&
+                refetchWritePolicy !== "merge") ?
+                1 /* CacheWriteBehavior.OVERWRITE */
+                : 2 /* CacheWriteBehavior.MERGE */;
         var resultsFromLink = function () {
             return _this.getResultsFromLink(queryInfo, cacheWriteBehavior, {
                 query: query,
@@ -19119,6 +20376,9 @@ var QueryManager = (function () {
                 if (shouldNotify) {
                     return {
                         fromLink: true,
+                        // Note that queryInfo.getDiff() for no-cache queries does not call
+                        // cache.diff, but instead returns a { complete: false } stub result
+                        // when there is no queryInfo.diff already defined.
                         sources: [resultsFromCache(queryInfo.getDiff()), resultsFromLink()],
                     };
                 }
@@ -19153,9 +20413,45 @@ var mergeOptions = __webpack_require__(4012);
 
 
 var hasSuggestedDevtools = false;
+// Though mergeOptions now resides in @apollo/client/utilities, it was
+// previously declared and exported from this module, and then reexported from
+// @apollo/client/core. Since we need to preserve that API anyway, the easiest
+// solution is to reexport mergeOptions where it was previously declared (here).
 
 
-var ApolloClient = (function () {
+/**
+ * This is the primary Apollo Client class. It is used to send GraphQL documents (i.e. queries
+ * and mutations) to a GraphQL spec-compliant server over an {@link ApolloLink} instance,
+ * receive results from the server and cache the results in a store. It also delivers updates
+ * to GraphQL queries through {@link Observable} instances.
+ */
+var ApolloClient = /** @class */ (function () {
+    /**
+     * Constructs an instance of {@link ApolloClient}.
+     *
+     * @example
+     * ```js
+     * import { ApolloClient, InMemoryCache } from '@apollo/client';
+     *
+     * const cache = new InMemoryCache();
+     *
+     * const client = new ApolloClient({
+     *   // Provide required constructor fields
+     *   cache: cache,
+     *   uri: 'http://localhost:4000/',
+     *
+     *   // Provide some optional constructor fields
+     *   name: 'react-web-client',
+     *   version: '1.3',
+     *   queryDeduplication: false,
+     *   defaultOptions: {
+     *     watchQuery: {
+     *       fetchPolicy: 'cache-and-network',
+     *     },
+     *   },
+     * });
+     * ```
+     */
     function ApolloClient(options) {
         var _this = this;
         this.resetStoreCallbacks = [];
@@ -19163,14 +20459,21 @@ var ApolloClient = (function () {
         if (!options.cache) {
             throw (0,globals/* newInvariantError */._K)(15);
         }
-        var uri = options.uri, credentials = options.credentials, headers = options.headers, cache = options.cache, documentTransform = options.documentTransform, _a = options.ssrMode, ssrMode = _a === void 0 ? false : _a, _b = options.ssrForceFetchDelay, ssrForceFetchDelay = _b === void 0 ? 0 : _b, _c = options.connectToDevTools, connectToDevTools = _c === void 0 ? typeof window === "object" &&
+        var uri = options.uri, credentials = options.credentials, headers = options.headers, cache = options.cache, documentTransform = options.documentTransform, _a = options.ssrMode, ssrMode = _a === void 0 ? false : _a, _b = options.ssrForceFetchDelay, ssrForceFetchDelay = _b === void 0 ? 0 : _b, 
+        // Expose the client instance as window.__APOLLO_CLIENT__ and call
+        // onBroadcast in queryManager.broadcastQueries to enable browser
+        // devtools, but disable them by default in production.
+        _c = options.connectToDevTools, 
+        // Expose the client instance as window.__APOLLO_CLIENT__ and call
+        // onBroadcast in queryManager.broadcastQueries to enable browser
+        // devtools, but disable them by default in production.
+        connectToDevTools = _c === void 0 ? typeof window === "object" &&
             !window.__APOLLO_CLIENT__ &&
             globalThis.__DEV__ !== false : _c, _d = options.queryDeduplication, queryDeduplication = _d === void 0 ? true : _d, defaultOptions = options.defaultOptions, _e = options.assumeImmutableResults, assumeImmutableResults = _e === void 0 ? cache.assumeImmutableResults : _e, resolvers = options.resolvers, typeDefs = options.typeDefs, fragmentMatcher = options.fragmentMatcher, clientAwarenessName = options.name, clientAwarenessVersion = options.version;
         var link = options.link;
         if (!link) {
-            link = uri
-                ? new HttpLink/* HttpLink */.u({ uri: uri, credentials: credentials, headers: headers })
-                : ApolloLink/* ApolloLink */.i.empty();
+            link =
+                uri ? new HttpLink/* HttpLink */.u({ uri: uri, credentials: credentials, headers: headers }) : ApolloLink/* ApolloLink */.i.empty();
         }
         this.link = link;
         this.cache = cache;
@@ -19206,8 +20509,8 @@ var ApolloClient = (function () {
             },
             localState: this.localState,
             assumeImmutableResults: assumeImmutableResults,
-            onBroadcast: connectToDevTools
-                ? function () {
+            onBroadcast: connectToDevTools ?
+                function () {
                     if (_this.devToolsHookCb) {
                         _this.devToolsHookCb({
                             action: {},
@@ -19232,6 +20535,9 @@ var ApolloClient = (function () {
                 windowWithDevTools[devtoolsSymbol] || []).push(this);
             windowWithDevTools.__APOLLO_CLIENT__ = this;
         }
+        /**
+         * Suggest installing the devtools for developers who don't have them
+         */
         if (!hasSuggestedDevtools && globalThis.__DEV__ !== false) {
             hasSuggestedDevtools = true;
             setTimeout(function () {
@@ -19262,19 +20568,48 @@ var ApolloClient = (function () {
         }
     };
     Object.defineProperty(ApolloClient.prototype, "documentTransform", {
+        /**
+         * The `DocumentTransform` used to modify GraphQL documents before a request
+         * is made. If a custom `DocumentTransform` is not provided, this will be the
+         * default document transform.
+         */
         get: function () {
             return this.queryManager.documentTransform;
         },
         enumerable: false,
         configurable: true
     });
+    /**
+     * Call this method to terminate any active client processes, making it safe
+     * to dispose of this `ApolloClient` instance.
+     */
     ApolloClient.prototype.stop = function () {
         this.queryManager.stop();
     };
+    /**
+     * This watches the cache store of the query according to the options specified and
+     * returns an {@link ObservableQuery}. We can subscribe to this {@link ObservableQuery} and
+     * receive updated results through a GraphQL observer when the cache store changes.
+     *
+     * Note that this method is not an implementation of GraphQL subscriptions. Rather,
+     * it uses Apollo's store in order to reactively deliver updates to your query results.
+     *
+     * For example, suppose you call watchQuery on a GraphQL query that fetches a person's
+     * first and last name and this person has a particular object identifier, provided by
+     * dataIdFromObject. Later, a different query fetches that same person's
+     * first and last name and the first name has now changed. Then, any observers associated
+     * with the results of the first query will be updated with a new result object.
+     *
+     * Note that if the cache does not change, the subscriber will *not* be notified.
+     *
+     * See [here](https://medium.com/apollo-stack/the-concepts-of-graphql-bc68bd819be3#.3mb0cbcmc) for
+     * a description of store reactivity.
+     */
     ApolloClient.prototype.watchQuery = function (options) {
         if (this.defaultOptions.watchQuery) {
             options = (0,mergeOptions/* mergeOptions */.J)(this.defaultOptions.watchQuery, options);
         }
+        // XXX Overwriting options is probably not the best way to do this long term...
         if (this.disableNetworkFetches &&
             (options.fetchPolicy === "network-only" ||
                 options.fetchPolicy === "cache-and-network")) {
@@ -19282,6 +20617,15 @@ var ApolloClient = (function () {
         }
         return this.queryManager.watchQuery(options);
     };
+    /**
+     * This resolves a single query according to the options specified and
+     * returns a `Promise` which is either resolved with the resulting data
+     * or rejected with an error.
+     *
+     * @param options - An object of type {@link QueryOptions} that allows us to
+     * describe how this query should be treated e.g. whether it should hit the
+     * server at all or just resolve from the cache, etc.
+     */
     ApolloClient.prototype.query = function (options) {
         if (this.defaultOptions.query) {
             options = (0,mergeOptions/* mergeOptions */.J)(this.defaultOptions.query, options);
@@ -19292,23 +20636,62 @@ var ApolloClient = (function () {
         }
         return this.queryManager.query(options);
     };
+    /**
+     * This resolves a single mutation according to the options specified and returns a
+     * Promise which is either resolved with the resulting data or rejected with an
+     * error.
+     *
+     * It takes options as an object with the following keys and values:
+     */
     ApolloClient.prototype.mutate = function (options) {
         if (this.defaultOptions.mutate) {
             options = (0,mergeOptions/* mergeOptions */.J)(this.defaultOptions.mutate, options);
         }
         return this.queryManager.mutate(options);
     };
+    /**
+     * This subscribes to a graphql subscription according to the options specified and returns an
+     * {@link Observable} which either emits received data or an error.
+     */
     ApolloClient.prototype.subscribe = function (options) {
         return this.queryManager.startGraphQLSubscription(options);
     };
+    /**
+     * Tries to read some data from the store in the shape of the provided
+     * GraphQL query without making a network request. This method will start at
+     * the root query. To start at a specific id returned by `dataIdFromObject`
+     * use `readFragment`.
+     *
+     * @param optimistic - Set to `true` to allow `readQuery` to return
+     * optimistic results. Is `false` by default.
+     */
     ApolloClient.prototype.readQuery = function (options, optimistic) {
         if (optimistic === void 0) { optimistic = false; }
         return this.cache.readQuery(options, optimistic);
     };
+    /**
+     * Tries to read some data from the store in the shape of the provided
+     * GraphQL fragment without making a network request. This method will read a
+     * GraphQL fragment from any arbitrary id that is currently cached, unlike
+     * `readQuery` which will only read from the root query.
+     *
+     * You must pass in a GraphQL document with a single fragment or a document
+     * with multiple fragments that represent what you are reading. If you pass
+     * in a document with multiple fragments then you must also specify a
+     * `fragmentName`.
+     *
+     * @param optimistic - Set to `true` to allow `readFragment` to return
+     * optimistic results. Is `false` by default.
+     */
     ApolloClient.prototype.readFragment = function (options, optimistic) {
         if (optimistic === void 0) { optimistic = false; }
         return this.cache.readFragment(options, optimistic);
     };
+    /**
+     * Writes some data in the shape of the provided GraphQL query directly to
+     * the store. This method will start at the root query. To start at a
+     * specific id returned by `dataIdFromObject` then use `writeFragment`.
+     */
     ApolloClient.prototype.writeQuery = function (options) {
         var ref = this.cache.writeQuery(options);
         if (options.broadcast !== false) {
@@ -19316,6 +20699,17 @@ var ApolloClient = (function () {
         }
         return ref;
     };
+    /**
+     * Writes some data in the shape of the provided GraphQL fragment directly to
+     * the store. This method will write to a GraphQL fragment from any arbitrary
+     * id that is currently cached, unlike `writeQuery` which will only write
+     * from the root query.
+     *
+     * You must pass in a GraphQL document with a single fragment or a document
+     * with multiple fragments that represent what you are writing. If you pass
+     * in a document with multiple fragments then you must also specify a
+     * `fragmentName`.
+     */
     ApolloClient.prototype.writeFragment = function (options) {
         var ref = this.cache.writeFragment(options);
         if (options.broadcast !== false) {
@@ -19329,6 +20723,22 @@ var ApolloClient = (function () {
     ApolloClient.prototype.__requestRaw = function (payload) {
         return (0,execute/* execute */.h)(this.link, payload);
     };
+    /**
+     * Resets your entire store by clearing out your cache and then re-executing
+     * all of your active queries. This makes it so that you may guarantee that
+     * there is no data left in your store from a time before you called this
+     * method.
+     *
+     * `resetStore()` is useful when your user just logged out. You’ve removed the
+     * user session, and you now want to make sure that any references to data you
+     * might have fetched while the user session was active is gone.
+     *
+     * It is important to remember that `resetStore()` *will* refetch any active
+     * queries. This means that any components that might be mounted will execute
+     * their queries again using your network interface. If you do not want to
+     * re-execute any queries then you should make sure to stop watching any
+     * active queries.
+     */
     ApolloClient.prototype.resetStore = function () {
         var _this = this;
         return Promise.resolve()
@@ -19340,6 +20750,10 @@ var ApolloClient = (function () {
             .then(function () { return Promise.all(_this.resetStoreCallbacks.map(function (fn) { return fn(); })); })
             .then(function () { return _this.reFetchObservableQueries(); });
     };
+    /**
+     * Remove all data from the store. Unlike `resetStore`, `clearStore` will
+     * not refetch any active queries.
+     */
     ApolloClient.prototype.clearStore = function () {
         var _this = this;
         return Promise.resolve()
@@ -19350,6 +20764,11 @@ var ApolloClient = (function () {
         })
             .then(function () { return Promise.all(_this.clearStoreCallbacks.map(function (fn) { return fn(); })); });
     };
+    /**
+     * Allows callbacks to be registered that are executed when the store is
+     * reset. `onResetStore` returns an unsubscribe function that can be used
+     * to remove registered callbacks.
+     */
     ApolloClient.prototype.onResetStore = function (cb) {
         var _this = this;
         this.resetStoreCallbacks.push(cb);
@@ -19357,6 +20776,11 @@ var ApolloClient = (function () {
             _this.resetStoreCallbacks = _this.resetStoreCallbacks.filter(function (c) { return c !== cb; });
         };
     };
+    /**
+     * Allows callbacks to be registered that are executed when the store is
+     * cleared. `onClearStore` returns an unsubscribe function that can be used
+     * to remove registered callbacks.
+     */
     ApolloClient.prototype.onClearStore = function (cb) {
         var _this = this;
         this.clearStoreCallbacks.push(cb);
@@ -19364,9 +20788,32 @@ var ApolloClient = (function () {
             _this.clearStoreCallbacks = _this.clearStoreCallbacks.filter(function (c) { return c !== cb; });
         };
     };
+    /**
+     * Refetches all of your active queries.
+     *
+     * `reFetchObservableQueries()` is useful if you want to bring the client back to proper state in case of a network outage
+     *
+     * It is important to remember that `reFetchObservableQueries()` *will* refetch any active
+     * queries. This means that any components that might be mounted will execute
+     * their queries again using your network interface. If you do not want to
+     * re-execute any queries then you should make sure to stop watching any
+     * active queries.
+     * Takes optional parameter `includeStandby` which will include queries in standby-mode when refetching.
+     */
     ApolloClient.prototype.reFetchObservableQueries = function (includeStandby) {
         return this.queryManager.reFetchObservableQueries(includeStandby);
     };
+    /**
+     * Refetches specified active queries. Similar to "reFetchObservableQueries()" but with a specific list of queries.
+     *
+     * `refetchQueries()` is useful for use cases to imperatively refresh a selection of queries.
+     *
+     * It is important to remember that `refetchQueries()` *will* refetch specified active
+     * queries. This means that any components that might be mounted will execute
+     * their queries again using your network interface. If you do not want to
+     * re-execute any queries then you should make sure to stop watching any
+     * active queries.
+     */
     ApolloClient.prototype.refetchQueries = function (options) {
         var map = this.queryManager.refetchQueries(options);
         var queries = [];
@@ -19376,35 +20823,76 @@ var ApolloClient = (function () {
             results.push(result);
         });
         var result = Promise.all(results);
+        // In case you need the raw results immediately, without awaiting
+        // Promise.all(results):
         result.queries = queries;
         result.results = results;
+        // If you decide to ignore the result Promise because you're using
+        // result.queries and result.results instead, you shouldn't have to worry
+        // about preventing uncaught rejections for the Promise.all result.
         result.catch(function (error) {
             globalThis.__DEV__ !== false && globals/* invariant */.kG.debug(17, error);
         });
         return result;
     };
+    /**
+     * Get all currently active `ObservableQuery` objects, in a `Map` keyed by
+     * query ID strings.
+     *
+     * An "active" query is one that has observers and a `fetchPolicy` other than
+     * "standby" or "cache-only".
+     *
+     * You can include all `ObservableQuery` objects (including the inactive ones)
+     * by passing "all" instead of "active", or you can include just a subset of
+     * active queries by passing an array of query names or DocumentNode objects.
+     */
     ApolloClient.prototype.getObservableQueries = function (include) {
         if (include === void 0) { include = "active"; }
         return this.queryManager.getObservableQueries(include);
     };
+    /**
+     * Exposes the cache's complete state, in a serializable format for later restoration.
+     */
     ApolloClient.prototype.extract = function (optimistic) {
         return this.cache.extract(optimistic);
     };
+    /**
+     * Replaces existing state in the cache (if any) with the values expressed by
+     * `serializedState`.
+     *
+     * Called when hydrating a cache (server side rendering, or offline storage),
+     * and also (potentially) during hot reloads.
+     */
     ApolloClient.prototype.restore = function (serializedState) {
         return this.cache.restore(serializedState);
     };
+    /**
+     * Add additional local resolvers.
+     */
     ApolloClient.prototype.addResolvers = function (resolvers) {
         this.localState.addResolvers(resolvers);
     };
+    /**
+     * Set (override existing) local resolvers.
+     */
     ApolloClient.prototype.setResolvers = function (resolvers) {
         this.localState.setResolvers(resolvers);
     };
+    /**
+     * Get all registered local resolvers.
+     */
     ApolloClient.prototype.getResolvers = function () {
         return this.localState.getResolvers();
     };
+    /**
+     * Set a custom local state fragment matcher.
+     */
     ApolloClient.prototype.setLocalStateFragmentMatcher = function (fragmentMatcher) {
         this.localState.setFragmentMatcher(fragmentMatcher);
     };
+    /**
+     * Define a new ApolloLink (or link chain) that Apollo Client will use.
+     */
     ApolloClient.prototype.setLink = function (newLink) {
         this.link = this.queryManager.link = newLink;
     };
@@ -19457,6 +20945,8 @@ var storeUtils = __webpack_require__(1761);
 
 
 
+// Returns true if aResult and bResult are deeply equal according to the fields
+// selected by the given query, ignoring any fields marked as @nonreactive.
 function equalByQuery(query, _a, _b, variables) {
     var aData = _a.data, aRest = (0,tslib_es6/* __rest */._T)(_a, ["data"]);
     var bData = _b.data, bRest = (0,tslib_es6/* __rest */._T)(_b, ["data"]);
@@ -19471,12 +20961,20 @@ function equalBySelectionSet(selectionSet, aResult, bResult, context) {
         return true;
     }
     var seenSelections = new Set();
+    // Returning true from this Array.prototype.every callback function skips the
+    // current field/subtree. Returning false aborts the entire traversal
+    // immediately, causing equalBySelectionSet to return false.
     return selectionSet.selections.every(function (selection) {
+        // Avoid re-processing the same selection at the same level of recursion, in
+        // case the same field gets included via multiple indirect fragment spreads.
         if (seenSelections.has(selection))
             return true;
         seenSelections.add(selection);
+        // Ignore @skip(if: true) and @include(if: false) fields.
         if (!(0,directives/* shouldInclude */.LZ)(selection, context.variables))
             return true;
+        // If the field or (named) fragment spread has a @nonreactive directive on
+        // it, we don't care if it's different, so we pretend it's the same.
         if (selectionHasNonreactiveDirective(selection))
             return true;
         if ((0,storeUtils/* isField */.My)(selection)) {
@@ -19485,6 +20983,8 @@ function equalBySelectionSet(selectionSet, aResult, bResult, context) {
             var bResultChild = bResult && bResult[resultKey];
             var childSelectionSet = selection.selectionSet;
             if (!childSelectionSet) {
+                // These are scalar values, so we can compare them with deep equal
+                // without redoing the main recursive work.
                 return (0,lib/* default */.Z)(aResultChild, bResultChild);
             }
             var aChildIsArray = Array.isArray(aResultChild);
@@ -19508,9 +21008,16 @@ function equalBySelectionSet(selectionSet, aResult, bResult, context) {
         else {
             var fragment = (0,fragments/* getFragmentFromSelection */.hi)(selection, context.fragmentMap);
             if (fragment) {
+                // The fragment might === selection if it's an inline fragment, but
+                // could be !== if it's a named fragment ...spread.
                 if (selectionHasNonreactiveDirective(fragment))
                     return true;
-                return equalBySelectionSet(fragment.selectionSet, aResult, bResult, context);
+                return equalBySelectionSet(fragment.selectionSet, 
+                // Notice that we reuse the same aResult and bResult values here,
+                // since the fragment ...spread does not specify a field name, but
+                // consists of multiple fields (within the fragment's selection set)
+                // that should be applied to the current result value(s).
+                aResult, bResult, context);
             }
         }
     });
@@ -19530,11 +21037,13 @@ function directiveIsNonreactive(dir) {
 
 
 var ObservableQuery_assign = Object.assign, ObservableQuery_hasOwnProperty = Object.hasOwnProperty;
-var ObservableQuery = (function (_super) {
+var ObservableQuery = /** @class */ (function (_super) {
     (0,tslib_es6/* __extends */.ZT)(ObservableQuery, _super);
     function ObservableQuery(_a) {
         var queryManager = _a.queryManager, queryInfo = _a.queryInfo, options = _a.options;
         var _this = _super.call(this, function (observer) {
+            // Zen Observable has its own error function, so in order to log correctly
+            // we need to provide a custom error callback.
             try {
                 var subObserver = observer._subscription._observer;
                 if (subObserver && !subObserver.error) {
@@ -19544,6 +21053,7 @@ var ObservableQuery = (function (_super) {
             catch (_a) { }
             var first = !_this.observers.size;
             _this.observers.add(observer);
+            // Deliver most recent error or result.
             var last = _this.last;
             if (last && last.error) {
                 observer.error && observer.error(last.error);
@@ -19551,7 +21061,13 @@ var ObservableQuery = (function (_super) {
             else if (last && last.result) {
                 observer.next && observer.next(last.result);
             }
+            // Initiate observation of this query if it hasn't been reported to
+            // the QueryManager yet.
             if (first) {
+                // Blindly catching here prevents unhandled promise rejections,
+                // and is safe because the ObservableQuery handles this error with
+                // this.observer.error, so we're not just swallowing the error by
+                // ignoring it here.
                 _this.reobserve().catch(function () { });
             }
             return function () {
@@ -19562,21 +21078,36 @@ var ObservableQuery = (function (_super) {
         }) || this;
         _this.observers = new Set();
         _this.subscriptions = new Set();
+        // related classes
         _this.queryInfo = queryInfo;
         _this.queryManager = queryManager;
+        // active state
         _this.waitForOwnResult = skipCacheDataFor(options.fetchPolicy);
         _this.isTornDown = false;
         var _b = queryManager.defaultOptions.watchQuery, _c = _b === void 0 ? {} : _b, _d = _c.fetchPolicy, defaultFetchPolicy = _d === void 0 ? "cache-first" : _d;
-        var _e = options.fetchPolicy, fetchPolicy = _e === void 0 ? defaultFetchPolicy : _e, _f = options.initialFetchPolicy, initialFetchPolicy = _f === void 0 ? fetchPolicy === "standby"
-            ? defaultFetchPolicy
-            : fetchPolicy : _f;
-        _this.options = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { initialFetchPolicy: initialFetchPolicy, fetchPolicy: fetchPolicy });
+        var _e = options.fetchPolicy, fetchPolicy = _e === void 0 ? defaultFetchPolicy : _e, 
+        // Make sure we don't store "standby" as the initialFetchPolicy.
+        _f = options.initialFetchPolicy, 
+        // Make sure we don't store "standby" as the initialFetchPolicy.
+        initialFetchPolicy = _f === void 0 ? fetchPolicy === "standby" ? defaultFetchPolicy : (fetchPolicy) : _f;
+        _this.options = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, options), { 
+            // Remember the initial options.fetchPolicy so we can revert back to this
+            // policy when variables change. This information can also be specified
+            // (or overridden) by providing options.initialFetchPolicy explicitly.
+            initialFetchPolicy: initialFetchPolicy, 
+            // This ensures this.options.fetchPolicy always has a string value, in
+            // case options.fetchPolicy was not provided.
+            fetchPolicy: fetchPolicy });
         _this.queryId = queryInfo.queryId || queryManager.generateQueryId();
         var opDef = (0,getFromAST/* getOperationDefinition */.$H)(_this.query);
         _this.queryName = opDef && opDef.name && opDef.name.value;
         return _this;
     }
     Object.defineProperty(ObservableQuery.prototype, "query", {
+        // The `query` computed property will always reflect the document transformed
+        // by the last run query. `this.options.query` will always reflect the raw
+        // untransformed query to ensure document transforms with runtime conditionals
+        // are run on the original document.
         get: function () {
             return this.lastQuery || this.options.query;
         },
@@ -19584,6 +21115,8 @@ var ObservableQuery = (function (_super) {
         configurable: true
     });
     Object.defineProperty(ObservableQuery.prototype, "variables", {
+        // Computed shorthand for this.options.variables, preserved for
+        // backwards compatibility.
         get: function () {
             return this.options.variables;
         },
@@ -19593,9 +21126,22 @@ var ObservableQuery = (function (_super) {
     ObservableQuery.prototype.result = function () {
         var _this = this;
         return new Promise(function (resolve, reject) {
+            // TODO: this code doesn’t actually make sense insofar as the observer
+            // will never exist in this.observers due how zen-observable wraps observables.
+            // https://github.com/zenparsing/zen-observable/blob/master/src/Observable.js#L169
             var observer = {
                 next: function (result) {
                     resolve(result);
+                    // Stop the query within the QueryManager if we can before
+                    // this function returns.
+                    //
+                    // We do this in order to prevent observers piling up within
+                    // the QueryManager. Notice that we only fully unsubscribe
+                    // from the subscription in a setTimeout(..., 0)  call. This call can
+                    // actually be handled by the browser at a much later time. If queries
+                    // are fired in the meantime, observers that should have been removed
+                    // from the QueryManager will continue to fire, causing an unnecessary
+                    // performance hit.
                     _this.observers.delete(observer);
                     if (!_this.observers.size) {
                         _this.queryManager.removeQuery(_this.queryId);
@@ -19611,16 +21157,28 @@ var ObservableQuery = (function (_super) {
     };
     ObservableQuery.prototype.getCurrentResult = function (saveAsLastResult) {
         if (saveAsLastResult === void 0) { saveAsLastResult = true; }
+        // Use the last result as long as the variables match this.variables.
         var lastResult = this.getLastResult(true);
         var networkStatus = this.queryInfo.networkStatus ||
             (lastResult && lastResult.networkStatus) ||
             core_networkStatus/* NetworkStatus */.Ie.ready;
         var result = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, lastResult), { loading: (0,core_networkStatus/* isNetworkRequestInFlight */.Oj)(networkStatus), networkStatus: networkStatus });
         var _a = this.options.fetchPolicy, fetchPolicy = _a === void 0 ? "cache-first" : _a;
-        if (skipCacheDataFor(fetchPolicy) ||
+        if (
+        // These fetch policies should never deliver data from the cache, unless
+        // redelivering a previously delivered result.
+        skipCacheDataFor(fetchPolicy) ||
+            // If this.options.query has @client(always: true) fields, we cannot
+            // trust diff.result, since it was read from the cache without running
+            // local resolvers (and it's too late to run resolvers now, since we must
+            // return a result synchronously).
             this.queryManager.getDocumentInfo(this.query).hasForcedResolvers) {
+            // Fall through.
         }
         else if (this.waitForOwnResult) {
+            // This would usually be a part of `QueryInfo.getDiff()`.
+            // which we skip in the waitForOwnResult case since we are not
+            // interested in the diff.
             this.queryInfo["updateWatch"]();
         }
         else {
@@ -19632,7 +21190,12 @@ var ObservableQuery = (function (_super) {
                 result.data = void 0;
             }
             if (diff.complete) {
+                // Similar to setting result.partial to false, but taking advantage of the
+                // falsiness of missing fields.
                 delete result.partial;
+                // If the diff is complete, and we're using a FetchPolicy that
+                // terminates after a complete cache read, we can assume the next result
+                // we receive will have NetworkStatus.ready and !loading.
                 if (diff.complete &&
                     result.networkStatus === core_networkStatus/* NetworkStatus */.Ie.loading &&
                     (fetchPolicy === "cache-first" || fetchPolicy === "cache-only")) {
@@ -19657,13 +21220,14 @@ var ObservableQuery = (function (_super) {
         }
         return result;
     };
+    // Compares newResult to the snapshot we took of this.lastResult when it was
+    // first received.
     ObservableQuery.prototype.isDifferentFromLastResult = function (newResult, variables) {
         if (!this.last) {
             return true;
         }
-        var resultIsDifferent = this.queryManager.getDocumentInfo(this.query)
-            .hasNonreactiveDirective
-            ? !equalByQuery(this.query, this.last.result, newResult, this.variables)
+        var resultIsDifferent = this.queryManager.getDocumentInfo(this.query).hasNonreactiveDirective ?
+            !equalByQuery(this.query, this.last.result, newResult, this.variables)
             : !(0,lib/* equal */.D)(this.last.result, newResult);
         return (resultIsDifferent || (variables && !(0,lib/* equal */.D)(this.last.variables, variables)));
     };
@@ -19688,11 +21252,22 @@ var ObservableQuery = (function (_super) {
     ObservableQuery.prototype.resetQueryStoreErrors = function () {
         this.queryManager.resetErrors(this.queryId);
     };
+    /**
+     * Update the variables of this observable query, and fetch the new results.
+     * This method should be preferred over `setVariables` in most use cases.
+     *
+     * @param variables - The new set of variables. If there are missing variables,
+     * the previous values of those variables will be used.
+     */
     ObservableQuery.prototype.refetch = function (variables) {
         var _a;
         var reobserveOptions = {
+            // Always disable polling for refetches.
             pollInterval: 0,
         };
+        // Unless the provided fetchPolicy always consults the network
+        // (no-cache, network-only, or cache-and-network), override it with
+        // network-only to force the refetch for this fetchQuery call.
         var fetchPolicy = this.options.fetchPolicy;
         if (fetchPolicy === "cache-and-network") {
             reobserveOptions.fetchPolicy = fetchPolicy;
@@ -19715,6 +21290,7 @@ var ObservableQuery = (function (_super) {
             }
         }
         if (variables && !(0,lib/* equal */.D)(this.options.variables, variables)) {
+            // Update the existing options with new variables
             reobserveOptions.variables = this.options.variables = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, this.options.variables), variables);
         }
         this.queryInfo.resetLastWrite();
@@ -19722,14 +21298,26 @@ var ObservableQuery = (function (_super) {
     };
     ObservableQuery.prototype.fetchMore = function (fetchMoreOptions) {
         var _this = this;
-        var combinedOptions = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, (fetchMoreOptions.query
-            ? fetchMoreOptions
-            : (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, this.options), { query: this.options.query }), fetchMoreOptions), { variables: (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, this.options.variables), fetchMoreOptions.variables) }))), { fetchPolicy: "no-cache" });
+        var combinedOptions = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, (fetchMoreOptions.query ? fetchMoreOptions : ((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, this.options), { query: this.options.query }), fetchMoreOptions), { variables: (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, this.options.variables), fetchMoreOptions.variables) })))), { 
+            // The fetchMore request goes immediately to the network and does
+            // not automatically write its result to the cache (hence no-cache
+            // instead of network-only), because we allow the caller of
+            // fetchMore to provide an updateQuery callback that determines how
+            // the data gets written to the cache.
+            fetchPolicy: "no-cache" });
         combinedOptions.query = this.transformDocument(combinedOptions.query);
         var qid = this.queryManager.generateQueryId();
-        this.lastQuery = fetchMoreOptions.query
-            ? this.transformDocument(this.options.query)
-            : combinedOptions.query;
+        // If a temporary query is passed to `fetchMore`, we don't want to store
+        // it as the last query result since it may be an optimized query for
+        // pagination. We will however run the transforms on the original document
+        // as well as the document passed in `fetchMoreOptions` to ensure the cache
+        // uses the most up-to-date document which may rely on runtime conditionals.
+        this.lastQuery =
+            fetchMoreOptions.query ?
+                this.transformDocument(this.options.query)
+                : combinedOptions.query;
+        // Simulate a loading result for the original query with
+        // result.networkStatus === NetworkStatus.fetchMore.
         var queryInfo = this.queryInfo;
         var originalNetworkStatus = queryInfo.networkStatus;
         queryInfo.networkStatus = core_networkStatus/* NetworkStatus */.Ie.fetchMore;
@@ -19744,6 +21332,11 @@ var ObservableQuery = (function (_super) {
             if (queryInfo.networkStatus === core_networkStatus/* NetworkStatus */.Ie.fetchMore) {
                 queryInfo.networkStatus = originalNetworkStatus;
             }
+            // Performing this cache update inside a cache.batch transaction ensures
+            // any affected cache.watch watchers are notified at most once about any
+            // updates. Most watchers will be using the QueryInfo class, which
+            // responds to notifications by calling reobserveCacheFirst to deliver
+            // fetchMore cache results back to this ObservableQuery.
             _this.queryManager.cache.batch({
                 update: function (cache) {
                     var updateQuery = fetchMoreOptions.updateQuery;
@@ -19761,6 +21354,11 @@ var ObservableQuery = (function (_super) {
                         });
                     }
                     else {
+                        // If we're using a field policy instead of updateQuery, the only
+                        // thing we need to do is write the new data to the cache using
+                        // combinedOptions.variables (instead of this.variables, which is
+                        // what this.updateQuery uses, because it works by abusing the
+                        // original field value, keyed by the original variables).
                         cache.writeQuery({
                             query: combinedOptions.query,
                             variables: combinedOptions.variables,
@@ -19769,17 +21367,27 @@ var ObservableQuery = (function (_super) {
                     }
                 },
                 onWatchUpdated: function (watch) {
+                    // Record the DocumentNode associated with any watched query whose
+                    // data were updated by the cache writes above.
                     updatedQuerySet.add(watch.query);
                 },
             });
             return fetchMoreResult;
         })
             .finally(function () {
+            // In case the cache writes above did not generate a broadcast
+            // notification (which would have been intercepted by onWatchUpdated),
+            // likely because the written data were the same as what was already in
+            // the cache, we still want fetchMore to deliver its final loading:false
+            // result with the unchanged data.
             if (!updatedQuerySet.has(_this.query)) {
                 reobserveCacheFirst(_this);
             }
         });
     };
+    // XXX the subscription variables are separate from the query variables.
+    // if you want to update subscription variables, right now you have to do that separately,
+    // and you can only do it by stopping the subscription and then subscribing again with new variables.
     ObservableQuery.prototype.subscribeToMore = function (options) {
         var _this = this;
         var subscription = this.queryManager
@@ -19823,15 +21431,38 @@ var ObservableQuery = (function (_super) {
         var mergedOptions = (0,compact/* compact */.o)(this.options, newOptions || {});
         ObservableQuery_assign(this.options, mergedOptions);
     };
+    /**
+     * Update the variables of this observable query, and fetch the new results
+     * if they've changed. Most users should prefer `refetch` instead of
+     * `setVariables` in order to to be properly notified of results even when
+     * they come from the cache.
+     *
+     * Note: the `next` callback will *not* fire if the variables have not changed
+     * or if the result is coming from cache.
+     *
+     * Note: the promise will return the old results immediately if the variables
+     * have not changed.
+     *
+     * Note: the promise will return null immediately if the query is not active
+     * (there are no subscribers).
+     *
+     * @param variables - The new set of variables. If there are missing variables,
+     * the previous values of those variables will be used.
+     */
     ObservableQuery.prototype.setVariables = function (variables) {
         if ((0,lib/* equal */.D)(this.variables, variables)) {
+            // If we have no observers, then we don't actually want to make a network
+            // request. As soon as someone observes the query, the request will kick
+            // off. For now, we just store any changes. (See #1077)
             return this.observers.size ? this.result() : Promise.resolve();
         }
         this.options.variables = variables;
+        // See comment above
         if (!this.observers.size) {
             return Promise.resolve();
         }
         return this.reobserve({
+            // Reset options.fetchPolicy to its original value.
             fetchPolicy: this.options.initialFetchPolicy,
             variables: variables,
         }, core_networkStatus/* NetworkStatus */.Ie.setVariables);
@@ -19864,12 +21495,29 @@ var ObservableQuery = (function (_super) {
         this.options.pollInterval = 0;
         this.updatePolling();
     };
-    ObservableQuery.prototype.applyNextFetchPolicy = function (reason, options) {
+    // Update options.fetchPolicy according to options.nextFetchPolicy.
+    ObservableQuery.prototype.applyNextFetchPolicy = function (reason, 
+    // It's possible to use this method to apply options.nextFetchPolicy to
+    // options.fetchPolicy even if options !== this.options, though that happens
+    // most often when the options are temporary, used for only one request and
+    // then thrown away, so nextFetchPolicy may not end up mattering.
+    options) {
         if (options.nextFetchPolicy) {
             var _a = options.fetchPolicy, fetchPolicy = _a === void 0 ? "cache-first" : _a, _b = options.initialFetchPolicy, initialFetchPolicy = _b === void 0 ? fetchPolicy : _b;
             if (fetchPolicy === "standby") {
+                // Do nothing, leaving options.fetchPolicy unchanged.
             }
             else if (typeof options.nextFetchPolicy === "function") {
+                // When someone chooses "cache-and-network" or "network-only" as their
+                // initial FetchPolicy, they often do not want future cache updates to
+                // trigger unconditional network requests, which is what repeatedly
+                // applying the "cache-and-network" or "network-only" policies would
+                // seem to imply. Instead, when the cache reports an update after the
+                // initial network request, it may be desirable for subsequent network
+                // requests to be triggered only if the cache result is incomplete. To
+                // that end, the options.nextFetchPolicy option provides an easy way to
+                // update options.fetchPolicy after the initial network request, without
+                // having to call observableQuery.setOptions.
                 options.fetchPolicy = options.nextFetchPolicy(fetchPolicy, {
                     reason: reason,
                     options: options,
@@ -19887,11 +21535,15 @@ var ObservableQuery = (function (_super) {
         return options.fetchPolicy;
     };
     ObservableQuery.prototype.fetch = function (options, newNetworkStatus, query) {
+        // TODO Make sure we update the networkStatus (and infer fetchVariables)
+        // before actually committing to the fetch.
         this.queryManager.setObservableQuery(this);
         return this.queryManager["fetchConcastWithInfo"](this.queryId, options, newNetworkStatus, query);
     };
+    // Turns polling on or off based on this.options.pollInterval.
     ObservableQuery.prototype.updatePolling = function () {
         var _this = this;
+        // Avoid polling in SSR mode
         if (this.queryManager.ssrMode) {
             return;
         }
@@ -19913,8 +21565,12 @@ var ObservableQuery = (function (_super) {
             if (_this.pollingInfo) {
                 if (!(0,core_networkStatus/* isNetworkRequestInFlight */.Oj)(_this.queryInfo.networkStatus)) {
                     _this.reobserve({
-                        fetchPolicy: _this.options.initialFetchPolicy === "no-cache"
-                            ? "no-cache"
+                        // Most fetchPolicy options don't make sense to use in a polling context, as
+                        // users wouldn't want to be polling the cache directly. However, network-only and
+                        // no-cache are both useful for when the user wants to control whether or not the
+                        // polled results are written to the cache.
+                        fetchPolicy: _this.options.initialFetchPolicy === "no-cache" ?
+                            "no-cache"
                             : "network-only",
                     }, core_networkStatus/* NetworkStatus */.Ie.poll).then(poll, poll);
                 }
@@ -19935,34 +21591,55 @@ var ObservableQuery = (function (_super) {
     ObservableQuery.prototype.updateLastResult = function (newResult, variables) {
         if (variables === void 0) { variables = this.variables; }
         var error = this.getLastError();
+        // Preserve this.last.error unless the variables have changed.
         if (error && this.last && !(0,lib/* equal */.D)(variables, this.last.variables)) {
             error = void 0;
         }
-        return (this.last = (0,tslib_es6/* __assign */.pi)({ result: this.queryManager.assumeImmutableResults
-                ? newResult
+        return (this.last = (0,tslib_es6/* __assign */.pi)({ result: this.queryManager.assumeImmutableResults ?
+                newResult
                 : (0,cloneDeep/* cloneDeep */.X)(newResult), variables: variables }, (error ? { error: error } : null)));
     };
     ObservableQuery.prototype.reobserveAsConcast = function (newOptions, newNetworkStatus) {
         var _this = this;
         this.isTornDown = false;
-        var useDisposableConcast = newNetworkStatus === core_networkStatus/* NetworkStatus */.Ie.refetch ||
+        var useDisposableConcast = 
+        // Refetching uses a disposable Concast to allow refetches using different
+        // options/variables, without permanently altering the options of the
+        // original ObservableQuery.
+        newNetworkStatus === core_networkStatus/* NetworkStatus */.Ie.refetch ||
+            // The fetchMore method does not actually call the reobserve method, but,
+            // if it did, it would definitely use a disposable Concast.
             newNetworkStatus === core_networkStatus/* NetworkStatus */.Ie.fetchMore ||
+            // Polling uses a disposable Concast so the polling options (which force
+            // fetchPolicy to be "network-only" or "no-cache") won't override the original options.
             newNetworkStatus === core_networkStatus/* NetworkStatus */.Ie.poll;
+        // Save the old variables, since Object.assign may modify them below.
         var oldVariables = this.options.variables;
         var oldFetchPolicy = this.options.fetchPolicy;
         var mergedOptions = (0,compact/* compact */.o)(this.options, newOptions || {});
-        var options = useDisposableConcast
-            ?
-                mergedOptions
+        var options = useDisposableConcast ?
+            // Disposable Concast fetches receive a shallow copy of this.options
+            // (merged with newOptions), leaving this.options unmodified.
+            mergedOptions
             : ObservableQuery_assign(this.options, mergedOptions);
+        // Don't update options.query with the transformed query to avoid
+        // overwriting this.options.query when we aren't using a disposable concast.
+        // We want to ensure we can re-run the custom document transforms the next
+        // time a request is made against the original query.
         var query = this.transformDocument(options.query);
         this.lastQuery = query;
         if (!useDisposableConcast) {
+            // We can skip calling updatePolling if we're not changing this.options.
             this.updatePolling();
+            // Reset options.fetchPolicy to its original value when variables change,
+            // unless a new fetchPolicy was provided by newOptions.
             if (newOptions &&
                 newOptions.variables &&
                 !(0,lib/* equal */.D)(newOptions.variables, oldVariables) &&
+                // Don't mess with the fetchPolicy if it's currently "standby".
                 options.fetchPolicy !== "standby" &&
+                // If we're changing the fetchPolicy anyway, don't try to change it here
+                // using applyNextFetchPolicy. The explicit options.fetchPolicy wins.
                 options.fetchPolicy === oldFetchPolicy) {
                 this.applyNextFetchPolicy("variables-changed", options);
                 if (newNetworkStatus === void 0) {
@@ -19989,6 +21666,8 @@ var ObservableQuery = (function (_super) {
             },
         };
         if (!useDisposableConcast && (fromLink || !this.concast)) {
+            // We use the {add,remove}Observer methods directly to avoid wrapping
+            // observer with an unnecessary SubscriptionObserver object.
             if (this.concast && this.observer) {
                 this.concast.removeObserver(this.observer);
             }
@@ -19999,25 +21678,43 @@ var ObservableQuery = (function (_super) {
         return concast;
     };
     ObservableQuery.prototype.reobserve = function (newOptions, newNetworkStatus) {
-        return this.reobserveAsConcast(newOptions, newNetworkStatus).promise;
+        return this.reobserveAsConcast(newOptions, newNetworkStatus)
+            .promise;
     };
     ObservableQuery.prototype.resubscribeAfterError = function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
+        // If `lastError` is set in the current when the subscription is re-created,
+        // the subscription will immediately receive the error, which will
+        // cause it to terminate again. To avoid this, we first clear
+        // the last error/result from the `observableQuery` before re-starting
+        // the subscription, and restore the last value afterwards so that the
+        // subscription has a chance to stay open.
         var last = this.last;
         this.resetLastResults();
         var subscription = this.subscribe.apply(this, args);
         this.last = last;
         return subscription;
     };
+    // (Re)deliver the current result to this.observers without applying fetch
+    // policies or making network requests.
     ObservableQuery.prototype.observe = function () {
-        this.reportResult(this.getCurrentResult(false), this.variables);
+        this.reportResult(
+        // Passing false is important so that this.getCurrentResult doesn't
+        // save the fetchMore result as this.lastResult, causing it to be
+        // ignored due to the this.isDifferentFromLastResult check in
+        // this.reportResult.
+        this.getCurrentResult(false), this.variables);
     };
     ObservableQuery.prototype.reportResult = function (result, variables) {
         var lastError = this.getLastError();
         var isDifferent = this.isDifferentFromLastResult(result, variables);
+        // Update the last result even when isDifferentFromLastResult returns false,
+        // because the query may be using the @nonreactive directive, and we want to
+        // save the the latest version of any nonreactive subtrees (in case
+        // getCurrentResult is called), even though we skip broadcasting changes.
         if (lastError || !result.partial || this.options.returnPartialData) {
             this.updateLastResult(result, variables);
         }
@@ -20026,6 +21723,8 @@ var ObservableQuery = (function (_super) {
         }
     };
     ObservableQuery.prototype.reportError = function (error, variables) {
+        // Since we don't get the current result on errors, only the error, we
+        // must mirror the updates that occur in QueryStore.markQueryError here
         var errorResult = (0,tslib_es6/* __assign */.pi)((0,tslib_es6/* __assign */.pi)({}, this.getLastResult()), { error: error, errors: error.graphQLErrors, networkStatus: core_networkStatus/* NetworkStatus */.Ie.error, loading: false });
         this.updateLastResult(errorResult, variables);
         (0,iteration/* iterateObserversSafely */.p)(this.observers, "error", (this.last.error = error));
@@ -20042,6 +21741,7 @@ var ObservableQuery = (function (_super) {
             delete this.observer;
         }
         this.stopPolling();
+        // stop all active GraphQL subscriptions
         this.subscriptions.forEach(function (sub) { return sub.unsubscribe(); });
         this.subscriptions.clear();
         this.queryManager.stopQuery(this.queryId);
@@ -20054,17 +21754,33 @@ var ObservableQuery = (function (_super) {
     return ObservableQuery;
 }(zen_observable_ts_module/* Observable */.y));
 
+// Necessary because the ObservableQuery constructor has a different
+// signature than the Observable constructor.
 (0,subclassing/* fixObservableSubclass */.D)(ObservableQuery);
+// Reobserve with fetchPolicy effectively set to "cache-first", triggering
+// delivery of any new data from the cache, possibly falling back to the network
+// if any cache data are missing. This allows _complete_ cache results to be
+// delivered without also kicking off unnecessary network requests when
+// this.options.fetchPolicy is "cache-and-network" or "network-only". When
+// this.options.fetchPolicy is any other policy ("cache-first", "cache-only",
+// "standby", or "no-cache"), we call this.reobserve() as usual.
 function reobserveCacheFirst(obsQuery) {
     var _a = obsQuery.options, fetchPolicy = _a.fetchPolicy, nextFetchPolicy = _a.nextFetchPolicy;
     if (fetchPolicy === "cache-and-network" || fetchPolicy === "network-only") {
         return obsQuery.reobserve({
             fetchPolicy: "cache-first",
-            nextFetchPolicy: function () {
+            // Use a temporary nextFetchPolicy function that replaces itself with the
+            // previous nextFetchPolicy value and returns the original fetchPolicy.
+            nextFetchPolicy: function (currentFetchPolicy, context) {
+                // Replace this nextFetchPolicy function in the options object with the
+                // original this.options.nextFetchPolicy value.
                 this.nextFetchPolicy = nextFetchPolicy;
-                if (typeof nextFetchPolicy === "function") {
-                    return nextFetchPolicy.apply(this, arguments);
+                // If the original nextFetchPolicy value was a function, give it a
+                // chance to decide what happens here.
+                if (typeof this.nextFetchPolicy === "function") {
+                    return this.nextFetchPolicy(currentFetchPolicy, context);
                 }
+                // Otherwise go back to the original this.options.fetchPolicy.
                 return fetchPolicy;
             },
         });
@@ -20079,7 +21795,7 @@ function logMissingFieldErrors(missing) {
         globalThis.__DEV__ !== false && globals/* invariant */.kG.debug(24, missing);
     }
 }
-function skipCacheDataFor(fetchPolicy) {
+function skipCacheDataFor(fetchPolicy /* `undefined` would mean `"cache-first"` */) {
     return (fetchPolicy === "network-only" ||
         fetchPolicy === "no-cache" ||
         fetchPolicy === "standby");
@@ -20203,6 +21919,7 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var graphql_tag__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(5584);
 }
+/* Core */
 
 
 
@@ -20210,13 +21927,31 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 
 
+/* Link */
 
 
 
 
+/* Supporting */
+// The verbosity of invariant.{log,warn,error} can be controlled globally
+// (for anyone using the same ts-invariant package) by passing "log",
+// "warn", "error", or "silent" to setVerbosity ("log" is the default).
+// Note that all invariant.* logging is hidden in production.
 
 
 (0,ts_invariant__WEBPACK_IMPORTED_MODULE_20__/* .setVerbosity */ .U6)(globalThis.__DEV__ !== false ? "log" : "silent");
+// Note that importing `gql` by itself, then destructuring
+// additional properties separately before exporting, is intentional.
+// Due to the way the `graphql-tag` library is setup, certain bundlers
+// can't find the properties added to the exported `gql` function without
+// additional guidance (e.g. Rollup - see
+// https://rollupjs.org/guide/en/#error-name-is-not-exported-by-module).
+// Instead of having people that are using bundlers with `@apollo/client` add
+// extra bundler config to help `graphql-tag` exports be found (which would be
+// awkward since they aren't importing `graphql-tag` themselves), this
+// workaround of pulling the extra properties off the `gql` function,
+// then re-exporting them separately, helps keeps bundlers happy without any
+// additional config changes.
 
 //# sourceMappingURL=index.js.map
 
@@ -20231,19 +21966,58 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 /* harmony export */   Jp: () => (/* binding */ isNetworkRequestSettled),
 /* harmony export */   Oj: () => (/* binding */ isNetworkRequestInFlight)
 /* harmony export */ });
+/**
+ * The current status of a query’s execution in our system.
+ */
 var NetworkStatus;
 (function (NetworkStatus) {
+    /**
+     * The query has never been run before and the query is now currently running. A query will still
+     * have this network status even if a partial data result was returned from the cache, but a
+     * query was dispatched anyway.
+     */
     NetworkStatus[NetworkStatus["loading"] = 1] = "loading";
+    /**
+     * If `setVariables` was called and a query was fired because of that then the network status
+     * will be `setVariables` until the result of that query comes back.
+     */
     NetworkStatus[NetworkStatus["setVariables"] = 2] = "setVariables";
+    /**
+     * Indicates that `fetchMore` was called on this query and that the query created is currently in
+     * flight.
+     */
     NetworkStatus[NetworkStatus["fetchMore"] = 3] = "fetchMore";
+    /**
+     * Similar to the `setVariables` network status. It means that `refetch` was called on a query
+     * and the refetch request is currently in flight.
+     */
     NetworkStatus[NetworkStatus["refetch"] = 4] = "refetch";
+    /**
+     * Indicates that a polling query is currently in flight. So for example if you are polling a
+     * query every 10 seconds then the network status will switch to `poll` every 10 seconds whenever
+     * a poll request has been sent but not resolved.
+     */
     NetworkStatus[NetworkStatus["poll"] = 6] = "poll";
+    /**
+     * No request is in flight for this query, and no errors happened. Everything is OK.
+     */
     NetworkStatus[NetworkStatus["ready"] = 7] = "ready";
+    /**
+     * No request is in flight for this query, but one or more errors were detected.
+     */
     NetworkStatus[NetworkStatus["error"] = 8] = "error";
 })(NetworkStatus || (NetworkStatus = {}));
+/**
+ * Returns true if there is currently a network request in flight according to a given network
+ * status.
+ */
 function isNetworkRequestInFlight(networkStatus) {
     return networkStatus ? networkStatus < 7 : false;
 }
+/**
+ * Returns true if the network request is in ready or error state according to a given network
+ * status.
+ */
 function isNetworkRequestSettled(networkStatus) {
     return networkStatus === 7 || networkStatus === 8;
 }
@@ -20267,6 +22041,9 @@ function isNetworkRequestSettled(networkStatus) {
 
 
 
+// This Symbol allows us to pass transport-specific errors from the link chain
+// into QueryManager/client internals without risking a naming collision within
+// extensions (which implementers can use as they see fit).
 var PROTOCOL_ERRORS_SYMBOL = Symbol();
 function graphQLResultHasProtocolErrors(result) {
     if (result.extensions) {
@@ -20277,18 +22054,26 @@ function graphQLResultHasProtocolErrors(result) {
 function isApolloError(err) {
     return err.hasOwnProperty("graphQLErrors");
 }
+// Sets the error message on this error according to the
+// the GraphQL and network errors that are present.
+// If the error message has already been set through the
+// constructor or otherwise, this function is a nop.
 var generateErrorMessage = function (err) {
     var errors = (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__spreadArray */ .ev)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__spreadArray */ .ev)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__spreadArray */ .ev)([], err.graphQLErrors, true), err.clientErrors, true), err.protocolErrors, true);
     if (err.networkError)
         errors.push(err.networkError);
     return (errors
+        // The rest of the code sometimes unsafely types non-Error objects as GraphQLErrors
         .map(function (err) {
         return ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .isNonNullObject */ .s)(err) && err.message) || "Error message not found.";
     })
         .join("\n"));
 };
-var ApolloError = (function (_super) {
+var ApolloError = /** @class */ (function (_super) {
     (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__extends */ .ZT)(ApolloError, _super);
+    // Constructs an instance of ApolloError given a GraphQLError
+    // or a network error. Note that one of these has to be a valid
+    // value or the constructed error will be meaningless.
     function ApolloError(_a) {
         var graphQLErrors = _a.graphQLErrors, protocolErrors = _a.protocolErrors, clientErrors = _a.clientErrors, networkError = _a.networkError, errorMessage = _a.errorMessage, extraInfo = _a.extraInfo;
         var _this = _super.call(this, errorMessage) || this;
@@ -20299,6 +22084,8 @@ var ApolloError = (function (_super) {
         _this.networkError = networkError || null;
         _this.message = errorMessage || generateErrorMessage(_this);
         _this.extraInfo = extraInfo;
+        // We're not using `Object.setPrototypeOf` here as it isn't fully
+        // supported on Android (see issue #3236).
         _this.__proto__ = ApolloError.prototype;
         return _this;
     }
@@ -20442,10 +22229,11 @@ function transformOperation(operation) {
         operationName: operation.operationName,
         query: operation.query,
     };
+    // Best guess at an operation name
     if (!transformedOperation.operationName) {
         transformedOperation.operationName =
-            typeof transformedOperation.query !== "string"
-                ? (0,getFromAST/* getOperationName */.rY)(transformedOperation.query) || undefined
+            typeof transformedOperation.query !== "string" ?
+                (0,getFromAST/* getOperationName */.rY)(transformedOperation.query) || undefined
                 : "";
     }
     return transformedOperation;
@@ -20483,7 +22271,7 @@ function toLink(handler) {
 function isTerminating(link) {
     return link.request.length <= 1;
 }
-var ApolloLink = (function () {
+var ApolloLink = /** @class */ (function () {
     function ApolloLink(request) {
         if (request)
             this.request = request;
@@ -20501,15 +22289,15 @@ var ApolloLink = (function () {
         var rightLink = toLink(right || new ApolloLink(passthrough));
         if (isTerminating(leftLink) && isTerminating(rightLink)) {
             return new ApolloLink(function (operation) {
-                return test(operation)
-                    ? leftLink.request(operation) || zen_observable_ts_module/* Observable */.y.of()
+                return test(operation) ?
+                    leftLink.request(operation) || zen_observable_ts_module/* Observable */.y.of()
                     : rightLink.request(operation) || zen_observable_ts_module/* Observable */.y.of();
             });
         }
         else {
             return new ApolloLink(function (operation, forward) {
-                return test(operation)
-                    ? leftLink.request(operation, forward) || zen_observable_ts_module/* Observable */.y.of()
+                return test(operation) ?
+                    leftLink.request(operation, forward) || zen_observable_ts_module/* Observable */.y.of()
                     : rightLink.request(operation, forward) || zen_observable_ts_module/* Observable */.y.of();
             });
         }
@@ -20549,8 +22337,15 @@ var ApolloLink = (function () {
     ApolloLink.prototype.onError = function (error, observer) {
         if (observer && observer.error) {
             observer.error(error);
+            // Returning false indicates that observer.error does not need to be
+            // called again, since it was already called (on the previous line).
+            // Calling observer.error again would not cause any real problems,
+            // since only the first call matters, but custom onError functions
+            // might have other reasons for wanting to prevent the default
+            // behavior by returning false.
             return false;
         }
+        // Throw errors will be passed to observer.error.
         throw error;
     };
     ApolloLink.prototype.setOnError = function (fn) {
@@ -20690,7 +22485,7 @@ var split = _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__/* .ApolloLink */ .i.spli
 
 
 
-var HttpLink = (function (_super) {
+var HttpLink = /** @class */ (function (_super) {
     (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__extends */ .ZT)(HttpLink, _super);
     function HttpLink(options) {
         if (options === void 0) { options = {}; }
@@ -20788,8 +22583,12 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 var backupFetch = (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .wY)(function () { return fetch; });
 var createHttpLink = function (linkOptions) {
     if (linkOptions === void 0) { linkOptions = {}; }
-    var _a = linkOptions.uri, uri = _a === void 0 ? "/graphql" : _a, preferredFetch = linkOptions.fetch, _b = linkOptions.print, print = _b === void 0 ? _selectHttpOptionsAndBody_js__WEBPACK_IMPORTED_MODULE_1__/* .defaultPrinter */ .sb : _b, includeExtensions = linkOptions.includeExtensions, preserveHeaderCase = linkOptions.preserveHeaderCase, useGETForQueries = linkOptions.useGETForQueries, _c = linkOptions.includeUnusedVariables, includeUnusedVariables = _c === void 0 ? false : _c, requestOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__rest */ ._T)(linkOptions, ["uri", "fetch", "print", "includeExtensions", "preserveHeaderCase", "useGETForQueries", "includeUnusedVariables"]);
+    var _a = linkOptions.uri, uri = _a === void 0 ? "/graphql" : _a, 
+    // use default global fetch if nothing passed in
+    preferredFetch = linkOptions.fetch, _b = linkOptions.print, print = _b === void 0 ? _selectHttpOptionsAndBody_js__WEBPACK_IMPORTED_MODULE_1__/* .defaultPrinter */ .sb : _b, includeExtensions = linkOptions.includeExtensions, preserveHeaderCase = linkOptions.preserveHeaderCase, useGETForQueries = linkOptions.useGETForQueries, _c = linkOptions.includeUnusedVariables, includeUnusedVariables = _c === void 0 ? false : _c, requestOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__rest */ ._T)(linkOptions, ["uri", "fetch", "print", "includeExtensions", "preserveHeaderCase", "useGETForQueries", "includeUnusedVariables"]);
     if (globalThis.__DEV__ !== false) {
+        // Make sure at least one of preferredFetch, window.fetch, or backupFetch is
+        // defined, so requests won't fail at runtime.
         (0,_checkFetcher_js__WEBPACK_IMPORTED_MODULE_3__/* .checkFetcher */ .U)(preferredFetch || backupFetch);
     }
     var linkConfig = {
@@ -20801,6 +22600,12 @@ var createHttpLink = function (linkOptions) {
     return new _core_index_js__WEBPACK_IMPORTED_MODULE_4__/* .ApolloLink */ .i(function (operation) {
         var chosenURI = (0,_selectURI_js__WEBPACK_IMPORTED_MODULE_5__/* .selectURI */ .r)(operation, uri);
         var context = operation.getContext();
+        // `apollographql-client-*` headers are automatically set if a
+        // `clientAwareness` object is found in the context. These headers are
+        // set first, followed by the rest of the headers pulled from
+        // `context.headers`. If desired, `apollographql-client-*` headers set by
+        // the `clientAwareness` object can be overridden by
+        // `apollographql-client-*` headers set in `context.headers`.
         var clientAwarenessHeaders = {};
         if (context.clientAwareness) {
             var _a = context.clientAwareness, name_1 = _a.name, version = _a.version;
@@ -20825,6 +22630,7 @@ var createHttpLink = function (linkOptions) {
             }
             operation.query = transformedQuery;
         }
+        //uses fallback, link, and then context to build options
         var _b = (0,_selectHttpOptionsAndBody_js__WEBPACK_IMPORTED_MODULE_1__/* .selectHttpOptionsAndBodyInternal */ .ve)(operation, print, _selectHttpOptionsAndBody_js__WEBPACK_IMPORTED_MODULE_1__/* .fallbackHttpConfig */ .SC, linkConfig, contextConfig), options = _b.options, body = _b.body;
         if (body.variables && !includeUnusedVariables) {
             body.variables = (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_9__/* .filterOperationVariables */ .e)(body.variables, operation.query);
@@ -20834,6 +22640,7 @@ var createHttpLink = function (linkOptions) {
             controller = new AbortController();
             options.signal = controller.signal;
         }
+        // If requested, set method to GET if there are no mutations.
         var definitionIsMutation = function (d) {
             return d.kind === "OperationDefinition" && d.operation === "mutation";
         };
@@ -20841,6 +22648,7 @@ var createHttpLink = function (linkOptions) {
             return d.kind === "OperationDefinition" && d.operation === "subscription";
         };
         var isSubscription = definitionIsSubscription((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_10__/* .getMainDefinition */ .p$)(operation.query));
+        // does not match custom directives beginning with @defer
         var hasDefer = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_6__/* .hasDirectives */ .FS)(["defer"], operation.query);
         if (useGETForQueries &&
             !operation.query.definitions.some(definitionIsMutation)) {
@@ -20849,6 +22657,8 @@ var createHttpLink = function (linkOptions) {
         if (hasDefer || isSubscription) {
             options.headers = options.headers || {};
             var acceptHeader = "multipart/mixed;";
+            // Omit defer-specific headers if the user attempts to defer a selection
+            // set on a subscription and log a warning.
             if (isSubscription && hasDefer) {
                 globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn(38);
             }
@@ -20877,6 +22687,11 @@ var createHttpLink = function (linkOptions) {
             }
         }
         return new _utilities_index_js__WEBPACK_IMPORTED_MODULE_13__/* .Observable */ .y(function (observer) {
+            // Prefer linkOptions.fetch (preferredFetch) if provided, and otherwise
+            // fall back to the *current* global window.fetch function (see issue
+            // #7832), or (if all else fails) the backupFetch function we saved when
+            // this module was first evaluated. This last option protects against the
+            // removal of window.fetch, which is unlikely but not impossible.
             var currentFetch = preferredFetch || (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .wY)(function () { return fetch; }) || backupFetch;
             var observerNext = observer.next.bind(observer);
             currentFetch(chosenURI, options)
@@ -20900,6 +22715,8 @@ var createHttpLink = function (linkOptions) {
                 (0,_parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_14__/* .handleError */ .S3)(err, observer);
             });
             return function () {
+                // XXX support canceling this request
+                // https://developers.google.com/web/updates/2017/09/abortable-fetch
                 if (controller)
                     controller.abort();
             };
@@ -20917,6 +22734,11 @@ var createHttpLink = function (linkOptions) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   $: () => (/* binding */ createSignalIfSupported)
 /* harmony export */ });
+/**
+ * @deprecated
+ * This is not used internally any more and will be removed in
+ * the next major version of Apollo Client.
+ */
 var createSignalIfSupported = function () {
     if (typeof AbortController === "undefined")
         return { controller: false, signal: false };
@@ -20995,6 +22817,10 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Z: () => (/* binding */ asyncIterator)
 /* harmony export */ });
+/**
+ * Original source:
+ * https://github.com/kmalakoff/response-iterator/blob/master/src/iterators/async.ts
+ */
 function asyncIterator(source) {
     var _a;
     var iterator = source[Symbol.asyncIterator]();
@@ -21022,6 +22848,10 @@ function asyncIterator(source) {
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(320);
 }
+/**
+ * Original source:
+ * https://github.com/kmalakoff/response-iterator/blob/master/src/iterators/nodeStream.ts
+ */
 
 function nodeStreamIterator(stream) {
     var cleanup = null;
@@ -21106,6 +22936,10 @@ function nodeStreamIterator(stream) {
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(320);
 }
+/**
+ * Original source:
+ * https://github.com/kmalakoff/response-iterator/blob/master/src/iterators/promise.ts
+ */
 
 function promiseIterator(promise) {
     var resolved = false;
@@ -21147,6 +22981,10 @@ function promiseIterator(promise) {
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(320);
 }
+/**
+ * Original source:
+ * https://github.com/kmalakoff/response-iterator/blob/master/src/iterators/reader.ts
+ */
 
 function readerIterator(reader) {
     var iterator = {
@@ -21210,8 +23048,8 @@ function readMultipartBody(response, nextValue) {
                     decoder = new TextDecoder("utf-8");
                     contentType = (_a = response.headers) === null || _a === void 0 ? void 0 : _a.get("content-type");
                     delimiter = "boundary=";
-                    boundaryVal = (contentType === null || contentType === void 0 ? void 0 : contentType.includes(delimiter))
-                        ? contentType === null || contentType === void 0 ? void 0 : contentType.substring((contentType === null || contentType === void 0 ? void 0 : contentType.indexOf(delimiter)) + delimiter.length).replace(/['"]/g, "").replace(/\;(.*)/gm, "").trim()
+                    boundaryVal = (contentType === null || contentType === void 0 ? void 0 : contentType.includes(delimiter)) ?
+                        contentType === null || contentType === void 0 ? void 0 : contentType.substring((contentType === null || contentType === void 0 ? void 0 : contentType.indexOf(delimiter)) + delimiter.length).replace(/['"]/g, "").replace(/\;(.*)/gm, "").trim()
                         : "-";
                     boundary = "\r\n--".concat(boundaryVal);
                     buffer = "";
@@ -21219,8 +23057,8 @@ function readMultipartBody(response, nextValue) {
                     running = true;
                     _e.label = 1;
                 case 1:
-                    if (!running) return [3, 3];
-                    return [4, iterator.next()];
+                    if (!running) return [3 /*break*/, 3];
+                    return [4 /*yield*/, iterator.next()];
                 case 2:
                     _b = _e.sent(), value = _b.value, done = _b.done;
                     chunk = typeof value === "string" ? value : decoder.decode(value);
@@ -21260,19 +23098,24 @@ function readMultipartBody(response, nextValue) {
                                     nextValue(next);
                                 }
                                 else {
+                                    // for the last chunk with only `hasNext: false`
+                                    // we don't need to call observer.next as there is no data/errors
                                     nextValue(result);
                                 }
                             }
-                            else if (Object.keys(result).length === 1 &&
+                            else if (
+                            // If the chunk contains only a "hasNext: false", we can call
+                            // observer.complete() immediately.
+                            Object.keys(result).length === 1 &&
                                 "hasNext" in result &&
                                 !result.hasNext) {
-                                return [2];
+                                return [2 /*return*/];
                             }
                         }
                         bi = buffer.indexOf(boundary);
                     }
-                    return [3, 1];
-                case 3: return [2];
+                    return [3 /*break*/, 1];
+                case 3: return [2 /*return*/];
             }
         });
     });
@@ -21282,6 +23125,7 @@ function parseHeaders(headerText) {
     headerText.split("\n").forEach(function (line) {
         var i = line.indexOf(":");
         if (i > -1) {
+            // normalize headers to lowercase
             var name_1 = line.slice(0, i).trim().toLowerCase();
             var value = line.slice(i + 1).trim();
             headersInit[name_1] = value;
@@ -21291,6 +23135,7 @@ function parseHeaders(headerText) {
 }
 function parseJsonBody(response, bodyText) {
     if (response.status >= 300) {
+        // Network error
         var getResult = function () {
             try {
                 return JSON.parse(bodyText);
@@ -21314,7 +23159,39 @@ function parseJsonBody(response, bodyText) {
     }
 }
 function handleError(err, observer) {
+    // if it is a network error, BUT there is graphql result info fire
+    // the next observer before calling error this gives apollo-client
+    // (and react-apollo) the `graphqlErrors` and `networkErrors` to
+    // pass to UI this should only happen if we *also* have data as
+    // part of the response key per the spec
     if (err.result && err.result.errors && err.result.data) {
+        // if we don't call next, the UI can only show networkError
+        // because AC didn't get any graphqlErrors this is graphql
+        // execution result info (i.e errors and possibly data) this is
+        // because there is no formal spec how errors should translate to
+        // http status codes. So an auth error (401) could have both data
+        // from a public field, errors from a private field, and a status
+        // of 401
+        // {
+        //  user { // this will have errors
+        //    firstName
+        //  }
+        //  products { // this is public so will have data
+        //    cost
+        //  }
+        // }
+        //
+        // the result of above *could* look like this:
+        // {
+        //   data: { products: [{ cost: "$10" }] },
+        //   errors: [{
+        //      message: 'your session has timed out',
+        //      path: []
+        //   }]
+        // }
+        // status code of above would be a 401
+        // in the UI you want to show data where you can, errors as data where you can
+        // and use correct http status codes
         observer.next(err.result);
     }
     observer.error(err);
@@ -21326,13 +23203,15 @@ function parseAndCheckHttpResponse(operations) {
             .then(function (bodyText) { return parseJsonBody(response, bodyText); })
             .then(function (result) {
             if (response.status >= 300) {
+                // Network error
                 (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_4__/* .throwServerError */ .P)(response, result, "Response not successful: Received status code ".concat(response.status));
             }
             if (!Array.isArray(result) &&
                 !hasOwnProperty.call(result, "data") &&
                 !hasOwnProperty.call(result, "errors")) {
-                (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_4__/* .throwServerError */ .P)(response, result, "Server response was missing for query '".concat(Array.isArray(operations)
-                    ? operations.map(function (op) { return op.operationName; })
+                // Data error
+                (0,_utils_index_js__WEBPACK_IMPORTED_MODULE_4__/* .throwServerError */ .P)(response, result, "Server response was missing for query '".concat(Array.isArray(operations) ?
+                    operations.map(function (op) { return op.operationName; })
                     : operations.operationName, "'."));
             }
             return result;
@@ -21365,6 +23244,10 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _iterators_reader_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4516);
 }
+/**
+ * Original source:
+ * https://github.com/kmalakoff/response-iterator/blob/master/src/index.ts
+ */
 
 
 
@@ -21397,6 +23280,8 @@ function responseIterator(response) {
         return (0,_iterators_async_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z)(body);
     if (isReadableStream(body))
         return (0,_iterators_reader_js__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z)(body.getReader());
+    // this errors without casting to ReadableStream<T>
+    // because Blob.stream() returns a NodeJS ReadableStream
     if (isStreamableBlob(body)) {
         return (0,_iterators_reader_js__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z)(body.stream().getReader());
     }
@@ -21421,7 +23306,11 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _serializeFetchParameter_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5049);
 }
 
+// For GET operations, returns the given URI rewritten with parameters, or a
+// parse error.
 function rewriteURIForGET(chosenURI, body) {
+    // Implement the standard HTTP GET serialization, plus 'extensions'. Note
+    // the extra level of JSON serialization!
     var queryParams = [];
     var addQueryParam = function (key, value) {
         queryParams.push("".concat(key, "=").concat(encodeURIComponent(value)));
@@ -21452,6 +23341,12 @@ function rewriteURIForGET(chosenURI, body) {
         }
         addQueryParam("extensions", serializedExtensions);
     }
+    // Reconstruct the URI with added query params.
+    // XXX This assumes that the URI is well-formed and that it doesn't
+    //     already contain any of these query params. We could instead use the
+    //     URL API and take a polyfill (whatwg-url@6) for older browsers that
+    //     don't support URLSearchParams. Note that some browsers (and
+    //     versions of whatwg-url) support URL but not URLSearchParams!
     var fragment = "", preFragment = chosenURI;
     var fragmentStart = chosenURI.indexOf("#");
     if (fragmentStart !== -1) {
@@ -21490,7 +23385,20 @@ var defaultHttpOptions = {
     preserveHeaderCase: false,
 };
 var defaultHeaders = {
+    // headers are case insensitive (https://stackoverflow.com/a/5259004)
     accept: "*/*",
+    // The content-type header describes the type of the body of the request, and
+    // so it typically only is sent with requests that actually have bodies. One
+    // could imagine that Apollo Client would remove this header when constructing
+    // a GET request (which has no body), but we historically have not done that.
+    // This means that browsers will preflight all Apollo Client requests (even
+    // GET requests). Apollo Server's CSRF prevention feature (introduced in
+    // AS3.7) takes advantage of this fact and does not block requests with this
+    // header. If you want to drop this header from GET requests, then you should
+    // probably replace it with a `apollo-require-preflight` header, or servers
+    // with CSRF prevention enabled might block your GET request. See
+    // https://www.apollographql.com/docs/apollo-server/security/cors/#preventing-cross-site-request-forgery-csrf
+    // for more details.
     "content-type": "application/json",
 };
 var defaultOptions = {
@@ -21528,10 +23436,12 @@ function selectHttpOptionsAndBodyInternal(operation, printer) {
     if (options.headers) {
         options.headers = removeDuplicateHeaders(options.headers, http.preserveHeaderCase);
     }
+    //The body depends on the http options
     var operationName = operation.operationName, extensions = operation.extensions, variables = operation.variables, query = operation.query;
     var body = { operationName: operationName, variables: variables };
     if (http.includeExtensions)
         body.extensions = extensions;
+    // not sending the query (i.e persisted queries)
     if (http.includeQuery)
         body.query = printer(query, _utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .print */ .S);
     return {
@@ -21539,7 +23449,11 @@ function selectHttpOptionsAndBodyInternal(operation, printer) {
         body: body,
     };
 }
+// Remove potential duplicate header names, preserving last (by insertion order).
+// This is done to prevent unintentionally duplicating a header instead of
+// overwriting it (See #8447 and #8449).
 function removeDuplicateHeaders(headers, preserveHeaderCase) {
+    // If we're not preserving the case, just remove duplicates w/ normalization.
     if (!preserveHeaderCase) {
         var normalizedHeaders_1 = Object.create(null);
         Object.keys(Object(headers)).forEach(function (name) {
@@ -21547,6 +23461,10 @@ function removeDuplicateHeaders(headers, preserveHeaderCase) {
         });
         return normalizedHeaders_1;
     }
+    // If we are preserving the case, remove duplicates w/ normalization,
+    // preserving the original name.
+    // This allows for non-http-spec-compliant servers that expect intentionally
+    // capitalized header names (See #6741).
     var headerData = Object.create(null);
     Object.keys(Object(headers)).forEach(function (name) {
         headerData[name.toLowerCase()] = {
@@ -21633,6 +23551,10 @@ function filterOperationVariables(variables, query) {
     var unusedNames = new Set(Object.keys(variables));
     (0,graphql__WEBPACK_IMPORTED_MODULE_1__/* .visit */ .Vn)(query, {
         Variable: function (node, _key, parent) {
+            // A variable type definition at the top level of a query is not
+            // enough to silence server-side errors about the variable being
+            // unused, so variable definitions do not count as usage.
+            // https://spec.graphql.org/draft/#sec-All-Variables-Used
             if (parent &&
                 parent.kind !== "VariableDefinition") {
                 unusedNames.delete(node.name.value);
@@ -21775,7 +23697,7 @@ var OBSERVED_CHANGED_OPTIONS = [
     "refetchWritePolicy",
     "returnPartialData",
 ];
-var InternalQueryReference = (function () {
+var InternalQueryReference = /** @class */ (function () {
     function InternalQueryReference(observable, options) {
         var _this = this;
         this.listeners = new Set();
@@ -21785,6 +23707,8 @@ var InternalQueryReference = (function () {
         this.handleError = this.handleError.bind(this);
         this.dispose = this.dispose.bind(this);
         this.observable = observable;
+        // Don't save this result as last result to prevent delivery of last result
+        // when first subscribing
         this.result = observable.getCurrentResult(false);
         this.key = options.key;
         if (options.onDispose) {
@@ -21811,12 +23735,19 @@ var InternalQueryReference = (function () {
             next: this.handleNext,
             error: this.handleError,
         });
+        // Start a timer that will automatically dispose of the query if the
+        // suspended resource does not use this queryRef in the given time. This
+        // helps prevent memory leaks when a component has unmounted before the
+        // query has finished loading.
         var startDisposeTimer = function () {
             var _a;
             if (!_this.references) {
                 _this.autoDisposeTimeoutId = setTimeout(_this.dispose, (_a = options.autoDisposeTimeoutMs) !== null && _a !== void 0 ? _a : 30000);
             }
         };
+        // We wait until the request has settled to ensure we don't dispose of the
+        // query ref before the request finishes, otherwise we would leave the
+        // promise in a pending state rendering the suspense boundary indefinitely.
         this.promise.then(startDisposeTimer, startDisposeTimer);
     }
     Object.defineProperty(InternalQueryReference.prototype, "watchQueryOptions", {
@@ -21837,6 +23768,7 @@ var InternalQueryReference = (function () {
             }
             disposed = true;
             _this.references--;
+            // Wait before fully disposing in case the app is running in strict mode.
             setTimeout(function () {
                 if (!_this.references) {
                     _this.dispose();
@@ -21852,6 +23784,8 @@ var InternalQueryReference = (function () {
     };
     InternalQueryReference.prototype.applyOptions = function (watchQueryOptions) {
         var _a = this.watchQueryOptions, currentFetchPolicy = _a.fetchPolicy, currentCanonizeResults = _a.canonizeResults;
+        // "standby" is used when `skip` is set to `true`. Detect when we've
+        // enabled the query (i.e. `skip` is `false`) to execute a network request.
         if (currentFetchPolicy === "standby" &&
             currentFetchPolicy !== watchQueryOptions.fetchPolicy) {
             this.initiateFetch(this.observable.reobserve(watchQueryOptions));
@@ -21883,11 +23817,14 @@ var InternalQueryReference = (function () {
         this.onDispose();
     };
     InternalQueryReference.prototype.onDispose = function () {
+        // noop. overridable by options
     };
     InternalQueryReference.prototype.handleNext = function (result) {
         var _a;
         switch (this.status) {
             case "loading": {
+                // Maintain the last successful `data` value if the next result does not
+                // have one.
                 if (result.data === void 0) {
                     result.data = this.result.data;
                 }
@@ -21897,9 +23834,14 @@ var InternalQueryReference = (function () {
                 break;
             }
             case "idle": {
+                // This occurs when switching to a result that is fully cached when this
+                // class is instantiated. ObservableQuery will run reobserve when
+                // subscribing, which delivers a result from the cache.
                 if (result.data === this.result.data) {
                     return;
                 }
+                // Maintain the last successful `data` value if the next result does not
+                // have one.
                 if (result.data === void 0) {
                     result.data = this.result.data;
                 }
@@ -21937,6 +23879,11 @@ var InternalQueryReference = (function () {
             _this.reject = reject;
         });
         this.promise.catch(function () { });
+        // If the data returned from the fetch is deeply equal to the data already
+        // in the cache, `handleNext` will not be triggered leaving the promise we
+        // created in a pending state forever. To avoid this situtation, we attempt
+        // to resolve the promise if `handleNext` hasn't been run to ensure the
+        // promise is resolved correctly.
         returnedPromise
             .then(function (result) {
             var _a;
@@ -21969,7 +23916,7 @@ var InternalQueryReference = (function () {
 
 
 
-var SuspenseCache = (function () {
+var SuspenseCache = /** @class */ (function () {
     function SuspenseCache(options) {
         if (options === void 0) { options = Object.create(null); }
         this.queryRefs = new _wry_trie__WEBPACK_IMPORTED_MODULE_0__/* .Trie */ .B(_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .canUseWeakMap */ .mr);
@@ -22058,9 +24005,11 @@ var ApolloConsumer = function (props) {
 
 
 
-var contextKey = _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .canUseSymbol */ .aS
-    ? Symbol.for("__APOLLO_CONTEXT__")
-    : "__APOLLO_CONTEXT__";
+// To make sure Apollo Client doesn't create more than one React context
+// (which can lead to problems like having an Apollo Client instance added
+// in one context, then attempting to retrieve it from another different
+// context), a single Apollo context is created and tracked in global state.
+var contextKey = _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .canUseSymbol */ .aS ? Symbol.for("__APOLLO_CONTEXT__") : "__APOLLO_CONTEXT__";
 function getApolloContext() {
     (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .kG)( true, 45);
     var context = react__WEBPACK_IMPORTED_MODULE_0__.createContext[contextKey];
@@ -22075,6 +24024,11 @@ function getApolloContext() {
     }
     return context;
 }
+/**
+ * @deprecated This function has no "resetting" effect since Apollo Client 3.4.12,
+ * and will be removed in the next major version of Apollo Client.
+ * If you want to get the Apollo Context, use `getApolloContext` instead.
+ */
 var resetApolloContext = (/* runtime-dependent pure expression or super */ /^(33[45]|149|179|28|452)$/.test(__webpack_require__.j) ? (getApolloContext) : null);
 //# sourceMappingURL=ApolloContext.js.map
 
@@ -22206,8 +24160,13 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7294);
 
 
+// Prevent webpack from complaining about our feature detection of the
+// use property of the React namespace, which is expected not
+// to exist when using current stable versions, and that's fine.
 var useKey = "use";
 var realHook = /*#__PURE__*/ (react__WEBPACK_IMPORTED_MODULE_0___namespace_cache || (react__WEBPACK_IMPORTED_MODULE_0___namespace_cache = __webpack_require__.t(react__WEBPACK_IMPORTED_MODULE_0__, 2)))[useKey];
+// This is named with two underscores to allow this hook to evade typical rules of
+// hooks (i.e. it can be used conditionally)
 var __use = (/* runtime-dependent pure expression or super */ /^(33[45]|149|179|28|452)$/.test(__webpack_require__.j) ? (realHook ||
     function __use(promise) {
         var statefulPromise = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .wrapPromiseWithState */ .Bd)(promise);
@@ -22311,6 +24270,12 @@ function useBackgroundQuery(query, options) {
     var watchQueryOptions = (0,_useSuspenseQuery_js__WEBPACK_IMPORTED_MODULE_3__/* .useWatchQueryOptions */ .U8)({ client: client, query: query, options: options });
     var fetchPolicy = watchQueryOptions.fetchPolicy, variables = watchQueryOptions.variables;
     var _a = options.queryKey, queryKey = _a === void 0 ? [] : _a;
+    // This ref tracks the first time query execution is enabled to determine
+    // whether to return a query ref or `undefined`. When initialized
+    // in a skipped state (either via `skip: true` or `skipToken`) we return
+    // `undefined` for the `queryRef` until the query has been enabled. Once
+    // enabled, a query ref is always returned regardless of whether the query is
+    // skipped again later.
     var didFetchResult = react__WEBPACK_IMPORTED_MODULE_0__.useRef(fetchPolicy !== "standby");
     didFetchResult.current || (didFetchResult.current = fetchPolicy !== "standby");
     var cacheKey = (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__spreadArray */ .ev)([
@@ -22384,11 +24349,12 @@ function useFragment(options) {
     var diffOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .pi)({}, rest), { returnPartialData: true, id: typeof from === "string" ? from : cache.identify(from), query: cache["getFragmentDoc"](fragment, fragmentName), optimistic: optimistic });
     var resultRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef();
     var latestDiff = cache.diff(diffOptions);
+    // Used for both getSnapshot and getServerSnapshot
     var getSnapshot = function () {
         var latestDiffToResult = diffToResult(latestDiff);
-        return resultRef.current &&
-            (0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(resultRef.current.data, latestDiffToResult.data)
-            ? resultRef.current
+        return (resultRef.current &&
+            (0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .D)(resultRef.current.data, latestDiffToResult.data)) ?
+            resultRef.current
             : (resultRef.current = latestDiffToResult);
     };
     return (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_4__/* .useSyncExternalStore */ .$)(function (forceUpdate) {
@@ -22444,6 +24410,8 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 
 
+// The following methods, when called will execute the query, regardless of
+// whether the useLazyQuery execute function was called before.
 var EAGER_METHODS = (/* runtime-dependent pure expression or super */ /^(33[45]|149|179|28|452)$/.test(__webpack_require__.j) ? ([
     "refetch",
     "reobserve",
@@ -22459,6 +24427,8 @@ function useLazyQuery(query, options) {
     var queryRef = react__WEBPACK_IMPORTED_MODULE_0__.useRef();
     var merged = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .mergeOptions */ .J)(options, execOptionsRef.current || {});
     var document = (_a = merged === null || merged === void 0 ? void 0 : merged.query) !== null && _a !== void 0 ? _a : query;
+    // Use refs to track options and the used query to ensure the `execute`
+    // function remains referentially stable between renders.
     optionsRef.current = merged;
     queryRef.current = document;
     var internalState = (0,_useQuery_js__WEBPACK_IMPORTED_MODULE_2__/* .useInternalState */ .A)((0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .x)(options && options.client), document);
@@ -22468,6 +24438,7 @@ function useLazyQuery(query, options) {
     var result = Object.assign(useQueryResult, {
         called: !!execOptionsRef.current,
     });
+    // We use useMemo here to make sure the eager methods have a stable identity.
     var eagerMethods = react__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
         var eagerMethods = {};
         var _loop_1 = function (key) {
@@ -22475,8 +24446,10 @@ function useLazyQuery(query, options) {
             eagerMethods[key] = function () {
                 if (!execOptionsRef.current) {
                     execOptionsRef.current = Object.create(null);
+                    // Only the first time populating execOptionsRef.current matters here.
                     internalState.forceUpdateState();
                 }
+                // @ts-expect-error this is just too generic to type
                 return method.apply(this, arguments);
             };
         };
@@ -22488,14 +24461,16 @@ function useLazyQuery(query, options) {
     }, []);
     Object.assign(result, eagerMethods);
     var execute = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (executeOptions) {
-        execOptionsRef.current = executeOptions
-            ? (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)({}, executeOptions), { fetchPolicy: executeOptions.fetchPolicy || initialFetchPolicy }) : {
-            fetchPolicy: initialFetchPolicy,
-        };
+        execOptionsRef.current =
+            executeOptions ? (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)({}, executeOptions), { fetchPolicy: executeOptions.fetchPolicy || initialFetchPolicy }) : {
+                fetchPolicy: initialFetchPolicy,
+            };
         var options = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .mergeOptions */ .J)(optionsRef.current, (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)({ query: queryRef.current }, execOptionsRef.current));
         var promise = internalState
             .executeQuery((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .pi)({}, options), { skip: false }))
             .then(function (queryResult) { return Object.assign(queryResult, eagerMethods); });
+        // Because the return value of `useLazyQuery` is usually floated, we need
+        // to catch the promise to prevent unhandled rejections.
         promise.catch(function () { });
         return promise;
     }, []);
@@ -22552,6 +24527,8 @@ function useMutation(mutation, options) {
         mutation: mutation,
         options: options,
     });
+    // TODO: Trying to assign these in a useEffect or useLayoutEffect breaks
+    // higher-order components.
     {
         Object.assign(ref.current, { client: client, options: options, mutation: mutation });
     }
@@ -22578,8 +24555,8 @@ function useMutation(mutation, options) {
             .then(function (response) {
             var _a, _b;
             var data = response.data, errors = response.errors;
-            var error = errors && errors.length > 0
-                ? new _errors_index_js__WEBPACK_IMPORTED_MODULE_6__/* .ApolloError */ .cA({ graphQLErrors: errors })
+            var error = errors && errors.length > 0 ?
+                new _errors_index_js__WEBPACK_IMPORTED_MODULE_6__/* .ApolloError */ .cA({ graphQLErrors: errors })
                 : void 0;
             var onError = executeOptions.onError || ((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onError);
             if (error && onError) {
@@ -22621,6 +24598,7 @@ function useMutation(mutation, options) {
             var onError = executeOptions.onError || ((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onError);
             if (onError) {
                 onError(error, clientOptions);
+                // TODO(brian): why are we returning this here???
                 return { data: void 0, errors: error };
             }
             throw error;
@@ -22628,7 +24606,9 @@ function useMutation(mutation, options) {
     }, []);
     var reset = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () {
         if (ref.current.isMounted) {
-            setResult({ called: false, loading: false, client: client });
+            var result_3 = { called: false, loading: false, client: client };
+            Object.assign(ref.current, { mutationId: 0, result: result_3 });
+            setResult(result_3);
         }
     }, []);
     react__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () {
@@ -22693,14 +24673,24 @@ function useInternalState(client, query) {
         stateRef.current = new InternalState(client, query, stateRef.current);
     }
     var state = stateRef.current;
+    // By default, InternalState.prototype.forceUpdate is an empty function, but
+    // we replace it here (before anyone has had a chance to see this state yet)
+    // with a function that unconditionally forces an update, using the latest
+    // setTick function. Updating this state by calling state.forceUpdate is the
+    // only way we trigger React component updates (no other useState calls within
+    // the InternalState class).
     state.forceUpdateState = react__WEBPACK_IMPORTED_MODULE_1__.useReducer(function (tick) { return tick + 1; }, 0)[1];
     return state;
 }
-var InternalState = (function () {
+var InternalState = /** @class */ (function () {
     function InternalState(client, query, previous) {
         var _this = this;
         this.client = client;
         this.query = query;
+        /**
+         * Will be overwritten by the `useSyncExternalStore` "force update" method
+         * whenever it is available and reset to `forceUpdateState` when it isn't.
+         */
         this.forceUpdate = function () { return _this.forceUpdateState(); };
         this.ssrDisabledResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .maybeDeepFreeze */ .J)({
             loading: true,
@@ -22714,15 +24704,28 @@ var InternalState = (function () {
             error: void 0,
             networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus */ .Ie.ready,
         });
+        // This cache allows the referential stability of this.result (as returned by
+        // getCurrentResult) to translate into referential stability of the resulting
+        // QueryResult object returned by toQueryResult.
         this.toQueryResultCache = new (_utilities_index_js__WEBPACK_IMPORTED_MODULE_6__/* .canUseWeakMap */ .mr ? WeakMap : Map)();
         (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_7__/* .verifyDocumentType */ .Vp)(query, _parser_index_js__WEBPACK_IMPORTED_MODULE_7__/* .DocumentType */ .n_.Query);
+        // Reuse previousData from previous InternalState (if any) to provide
+        // continuity of previousData even if/when the query or client changes.
         var previousResult = previous && previous.result;
         var previousData = previousResult && previousResult.data;
         if (previousData) {
             this.previousData = previousData;
         }
     }
+    /**
+     * Forces an update using local component state.
+     * As this is not batched with `useSyncExternalStore` updates,
+     * this is only used as a fallback if the `useSyncExternalStore` "force update"
+     * method is not registered at the moment.
+     * See https://github.com/facebook/react/issues/25191
+     *  */
     InternalState.prototype.forceUpdateState = function () {
+        // Replaced (in useInternalState) with a method that triggers an update.
         globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.warn(50);
     };
     InternalState.prototype.executeQuery = function (options) {
@@ -22733,11 +24736,18 @@ var InternalState = (function () {
         }
         this.watchQueryOptions = this.createWatchQueryOptions((this.queryHookOptions = options));
         var concast = this.observable.reobserveAsConcast(this.getObsQueryOptions());
+        // Make sure getCurrentResult returns a fresh ApolloQueryResult<TData>,
+        // but save the current data as this.previousData, just like setResult
+        // usually does.
         this.previousData = ((_a = this.result) === null || _a === void 0 ? void 0 : _a.data) || this.previousData;
         this.result = void 0;
         this.forceUpdate();
         return new Promise(function (resolve) {
             var result;
+            // Subscribe to the concast independently of the ObservableQuery in case
+            // the component gets unmounted before the promise resolves. This prevents
+            // the concast from terminating early and resolving with `undefined` when
+            // there are no more subscribers for the concast.
             concast.subscribe({
                 next: function (value) {
                     result = value;
@@ -22751,8 +24761,18 @@ var InternalState = (function () {
             });
         });
     };
+    // Methods beginning with use- should be called according to the standard
+    // rules of React hooks: only at the top level of the calling function, and
+    // without any dynamic conditional logic.
     InternalState.prototype.useQuery = function (options) {
         var _this = this;
+        // The renderPromises field gets initialized here in the useQuery method, at
+        // the beginning of everything (for a given component rendering, at least),
+        // so we can safely use this.renderPromises in other/later InternalState
+        // methods without worrying it might be uninitialized. Even after
+        // initialization, this.renderPromises is usually undefined (unless SSR is
+        // happening), but that's fine as long as it has been initialized that way,
+        // rather than left uninitialized.
         this.renderPromises = react__WEBPACK_IMPORTED_MODULE_1__.useContext((0,_context_index_js__WEBPACK_IMPORTED_MODULE_8__/* .getApolloContext */ .K)()).renderPromises;
         this.useOptions(options);
         var obsQuery = this.useObservableQuery();
@@ -22763,7 +24783,11 @@ var InternalState = (function () {
             _this.forceUpdate = handleStoreChange;
             var onNext = function () {
                 var previousResult = _this.result;
+                // We use `getCurrentResult()` instead of the onNext argument because
+                // the values differ slightly. Specifically, loading results will have
+                // an empty object for data instead of `undefined` for some reason.
                 var result = obsQuery.getCurrentResult();
+                // Make sure we're not attempting to re-render similar results
                 if (previousResult &&
                     previousResult.loading === result.loading &&
                     previousResult.networkStatus === result.networkStatus &&
@@ -22776,6 +24800,7 @@ var InternalState = (function () {
                 subscription.unsubscribe();
                 subscription = obsQuery.resubscribeAfterError(onNext, onError);
                 if (!hasOwnProperty.call(error, "graphQLErrors")) {
+                    // The error is not a GraphQL error
                     throw error;
                 }
                 var previousResult = _this.result;
@@ -22791,40 +24816,83 @@ var InternalState = (function () {
                 }
             };
             var subscription = obsQuery.subscribe(onNext, onError);
+            // Do the "unsubscribe" with a short delay.
+            // This way, an existing subscription can be reused without an additional
+            // request if "unsubscribe"  and "resubscribe" to the same ObservableQuery
+            // happen in very fast succession.
             return function () {
                 setTimeout(function () { return subscription.unsubscribe(); });
                 _this.forceUpdate = function () { return _this.forceUpdateState(); };
             };
         }, [
+            // We memoize the subscribe function using useCallback and the following
+            // dependency keys, because the subscribe function reference is all that
+            // useSyncExternalStore uses internally as a dependency key for the
+            // useEffect ultimately responsible for the subscription, so we are
+            // effectively passing this dependency array to that useEffect buried
+            // inside useSyncExternalStore, as desired.
             obsQuery,
             this.renderPromises,
             this.client.disableNetworkFetches,
         ]), function () { return _this.getCurrentResult(); }, function () { return _this.getCurrentResult(); });
+        // TODO Remove this method when we remove support for options.partialRefetch.
         this.unsafeHandlePartialRefetch(result);
         return this.toQueryResult(result);
     };
     InternalState.prototype.useOptions = function (options) {
         var _a;
         var watchQueryOptions = this.createWatchQueryOptions((this.queryHookOptions = options));
+        // Update this.watchQueryOptions, but only when they have changed, which
+        // allows us to depend on the referential stability of
+        // this.watchQueryOptions elsewhere.
         var currentWatchQueryOptions = this.watchQueryOptions;
         if (!(0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .D)(watchQueryOptions, currentWatchQueryOptions)) {
             this.watchQueryOptions = watchQueryOptions;
             if (currentWatchQueryOptions && this.observable) {
+                // Though it might be tempting to postpone this reobserve call to the
+                // useEffect block, we need getCurrentResult to return an appropriate
+                // loading:true result synchronously (later within the same call to
+                // useQuery). Since we already have this.observable here (not true for
+                // the very first call to useQuery), we are not initiating any new
+                // subscriptions, though it does feel less than ideal that reobserve
+                // (potentially) kicks off a network request (for example, when the
+                // variables have changed), which is technically a side-effect.
                 this.observable.reobserve(this.getObsQueryOptions());
+                // Make sure getCurrentResult returns a fresh ApolloQueryResult<TData>,
+                // but save the current data as this.previousData, just like setResult
+                // usually does.
                 this.previousData = ((_a = this.result) === null || _a === void 0 ? void 0 : _a.data) || this.previousData;
                 this.result = void 0;
             }
         }
+        // Make sure state.onCompleted and state.onError always reflect the latest
+        // options.onCompleted and options.onError callbacks provided to useQuery,
+        // since those functions are often recreated every time useQuery is called.
+        // Like the forceUpdate method, the versions of these methods inherited from
+        // InternalState.prototype are empty no-ops, but we can override them on the
+        // base state object (without modifying the prototype).
         this.onCompleted =
             options.onCompleted || InternalState.prototype.onCompleted;
         this.onError = options.onError || InternalState.prototype.onError;
         if ((this.renderPromises || this.client.disableNetworkFetches) &&
             this.queryHookOptions.ssr === false &&
             !this.queryHookOptions.skip) {
+            // If SSR has been explicitly disabled, and this function has been called
+            // on the server side, return the default loading state.
             this.result = this.ssrDisabledResult;
         }
         else if (this.queryHookOptions.skip ||
             this.watchQueryOptions.fetchPolicy === "standby") {
+            // When skipping a query (ie. we're not querying for data but still want to
+            // render children), make sure the `data` is cleared out and `loading` is
+            // set to `false` (since we aren't loading anything).
+            //
+            // NOTE: We no longer think this is the correct behavior. Skipping should
+            // not automatically set `data` to `undefined`, but instead leave the
+            // previous data in place. In other words, skipping should not mandate that
+            // previously received data is all of a sudden removed. Unfortunately,
+            // changing this is breaking, so we'll have to wait until Apollo Client 4.0
+            // to address this.
             this.result = this.skipStandbyResult;
         }
         else if (this.result === this.ssrDisabledResult ||
@@ -22840,17 +24908,36 @@ var InternalState = (function () {
         if (this.queryHookOptions.defaultOptions) {
             toMerge.push(this.queryHookOptions.defaultOptions);
         }
+        // We use compact rather than mergeOptions for this part of the merge,
+        // because we want watchQueryOptions.variables (if defined) to replace
+        // this.observable.options.variables whole. This replacement allows
+        // removing variables by removing them from the variables input to
+        // useQuery. If the variables were always merged together (rather than
+        // replaced), there would be no way to remove existing variables.
+        // However, the variables from options.defaultOptions and globalDefaults
+        // (if provided) should be merged, to ensure individual defaulted
+        // variables always have values, if not otherwise defined in
+        // observable.options or watchQueryOptions.
         toMerge.push((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_10__/* .compact */ .o)(this.observable && this.observable.options, this.watchQueryOptions));
         return toMerge.reduce(_utilities_index_js__WEBPACK_IMPORTED_MODULE_11__/* .mergeOptions */ .J);
     };
+    // A function to massage options before passing them to ObservableQuery.
     InternalState.prototype.createWatchQueryOptions = function (_a) {
         var _b;
         if (_a === void 0) { _a = {}; }
-        var skip = _a.skip, ssr = _a.ssr, onCompleted = _a.onCompleted, onError = _a.onError, defaultOptions = _a.defaultOptions, otherOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__rest */ ._T)(_a, ["skip", "ssr", "onCompleted", "onError", "defaultOptions"]);
+        var skip = _a.skip, ssr = _a.ssr, onCompleted = _a.onCompleted, onError = _a.onError, defaultOptions = _a.defaultOptions, 
+        // The above options are useQuery-specific, so this ...otherOptions spread
+        // makes otherOptions almost a WatchQueryOptions object, except for the
+        // query property that we add below.
+        otherOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__rest */ ._T)(_a, ["skip", "ssr", "onCompleted", "onError", "defaultOptions"]);
+        // This Object.assign is safe because otherOptions is a fresh ...rest object
+        // that did not exist until just now, so modifications are still allowed.
         var watchQueryOptions = Object.assign(otherOptions, { query: this.query });
         if (this.renderPromises &&
             (watchQueryOptions.fetchPolicy === "network-only" ||
                 watchQueryOptions.fetchPolicy === "cache-and-network")) {
+            // this behavior was added to react-apollo without explanation in this PR
+            // https://github.com/apollographql/react-apollo/pull/1579
             watchQueryOptions.fetchPolicy = "cache-first";
         }
         if (!watchQueryOptions.variables) {
@@ -22858,6 +24945,9 @@ var InternalState = (function () {
         }
         if (skip) {
             var _c = watchQueryOptions.fetchPolicy, fetchPolicy = _c === void 0 ? this.getDefaultFetchPolicy() : _c, _d = watchQueryOptions.initialFetchPolicy, initialFetchPolicy = _d === void 0 ? fetchPolicy : _d;
+            // When skipping, we set watchQueryOptions.fetchPolicy initially to
+            // "standby", but we also need/want to preserve the initial non-standby
+            // fetchPolicy that would have been used if not skipping.
             Object.assign(watchQueryOptions, {
                 initialFetchPolicy: initialFetchPolicy,
                 fetchPolicy: "standby",
@@ -22876,13 +24966,19 @@ var InternalState = (function () {
             ((_b = this.client.defaultOptions.watchQuery) === null || _b === void 0 ? void 0 : _b.fetchPolicy) ||
             "cache-first");
     };
+    // Defining these methods as no-ops on the prototype allows us to call
+    // state.onCompleted and/or state.onError without worrying about whether a
+    // callback was provided.
     InternalState.prototype.onCompleted = function (data) { };
     InternalState.prototype.onError = function (error) { };
     InternalState.prototype.useObservableQuery = function () {
+        // See if there is an existing observable that was used to fetch the same
+        // data and if so, use it instead since it will contain the proper queryId
+        // to fetch the result set. This is used during SSR.
         var obsQuery = (this.observable =
             (this.renderPromises &&
                 this.renderPromises.getSSRObservable(this.watchQueryOptions)) ||
-                this.observable ||
+                this.observable || // Reuse this.observable if possible (and not SSR)
                 this.client.watchQuery(this.getObsQueryOptions()));
         this.obsQueryFields = react__WEBPACK_IMPORTED_MODULE_1__.useMemo(function () { return ({
             refetch: obsQuery.refetch.bind(obsQuery),
@@ -22897,6 +24993,7 @@ var InternalState = (function () {
         if (this.renderPromises && ssrAllowed) {
             this.renderPromises.registerSSRObservable(obsQuery);
             if (obsQuery.getCurrentResult().loading) {
+                // TODO: This is a legacy API which could probably be cleaned up
                 this.renderPromises.addObservableQueryPromise(obsQuery);
             }
         }
@@ -22908,6 +25005,8 @@ var InternalState = (function () {
             this.previousData = previousResult.data;
         }
         this.result = nextResult;
+        // Calling state.setResult always triggers an update, though some call sites
+        // perform additional equality checks before committing to an update.
         this.forceUpdate();
         this.handleErrorOrCompleted(nextResult, previousResult);
     };
@@ -22915,6 +25014,7 @@ var InternalState = (function () {
         var _this = this;
         if (!result.loading) {
             var error_1 = this.toApolloError(result);
+            // wait a tick in case we are in the middle of rendering a component
             Promise.resolve()
                 .then(function () {
                 if (error_1) {
@@ -22932,11 +25032,14 @@ var InternalState = (function () {
         }
     };
     InternalState.prototype.toApolloError = function (result) {
-        return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_13__/* .isNonEmptyArray */ .O)(result.errors)
-            ? new _errors_index_js__WEBPACK_IMPORTED_MODULE_14__/* .ApolloError */ .cA({ graphQLErrors: result.errors })
+        return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_13__/* .isNonEmptyArray */ .O)(result.errors) ?
+            new _errors_index_js__WEBPACK_IMPORTED_MODULE_14__/* .ApolloError */ .cA({ graphQLErrors: result.errors })
             : result.error;
     };
     InternalState.prototype.getCurrentResult = function () {
+        // Using this.result as a cache ensures getCurrentResult continues returning
+        // the same (===) result object, unless state.setResult has been called, or
+        // we're doing server rendering and therefore override the result below.
         if (!this.result) {
             this.handleErrorOrCompleted((this.result = this.observable.getCurrentResult()));
         }
@@ -22949,11 +25052,20 @@ var InternalState = (function () {
         var data = result.data, partial = result.partial, resultWithoutPartial = (0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__rest */ ._T)(result, ["data", "partial"]);
         this.toQueryResultCache.set(result, (queryResult = (0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__assign */ .pi)({ data: data }, resultWithoutPartial), this.obsQueryFields), { client: this.client, observable: this.observable, variables: this.observable.variables, called: !this.queryHookOptions.skip, previousData: this.previousData })));
         if (!queryResult.error && (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_13__/* .isNonEmptyArray */ .O)(result.errors)) {
+            // Until a set naming convention for networkError and graphQLErrors is
+            // decided upon, we map errors (graphQLErrors) to the error options.
+            // TODO: Is it possible for both result.error and result.errors to be
+            // defined here?
             queryResult.error = new _errors_index_js__WEBPACK_IMPORTED_MODULE_14__/* .ApolloError */ .cA({ graphQLErrors: result.errors });
         }
         return queryResult;
     };
     InternalState.prototype.unsafeHandlePartialRefetch = function (result) {
+        // WARNING: SIDE-EFFECTS IN THE RENDER FUNCTION
+        //
+        // TODO: This code should be removed when the partialRefetch option is
+        // removed. I was unable to get this hook to behave reasonably in certain
+        // edge cases when this block was put in an effect.
         if (result.partial &&
             this.queryHookOptions.partialRefetch &&
             !result.loading &&
@@ -22987,6 +25099,11 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 function useReactiveVar(rv) {
     return (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_1__/* .useSyncExternalStore */ .$)(react__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (update) {
+        // By reusing the same onNext function in the nested call to
+        // rv.onNextChange(onNext), we can keep using the initial clean-up function
+        // returned by rv.onNextChange(function onNext(v){...}), without having to
+        // register the new clean-up function (returned by the nested
+        // rv.onNextChange(onNext)) with yet another callback.
         return rv.onNextChange(function onNext() {
             update();
             rv.onNextChange(onNext);
@@ -23163,6 +25280,8 @@ function useSubscription(subscription, options) {
                 }
                 var result = {
                     loading: false,
+                    // TODO: fetchResult.data can be null but SubscriptionResult.data
+                    // expects TData | undefined only
                     data: fetchResult.data,
                     error: void 0,
                     variables: options === null || options === void 0 ? void 0 : options.variables,
@@ -23206,6 +25325,9 @@ function useSubscription(subscription, options) {
             },
         });
         return function () {
+            // immediately stop receiving subscription values, but do not unsubscribe
+            // until after a short delay in case another useSubscription hook is
+            // reusing the same underlying observable and is about to subscribe
             subscriptionStopped = true;
             setTimeout(function () {
                 subscription.unsubscribe();
@@ -23277,7 +25399,11 @@ function useSuspenseQuery(query, options) {
     if (options === void 0) { options = Object.create(null); }
     var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__/* .useApolloClient */ .x)(options.client);
     var suspenseCache = (0,_cache_index_js__WEBPACK_IMPORTED_MODULE_3__/* .getSuspenseCache */ .Y)(client);
-    var watchQueryOptions = useWatchQueryOptions({ client: client, query: query, options: options });
+    var watchQueryOptions = useWatchQueryOptions({
+        client: client,
+        query: query,
+        options: options,
+    });
     var fetchPolicy = watchQueryOptions.fetchPolicy, variables = watchQueryOptions.variables;
     var _a = options.queryKey, queryKey = _a === void 0 ? [] : _a;
     var cacheKey = (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__spreadArray */ .ev)([
@@ -23319,13 +25445,13 @@ function useSuspenseQuery(query, options) {
         };
     }, [queryRef.result]);
     var result = fetchPolicy === "standby" ? skipResult : (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_7__/* .__use */ .$)(promise);
-    var fetchMore = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (options) {
+    var fetchMore = react__WEBPACK_IMPORTED_MODULE_0__.useCallback((function (options) {
         var promise = queryRef.fetchMore(options);
         setPromiseCache(function (previousPromiseCache) {
             return new Map(previousPromiseCache).set(queryRef.key, queryRef.promise);
         });
         return promise;
-    }, [queryRef]);
+    }), [queryRef]);
     var refetch = react__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (variables) {
         var promise = queryRef.refetch(variables);
         setPromiseCache(function (previousPromiseCache) {
@@ -23368,8 +25494,8 @@ function validatePartialDataReturn(fetchPolicy, returnPartialData) {
     }
 }
 function toApolloError(result) {
-    return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_9__/* .isNonEmptyArray */ .O)(result.errors)
-        ? new _core_index_js__WEBPACK_IMPORTED_MODULE_10__/* .ApolloError */ .cA({ graphQLErrors: result.errors })
+    return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_9__/* .isNonEmptyArray */ .O)(result.errors) ?
+        new _core_index_js__WEBPACK_IMPORTED_MODULE_10__/* .ApolloError */ .cA({ graphQLErrors: result.errors })
         : result.error;
 }
 function useWatchQueryOptions(_a) {
@@ -23386,6 +25512,8 @@ function useWatchQueryOptions(_a) {
         if (globalThis.__DEV__ !== false) {
             validateOptions(watchQueryOptions);
         }
+        // Assign the updated fetch policy after our validation since `standby` is
+        // not a supported fetch policy on its own without the use of `skip`.
         if (options.skip) {
             watchQueryOptions.fetchPolicy = "standby";
         }
@@ -23413,24 +25541,65 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 
 
 var didWarnUncachedGetSnapshot = false;
+// Prevent webpack from complaining about our feature detection of the
+// useSyncExternalStore property of the React namespace, which is expected not
+// to exist when using React 17 and earlier, and that's fine.
 var uSESKey = "useSyncExternalStore";
 var realHook = /*#__PURE__*/ (react__WEBPACK_IMPORTED_MODULE_1___namespace_cache || (react__WEBPACK_IMPORTED_MODULE_1___namespace_cache = __webpack_require__.t(react__WEBPACK_IMPORTED_MODULE_1__, 2)))[uSESKey];
+// Adapted from https://www.npmjs.com/package/use-sync-external-store, with
+// Apollo Client deviations called out by "// DEVIATION ..." comments.
+// When/if React.useSyncExternalStore is defined, delegate fully to it.
 var useSyncExternalStore = (/* runtime-dependent pure expression or super */ /^(33[45]|149|179|28|452)$/.test(__webpack_require__.j) ? (realHook ||
     (function (subscribe, getSnapshot, getServerSnapshot) {
+        // Read the current snapshot from the store on every render. Again, this
+        // breaks the rules of React, and only works here because of specific
+        // implementation details, most importantly that updates are
+        // always synchronous.
         var value = getSnapshot();
-        if (globalThis.__DEV__ !== false &&
+        if (
+        // DEVIATION: Using __DEV__
+        globalThis.__DEV__ !== false &&
             !didWarnUncachedGetSnapshot &&
+            // DEVIATION: Not using Object.is because we know our snapshots will never
+            // be exotic primitive values like NaN, which is !== itself.
             value !== getSnapshot()) {
             didWarnUncachedGetSnapshot = true;
+            // DEVIATION: Using invariant.error instead of console.error directly.
             globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG.error(58);
         }
+        // Because updates are synchronous, we don't queue them. Instead we force a
+        // re-render whenever the subscribed state changes by updating an some
+        // arbitrary useState hook. Then, during render, we call getSnapshot to read
+        // the current value.
+        //
+        // Because we don't actually use the state returned by the useState hook, we
+        // can save a bit of memory by storing other stuff in that slot.
+        //
+        // To implement the early bailout, we need to track some things on a mutable
+        // object. Usually, we would put that in a useRef hook, but we can stash it in
+        // our useState hook instead.
+        //
+        // To force a re-render, we call forceUpdate({inst}). That works because the
+        // new object always fails an equality check.
         var _a = react__WEBPACK_IMPORTED_MODULE_1__.useState({
             inst: { value: value, getSnapshot: getSnapshot },
         }), inst = _a[0].inst, forceUpdate = _a[1];
+        // Track the latest getSnapshot function with a ref. This needs to be updated
+        // in the layout phase so we can access it during the tearing check that
+        // happens on subscribe.
         if (_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .canUseLayoutEffect */ .JC) {
+            // DEVIATION: We avoid calling useLayoutEffect when !canUseLayoutEffect,
+            // which may seem like a conditional hook, but this code ends up behaving
+            // unconditionally (one way or the other) because canUseLayoutEffect is
+            // constant.
             react__WEBPACK_IMPORTED_MODULE_1__.useLayoutEffect(function () {
                 Object.assign(inst, { value: value, getSnapshot: getSnapshot });
+                // Whenever getSnapshot or subscribe changes, we need to check in the
+                // commit phase if there was an interleaved mutation. In concurrent mode
+                // this can happen all the time, but even in synchronous mode, an earlier
+                // effect may have mutated the store.
                 if (checkIfSnapshotChanged(inst)) {
+                    // Force a re-render.
                     forceUpdate({ inst: inst });
                 }
             }, [subscribe, value, getSnapshot]);
@@ -23439,11 +25608,22 @@ var useSyncExternalStore = (/* runtime-dependent pure expression or super */ /^(
             Object.assign(inst, { value: value, getSnapshot: getSnapshot });
         }
         react__WEBPACK_IMPORTED_MODULE_1__.useEffect(function () {
+            // Check for changes right before subscribing. Subsequent changes will be
+            // detected in the subscription handler.
             if (checkIfSnapshotChanged(inst)) {
+                // Force a re-render.
                 forceUpdate({ inst: inst });
             }
+            // Subscribe to the store and return a clean-up function.
             return subscribe(function handleStoreChange() {
+                // TODO: Because there is no cross-renderer API for batching updates, it's
+                // up to the consumer of this library to wrap their subscription event
+                // with unstable_batchedUpdates. Should we try to detect when this isn't
+                // the case and print a warning in development?
+                // The store changed. Check if the snapshot changed since the last time we
+                // read from the store.
                 if (checkIfSnapshotChanged(inst)) {
+                    // Force a re-render.
                     forceUpdate({ inst: inst });
                 }
             });
@@ -23546,6 +25726,7 @@ function operationName(type) {
     }
     return name;
 }
+// This parser is mostly used to safety check incoming documents.
 function parser(document) {
     var cached = cache.get(document);
     if (cached)
@@ -23591,10 +25772,8 @@ function parser(document) {
     type = queries.length ? DocumentType.Query : DocumentType.Mutation;
     if (!queries.length && !mutations.length)
         type = DocumentType.Subscription;
-    var definitions = queries.length
-        ? queries
-        : mutations.length
-            ? mutations
+    var definitions = queries.length ? queries
+        : mutations.length ? mutations
             : subscriptions;
     (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(definitions.length === 1, 62, document, definitions.length);
     var definition = definitions[0];
@@ -23603,7 +25782,7 @@ function parser(document) {
         name = definition.name.value;
     }
     else {
-        name = "data";
+        name = "data"; // fallback to using data if no name
     }
     var payload = { name: name, type: type, variables: variables };
     cache.set(document, payload);
@@ -23633,6 +25812,7 @@ function verifyDocumentType(document, type) {
 /* harmony export */   O: () => (/* binding */ isNonEmptyArray),
 /* harmony export */   k: () => (/* binding */ isArray)
 /* harmony export */ });
+// A version of Array.isArray that works better with readonly arrays.
 var isArray = Array.isArray;
 function isNonEmptyArray(value) {
     return Array.isArray(value) && value.length > 0;
@@ -23661,7 +25841,22 @@ var canUseWeakSet = typeof WeakSet === "function";
 var canUseSymbol = typeof Symbol === "function" && typeof Symbol.for === "function";
 var canUseAsyncIteratorSymbol = canUseSymbol && Symbol.asyncIterator;
 var canUseDOM = typeof (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .wY)(function () { return window.document.createElement; }) === "function";
-var usingJSDOM = (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .wY)(function () { return navigator.userAgent.indexOf("jsdom") >= 0; }) || false;
+var usingJSDOM = 
+// Following advice found in this comment from @domenic (maintainer of jsdom):
+// https://github.com/jsdom/jsdom/issues/1537#issuecomment-229405327
+//
+// Since we control the version of Jest and jsdom used when running Apollo
+// Client tests, and that version is recent enought to include " jsdom/x.y.z"
+// at the end of the user agent string, I believe this case is all we need to
+// check. Testing for "Node.js" was recommended for backwards compatibility
+// with older version of jsdom, but we don't have that problem.
+(0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .wY)(function () { return navigator.userAgent.indexOf("jsdom") >= 0; }) || false;
+// Our tests should all continue to pass if we remove this !usingJSDOM
+// condition, thereby allowing useLayoutEffect when using jsdom. Unfortunately,
+// if we allow useLayoutEffect, then useSyncExternalStore generates many
+// warnings about useLayoutEffect doing nothing on the server. While these
+// warnings are harmless, this !usingJSDOM condition seems to be the best way to
+// prevent them (i.e. skipping useLayoutEffect when using jsdom).
 var canUseLayoutEffect = canUseDOM && !usingJSDOM;
 //# sourceMappingURL=canUse.js.map
 
@@ -23675,6 +25870,9 @@ var canUseLayoutEffect = canUseDOM && !usingJSDOM;
 /* harmony export */   X: () => (/* binding */ cloneDeep)
 /* harmony export */ });
 var toString = Object.prototype.toString;
+/**
+ * Deeply clones a value to create a new instance.
+ */
 function cloneDeep(value) {
     return cloneDeepHelper(value);
 }
@@ -23695,6 +25893,8 @@ function cloneDeepHelper(val, seen) {
             seen = seen || new Map();
             if (seen.has(val))
                 return seen.get(val);
+            // High fidelity polyfills of Object.create and Object.getPrototypeOf are
+            // possible in all JS environments, so we will assume they exist/work.
             var copy_2 = Object.create(Object.getPrototypeOf(val));
             seen.set(val, copy_2);
             Object.keys(val).forEach(function (key) {
@@ -23717,6 +25917,10 @@ function cloneDeepHelper(val, seen) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   o: () => (/* binding */ compact)
 /* harmony export */ });
+/**
+ * Merges the provided objects shallowly and removes
+ * all properties with an `undefined` value
+ */
 function compact() {
     var objects = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -23772,6 +25976,9 @@ function isExecutionPatchResult(value) {
     return (isExecutionPatchIncrementalResult(value) ||
         isExecutionPatchInitialResult(value));
 }
+// This function detects an Apollo payload result before it is transformed
+// into a FetchResult via HttpLink; it cannot detect an ApolloPayloadResult
+// once it leaves the link chain.
 function isApolloPayloadResult(value) {
     return (0,_objects_js__WEBPACK_IMPORTED_MODULE_0__/* .isNonNullObject */ .s)(value) && "payload" in value;
 }
@@ -23806,6 +26013,8 @@ function mergeIncrementalData(prevResult, result) {
 /* harmony export */   X: () => (/* binding */ makeUniqueId)
 /* harmony export */ });
 var prefixCounts = new Map();
+// These IDs won't be globally unique, but they will be unique within this
+// process, thanks to the counter, and unguessable thanks to the random suffix.
 function makeUniqueId(prefix) {
     var count = prefixCounts.get(prefix) || 1;
     prefixCounts.set(prefix, count + 1);
@@ -23844,6 +26053,9 @@ function shallowFreeze(obj) {
             Object.freeze(obj);
         }
         catch (e) {
+            // Some types like Uint8Array and Node.js's Buffer cannot be frozen, but
+            // they all throw a TypeError when you try, so we re-throw any exceptions
+            // that are not TypeErrors, since that would be unexpected.
             if (e instanceof TypeError)
                 return null;
             throw e;
@@ -23882,6 +26094,12 @@ function mergeDeep() {
     }
     return mergeDeepArray(sources);
 }
+// In almost any situation where you could succeed in getting the
+// TypeScript compiler to infer a tuple type for the sources array, you
+// could just use mergeDeep instead of mergeDeepArray, so instead of
+// trying to convert T[] to an intersection type we just infer the array
+// element type, which works perfectly when the sources array has a
+// consistent element type.
 function mergeDeepArray(sources) {
     var target = sources[0] || {};
     var count = sources.length;
@@ -23896,7 +26114,7 @@ function mergeDeepArray(sources) {
 var defaultReconciler = function (target, source, property) {
     return this.merge(target[property], source[property]);
 };
-var DeepMerger = (function () {
+var DeepMerger = /** @class */ (function () {
     function DeepMerger(reconciler) {
         if (reconciler === void 0) { reconciler = defaultReconciler; }
         this.reconciler = reconciler;
@@ -23917,6 +26135,8 @@ var DeepMerger = (function () {
                         var result = _this.reconciler.apply(_this, (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__spreadArray */ .ev)([target,
                             source,
                             sourceKey], context, false));
+                        // A well-implemented reconciler may return targetValue to indicate
+                        // the merge changed nothing about the structure of the target.
                         if (result !== targetValue) {
                             target = _this.shallowCopyForMerge(target);
                             target[sourceKey] = result;
@@ -23924,12 +26144,15 @@ var DeepMerger = (function () {
                     }
                 }
                 else {
+                    // If there is no collision, the target can safely share memory with
+                    // the source, and the recursion can terminate here.
                     target = _this.shallowCopyForMerge(target);
                     target[sourceKey] = source[sourceKey];
                 }
             });
             return target;
         }
+        // If source (or target) is not an object, let source replace target.
         return source;
     };
     DeepMerger.prototype.shallowCopyForMerge = function (value) {
@@ -24053,7 +26276,13 @@ function maybe(thunk) {
 /* harmony default export */ const globals_global = (maybe(function () { return globalThis; }) ||
     maybe(function () { return window; }) ||
     maybe(function () { return self; }) ||
-    maybe(function () { return global; }) || maybe(function () {
+    maybe(function () { return global; }) || // We don't expect the Function constructor ever to be invoked at runtime, as
+// long as at least one of globalThis, window, self, or global is defined, so
+// we are under no obligation to make it easy for static analysis tools to
+// detect syntactic usage of the Function constructor. If you think you can
+// improve your static analysis to detect this obfuscation, think again. This
+// is an arms race you cannot win, at least not in JavaScript.
+maybe(function () {
     return maybe.constructor("return this")();
 }));
 //# sourceMappingURL=global.js.map
@@ -24095,6 +26324,16 @@ var invariant = Object.assign(function invariant(condition, message) {
     warn: wrap(lib_invariant/* invariant */.kG.warn),
     error: wrap(lib_invariant/* invariant */.kG.error),
 });
+/**
+ * Returns an InvariantError.
+ *
+ * `message` can only be a string, a concatenation of strings, or a ternary statement
+ * that results in a string. This will be enforced on build, where the message will
+ * be replaced with a message number.
+ * String substitutions with %s are supported and will also return
+ * pretty-stringified objects.
+ * Excess `optionalParams` will be swallowed.
+ */
 function newInvariantError(message) {
     var optionalParams = [];
     for (var _i = 1; _i < arguments.length; _i++) {
@@ -24105,9 +26344,7 @@ function newInvariantError(message) {
 }
 var ApolloErrorMessageHandler = Symbol.for("ApolloErrorMessageHandler_" + version/* version */.i);
 function stringify(arg) {
-    return typeof arg == "string"
-        ? arg
-        : (0,stringifyForDisplay/* stringifyForDisplay */.v)(arg, 2).slice(0, 1000);
+    return typeof arg == "string" ? arg : ((0,stringifyForDisplay/* stringifyForDisplay */.v)(arg, 2).slice(0, 1000));
 }
 function getHandledErrorMsg(message, messageArgs) {
     if (messageArgs === void 0) { messageArgs = []; }
@@ -24133,6 +26370,13 @@ function getFallbackErrorMsg(message, messageArgs) {
 
 
 
+/**
+ * @deprecated we do not use this internally anymore,
+ * it is just exported for backwards compatibility
+ */
+// this file is extempt from automatic `__DEV__` replacement
+// so we have to write it out here
+// @ts-ignore
 var DEV = globalThis.__DEV__ !== false;
 
 //# sourceMappingURL=index.js.map
@@ -24157,24 +26401,31 @@ var DEV = globalThis.__DEV__ !== false;
 function identity(document) {
     return document;
 }
-var DocumentTransform = (function () {
+var DocumentTransform = /** @class */ (function () {
     function DocumentTransform(transform, options) {
         if (options === void 0) { options = Object.create(null); }
-        this.resultCache = _common_canUse_js__WEBPACK_IMPORTED_MODULE_2__/* .canUseWeakSet */ .sy
-            ? new WeakSet()
-            : new Set();
+        this.resultCache = _common_canUse_js__WEBPACK_IMPORTED_MODULE_2__/* .canUseWeakSet */ .sy ? new WeakSet() : new Set();
         this.transform = transform;
         if (options.getCacheKey) {
+            // Override default `getCacheKey` function, which returns [document].
             this.getCacheKey = options.getCacheKey;
         }
         if (options.cache !== false) {
             this.stableCacheKeys = new _wry_trie__WEBPACK_IMPORTED_MODULE_0__/* .Trie */ .B(_common_canUse_js__WEBPACK_IMPORTED_MODULE_2__/* .canUseWeakMap */ .mr, function (key) { return ({ key: key }); });
         }
     }
+    // This default implementation of getCacheKey can be overridden by providing
+    // options.getCacheKey to the DocumentTransform constructor. In general, a
+    // getCacheKey function may either return an array of keys (often including
+    // the document) to be used as a cache key, or undefined to indicate the
+    // transform for this document should not be cached.
     DocumentTransform.prototype.getCacheKey = function (document) {
         return [document];
     };
     DocumentTransform.identity = function () {
+        // No need to cache this transform since it just returns the document
+        // unchanged. This should save a bit of memory that would otherwise be
+        // needed to populate the `documentCache` of this transform.
         return new DocumentTransform(identity, { cache: false });
     };
     DocumentTransform.split = function (predicate, left, right) {
@@ -24182,9 +26433,13 @@ var DocumentTransform = (function () {
         return new DocumentTransform(function (document) {
             var documentTransform = predicate(document) ? left : right;
             return documentTransform.transformDocument(document);
-        }, { cache: false });
+        }, 
+        // Reasonably assume both `left` and `right` transforms handle their own caching
+        { cache: false });
     };
     DocumentTransform.prototype.transformDocument = function (document) {
+        // If a user passes an already transformed result back to this function,
+        // immediately return it.
         if (this.resultCache.has(document)) {
             return document;
         }
@@ -24204,7 +26459,9 @@ var DocumentTransform = (function () {
         var _this = this;
         return new DocumentTransform(function (document) {
             return otherTransform.transformDocument(_this.transformDocument(document));
-        }, { cache: false });
+        }, 
+        // Reasonably assume both transforms handle their own caching
+        { cache: false });
     };
     DocumentTransform.prototype.getStableCacheEntry = function (document) {
         if (!this.stableCacheKeys)
@@ -24282,6 +26539,8 @@ function hasDirectives(names, root, all) {
             }
         },
     });
+    // If we found all the names, nameSet will be empty. If we only care about
+    // finding some of them, the < condition is sufficient.
     return all ? !nameSet.size : nameSet.size < uniqueCount;
 }
 function hasClientExports(document) {
@@ -24303,6 +26562,7 @@ function getInclusionDirectives(directives) {
             var ifArgument = directiveArguments[0];
             (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(ifArgument.name && ifArgument.name.value === "if", 68, directiveName);
             var ifValue = ifArgument.value;
+            // means it has to be a variable value if this is a valid @skip or @include directive
             (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(ifValue &&
                 (ifValue.kind === "Variable" || ifValue.kind === "BooleanValue"), 69, directiveName);
             result.push({ directive: directive, ifArgument: ifArgument });
@@ -24329,10 +26589,37 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 /* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6961);
 
 
+/**
+ * Returns a query document which adds a single query operation that only
+ * spreads the target fragment inside of it.
+ *
+ * So for example a document of:
+ *
+ * ```graphql
+ * fragment foo on Foo { a b c }
+ * ```
+ *
+ * Turns into:
+ *
+ * ```graphql
+ * { ...foo }
+ *
+ * fragment foo on Foo { a b c }
+ * ```
+ *
+ * The target fragment will either be the only fragment in the document, or a
+ * fragment specified by the provided `fragmentName`. If there is more than one
+ * fragment, but a `fragmentName` was not defined then an error will be thrown.
+ */
 function getFragmentQueryDocument(document, fragmentName) {
     var actualFragmentName = fragmentName;
+    // Build an array of all our fragment definitions that will be used for
+    // validations. We also do some validations on the other definitions in the
+    // document while building this list.
     var fragments = [];
     document.definitions.forEach(function (definition) {
+        // Throw an error if we encounter an operation definition because we will
+        // define our own operation definition later on.
         if (definition.kind === "OperationDefinition") {
             throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ ._K)(
                 70,
@@ -24340,17 +26627,24 @@ function getFragmentQueryDocument(document, fragmentName) {
                 definition.name ? " named '".concat(definition.name.value, "'") : ""
             );
         }
+        // Add our definition to the fragments array if it is a fragment
+        // definition.
         if (definition.kind === "FragmentDefinition") {
             fragments.push(definition);
         }
     });
+    // If the user did not give us a fragment name then let us try to get a
+    // name from a single fragment in the definition.
     if (typeof actualFragmentName === "undefined") {
         (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragments.length === 1, 71, fragments.length);
         actualFragmentName = fragments[0].name.value;
     }
+    // Generate a query document with an operation that simply spreads the
+    // fragment inside of it.
     var query = (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .pi)({}, document), { definitions: (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__spreadArray */ .ev)([
             {
                 kind: "OperationDefinition",
+                // OperationTypeNode is an enum
                 operation: "query",
                 selectionSet: {
                     kind: "SelectionSet",
@@ -24368,6 +26662,8 @@ function getFragmentQueryDocument(document, fragmentName) {
         ], document.definitions, true) });
     return query;
 }
+// Utility function that takes a list of fragment definitions and makes a hash out of them
+// that maps the name of the fragment to the fragment definition.
 function createFragmentMap(fragments) {
     if (fragments === void 0) { fragments = []; }
     var symTable = {};
@@ -24417,6 +26713,7 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 }
 
 
+// Checks the document for errors and throws an exception if there is an error.
 function checkDocument(doc) {
     (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(doc && doc.kind === "Document", 73);
     var operations = doc.definitions
@@ -24443,6 +26740,7 @@ function getOperationName(doc) {
     })
         .map(function (x) { return x.name.value; })[0] || null);
 }
+// Returns the FragmentDefinitions from a particular document as an array
 function getFragmentDefinitions(doc) {
     return doc.definitions.filter(function (definition) {
         return definition.kind === "FragmentDefinition";
@@ -24460,6 +26758,11 @@ function getFragmentDefinition(doc) {
     (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .kG)(fragmentDef.kind === "FragmentDefinition", 79);
     return fragmentDef;
 }
+/**
+ * Returns the first operation definition found in this document.
+ * If no operation definition is found, the first fragment definition will be returned.
+ * If no definitions are found, an error will be thrown.
+ */
 function getMainDefinition(queryDoc) {
     checkDocument(queryDoc);
     var fragmentDefinition;
@@ -24474,6 +26777,8 @@ function getMainDefinition(queryDoc) {
             }
         }
         if (definition.kind === "FragmentDefinition" && !fragmentDefinition) {
+            // we do this because we want to allow multiple fragment definitions
+            // to precede an operation definition.
             fragmentDefinition = definition;
         }
     }
@@ -24663,8 +26968,8 @@ var getStoreKeyName = Object.assign(function (fieldName, args, directives) {
         directives["connection"]["key"]) {
         if (directives["connection"]["filter"] &&
             directives["connection"]["filter"].length > 0) {
-            var filterKeys = directives["connection"]["filter"]
-                ? directives["connection"]["filter"]
+            var filterKeys = directives["connection"]["filter"] ?
+                directives["connection"]["filter"]
                 : [];
             filterKeys.sort();
             var filteredArgs_1 = {};
@@ -24679,6 +26984,9 @@ var getStoreKeyName = Object.assign(function (fieldName, args, directives) {
     }
     var completeFieldName = fieldName;
     if (args) {
+        // We can't use `JSON.stringify` here since it's non-deterministic,
+        // and can lead to different store key names being created even though
+        // the `args` object used during creation has the same properties/values.
         var stringifiedArgs = stringify(args);
         completeFieldName += "(".concat(stringifiedArgs, ")");
     }
@@ -24702,6 +27010,8 @@ var getStoreKeyName = Object.assign(function (fieldName, args, directives) {
         return previous;
     },
 });
+// Default stable JSON.stringify implementation. Can be updated/replaced with
+// something better by calling getStoreKeyName.setStringify.
 var stringify = function defaultStringify(value) {
     return JSON.stringify(value, stringifyReplacer);
 };
@@ -24816,8 +27126,8 @@ function isEmpty(op, fragmentMap) {
         }));
 }
 function nullIfDocIsEmpty(doc) {
-    return isEmpty((0,_getFromAST_js__WEBPACK_IMPORTED_MODULE_2__/* .getOperationDefinition */ .$H)(doc) || (0,_getFromAST_js__WEBPACK_IMPORTED_MODULE_2__/* .getFragmentDefinition */ .pD)(doc), (0,_fragments_js__WEBPACK_IMPORTED_MODULE_3__/* .createFragmentMap */ .F)((0,_getFromAST_js__WEBPACK_IMPORTED_MODULE_2__/* .getFragmentDefinitions */ .kU)(doc)))
-        ? null
+    return (isEmpty((0,_getFromAST_js__WEBPACK_IMPORTED_MODULE_2__/* .getOperationDefinition */ .$H)(doc) || (0,_getFromAST_js__WEBPACK_IMPORTED_MODULE_2__/* .getFragmentDefinition */ .pD)(doc), (0,_fragments_js__WEBPACK_IMPORTED_MODULE_3__/* .createFragmentMap */ .F)((0,_getFromAST_js__WEBPACK_IMPORTED_MODULE_2__/* .getFragmentDefinitions */ .kU)(doc)))) ?
+        null
         : doc;
 }
 function getDirectiveMatcher(configs) {
@@ -24852,6 +27162,10 @@ function makeInUseGetterFunction(defaultKey) {
         var inUse = map.get(key);
         if (!inUse) {
             map.set(key, (inUse = {
+                // Variable and fragment spread names used directly within this
+                // operation or fragment definition, as identified by key. These sets
+                // will be populated during the first traversal of the document in
+                // removeDirectivesFromDocument below.
                 variables: new Set(),
                 fragmentSpreads: new Set(),
             }));
@@ -24861,6 +27175,10 @@ function makeInUseGetterFunction(defaultKey) {
 }
 function removeDirectivesFromDocument(directives, doc) {
     (0,_getFromAST_js__WEBPACK_IMPORTED_MODULE_2__/* .checkDocument */ .A$)(doc);
+    // Passing empty strings to makeInUseGetterFunction means we handle anonymous
+    // operations as if their names were "". Anonymous fragment definitions are
+    // not supposed to be possible, but the same default naming strategy seems
+    // appropriate for that case as well.
     var getInUseByOperationName = makeInUseGetterFunction("");
     var getInUseByFragmentName = makeInUseGetterFunction("");
     var getInUse = function (ancestors) {
@@ -24868,6 +27186,7 @@ function removeDirectivesFromDocument(directives, doc) {
             if ((0,_common_arrays_js__WEBPACK_IMPORTED_MODULE_4__/* .isArray */ .k)(ancestor))
                 continue;
             if (ancestor.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.OPERATION_DEFINITION) {
+                // If an operation is anonymous, we use the empty string as its key.
                 return getInUseByOperationName(ancestor.name && ancestor.name.value);
             }
             if (ancestor.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.FRAGMENT_DEFINITION) {
@@ -24891,6 +27210,11 @@ function removeDirectivesFromDocument(directives, doc) {
                 .some(function (config) { return config && config.remove; });
     };
     var originalFragmentDefsByPath = new Map();
+    // Any time the first traversal of the document below makes a change like
+    // removing a fragment (by returning null), this variable should be set to
+    // true. Once it becomes true, it should never be set to false again. If this
+    // variable remains false throughout the traversal, then we can return the
+    // original doc immediately without any modifications.
     var firstVisitMadeChanges = false;
     var fieldOrInlineFragmentVisitor = {
         enter: function (node) {
@@ -24901,10 +27225,15 @@ function removeDirectivesFromDocument(directives, doc) {
         },
     };
     var docWithoutDirectiveSubtrees = (0,graphql__WEBPACK_IMPORTED_MODULE_5__/* .visit */ .Vn)(doc, {
+        // These two AST node types share the same implementation, defined above.
         Field: fieldOrInlineFragmentVisitor,
         InlineFragment: fieldOrInlineFragmentVisitor,
         VariableDefinition: {
             enter: function () {
+                // VariableDefinition nodes do not count as variables in use, though
+                // they do contain Variable nodes that might be visited below. To avoid
+                // counting variable declarations as usages, we skip visiting the
+                // contents of this VariableDefinition node by returning false.
                 return false;
             },
         },
@@ -24926,6 +27255,11 @@ function removeDirectivesFromDocument(directives, doc) {
                 if (inUse) {
                     inUse.fragmentSpreads.add(node.name.value);
                 }
+                // We might like to remove this FragmentSpread by returning null here if
+                // the corresponding FragmentDefinition node is also going to be removed
+                // by the logic below, but we can't control the relative order of those
+                // events, so we have to postpone the removal of dangling FragmentSpread
+                // nodes until after the current visit of the document has finished.
             },
         },
         FragmentDefinition: {
@@ -24935,13 +27269,26 @@ function removeDirectivesFromDocument(directives, doc) {
             leave: function (node, _key, _parent, path) {
                 var originalNode = originalFragmentDefsByPath.get(JSON.stringify(path));
                 if (node === originalNode) {
+                    // If the FragmentNode received by this leave function is identical to
+                    // the one received by the corresponding enter function (above), then
+                    // the visitor must not have made any changes within this
+                    // FragmentDefinition node. This fragment definition may still be
+                    // removed if there are no ...spread references to it, but it won't be
+                    // removed just because it has only a __typename field.
                     return node;
                 }
-                if (operationCount > 0 &&
+                if (
+                // This logic applies only if the document contains one or more
+                // operations, since removing all fragments from a document containing
+                // only fragments makes the document useless.
+                operationCount > 0 &&
                     node.selectionSet.selections.every(function (selection) {
                         return selection.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.FIELD &&
                             selection.name.value === "__typename";
                     })) {
+                    // This is a somewhat opinionated choice: if a FragmentDefinition ends
+                    // up having no fields other than __typename, we remove the whole
+                    // fragment definition, and later prune ...spread references to it.
                     getInUseByFragmentName(node.name.value).removed = true;
                     firstVisitMadeChanges = true;
                     return null;
@@ -24950,6 +27297,9 @@ function removeDirectivesFromDocument(directives, doc) {
         },
         Directive: {
             leave: function (node) {
+                // If a matching directive is found, remove the directive itself. Note
+                // that this does not remove the target (field, argument, etc) of the
+                // directive, but only the directive itself.
                 if (directiveMatcher(node)) {
                     firstVisitMadeChanges = true;
                     return null;
@@ -24958,8 +27308,15 @@ function removeDirectivesFromDocument(directives, doc) {
         },
     });
     if (!firstVisitMadeChanges) {
+        // If our first pass did not change anything about the document, then there
+        // is no cleanup we need to do, and we can return the original doc.
         return doc;
     }
+    // Utility for making sure inUse.transitiveVars is recursively populated.
+    // Because this logic assumes inUse.fragmentSpreads has been completely
+    // populated and inUse.removed has been set if appropriate,
+    // populateTransitiveVars must be called after that information has been
+    // collected by the first traversal of the document.
     var populateTransitiveVars = function (inUse) {
         if (!inUse.transitiveVars) {
             inUse.transitiveVars = new Set(inUse.variables);
@@ -24973,6 +27330,9 @@ function removeDirectivesFromDocument(directives, doc) {
         }
         return inUse;
     };
+    // Since we've been keeping track of fragment spreads used by particular
+    // operations and fragment definitions, we now need to compute the set of all
+    // spreads used (transitively) by any operations in the document.
     var allFragmentNamesUsed = new Set();
     docWithoutDirectiveSubtrees.definitions.forEach(function (def) {
         if (def.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.OPERATION_DEFINITION) {
@@ -24981,18 +27341,31 @@ function removeDirectivesFromDocument(directives, doc) {
             });
         }
         else if (def.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.FRAGMENT_DEFINITION &&
+            // If there are no operations in the document, then all fragment
+            // definitions count as usages of their own fragment names. This heuristic
+            // prevents accidentally removing all fragment definitions from the
+            // document just because it contains no operations that use the fragments.
             operationCount === 0 &&
             !getInUseByFragmentName(def.name.value).removed) {
             allFragmentNamesUsed.add(def.name.value);
         }
     });
+    // Now that we have added all fragment spreads used by operations to the
+    // allFragmentNamesUsed set, we can complete the set by transitively adding
+    // all fragment spreads used by those fragments, and so on.
     allFragmentNamesUsed.forEach(function (fragmentName) {
+        // Once all the childFragmentName strings added here have been seen already,
+        // the top-level allFragmentNamesUsed.forEach loop will terminate.
         populateTransitiveVars(getInUseByFragmentName(fragmentName)).fragmentSpreads.forEach(function (childFragmentName) {
             allFragmentNamesUsed.add(childFragmentName);
         });
     });
     var fragmentWillBeRemoved = function (fragmentName) {
-        return !!((!allFragmentNamesUsed.has(fragmentName) ||
+        return !!(
+        // A fragment definition will be removed if there are no spreads that refer
+        // to it, or the fragment was explicitly removed because it had no fields
+        // other than __typename.
+        (!allFragmentNamesUsed.has(fragmentName) ||
             getInUseByFragmentName(fragmentName).removed));
     };
     var enterVisitor = {
@@ -25003,12 +27376,30 @@ function removeDirectivesFromDocument(directives, doc) {
         },
     };
     return nullIfDocIsEmpty((0,graphql__WEBPACK_IMPORTED_MODULE_5__/* .visit */ .Vn)(docWithoutDirectiveSubtrees, {
+        // If the fragment is going to be removed, then leaving any dangling
+        // FragmentSpread nodes with the same name would be a mistake.
         FragmentSpread: enterVisitor,
+        // This is where the fragment definition is actually removed.
         FragmentDefinition: enterVisitor,
         OperationDefinition: {
             leave: function (node) {
+                // Upon leaving each operation in the depth-first AST traversal, prune
+                // any variables that are declared by the operation but unused within.
                 if (node.variableDefinitions) {
-                    var usedVariableNames_1 = populateTransitiveVars(getInUseByOperationName(node.name && node.name.value)).transitiveVars;
+                    var usedVariableNames_1 = populateTransitiveVars(
+                    // If an operation is anonymous, we use the empty string as its key.
+                    getInUseByOperationName(node.name && node.name.value)).transitiveVars;
+                    // According to the GraphQL spec, all variables declared by an
+                    // operation must either be used by that operation or used by some
+                    // fragment included transitively into that operation:
+                    // https://spec.graphql.org/draft/#sec-All-Variables-Used
+                    //
+                    // To stay on the right side of this validation rule, if/when we
+                    // remove the last $var references from an operation or its fragments,
+                    // we must also remove the corresponding $var declaration from the
+                    // enclosing operation. This pruning applies only to operations and
+                    // not fragment definitions, at the moment. Fragments may be able to
+                    // declare variables eventually, but today they can only consume them.
                     if (usedVariableNames_1.size < node.variableDefinitions.length) {
                         return (0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)({}, node), { variableDefinitions: node.variableDefinitions.filter(function (varDef) {
                                 return usedVariableNames_1.has(varDef.variable.name.value);
@@ -25023,15 +27414,19 @@ var addTypenameToDocument = Object.assign(function (doc) {
     return (0,graphql__WEBPACK_IMPORTED_MODULE_5__/* .visit */ .Vn)(doc, {
         SelectionSet: {
             enter: function (node, _key, parent) {
+                // Don't add __typename to OperationDefinitions.
                 if (parent &&
                     parent.kind ===
                         graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .h.OPERATION_DEFINITION) {
                     return;
                 }
+                // No changes if no selections.
                 var selections = node.selections;
                 if (!selections) {
                     return;
                 }
+                // If selections already have a __typename, or are part of an
+                // introspection query, do nothing.
                 var skip = selections.some(function (selection) {
                     return ((0,_storeUtils_js__WEBPACK_IMPORTED_MODULE_7__/* .isField */ .My)(selection) &&
                         (selection.name.value === "__typename" ||
@@ -25040,12 +27435,15 @@ var addTypenameToDocument = Object.assign(function (doc) {
                 if (skip) {
                     return;
                 }
+                // If this SelectionSet is @export-ed as an input variable, it should
+                // not have a __typename field (see issue #4691).
                 var field = parent;
                 if ((0,_storeUtils_js__WEBPACK_IMPORTED_MODULE_7__/* .isField */ .My)(field) &&
                     field.directives &&
                     field.directives.some(function (d) { return d.name.value === "export"; })) {
                     return;
                 }
+                // Create and return a new SelectionSet with a __typename Field.
                 return (0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)((0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__assign */ .pi)({}, node), { selections: (0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__spreadArray */ .ev)((0,tslib__WEBPACK_IMPORTED_MODULE_6__/* .__spreadArray */ .ev)([], selections, true), [TYPENAME_FIELD], false) });
             },
         },
@@ -25106,8 +27504,10 @@ function removeArgumentsFromDocument(config, doc) {
     return nullIfDocIsEmpty(visit(doc, {
         OperationDefinition: {
             enter: function (node) {
-                return __assign(__assign({}, node), { variableDefinitions: node.variableDefinitions
-                        ? node.variableDefinitions.filter(function (varDef) {
+                return __assign(__assign({}, node), { 
+                    // Remove matching top level variables definitions.
+                    variableDefinitions: node.variableDefinitions ?
+                        node.variableDefinitions.filter(function (varDef) {
                             return !config.some(function (arg) { return arg.name === varDef.variable.name.value; });
                         })
                         : [] });
@@ -25115,6 +27515,8 @@ function removeArgumentsFromDocument(config, doc) {
         },
         Field: {
             enter: function (node) {
+                // If `remove` is set to true for an argument, and an argument match
+                // is found for a field, remove the field as well.
                 var shouldRemoveField = config.some(function (argConfig) { return argConfig.remove; });
                 if (shouldRemoveField) {
                     var argMatchCount_1 = 0;
@@ -25133,6 +27535,7 @@ function removeArgumentsFromDocument(config, doc) {
         },
         Argument: {
             enter: function (node) {
+                // Remove all matching arguments.
                 if (argMatcher(node)) {
                     return null;
                 }
@@ -25151,12 +27554,17 @@ function removeFragmentSpreadFromDocument(config, doc) {
         FragmentDefinition: { enter: enter },
     }));
 }
+// If the incoming document is a query, return it as is. Otherwise, build a
+// new document containing a query operation based on the selection set
+// of the previous main operation.
 function buildQueryFromSelectionSet(document) {
     var definition = (0,_getFromAST_js__WEBPACK_IMPORTED_MODULE_2__/* .getMainDefinition */ .p$)(document);
     var definitionOperation = definition.operation;
     if (definitionOperation === "query") {
+        // Already a query, so return the existing document.
         return document;
     }
+    // Build a new query using the selection set of the main operation.
     var modifiedDoc = (0,graphql__WEBPACK_IMPORTED_MODULE_5__/* .visit */ .Vn)(document, {
         OperationDefinition: {
             enter: function (node) {
@@ -25166,6 +27574,7 @@ function buildQueryFromSelectionSet(document) {
     });
     return modifiedDoc;
 }
+// Remove fields / selection sets that include an @client directive.
 function removeClientSetsFromDocument(document) {
     (0,_getFromAST_js__WEBPACK_IMPORTED_MODULE_2__/* .checkDocument */ .A$)(document);
     var modifiedDoc = removeDirectivesFromDocument([
@@ -25188,6 +27597,9 @@ function removeClientSetsFromDocument(document) {
 /* harmony export */   p: () => (/* binding */ iterateObserversSafely)
 /* harmony export */ });
 function iterateObserversSafely(observers, method, argument) {
+    // In case observers is modified during iteration, we need to commit to the
+    // original elements, which also provides an opportunity to filter them down
+    // to just the observers with the given method.
     var observersWithMethod = [];
     observers.forEach(function (obs) { return obs[method] && observersWithMethod.push(obs); });
     observersWithMethod.forEach(function (obs) { return obs[method](argument); });
@@ -25211,13 +27623,27 @@ if (/^(33[45]|149|179|28|452)$/.test(__webpack_require__.j)) {
 }
 
 
+// Generic implementations of Observable.prototype methods like map and
+// filter need to know how to create a new Observable from an Observable
+// subclass (like Concast or ObservableQuery). Those methods assume
+// (perhaps unwisely?) that they can call the subtype's constructor with a
+// Subscriber function, even though the subclass constructor might expect
+// different parameters. Defining this static Symbol.species property on
+// the subclass is a hint to generic Observable code to use the default
+// constructor instead of trying to do `new Subclass(observer => ...)`.
 function fixObservableSubclass(subclass) {
     function set(key) {
+        // Object.defineProperty is necessary because the Symbol.species
+        // property is a getter by default in modern JS environments, so we
+        // can't assign to it with a normal assignment expression.
         Object.defineProperty(subclass, key, { value: _Observable_js__WEBPACK_IMPORTED_MODULE_0__/* .Observable */ .y });
     }
     if (_common_canUse_js__WEBPACK_IMPORTED_MODULE_1__/* .canUseSymbol */ .aS && Symbol.species) {
         set(Symbol.species);
     }
+    // The "@@species" string is used as a fake Symbol.species value in some
+    // polyfill systems (including the SymbolSpecies variable used by
+    // zen-observable), so we should set it as well, to be safe.
     set("@@species");
     return subclass;
 }
@@ -25243,6 +27669,7 @@ function createFulfilledPromise(value) {
 }
 function createRejectedPromise(reason) {
     var promise = Promise.reject(reason);
+    // prevent potential edge cases leaking unhandled error rejections
     promise.catch(function () { });
     promise.status = "rejected";
     promise.reason = reason;
@@ -25283,252 +27710,104 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   i: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.8.7";
+var version = "3.8.8";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
 
-/***/ 2455:
+/***/ 2379:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  g7: () => (/* reexport */ Slot)
-});
-
-// UNUSED EXPORTS: asyncFromGen, bind, noContext, setTimeout, wrapYieldingFiberMethods
-
-;// CONCATENATED MODULE: ./node_modules/@wry/context/lib/slot.js
-// This currentContext variable will only be used if the makeSlotClass
-// function is called, which happens only if this is the first copy of the
-// @wry/context package to be imported.
-let currentContext = null;
-// This unique internal object is used to denote the absence of a value
-// for a given Slot, and is never exposed to outside code.
-const MISSING_VALUE = {};
-let idCounter = 1;
-// Although we can't do anything about the cost of duplicated code from
-// accidentally bundling multiple copies of the @wry/context package, we can
-// avoid creating the Slot class more than once using makeSlotClass.
-const makeSlotClass = () => class Slot {
-    constructor() {
-        // If you have a Slot object, you can find out its slot.id, but you cannot
-        // guess the slot.id of a Slot you don't have access to, thanks to the
-        // randomized suffix.
-        this.id = [
-            "slot",
-            idCounter++,
-            Date.now(),
-            Math.random().toString(36).slice(2),
-        ].join(":");
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   e: () => (/* binding */ StrongCache)
+/* harmony export */ });
+function defaultDispose() { }
+class StrongCache {
+    constructor(max = Infinity, dispose = defaultDispose) {
+        this.max = max;
+        this.dispose = dispose;
+        this.map = new Map();
+        this.newest = null;
+        this.oldest = null;
     }
-    hasValue() {
-        for (let context = currentContext; context; context = context.parent) {
-            // We use the Slot object iself as a key to its value, which means the
-            // value cannot be obtained without a reference to the Slot object.
-            if (this.id in context.slots) {
-                const value = context.slots[this.id];
-                if (value === MISSING_VALUE)
-                    break;
-                if (context !== currentContext) {
-                    // Cache the value in currentContext.slots so the next lookup will
-                    // be faster. This caching is safe because the tree of contexts and
-                    // the values of the slots are logically immutable.
-                    currentContext.slots[this.id] = value;
-                }
-                return true;
+    has(key) {
+        return this.map.has(key);
+    }
+    get(key) {
+        const node = this.getNode(key);
+        return node && node.value;
+    }
+    get size() {
+        return this.map.size;
+    }
+    getNode(key) {
+        const node = this.map.get(key);
+        if (node && node !== this.newest) {
+            const { older, newer } = node;
+            if (newer) {
+                newer.older = older;
+            }
+            if (older) {
+                older.newer = newer;
+            }
+            node.older = this.newest;
+            node.older.newer = node;
+            node.newer = null;
+            this.newest = node;
+            if (node === this.oldest) {
+                this.oldest = newer;
             }
         }
-        if (currentContext) {
-            // If a value was not found for this Slot, it's never going to be found
-            // no matter how many times we look it up, so we might as well cache
-            // the absence of the value, too.
-            currentContext.slots[this.id] = MISSING_VALUE;
+        return node;
+    }
+    set(key, value) {
+        let node = this.getNode(key);
+        if (node) {
+            return node.value = value;
+        }
+        node = {
+            key,
+            value,
+            newer: null,
+            older: this.newest
+        };
+        if (this.newest) {
+            this.newest.newer = node;
+        }
+        this.newest = node;
+        this.oldest = this.oldest || node;
+        this.map.set(key, node);
+        return node.value;
+    }
+    clean() {
+        while (this.oldest && this.map.size > this.max) {
+            this.delete(this.oldest.key);
+        }
+    }
+    delete(key) {
+        const node = this.map.get(key);
+        if (node) {
+            if (node === this.newest) {
+                this.newest = node.older;
+            }
+            if (node === this.oldest) {
+                this.oldest = node.newer;
+            }
+            if (node.newer) {
+                node.newer.older = node.older;
+            }
+            if (node.older) {
+                node.older.newer = node.newer;
+            }
+            this.map.delete(key);
+            this.dispose(node.value, key);
+            return true;
         }
         return false;
     }
-    getValue() {
-        if (this.hasValue()) {
-            return currentContext.slots[this.id];
-        }
-    }
-    withValue(value, callback, 
-    // Given the prevalence of arrow functions, specifying arguments is likely
-    // to be much more common than specifying `this`, hence this ordering:
-    args, thisArg) {
-        const slots = {
-            __proto__: null,
-            [this.id]: value,
-        };
-        const parent = currentContext;
-        currentContext = { parent, slots };
-        try {
-            // Function.prototype.apply allows the arguments array argument to be
-            // omitted or undefined, so args! is fine here.
-            return callback.apply(thisArg, args);
-        }
-        finally {
-            currentContext = parent;
-        }
-    }
-    // Capture the current context and wrap a callback function so that it
-    // reestablishes the captured context when called.
-    static bind(callback) {
-        const context = currentContext;
-        return function () {
-            const saved = currentContext;
-            try {
-                currentContext = context;
-                return callback.apply(this, arguments);
-            }
-            finally {
-                currentContext = saved;
-            }
-        };
-    }
-    // Immediately run a callback function without any captured context.
-    static noContext(callback, 
-    // Given the prevalence of arrow functions, specifying arguments is likely
-    // to be much more common than specifying `this`, hence this ordering:
-    args, thisArg) {
-        if (currentContext) {
-            const saved = currentContext;
-            try {
-                currentContext = null;
-                // Function.prototype.apply allows the arguments array argument to be
-                // omitted or undefined, so args! is fine here.
-                return callback.apply(thisArg, args);
-            }
-            finally {
-                currentContext = saved;
-            }
-        }
-        else {
-            return callback.apply(thisArg, args);
-        }
-    }
-};
-function maybe(fn) {
-    try {
-        return fn();
-    }
-    catch (ignored) { }
 }
-// We store a single global implementation of the Slot class as a permanent
-// non-enumerable property of the globalThis object. This obfuscation does
-// nothing to prevent access to the Slot class, but at least it ensures the
-// implementation (i.e. currentContext) cannot be tampered with, and all copies
-// of the @wry/context package (hopefully just one) will share the same Slot
-// implementation. Since the first copy of the @wry/context package to be
-// imported wins, this technique imposes a steep cost for any future breaking
-// changes to the Slot class.
-const globalKey = "@wry/context:Slot";
-const host = 
-// Prefer globalThis when available.
-// https://github.com/benjamn/wryware/issues/347
-maybe(() => globalThis) ||
-    // Fall back to global, which works in Node.js and may be converted by some
-    // bundlers to the appropriate identifier (window, self, ...) depending on the
-    // bundling target. https://github.com/endojs/endo/issues/576#issuecomment-1178515224
-    maybe(() => global) ||
-    // Otherwise, use a dummy host that's local to this module. We used to fall
-    // back to using the Array constructor as a namespace, but that was flagged in
-    // https://github.com/benjamn/wryware/issues/347, and can be avoided.
-    Object.create(null);
-// Whichever globalHost we're using, make TypeScript happy about the additional
-// globalKey property.
-const globalHost = host;
-const Slot = globalHost[globalKey] ||
-    // Earlier versions of this package stored the globalKey property on the Array
-    // constructor, so we check there as well, to prevent Slot class duplication.
-    Array[globalKey] ||
-    (function (Slot) {
-        try {
-            Object.defineProperty(globalHost, globalKey, {
-                value: Slot,
-                enumerable: false,
-                writable: false,
-                // When it was possible for globalHost to be the Array constructor (a
-                // legacy Slot dedup strategy), it was important for the property to be
-                // configurable:true so it could be deleted. That does not seem to be as
-                // important when globalHost is the global object, but I don't want to
-                // cause similar problems again, and configurable:true seems safest.
-                // https://github.com/endojs/endo/issues/576#issuecomment-1178274008
-                configurable: true
-            });
-        }
-        finally {
-            return Slot;
-        }
-    })(makeSlotClass());
-//# sourceMappingURL=slot.js.map
-;// CONCATENATED MODULE: ./node_modules/@wry/context/lib/index.js
-
-
-const { bind, noContext } = Slot;
-// Like global.setTimeout, except the callback runs with captured context.
-
-function setTimeoutWithContext(callback, delay) {
-    return setTimeout(bind(callback), delay);
-}
-// Turn any generator function into an async function (using yield instead
-// of await), with context automatically preserved across yields.
-function asyncFromGen(genFn) {
-    return function () {
-        const gen = genFn.apply(this, arguments);
-        const boundNext = bind(gen.next);
-        const boundThrow = bind(gen.throw);
-        return new Promise((resolve, reject) => {
-            function invoke(method, argument) {
-                try {
-                    var result = method.call(gen, argument);
-                }
-                catch (error) {
-                    return reject(error);
-                }
-                const next = result.done ? resolve : invokeNext;
-                if (isPromiseLike(result.value)) {
-                    result.value.then(next, result.done ? reject : invokeThrow);
-                }
-                else {
-                    next(result.value);
-                }
-            }
-            const invokeNext = (value) => invoke(boundNext, value);
-            const invokeThrow = (error) => invoke(boundThrow, error);
-            invokeNext();
-        });
-    };
-}
-function isPromiseLike(value) {
-    return value && typeof value.then === "function";
-}
-// If you use the fibers npm package to implement coroutines in Node.js,
-// you should call this function at least once to ensure context management
-// remains coherent across any yields.
-const wrappedFibers = (/* unused pure expression or super */ null && ([]));
-function wrapYieldingFiberMethods(Fiber) {
-    // There can be only one implementation of Fiber per process, so this array
-    // should never grow longer than one element.
-    if (wrappedFibers.indexOf(Fiber) < 0) {
-        const wrap = (obj, method) => {
-            const fn = obj[method];
-            obj[method] = function () {
-                return noContext(fn, arguments, this);
-            };
-        };
-        // These methods can yield, according to
-        // https://github.com/laverdet/node-fibers/blob/ddebed9b8ae3883e57f822e2108e6943e5c8d2a8/fibers.js#L97-L100
-        wrap(Fiber, "yield");
-        wrap(Fiber.prototype, "run");
-        wrap(Fiber.prototype, "throwInto");
-        wrappedFibers.push(Fiber);
-    }
-    return Fiber;
-}
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=strong.js.map
 
 /***/ }),
 
@@ -25761,8 +28040,8 @@ class Trie {
         this.weakness = weakness;
         this.makeData = makeData;
     }
-    lookup(...array) {
-        return this.lookupArray(array);
+    lookup() {
+        return this.lookupArray(arguments);
     }
     lookupArray(array) {
         let node = this;
@@ -25771,25 +28050,50 @@ class Trie {
             ? node.data
             : node.data = this.makeData(slice.call(array));
     }
-    peek(...array) {
-        return this.peekArray(array);
+    peek() {
+        return this.peekArray(arguments);
     }
     peekArray(array) {
         let node = this;
         for (let i = 0, len = array.length; node && i < len; ++i) {
-            const map = this.weakness && isObjRef(array[i]) ? node.weak : node.strong;
+            const map = node.mapFor(array[i], false);
             node = map && map.get(array[i]);
         }
         return node && node.data;
     }
+    remove() {
+        return this.removeArray(arguments);
+    }
+    removeArray(array) {
+        let data;
+        if (array.length) {
+            const head = array[0];
+            const map = this.mapFor(head, false);
+            const child = map && map.get(head);
+            if (child) {
+                data = child.removeArray(slice.call(array, 1));
+                if (!child.data && !child.weak && !(child.strong && child.strong.size)) {
+                    map.delete(head);
+                }
+            }
+        }
+        else {
+            data = this.data;
+            delete this.data;
+        }
+        return data;
+    }
     getChildTrie(key) {
-        const map = this.weakness && isObjRef(key)
-            ? this.weak || (this.weak = new WeakMap())
-            : this.strong || (this.strong = new Map());
+        const map = this.mapFor(key, true);
         let child = map.get(key);
         if (!child)
             map.set(key, child = new Trie(this.weakness, this.makeData));
         return child;
+    }
+    mapFor(key, create) {
+        return this.weakness && isObjRef(key)
+            ? this.weak || (create ? this.weak = new WeakMap : void 0)
+            : this.strong || (create ? this.strong = new Map : void 0);
     }
 }
 function isObjRef(value) {
@@ -30816,124 +33120,316 @@ fetch.Promise = global.Promise;
 
 /***/ }),
 
-/***/ 4939:
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   C: () => (/* binding */ Cache)
-/* harmony export */ });
-function defaultDispose() { }
-class Cache {
-    constructor(max = Infinity, dispose = defaultDispose) {
-        this.max = max;
-        this.dispose = dispose;
-        this.map = new Map();
-        this.newest = null;
-        this.oldest = null;
-    }
-    has(key) {
-        return this.map.has(key);
-    }
-    get(key) {
-        const node = this.getNode(key);
-        return node && node.value;
-    }
-    getNode(key) {
-        const node = this.map.get(key);
-        if (node && node !== this.newest) {
-            const { older, newer } = node;
-            if (newer) {
-                newer.older = older;
-            }
-            if (older) {
-                older.newer = newer;
-            }
-            node.older = this.newest;
-            node.older.newer = node;
-            node.newer = null;
-            this.newest = node;
-            if (node === this.oldest) {
-                this.oldest = newer;
-            }
-        }
-        return node;
-    }
-    set(key, value) {
-        let node = this.getNode(key);
-        if (node) {
-            return node.value = value;
-        }
-        node = {
-            key,
-            value,
-            newer: null,
-            older: this.newest
-        };
-        if (this.newest) {
-            this.newest.newer = node;
-        }
-        this.newest = node;
-        this.oldest = this.oldest || node;
-        this.map.set(key, node);
-        return node.value;
-    }
-    clean() {
-        while (this.oldest && this.map.size > this.max) {
-            this.delete(this.oldest.key);
-        }
-    }
-    delete(key) {
-        const node = this.map.get(key);
-        if (node) {
-            if (node === this.newest) {
-                this.newest = node.older;
-            }
-            if (node === this.oldest) {
-                this.oldest = node.newer;
-            }
-            if (node.newer) {
-                node.newer.older = node.older;
-            }
-            if (node.older) {
-                node.older.newer = node.newer;
-            }
-            this.map.delete(key);
-            this.dispose(node.value, key);
-            return true;
-        }
-        return false;
-    }
-}
-//# sourceMappingURL=cache.js.map
-
-/***/ }),
-
-/***/ 6869:
+/***/ 3168:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
+  g7: () => (/* reexport */ Slot),
   dP: () => (/* reexport */ dep),
   re: () => (/* binding */ wrap)
 });
 
 // UNUSED EXPORTS: KeyTrie, asyncFromGen, bindContext, defaultMakeCacheKey, noContext, nonReactive, setTimeout
 
-// EXTERNAL MODULE: ./node_modules/@wry/trie/lib/index.js
-var lib = __webpack_require__(5028);
-// EXTERNAL MODULE: ./node_modules/optimism/lib/cache.js
-var lib_cache = __webpack_require__(4939);
-// EXTERNAL MODULE: ./node_modules/@wry/context/lib/index.js + 1 modules
-var context_lib = __webpack_require__(2455);
+;// CONCATENATED MODULE: ./node_modules/optimism/node_modules/@wry/trie/lib/index.js
+// A [trie](https://en.wikipedia.org/wiki/Trie) data structure that holds
+// object keys weakly, yet can also hold non-object keys, unlike the
+// native `WeakMap`.
+// If no makeData function is supplied, the looked-up data will be an empty,
+// null-prototype Object.
+const defaultMakeData = () => Object.create(null);
+// Useful for processing arguments objects as well as arrays.
+const { forEach, slice } = Array.prototype;
+const { hasOwnProperty: lib_hasOwnProperty } = Object.prototype;
+class Trie {
+    constructor(weakness = true, makeData = defaultMakeData) {
+        this.weakness = weakness;
+        this.makeData = makeData;
+    }
+    lookup(...array) {
+        return this.lookupArray(array);
+    }
+    lookupArray(array) {
+        let node = this;
+        forEach.call(array, key => node = node.getChildTrie(key));
+        return lib_hasOwnProperty.call(node, "data")
+            ? node.data
+            : node.data = this.makeData(slice.call(array));
+    }
+    peek(...array) {
+        return this.peekArray(array);
+    }
+    peekArray(array) {
+        let node = this;
+        for (let i = 0, len = array.length; node && i < len; ++i) {
+            const map = this.weakness && isObjRef(array[i]) ? node.weak : node.strong;
+            node = map && map.get(array[i]);
+        }
+        return node && node.data;
+    }
+    getChildTrie(key) {
+        const map = this.weakness && isObjRef(key)
+            ? this.weak || (this.weak = new WeakMap())
+            : this.strong || (this.strong = new Map());
+        let child = map.get(key);
+        if (!child)
+            map.set(key, child = new Trie(this.weakness, this.makeData));
+        return child;
+    }
+}
+function isObjRef(value) {
+    switch (typeof value) {
+        case "object":
+            if (value === null)
+                break;
+        // Fall through to return true...
+        case "function":
+            return true;
+    }
+    return false;
+}
+//# sourceMappingURL=index.js.map
+// EXTERNAL MODULE: ./node_modules/@wry/caches/lib/strong.js
+var strong = __webpack_require__(2379);
+;// CONCATENATED MODULE: ./node_modules/@wry/context/lib/slot.js
+// This currentContext variable will only be used if the makeSlotClass
+// function is called, which happens only if this is the first copy of the
+// @wry/context package to be imported.
+let currentContext = null;
+// This unique internal object is used to denote the absence of a value
+// for a given Slot, and is never exposed to outside code.
+const MISSING_VALUE = {};
+let idCounter = 1;
+// Although we can't do anything about the cost of duplicated code from
+// accidentally bundling multiple copies of the @wry/context package, we can
+// avoid creating the Slot class more than once using makeSlotClass.
+const makeSlotClass = () => class Slot {
+    constructor() {
+        // If you have a Slot object, you can find out its slot.id, but you cannot
+        // guess the slot.id of a Slot you don't have access to, thanks to the
+        // randomized suffix.
+        this.id = [
+            "slot",
+            idCounter++,
+            Date.now(),
+            Math.random().toString(36).slice(2),
+        ].join(":");
+    }
+    hasValue() {
+        for (let context = currentContext; context; context = context.parent) {
+            // We use the Slot object iself as a key to its value, which means the
+            // value cannot be obtained without a reference to the Slot object.
+            if (this.id in context.slots) {
+                const value = context.slots[this.id];
+                if (value === MISSING_VALUE)
+                    break;
+                if (context !== currentContext) {
+                    // Cache the value in currentContext.slots so the next lookup will
+                    // be faster. This caching is safe because the tree of contexts and
+                    // the values of the slots are logically immutable.
+                    currentContext.slots[this.id] = value;
+                }
+                return true;
+            }
+        }
+        if (currentContext) {
+            // If a value was not found for this Slot, it's never going to be found
+            // no matter how many times we look it up, so we might as well cache
+            // the absence of the value, too.
+            currentContext.slots[this.id] = MISSING_VALUE;
+        }
+        return false;
+    }
+    getValue() {
+        if (this.hasValue()) {
+            return currentContext.slots[this.id];
+        }
+    }
+    withValue(value, callback, 
+    // Given the prevalence of arrow functions, specifying arguments is likely
+    // to be much more common than specifying `this`, hence this ordering:
+    args, thisArg) {
+        const slots = {
+            __proto__: null,
+            [this.id]: value,
+        };
+        const parent = currentContext;
+        currentContext = { parent, slots };
+        try {
+            // Function.prototype.apply allows the arguments array argument to be
+            // omitted or undefined, so args! is fine here.
+            return callback.apply(thisArg, args);
+        }
+        finally {
+            currentContext = parent;
+        }
+    }
+    // Capture the current context and wrap a callback function so that it
+    // reestablishes the captured context when called.
+    static bind(callback) {
+        const context = currentContext;
+        return function () {
+            const saved = currentContext;
+            try {
+                currentContext = context;
+                return callback.apply(this, arguments);
+            }
+            finally {
+                currentContext = saved;
+            }
+        };
+    }
+    // Immediately run a callback function without any captured context.
+    static noContext(callback, 
+    // Given the prevalence of arrow functions, specifying arguments is likely
+    // to be much more common than specifying `this`, hence this ordering:
+    args, thisArg) {
+        if (currentContext) {
+            const saved = currentContext;
+            try {
+                currentContext = null;
+                // Function.prototype.apply allows the arguments array argument to be
+                // omitted or undefined, so args! is fine here.
+                return callback.apply(thisArg, args);
+            }
+            finally {
+                currentContext = saved;
+            }
+        }
+        else {
+            return callback.apply(thisArg, args);
+        }
+    }
+};
+function maybe(fn) {
+    try {
+        return fn();
+    }
+    catch (ignored) { }
+}
+// We store a single global implementation of the Slot class as a permanent
+// non-enumerable property of the globalThis object. This obfuscation does
+// nothing to prevent access to the Slot class, but at least it ensures the
+// implementation (i.e. currentContext) cannot be tampered with, and all copies
+// of the @wry/context package (hopefully just one) will share the same Slot
+// implementation. Since the first copy of the @wry/context package to be
+// imported wins, this technique imposes a steep cost for any future breaking
+// changes to the Slot class.
+const globalKey = "@wry/context:Slot";
+const host = 
+// Prefer globalThis when available.
+// https://github.com/benjamn/wryware/issues/347
+maybe(() => globalThis) ||
+    // Fall back to global, which works in Node.js and may be converted by some
+    // bundlers to the appropriate identifier (window, self, ...) depending on the
+    // bundling target. https://github.com/endojs/endo/issues/576#issuecomment-1178515224
+    maybe(() => global) ||
+    // Otherwise, use a dummy host that's local to this module. We used to fall
+    // back to using the Array constructor as a namespace, but that was flagged in
+    // https://github.com/benjamn/wryware/issues/347, and can be avoided.
+    Object.create(null);
+// Whichever globalHost we're using, make TypeScript happy about the additional
+// globalKey property.
+const globalHost = host;
+const Slot = globalHost[globalKey] ||
+    // Earlier versions of this package stored the globalKey property on the Array
+    // constructor, so we check there as well, to prevent Slot class duplication.
+    Array[globalKey] ||
+    (function (Slot) {
+        try {
+            Object.defineProperty(globalHost, globalKey, {
+                value: Slot,
+                enumerable: false,
+                writable: false,
+                // When it was possible for globalHost to be the Array constructor (a
+                // legacy Slot dedup strategy), it was important for the property to be
+                // configurable:true so it could be deleted. That does not seem to be as
+                // important when globalHost is the global object, but I don't want to
+                // cause similar problems again, and configurable:true seems safest.
+                // https://github.com/endojs/endo/issues/576#issuecomment-1178274008
+                configurable: true
+            });
+        }
+        finally {
+            return Slot;
+        }
+    })(makeSlotClass());
+//# sourceMappingURL=slot.js.map
+;// CONCATENATED MODULE: ./node_modules/@wry/context/lib/index.js
+
+
+const { bind, noContext } = Slot;
+// Like global.setTimeout, except the callback runs with captured context.
+
+function setTimeoutWithContext(callback, delay) {
+    return setTimeout(bind(callback), delay);
+}
+// Turn any generator function into an async function (using yield instead
+// of await), with context automatically preserved across yields.
+function asyncFromGen(genFn) {
+    return function () {
+        const gen = genFn.apply(this, arguments);
+        const boundNext = bind(gen.next);
+        const boundThrow = bind(gen.throw);
+        return new Promise((resolve, reject) => {
+            function invoke(method, argument) {
+                try {
+                    var result = method.call(gen, argument);
+                }
+                catch (error) {
+                    return reject(error);
+                }
+                const next = result.done ? resolve : invokeNext;
+                if (isPromiseLike(result.value)) {
+                    result.value.then(next, result.done ? reject : invokeThrow);
+                }
+                else {
+                    next(result.value);
+                }
+            }
+            const invokeNext = (value) => invoke(boundNext, value);
+            const invokeThrow = (error) => invoke(boundThrow, error);
+            invokeNext();
+        });
+    };
+}
+function isPromiseLike(value) {
+    return value && typeof value.then === "function";
+}
+// If you use the fibers npm package to implement coroutines in Node.js,
+// you should call this function at least once to ensure context management
+// remains coherent across any yields.
+const wrappedFibers = (/* unused pure expression or super */ null && ([]));
+function wrapYieldingFiberMethods(Fiber) {
+    // There can be only one implementation of Fiber per process, so this array
+    // should never grow longer than one element.
+    if (wrappedFibers.indexOf(Fiber) < 0) {
+        const wrap = (obj, method) => {
+            const fn = obj[method];
+            obj[method] = function () {
+                return noContext(fn, arguments, this);
+            };
+        };
+        // These methods can yield, according to
+        // https://github.com/laverdet/node-fibers/blob/ddebed9b8ae3883e57f822e2108e6943e5c8d2a8/fibers.js#L97-L100
+        wrap(Fiber, "yield");
+        wrap(Fiber.prototype, "run");
+        wrap(Fiber.prototype, "throwInto");
+        wrappedFibers.push(Fiber);
+    }
+    return Fiber;
+}
+//# sourceMappingURL=index.js.map
 ;// CONCATENATED MODULE: ./node_modules/optimism/lib/context.js
 
-const parentEntrySlot = new context_lib/* Slot */.g7();
+const parentEntrySlot = new Slot();
 function nonReactive(fn) {
     return parentEntrySlot.withValue(void 0, fn);
 }
+
 
 //# sourceMappingURL=context.js.map
 ;// CONCATENATED MODULE: ./node_modules/optimism/lib/helpers.js
@@ -31022,7 +33518,6 @@ class Entry {
         if (this.dirty)
             return;
         this.dirty = true;
-        this.value.length = 0;
         reportDirty(this);
         // We can go ahead and unsubscribe here, since any further dirty
         // notifications we receive will be redundant, and unsubscribing may
@@ -31103,14 +33598,32 @@ function reallyRecompute(entry, args) {
 }
 function recomputeNewValue(entry, args) {
     entry.recomputing = true;
-    // Set entry.value as unknown.
+    const { normalizeResult } = entry;
+    let oldValueCopy;
+    if (normalizeResult && entry.value.length === 1) {
+        oldValueCopy = valueCopy(entry.value);
+    }
+    // Make entry.value an empty array, representing an unknown value.
     entry.value.length = 0;
     try {
         // If entry.fn succeeds, entry.value will become a normal Value.
         entry.value[0] = entry.fn.apply(null, args);
+        // If we have a viable oldValueCopy to compare with the (successfully
+        // recomputed) new entry.value, and they are not already === identical, give
+        // normalizeResult a chance to pick/choose/reuse parts of oldValueCopy[0]
+        // and/or entry.value[0] to determine the final cached entry.value.
+        if (normalizeResult && oldValueCopy && !valueIs(oldValueCopy, entry.value)) {
+            try {
+                entry.value[0] = normalizeResult(entry.value[0], oldValueCopy[0]);
+            }
+            catch (_a) {
+                // If normalizeResult throws, just use the newer value, rather than
+                // saving the exception as entry.value[1].
+            }
+        }
     }
     catch (e) {
-        // If entry.fn throws, entry.value will become exceptional.
+        // If entry.fn throws, entry.value will hold that exception.
         entry.value[1] = e;
     }
     // Either way, this line is always reached.
@@ -31304,16 +33817,19 @@ function dep(options) {
 // In those cases, just write your own custom makeCacheKey functions.
 let defaultKeyTrie;
 function defaultMakeCacheKey(...args) {
-    const trie = defaultKeyTrie || (defaultKeyTrie = new lib/* Trie */.B(typeof WeakMap === "function"));
+    const trie = defaultKeyTrie || (defaultKeyTrie = new Trie(typeof WeakMap === "function"));
     return trie.lookupArray(args);
 }
 // If you're paranoid about memory leaks, or you want to avoid using WeakMap
 // under the hood, but you still need the behavior of defaultMakeCacheKey,
 // import this constructor to create your own tries.
 
+;
 const caches = new Set();
-function wrap(originalFunction, { max = Math.pow(2, 16), makeCacheKey = defaultMakeCacheKey, keyArgs, subscribe, } = Object.create(null)) {
-    const cache = new lib_cache/* Cache */.C(max, entry => entry.dispose());
+function wrap(originalFunction, { max = Math.pow(2, 16), keyArgs, makeCacheKey = defaultMakeCacheKey, normalizeResult, subscribe, cache: cacheOption = strong/* StrongCache */.e, } = Object.create(null)) {
+    const cache = typeof cacheOption === "function"
+        ? new cacheOption(max, entry => entry.dispose())
+        : cacheOption;
     const optimistic = function () {
         const key = makeCacheKey.apply(null, keyArgs ? keyArgs.apply(null, arguments) : arguments);
         if (key === void 0) {
@@ -31322,6 +33838,7 @@ function wrap(originalFunction, { max = Math.pow(2, 16), makeCacheKey = defaultM
         let entry = cache.get(key);
         if (!entry) {
             cache.set(key, entry = new Entry(originalFunction));
+            entry.normalizeResult = normalizeResult;
             entry.subscribe = subscribe;
             // Give the Entry the ability to trigger cache.delete(key), even though
             // the Entry itself does not know about key or cache.
@@ -31342,20 +33859,20 @@ function wrap(originalFunction, { max = Math.pow(2, 16), makeCacheKey = defaultM
         return value;
     };
     Object.defineProperty(optimistic, "size", {
-        get() {
-            return cache["map"].size;
-        },
+        get: () => cache.size,
         configurable: false,
         enumerable: false,
     });
     Object.freeze(optimistic.options = {
         max,
-        makeCacheKey,
         keyArgs,
+        makeCacheKey,
+        normalizeResult,
         subscribe,
+        cache,
     });
     function dirtyKey(key) {
-        const entry = cache.get(key);
+        const entry = key && cache.get(key);
         if (entry) {
             entry.setDirty();
         }
@@ -31365,7 +33882,7 @@ function wrap(originalFunction, { max = Math.pow(2, 16), makeCacheKey = defaultM
         dirtyKey(makeCacheKey.apply(null, arguments));
     };
     function peekKey(key) {
-        const entry = cache.get(key);
+        const entry = key && cache.get(key);
         if (entry) {
             return entry.peek();
         }
@@ -31375,7 +33892,7 @@ function wrap(originalFunction, { max = Math.pow(2, 16), makeCacheKey = defaultM
         return peekKey(makeCacheKey.apply(null, arguments));
     };
     function forgetKey(key) {
-        return cache.delete(key);
+        return key ? cache.delete(key) : false;
     }
     optimistic.forgetKey = forgetKey;
     optimistic.forget = function forget() {
