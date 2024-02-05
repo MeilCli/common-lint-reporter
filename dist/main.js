@@ -2,7 +2,7 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 9330:
+/***/ 3984:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -11,9 +11,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.GitHubClient = exports.githubClient = void 0;
-const cross_fetch_1 = __importDefault(__webpack_require__(4165));
-const client_1 = __webpack_require__(5864);
-const graphql_1 = __webpack_require__(1973);
+const cross_fetch_1 = __importDefault(__webpack_require__(1639));
+const client_1 = __webpack_require__(1872);
+const graphql_1 = __webpack_require__(4972);
 function githubClient(option) {
     return new GitHubClient(new client_1.ApolloClient({
         link: new client_1.HttpLink({
@@ -161,7 +161,7 @@ exports.GitHubClient = GitHubClient;
 
 /***/ }),
 
-/***/ 2754:
+/***/ 2812:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -190,7 +190,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.GitHubContext = exports.githubContext = void 0;
-const github = __importStar(__webpack_require__(8142));
+const github = __importStar(__webpack_require__(2632));
 function githubContext(option) {
     return new GitHubContext(option);
 }
@@ -244,7 +244,7 @@ exports.GitHubContext = GitHubContext;
 
 /***/ }),
 
-/***/ 9639:
+/***/ 5336:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -335,7 +335,7 @@ exports.getPullRequestReviewThreadsWithPaging = getPullRequestReviewThreadsWithP
 
 /***/ }),
 
-/***/ 1744:
+/***/ 1056:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -364,8 +364,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.writeLintResults = exports.readLintResults = void 0;
-const glob = __importStar(__webpack_require__(5826));
-const fs = __importStar(__webpack_require__(7147));
+const glob = __importStar(__webpack_require__(8782));
+const fs = __importStar(__webpack_require__(2058));
 async function readLintResults(option) {
     const globber = await glob.create(option.reportFiles, {
         followSymbolicLinks: option.reportFilesFollowSymbolicLinks,
@@ -388,7 +388,7 @@ exports.writeLintResults = writeLintResults;
 
 /***/ }),
 
-/***/ 8519:
+/***/ 2592:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -416,12 +416,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core = __importStar(__webpack_require__(2225));
-const option_1 = __webpack_require__(8089);
-const lint_result_1 = __webpack_require__(1744);
-const check_run_reporter_1 = __webpack_require__(7334);
-const comment_reporter_1 = __webpack_require__(7390);
-const inline_comment_reporter_1 = __webpack_require__(2144);
+const core = __importStar(__webpack_require__(6592));
+const option_1 = __webpack_require__(5652);
+const lint_result_1 = __webpack_require__(1056);
+const check_run_reporter_1 = __webpack_require__(9456);
+const comment_reporter_1 = __webpack_require__(396);
+const inline_comment_reporter_1 = __webpack_require__(4228);
 async function run() {
     try {
         const option = (0, option_1.getOption)();
@@ -449,7 +449,7 @@ run();
 
 /***/ }),
 
-/***/ 8089:
+/***/ 5652:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -478,7 +478,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getOption = exports.OutdatedResolver = exports.ReportType = exports.getCommonOption = void 0;
-const core = __importStar(__webpack_require__(2225));
+const core = __importStar(__webpack_require__(6592));
 function getCommonOption() {
     return {
         githubToken: getInput("github_token"),
@@ -567,14 +567,14 @@ function getInputNumberOrNull(key) {
 
 /***/ }),
 
-/***/ 4523:
+/***/ 252:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.equalsAnnotation = exports.createAnnotation = void 0;
-const graphql_1 = __webpack_require__(1973);
-const path_1 = __webpack_require__(5565);
+const graphql_1 = __webpack_require__(4972);
+const path_1 = __webpack_require__(2776);
 function createAnnotation(context, lintResult) {
     if (lintResult.startLine == undefined) {
         // report only at summary
@@ -646,20 +646,20 @@ exports.equalsAnnotation = equalsAnnotation;
 
 /***/ }),
 
-/***/ 7334:
+/***/ 9456:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CheckRunReporter = void 0;
-const client_1 = __webpack_require__(9330);
-const context_1 = __webpack_require__(2754);
-const paging_1 = __webpack_require__(9639);
-const graphql_1 = __webpack_require__(1973);
-const conclusion_1 = __webpack_require__(2135);
-const summary_1 = __webpack_require__(8863);
-const message_1 = __webpack_require__(2507);
-const annotation_1 = __webpack_require__(4523);
+const client_1 = __webpack_require__(3984);
+const context_1 = __webpack_require__(2812);
+const paging_1 = __webpack_require__(5336);
+const graphql_1 = __webpack_require__(4972);
+const conclusion_1 = __webpack_require__(2432);
+const summary_1 = __webpack_require__(5176);
+const message_1 = __webpack_require__(9956);
+const annotation_1 = __webpack_require__(252);
 class CheckRunReporter {
     async report(option, lintResults) {
         const client = (0, client_1.githubClient)(option);
@@ -751,14 +751,14 @@ exports.CheckRunReporter = CheckRunReporter;
 
 /***/ }),
 
-/***/ 2507:
+/***/ 9956:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createMessage = void 0;
-const path_1 = __webpack_require__(5565);
-const level_1 = __webpack_require__(4507);
+const path_1 = __webpack_require__(2776);
+const level_1 = __webpack_require__(1436);
 function markdownLevelMessage(context, lintResults, targetLevel) {
     let result = "";
     for (const lintResult of lintResults) {
@@ -822,13 +822,13 @@ exports.createMessage = createMessage;
 
 /***/ }),
 
-/***/ 8863:
+/***/ 5176:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createSummary = void 0;
-const level_1 = __webpack_require__(4507);
+const level_1 = __webpack_require__(1436);
 function createSummary(lintResults) {
     const noticeCount = (0, level_1.countLevel)(lintResults, "notice");
     const warningCount = (0, level_1.countLevel)(lintResults, "warning");
@@ -862,18 +862,18 @@ exports.createSummary = createSummary;
 
 /***/ }),
 
-/***/ 7390:
+/***/ 396:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CommentReporter = void 0;
-const client_1 = __webpack_require__(9330);
-const context_1 = __webpack_require__(2754);
-const paging_1 = __webpack_require__(9639);
-const graphql_1 = __webpack_require__(1973);
-const conclusion_1 = __webpack_require__(2135);
-const comment_1 = __webpack_require__(3973);
+const client_1 = __webpack_require__(3984);
+const context_1 = __webpack_require__(2812);
+const paging_1 = __webpack_require__(5336);
+const graphql_1 = __webpack_require__(4972);
+const conclusion_1 = __webpack_require__(2432);
+const comment_1 = __webpack_require__(1808);
 class CommentReporter {
     async report(option, lintResults) {
         const client = (0, client_1.githubClient)(option);
@@ -973,14 +973,14 @@ exports.CommentReporter = CommentReporter;
 
 /***/ }),
 
-/***/ 3973:
+/***/ 1808:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.createComment = exports.createLintComment = exports.isLintComment = void 0;
-const level_1 = __webpack_require__(4507);
-const path_1 = __webpack_require__(5565);
+const level_1 = __webpack_require__(1436);
+const path_1 = __webpack_require__(2776);
 function lintCommentIdentifier(reportName) {
     return `<!-- common-lint-reporter: ${reportName} -->`;
 }
@@ -1066,14 +1066,14 @@ function createLevelTable(context, lintResults, targetLevel) {
 
 /***/ }),
 
-/***/ 2135:
+/***/ 2432:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.calculateConclusion = void 0;
-const graphql_1 = __webpack_require__(1973);
-const level_1 = __webpack_require__(4507);
+const graphql_1 = __webpack_require__(4972);
+const level_1 = __webpack_require__(1436);
 function calculateConclusion(option, lintResults) {
     const noticeCount = (0, level_1.countLevel)(lintResults, "notice");
     const warningCount = (0, level_1.countLevel)(lintResults, "warning");
@@ -1088,13 +1088,13 @@ exports.calculateConclusion = calculateConclusion;
 
 /***/ }),
 
-/***/ 2676:
+/***/ 484:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.equalsInlineComment = exports.createInlineComment = exports.createLintInlineComment = exports.isLintInlineComment = void 0;
-const path_1 = __webpack_require__(5565);
+const path_1 = __webpack_require__(2776);
 function lintInlineCommentIdentifier(reportName) {
     return `<!-- common-lint-reporter: ${reportName} -->`;
 }
@@ -1146,17 +1146,17 @@ exports.equalsInlineComment = equalsInlineComment;
 
 /***/ }),
 
-/***/ 2144:
+/***/ 4228:
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.InlineCommentReporter = void 0;
-const option_1 = __webpack_require__(8089);
-const paging_1 = __webpack_require__(9639);
-const comment_reporter_1 = __webpack_require__(7390);
-const comment_1 = __webpack_require__(2676);
-const path_1 = __webpack_require__(5565);
+const option_1 = __webpack_require__(5652);
+const paging_1 = __webpack_require__(5336);
+const comment_reporter_1 = __webpack_require__(396);
+const comment_1 = __webpack_require__(484);
+const path_1 = __webpack_require__(2776);
 class InlineCommentReporter extends comment_reporter_1.CommentReporter {
     async reportComment(client, context, option, pullRequest, loginUser, lintResults) {
         const inlineLintResults = lintResults.filter((x) => x.startLine != undefined);
@@ -1287,7 +1287,7 @@ exports.InlineCommentReporter = InlineCommentReporter;
 
 /***/ }),
 
-/***/ 4507:
+/***/ 1436:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -1307,7 +1307,7 @@ exports.countLevel = countLevel;
 
 /***/ }),
 
-/***/ 5565:
+/***/ 2776:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -1336,7 +1336,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.trimPath = void 0;
-const path = __importStar(__webpack_require__(1017));
+const path = __importStar(__webpack_require__(7072));
 function trimPath(context, filePath) {
     return filePath.replace(`${context.workspacePath()}${path.sep}`, "");
 }
@@ -1345,105 +1345,105 @@ exports.trimPath = trimPath;
 
 /***/ }),
 
-/***/ 9491:
+/***/ 6608:
 /***/ ((module) => {
 
 module.exports = require("assert");
 
 /***/ }),
 
-/***/ 6113:
+/***/ 7968:
 /***/ ((module) => {
 
 module.exports = require("crypto");
 
 /***/ }),
 
-/***/ 2361:
+/***/ 467:
 /***/ ((module) => {
 
 module.exports = require("events");
 
 /***/ }),
 
-/***/ 7147:
+/***/ 2058:
 /***/ ((module) => {
 
 module.exports = require("fs");
 
 /***/ }),
 
-/***/ 3685:
+/***/ 6136:
 /***/ ((module) => {
 
 module.exports = require("http");
 
 /***/ }),
 
-/***/ 5687:
+/***/ 1256:
 /***/ ((module) => {
 
 module.exports = require("https");
 
 /***/ }),
 
-/***/ 1808:
+/***/ 5256:
 /***/ ((module) => {
 
 module.exports = require("net");
 
 /***/ }),
 
-/***/ 2037:
+/***/ 8558:
 /***/ ((module) => {
 
 module.exports = require("os");
 
 /***/ }),
 
-/***/ 1017:
+/***/ 7072:
 /***/ ((module) => {
 
 module.exports = require("path");
 
 /***/ }),
 
-/***/ 5477:
+/***/ 400:
 /***/ ((module) => {
 
 module.exports = require("punycode");
 
 /***/ }),
 
-/***/ 2781:
+/***/ 8378:
 /***/ ((module) => {
 
 module.exports = require("stream");
 
 /***/ }),
 
-/***/ 4404:
+/***/ 192:
 /***/ ((module) => {
 
 module.exports = require("tls");
 
 /***/ }),
 
-/***/ 7310:
+/***/ 8716:
 /***/ ((module) => {
 
 module.exports = require("url");
 
 /***/ }),
 
-/***/ 3837:
+/***/ 970:
 /***/ ((module) => {
 
 module.exports = require("util");
 
 /***/ }),
 
-/***/ 9796:
+/***/ 592:
 /***/ ((module) => {
 
 module.exports = require("zlib");
@@ -1486,7 +1486,7 @@ module.exports = require("zlib");
 /******/ 	__webpack_require__.x = () => {
 /******/ 		// Load entry module and return exports
 /******/ 		// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 		var __webpack_exports__ = __webpack_require__.O(undefined, [736,265], () => (__webpack_require__(8519)))
+/******/ 		var __webpack_exports__ = __webpack_require__.O(undefined, [968,192], () => (__webpack_require__(2592)))
 /******/ 		__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 		return __webpack_exports__;
 /******/ 	};
@@ -1596,7 +1596,7 @@ module.exports = require("zlib");
 /******/ 		// This function allow to reference async chunks and sibling chunks for the entrypoint
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames based on template
-/******/ 			return "" + {"265":"graphql","736":"vendor"}[chunkId] + ".js";
+/******/ 			return "" + {"192":"graphql","968":"vendor"}[chunkId] + ".js";
 /******/ 		};
 /******/ 	})();
 /******/ 	
@@ -1627,7 +1627,7 @@ module.exports = require("zlib");
 /******/ 	
 /******/ 	/* webpack/runtime/runtimeId */
 /******/ 	(() => {
-/******/ 		__webpack_require__.j = 179;
+/******/ 		__webpack_require__.j = 590;
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/require chunk loading */
@@ -1637,7 +1637,7 @@ module.exports = require("zlib");
 /******/ 		// object to store loaded chunks
 /******/ 		// "1" means "loaded", otherwise not loaded yet
 /******/ 		var installedChunks = {
-/******/ 			179: 1
+/******/ 			590: 1
 /******/ 		};
 /******/ 		
 /******/ 		__webpack_require__.O.require = (chunkId) => (installedChunks[chunkId]);
@@ -1676,8 +1676,8 @@ module.exports = require("zlib");
 /******/ 	(() => {
 /******/ 		var next = __webpack_require__.x;
 /******/ 		__webpack_require__.x = () => {
-/******/ 			__webpack_require__.e(736);
-/******/ 			__webpack_require__.e(265);
+/******/ 			__webpack_require__.e(968);
+/******/ 			__webpack_require__.e(192);
 /******/ 			return next();
 /******/ 		};
 /******/ 	})();
