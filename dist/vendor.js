@@ -19129,7 +19129,6 @@ var QueryInfo = /** @class */ (function () {
     };
     QueryInfo.prototype.markResult = function (result, document, options, cacheWriteBehavior) {
         var _this = this;
-        result = (0,tslib_es6/* __assign */.C3)({}, result);
         var merger = new mergeDeep/* DeepMerger */.kL();
         var graphQLErrors = (0,arrays/* isNonEmptyArray */.g)(result.errors) ? result.errors.slice(0) : [];
         // Cancel the pending notify timeout (if it exists) to prevent extraneous network
@@ -19167,10 +19166,7 @@ var QueryInfo = /** @class */ (function () {
                             overwrite: cacheWriteBehavior === 1 /* CacheWriteBehavior.OVERWRITE */,
                         });
                         _this.lastWrite = {
-                            // Make a shallow defensive copy of the result object, in case we
-                            // later later modify result.data in place, since we don't want
-                            // that mutation affecting the saved lastWrite.result.data.
-                            result: (0,tslib_es6/* __assign */.C3)({}, result),
+                            result: result,
                             variables: options.variables,
                             dmCount: destructiveMethodCounts.get(_this.cache),
                         };
@@ -19230,19 +19226,21 @@ var QueryInfo = /** @class */ (function () {
                         // sure we've started watching the cache.
                         _this.updateWatch(options.variables);
                     }
-                    // If we're allowed to write to the cache, update result.data to be
-                    // the result as re-read from the cache, rather than the raw network
-                    // result. Set without setDiff to avoid triggering a notify call,
-                    // since we have other ways of notifying for this result.
+                    // If we're allowed to write to the cache, and we can read a
+                    // complete result from the cache, update result.data to be the
+                    // result from the cache, rather than the raw network result.
+                    // Set without setDiff to avoid triggering a notify call, since
+                    // we have other ways of notifying for this result.
                     _this.updateLastDiff(diff, diffOptions);
-                    result.data = diff.result;
+                    if (diff.complete) {
+                        result.data = diff.result;
+                    }
                 });
             }
             else {
                 this.lastWrite = void 0;
             }
         }
-        return result;
     };
     QueryInfo.prototype.markReady = function () {
         this.networkError = null;
@@ -20044,7 +20042,7 @@ var QueryManager = /** @class */ (function () {
                 // Use linkDocument rather than queryInfo.document so the
                 // operation/fragments used to write the result are the same as the
                 // ones used to obtain it from the link.
-                result = queryInfo.markResult(result, linkDocument, options, cacheWriteBehavior);
+                queryInfo.markResult(result, linkDocument, options, cacheWriteBehavior);
                 queryInfo.markReady();
             }
             var aqr = {
@@ -24294,7 +24292,7 @@ function useLazyQuery(query, options) {
     var document = (_a = merged === null || merged === void 0 ? void 0 : merged.query) !== null && _a !== void 0 ? _a : query;
     // Use refs to track options and the used query to ensure the `execute`
     // function remains referentially stable between renders.
-    optionsRef.current = merged;
+    optionsRef.current = options;
     queryRef.current = document;
     var internalState = (0,_useQuery_js__WEBPACK_IMPORTED_MODULE_2__/* .useInternalState */ .a)((0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .y)(options && options.client), document);
     var useQueryResult = internalState.useQuery((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .C3)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .C3)({}, merged), { skip: !execOptionsRef.current }));
@@ -29220,7 +29218,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   W: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.9.3";
+var version = "3.9.4";
 //# sourceMappingURL=version.js.map
 
 /***/ }),

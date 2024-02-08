@@ -20852,6 +20852,8 @@ export type Repository = Node & PackageOwner & ProjectOwner & ProjectV2Recent & 
   hasIssuesEnabled: Scalars['Boolean']['output'];
   /** Indicates if the repository has the Projects feature enabled. */
   hasProjectsEnabled: Scalars['Boolean']['output'];
+  /** Indicates if the repository displays a Sponsor button for financial contributions. */
+  hasSponsorshipsEnabled: Scalars['Boolean']['output'];
   /** Whether vulnerability alerts are enabled for the repository. */
   hasVulnerabilityAlertsEnabled: Scalars['Boolean']['output'];
   /** Indicates if the repository has wiki feature enabled. */
@@ -21672,6 +21674,8 @@ export type RepositoryInfo = {
   hasIssuesEnabled: Scalars['Boolean']['output'];
   /** Indicates if the repository has the Projects feature enabled. */
   hasProjectsEnabled: Scalars['Boolean']['output'];
+  /** Indicates if the repository displays a Sponsor button for financial contributions. */
+  hasSponsorshipsEnabled: Scalars['Boolean']['output'];
   /** Indicates if the repository has wiki feature enabled. */
   hasWikiEnabled: Scalars['Boolean']['output'];
   /** The repository's URL. */
@@ -28100,6 +28104,8 @@ export type UpdateRepositoryInput = {
   hasIssuesEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** Indicates if the repository should have the project boards feature enabled. */
   hasProjectsEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Indicates if the repository displays a Sponsor button for financial contributions. */
+  hasSponsorshipsEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** Indicates if the repository should have the wiki feature enabled. */
   hasWikiEnabled?: InputMaybe<Scalars['Boolean']['input']>;
   /** The URL for a web page about this repository. Pass an empty string to erase the existing URL. */
@@ -39779,6 +39785,7 @@ export type RepositoryResolvers<ContextType = any, ParentType extends ResolversP
   hasDiscussionsEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   hasIssuesEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   hasProjectsEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  hasSponsorshipsEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   hasVulnerabilityAlertsEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   hasWikiEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   homepageUrl?: Resolver<Maybe<ResolversTypes['URI']>, ParentType, ContextType>;
@@ -39964,6 +39971,7 @@ export type RepositoryInfoResolvers<ContextType = any, ParentType extends Resolv
   hasDiscussionsEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   hasIssuesEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   hasProjectsEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  hasSponsorshipsEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   hasWikiEnabled?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   homepageUrl?: Resolver<Maybe<ResolversTypes['URI']>, ParentType, ContextType>;
   isArchived?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
