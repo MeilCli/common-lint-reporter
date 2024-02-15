@@ -1,9 +1,9 @@
 "use strict";
-exports.id = 192;
-exports.ids = [192];
+exports.id = 630;
+exports.ids = [630];
 exports.modules = {
 
-/***/ 4972:
+/***/ 2634:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -16,7 +16,7 @@ exports.PackageType = exports.PackageOrderField = exports.PackageFileOrderField 
 exports.RepositoryInteractionLimit = exports.RepositoryContributionType = exports.RepositoryAffiliation = exports.ReportedContentClassifiers = exports.RepoRemoveMemberAuditEntryVisibility = exports.RepoDestroyAuditEntryVisibility = exports.RepoCreateAuditEntryVisibility = exports.RepoChangeMergeSettingAuditEntryMergeType = exports.RepoArchivedAuditEntryVisibility = exports.RepoAddMemberAuditEntryVisibility = exports.RepoAccessAuditEntryVisibility = exports.ReleaseOrderField = exports.RefOrderField = exports.ReactionOrderField = exports.ReactionContent = exports.PullRequestUpdateState = exports.PullRequestTimelineItemsItemType = exports.PullRequestState = exports.PullRequestReviewThreadSubjectType = exports.PullRequestReviewState = exports.PullRequestReviewEvent = exports.PullRequestReviewDecision = exports.PullRequestReviewCommentState = exports.PullRequestOrderField = exports.PullRequestMergeMethod = exports.PullRequestBranchUpdateMethod = exports.ProjectV2WorkflowsOrderField = exports.ProjectV2ViewOrderField = exports.ProjectV2ViewLayout = exports.ProjectV2State = exports.ProjectV2SingleSelectFieldOptionColor = exports.ProjectV2Roles = exports.ProjectV2OrderField = exports.ProjectV2ItemType = exports.ProjectV2ItemOrderField = exports.ProjectV2ItemFieldValueOrderField = exports.ProjectV2FieldType = exports.ProjectV2FieldOrderField = exports.ProjectV2CustomFieldType = exports.ProjectTemplate = exports.ProjectState = exports.ProjectOrderField = exports.ProjectColumnPurpose = exports.ProjectCardState = exports.ProjectCardArchivedState = exports.PinnedDiscussionPattern = exports.PinnedDiscussionGradient = exports.PinnableItemType = exports.PatchStatus = exports.PackageVersionOrderField = void 0;
 exports.TeamDiscussionCommentOrderField = exports.SubscriptionState = exports.StatusState = exports.StarOrderField = exports.SquashMergeCommitTitle = exports.SquashMergeCommitMessage = exports.SponsorshipPrivacy = exports.SponsorshipPaymentSource = exports.SponsorshipOrderField = exports.SponsorshipNewsletterOrderField = exports.SponsorsTierOrderField = exports.SponsorsListingFeaturedItemFeatureableType = exports.SponsorsGoalKind = exports.SponsorsCountryOrRegionCode = exports.SponsorsActivityPeriod = exports.SponsorsActivityOrderField = exports.SponsorsActivityAction = exports.SponsorableOrderField = exports.SponsorOrderField = exports.SponsorAndLifetimeValueOrderField = exports.SocialAccountProvider = exports.SecurityVulnerabilityOrderField = exports.SecurityAdvisorySeverity = exports.SecurityAdvisoryOrderField = exports.SecurityAdvisoryIdentifierType = exports.SecurityAdvisoryEcosystem = exports.SecurityAdvisoryClassification = exports.SearchType = exports.SavedReplyOrderField = exports.SamlSignatureAlgorithm = exports.SamlDigestAlgorithm = exports.RuleEnforcement = exports.RoleInOrganization = exports.RequestableCheckStatusState = exports.RepositoryVulnerabilityAlertState = exports.RepositoryVulnerabilityAlertDependencyScope = exports.RepositoryVisibility = exports.RepositoryRulesetTarget = exports.RepositoryRulesetBypassActorBypassMode = exports.RepositoryRuleType = exports.RepositoryRuleOrderField = exports.RepositoryPrivacy = exports.RepositoryPermission = exports.RepositoryOrderField = exports.RepositoryMigrationOrderField = exports.RepositoryMigrationOrderDirection = exports.RepositoryLockReason = exports.RepositoryInvitationOrderField = exports.RepositoryInteractionLimitOrigin = exports.RepositoryInteractionLimitExpiry = void 0;
 exports.UpdateCheckRun = exports.SubmitPullRequestReview = exports.ResolvePullRequestReviewThread = exports.GetRepositoryId = exports.GetPullRequest = exports.GetPullRequestReviewThreads = exports.GetPullRequestComment = exports.GetPullRequestChangedFile = exports.GetLoginUser = exports.GetCommitStatusAndCheckRun = exports.GetCheckRunAnnotations = exports.DeletePullRequestReview = exports.DeletePullRequestReviewComment = exports.DeleteComment = exports.CreateCheckRun = exports.AddPullRequestReviewThread = exports.AddPullRequestReviewDraft = exports.AddComment = exports.WorkflowState = exports.WorkflowRunOrderField = exports.VerifiableDomainOrderField = exports.UserStatusOrderField = exports.UserBlockDuration = exports.TrackedIssueStates = exports.TopicSuggestionDeclineReason = exports.ThreadSubscriptionState = exports.ThreadSubscriptionFormAction = exports.TeamRole = exports.TeamRepositoryOrderField = exports.TeamPrivacy = exports.TeamOrderField = exports.TeamNotificationSetting = exports.TeamMembershipType = exports.TeamMemberRole = exports.TeamMemberOrderField = exports.TeamDiscussionOrderField = void 0;
-const graphql_tag_1 = __importDefault(__webpack_require__(732));
+const graphql_tag_1 = __importDefault(__webpack_require__(2366));
 /** The actor's type. */
 var ActorType;
 (function (ActorType) {
@@ -582,6 +582,8 @@ var FundingPlatform;
     FundingPlatform["Otechie"] = "OTECHIE";
     /** Patreon funding platform. */
     FundingPlatform["Patreon"] = "PATREON";
+    /** Polar funding platform. */
+    FundingPlatform["Polar"] = "POLAR";
     /** Tidelift funding platform. */
     FundingPlatform["Tidelift"] = "TIDELIFT";
 })(FundingPlatform || (exports.FundingPlatform = FundingPlatform = {}));
