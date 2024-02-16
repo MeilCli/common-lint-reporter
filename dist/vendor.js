@@ -19018,7 +19018,24 @@ var QueryInfo = /** @class */ (function () {
     };
     QueryInfo.prototype.setDiff = function (diff) {
         var _this = this;
+        var _a;
         var oldDiff = this.lastDiff && this.lastDiff.diff;
+        // If we do not tolerate partial results, skip this update to prevent it
+        // from being reported. This prevents a situtuation where a query that
+        // errors and another succeeds with overlapping data does not report the
+        // partial data result to the errored query.
+        //
+        // See https://github.com/apollographql/apollo-client/issues/11400 for more
+        // information on this issue.
+        if (diff &&
+            !diff.complete &&
+            !((_a = this.observableQuery) === null || _a === void 0 ? void 0 : _a.options.returnPartialData) &&
+            // In the case of a cache eviction, the diff will become partial so we
+            // schedule a notification to send a network request (this.oqListener) to
+            // go and fetch the missing data.
+            !(oldDiff && oldDiff.complete)) {
+            return;
+        }
         this.updateLastDiff(diff);
         if (!this.dirty && !(0,lib/* equal */.L)(oldDiff && oldDiff.result, diff && diff.result)) {
             this.dirty = true;
@@ -29218,7 +29235,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.9.4";
+var version = "3.9.5";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
