@@ -24031,6 +24031,59 @@ function useRenderGuard() {
 
 /***/ }),
 
+/***/ 8481:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Y: () => (/* binding */ wrapHook)
+/* harmony export */ });
+var wrapperSymbol = Symbol.for("apollo.hook.wrappers");
+/**
+ * @internal
+ *
+ * Makes an Apollo Client hook "wrappable".
+ * That means that the Apollo Client instance can expose a "wrapper" that will be
+ * used to wrap the original hook implementation with additional logic.
+ * @example
+ * ```tsx
+ * // this is already done in `@apollo/client` for all wrappable hooks (see `WrappableHooks`)
+ * // following this pattern
+ * function useQuery() {
+ *   return wrapHook('useQuery', _useQuery, options.client)(query, options);
+ * }
+ * function _useQuery(query, options) {
+ *   // original implementation
+ * }
+ *
+ * // this is what a library like `@apollo/client-react-streaming` would do
+ * class ApolloClientWithStreaming extends ApolloClient {
+ *   constructor(options) {
+ *     super(options);
+ *     this.queryManager[Symbol.for("apollo.hook.wrappers")] = {
+ *       useQuery: (original) => (query, options) => {
+ *         console.log("useQuery was called with options", options);
+ *         return original(query, options);
+ *       }
+ *     }
+ *   }
+ * }
+ *
+ * // this will now log the options and then call the original `useQuery`
+ * const client = new ApolloClientWithStreaming({ ... });
+ * useQuery(query, { client });
+ * ```
+ */
+function wrapHook(hookName, useHook, clientOrObsQuery) {
+    var queryManager = clientOrObsQuery["queryManager"];
+    var wrappers = queryManager && queryManager[wrapperSymbol];
+    var wrapper = wrappers && wrappers[hookName];
+    return wrapper ? wrapper(useHook) : useHook;
+}
+//# sourceMappingURL=wrapHook.js.map
+
+/***/ }),
+
 /***/ 111:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
@@ -24079,24 +24132,28 @@ function useApolloClient(override) {
 /* harmony export */   E: () => (/* binding */ useBackgroundQuery)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1635);
+	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1635);
 }
 /* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7243);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(111);
+	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(111);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9976);
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9976);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(4047);
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(4047);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useSuspenseQuery_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5599);
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(8481);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(6269);
+	/* harmony import */ var _useSuspenseQuery_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(5599);
 }
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(6269);
+}
+
 
 
 
@@ -24105,9 +24162,12 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 
 function useBackgroundQuery(query, options) {
     if (options === void 0) { options = Object.create(null); }
-    var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_1__/* .useApolloClient */ .m)(options.client);
-    var suspenseCache = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .getSuspenseCache */ .B)(client);
-    var watchQueryOptions = (0,_useSuspenseQuery_js__WEBPACK_IMPORTED_MODULE_3__/* .useWatchQueryOptions */ .hO)({ client: client, query: query, options: options });
+    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .wrapHook */ .Y)("useBackgroundQuery", _useBackgroundQuery, (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__/* .useApolloClient */ .m)(typeof options === "object" ? options.client : undefined))(query, options);
+}
+function _useBackgroundQuery(query, options) {
+    var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__/* .useApolloClient */ .m)(options.client);
+    var suspenseCache = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_3__/* .getSuspenseCache */ .B)(client);
+    var watchQueryOptions = (0,_useSuspenseQuery_js__WEBPACK_IMPORTED_MODULE_4__/* .useWatchQueryOptions */ .hO)({ client: client, query: query, options: options });
     var fetchPolicy = watchQueryOptions.fetchPolicy, variables = watchQueryOptions.variables;
     var _a = options.queryKey, queryKey = _a === void 0 ? [] : _a;
     // This ref tracks the first time query execution is enabled to determine
@@ -24118,29 +24178,29 @@ function useBackgroundQuery(query, options) {
     // skipped again later.
     var didFetchResult = rehackt__WEBPACK_IMPORTED_MODULE_0__.useRef(fetchPolicy !== "standby");
     didFetchResult.current || (didFetchResult.current = fetchPolicy !== "standby");
-    var cacheKey = (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__spreadArray */ .fX)([
+    var cacheKey = (0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__spreadArray */ .fX)([
         query,
-        (0,_cache_index_js__WEBPACK_IMPORTED_MODULE_5__/* .canonicalStringify */ .M)(variables)
+        (0,_cache_index_js__WEBPACK_IMPORTED_MODULE_6__/* .canonicalStringify */ .M)(variables)
     ], [].concat(queryKey), true);
     var queryRef = suspenseCache.getQueryRef(cacheKey, function () {
         return client.watchQuery(watchQueryOptions);
     });
-    var _b = rehackt__WEBPACK_IMPORTED_MODULE_0__.useState((0,_internal_index_js__WEBPACK_IMPORTED_MODULE_6__/* .wrapQueryRef */ .Qh)(queryRef)), wrappedQueryRef = _b[0], setWrappedQueryRef = _b[1];
-    if ((0,_internal_index_js__WEBPACK_IMPORTED_MODULE_6__/* .unwrapQueryRef */ .Fd)(wrappedQueryRef) !== queryRef) {
-        setWrappedQueryRef((0,_internal_index_js__WEBPACK_IMPORTED_MODULE_6__/* .wrapQueryRef */ .Qh)(queryRef));
+    var _b = rehackt__WEBPACK_IMPORTED_MODULE_0__.useState((0,_internal_index_js__WEBPACK_IMPORTED_MODULE_7__/* .wrapQueryRef */ .Qh)(queryRef)), wrappedQueryRef = _b[0], setWrappedQueryRef = _b[1];
+    if ((0,_internal_index_js__WEBPACK_IMPORTED_MODULE_7__/* .unwrapQueryRef */ .Fd)(wrappedQueryRef) !== queryRef) {
+        setWrappedQueryRef((0,_internal_index_js__WEBPACK_IMPORTED_MODULE_7__/* .wrapQueryRef */ .Qh)(queryRef));
     }
     if (queryRef.didChangeOptions(watchQueryOptions)) {
         var promise = queryRef.applyOptions(watchQueryOptions);
-        (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_6__/* .updateWrappedQueryRef */ .CY)(wrappedQueryRef, promise);
+        (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_7__/* .updateWrappedQueryRef */ .CY)(wrappedQueryRef, promise);
     }
     var fetchMore = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (options) {
         var promise = queryRef.fetchMore(options);
-        setWrappedQueryRef((0,_internal_index_js__WEBPACK_IMPORTED_MODULE_6__/* .wrapQueryRef */ .Qh)(queryRef));
+        setWrappedQueryRef((0,_internal_index_js__WEBPACK_IMPORTED_MODULE_7__/* .wrapQueryRef */ .Qh)(queryRef));
         return promise;
     }, [queryRef]);
     var refetch = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (variables) {
         var promise = queryRef.refetch(variables);
-        setWrappedQueryRef((0,_internal_index_js__WEBPACK_IMPORTED_MODULE_6__/* .wrapQueryRef */ .Qh)(queryRef));
+        setWrappedQueryRef((0,_internal_index_js__WEBPACK_IMPORTED_MODULE_7__/* .wrapQueryRef */ .Qh)(queryRef));
         return promise;
     }, [queryRef]);
     return [
@@ -24160,24 +24220,27 @@ function useBackgroundQuery(query, options) {
 /* harmony export */   I: () => (/* binding */ useFragment)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1635);
+	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1635);
 }
 /* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7243);
 /* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5381);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(2922);
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(2922);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(111);
+	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(111);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(9770);
+	/* harmony import */ var _useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(9770);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7659);
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8481);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(2368);
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7659);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(2368);
 }
 
 
@@ -24187,19 +24250,22 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 
 
 function useFragment(options) {
-    var cache = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__/* .useApolloClient */ .m)(options.client).cache;
-    var diffOptions = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_3__/* .useDeepMemo */ .k)(function () {
-        var fragment = options.fragment, fragmentName = options.fragmentName, from = options.from, _a = options.optimistic, optimistic = _a === void 0 ? true : _a, rest = (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__rest */ .Tt)(options, ["fragment", "fragmentName", "from", "optimistic"]);
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, rest), { returnPartialData: true, id: typeof from === "string" ? from : cache.identify(from), query: cache["getFragmentDoc"](fragment, fragmentName), optimistic: optimistic });
+    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .wrapHook */ .Y)("useFragment", _useFragment, (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)(options.client))(options);
+}
+function _useFragment(options) {
+    var cache = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)(options.client).cache;
+    var diffOptions = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_4__/* .useDeepMemo */ .k)(function () {
+        var fragment = options.fragment, fragmentName = options.fragmentName, from = options.from, _a = options.optimistic, optimistic = _a === void 0 ? true : _a, rest = (0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__rest */ .Tt)(options, ["fragment", "fragmentName", "from", "optimistic"]);
+        return (0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({}, rest), { returnPartialData: true, id: typeof from === "string" ? from : cache.identify(from), query: cache["getFragmentDoc"](fragment, fragmentName), optimistic: optimistic });
     }, [options]);
-    var resultRef = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_5__/* .useLazyRef */ .n)(function () {
+    var resultRef = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_6__/* .useLazyRef */ .n)(function () {
         return diffToResult(cache.diff(diffOptions));
     });
     // Used for both getSnapshot and getServerSnapshot
     var getSnapshot = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () { return resultRef.current; }, []);
-    return (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_6__/* .useSyncExternalStore */ .r)(rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (forceUpdate) {
+    return (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_7__/* .useSyncExternalStore */ .r)(rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (forceUpdate) {
         var lastTimeout = 0;
-        var unsubscribe = cache.watch((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, diffOptions), { immediate: true, callback: function (diff) {
+        var unsubscribe = cache.watch((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({}, diffOptions), { immediate: true, callback: function (diff) {
                 if (!(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .L)(diff.result, resultRef.current.data)) {
                     resultRef.current = diffToResult(diff);
                     // If we get another update before we've re-rendered, bail out of
@@ -24222,7 +24288,7 @@ function diffToResult(diff) {
         complete: !!diff.complete,
     };
     if (diff.missing) {
-        result.missing = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_7__/* .mergeDeepArray */ .IM)(diff.missing.map(function (error) { return error.missing; }));
+        result.missing = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_8__/* .mergeDeepArray */ .IM)(diff.missing.map(function (error) { return error.missing; }));
     }
     return result;
 }
@@ -24650,23 +24716,27 @@ function useMutation(mutation, options) {
 /* harmony export */   I: () => (/* binding */ useQuery),
 /* harmony export */   k: () => (/* binding */ useInternalState)
 /* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(1635);
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(1635);
 /* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
 /* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7243);
-/* harmony import */ var _useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(9770);
+/* harmony import */ var _useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(9770);
 /* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5381);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(144);
-/* harmony import */ var _context_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(6741);
-/* harmony import */ var _errors_index_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(9211);
-/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(8599);
-/* harmony import */ var _parser_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(5443);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(144);
+/* harmony import */ var _context_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(6741);
+/* harmony import */ var _errors_index_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(9211);
+/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(8599);
+/* harmony import */ var _parser_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(5443);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(111);
+	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(111);
 }
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1469);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(2619);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(7945);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(5636);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1469);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(2619);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(7945);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(5636);
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(8481);
+}
+
 
 
 
@@ -24716,7 +24786,10 @@ var hasOwnProperty = Object.prototype.hasOwnProperty;
  */
 function useQuery(query, options) {
     if (options === void 0) { options = Object.create(null); }
-    return useInternalState((0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)(options.client), query).useQuery(options);
+    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_3__/* .wrapHook */ .Y)("useQuery", _useQuery, (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_4__/* .useApolloClient */ .m)(options && options.client))(query, options);
+}
+function _useQuery(query, options) {
+    return useInternalState((0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_4__/* .useApolloClient */ .m)(options.client), query).useQuery(options);
 }
 function useInternalState(client, query) {
     var stateRef = rehackt__WEBPACK_IMPORTED_MODULE_1__.useRef();
@@ -24745,23 +24818,23 @@ var InternalState = /** @class */ (function () {
          * whenever it is available and reset to `forceUpdateState` when it isn't.
          */
         this.forceUpdate = function () { return _this.forceUpdateState(); };
-        this.ssrDisabledResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .maybeDeepFreeze */ .G)({
+        this.ssrDisabledResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .maybeDeepFreeze */ .G)({
             loading: true,
             data: void 0,
             error: void 0,
-            networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus */ .pT.loading,
+            networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_6__/* .NetworkStatus */ .pT.loading,
         });
-        this.skipStandbyResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .maybeDeepFreeze */ .G)({
+        this.skipStandbyResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .maybeDeepFreeze */ .G)({
             loading: false,
             data: void 0,
             error: void 0,
-            networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus */ .pT.ready,
+            networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_6__/* .NetworkStatus */ .pT.ready,
         });
         // This cache allows the referential stability of this.result (as returned by
         // getCurrentResult) to translate into referential stability of the resulting
         // QueryResult object returned by toQueryResult.
-        this.toQueryResultCache = new (_utilities_index_js__WEBPACK_IMPORTED_MODULE_6__/* .canUseWeakMap */ .et ? WeakMap : Map)();
-        (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_7__/* .verifyDocumentType */ .D$)(query, _parser_index_js__WEBPACK_IMPORTED_MODULE_7__/* .DocumentType */ .KG.Query);
+        this.toQueryResultCache = new (_utilities_index_js__WEBPACK_IMPORTED_MODULE_7__/* .canUseWeakMap */ .et ? WeakMap : Map)();
+        (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_8__/* .verifyDocumentType */ .D$)(query, _parser_index_js__WEBPACK_IMPORTED_MODULE_8__/* .DocumentType */ .KG.Query);
         // Reuse previousData from previous InternalState (if any) to provide
         // continuity of previousData even if/when the query or client changes.
         var previousResult = previous && previous.result;
@@ -24826,10 +24899,10 @@ var InternalState = /** @class */ (function () {
         // initialization, this.renderPromises is usually undefined (unless SSR is
         // happening), but that's fine as long as it has been initialized that way,
         // rather than left uninitialized.
-        this.renderPromises = rehackt__WEBPACK_IMPORTED_MODULE_1__.useContext((0,_context_index_js__WEBPACK_IMPORTED_MODULE_8__/* .getApolloContext */ .l)()).renderPromises;
+        this.renderPromises = rehackt__WEBPACK_IMPORTED_MODULE_1__.useContext((0,_context_index_js__WEBPACK_IMPORTED_MODULE_9__/* .getApolloContext */ .l)()).renderPromises;
         this.useOptions(options);
         var obsQuery = this.useObservableQuery();
-        var result = (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_9__/* .useSyncExternalStore */ .r)(rehackt__WEBPACK_IMPORTED_MODULE_1__.useCallback(function (handleStoreChange) {
+        var result = (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_10__/* .useSyncExternalStore */ .r)(rehackt__WEBPACK_IMPORTED_MODULE_1__.useCallback(function (handleStoreChange) {
             if (_this.renderPromises) {
                 return function () { };
             }
@@ -24864,7 +24937,7 @@ var InternalState = /** @class */ (function () {
                         data: (previousResult && previousResult.data),
                         error: error,
                         loading: false,
-                        networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus */ .pT.error,
+                        networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_6__/* .NetworkStatus */ .pT.error,
                     });
                 }
             };
@@ -24971,8 +25044,8 @@ var InternalState = /** @class */ (function () {
         // (if provided) should be merged, to ensure individual defaulted
         // variables always have values, if not otherwise defined in
         // observable.options or watchQueryOptions.
-        toMerge.push((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_10__/* .compact */ .o)(this.observable && this.observable.options, this.watchQueryOptions));
-        return toMerge.reduce(_utilities_index_js__WEBPACK_IMPORTED_MODULE_11__/* .mergeOptions */ .l);
+        toMerge.push((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_11__/* .compact */ .o)(this.observable && this.observable.options, this.watchQueryOptions));
+        return toMerge.reduce(_utilities_index_js__WEBPACK_IMPORTED_MODULE_12__/* .mergeOptions */ .l);
     };
     // A function to massage options before passing them to ObservableQuery.
     InternalState.prototype.createWatchQueryOptions = function (_a) {
@@ -24982,7 +25055,7 @@ var InternalState = /** @class */ (function () {
         // The above options are useQuery-specific, so this ...otherOptions spread
         // makes otherOptions almost a WatchQueryOptions object, except for the
         // query property that we add below.
-        otherOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__rest */ .Tt)(_a, ["skip", "ssr", "onCompleted", "onError", "defaultOptions"]);
+        otherOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_13__/* .__rest */ .Tt)(_a, ["skip", "ssr", "onCompleted", "onError", "defaultOptions"]);
         // This Object.assign is safe because otherOptions is a fresh ...rest object
         // that did not exist until just now, so modifications are still allowed.
         var watchQueryOptions = Object.assign(otherOptions, { query: this.query });
@@ -25075,7 +25148,7 @@ var InternalState = /** @class */ (function () {
                 }
                 else if (result.data &&
                     (previousResult === null || previousResult === void 0 ? void 0 : previousResult.networkStatus) !== result.networkStatus &&
-                    result.networkStatus === _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus */ .pT.ready) {
+                    result.networkStatus === _core_index_js__WEBPACK_IMPORTED_MODULE_6__/* .NetworkStatus */ .pT.ready) {
                     _this.onCompleted(result.data);
                 }
             })
@@ -25085,8 +25158,8 @@ var InternalState = /** @class */ (function () {
         }
     };
     InternalState.prototype.toApolloError = function (result) {
-        return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_13__/* .isNonEmptyArray */ .E)(result.errors) ?
-            new _errors_index_js__WEBPACK_IMPORTED_MODULE_14__/* .ApolloError */ .K4({ graphQLErrors: result.errors })
+        return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_14__/* .isNonEmptyArray */ .E)(result.errors) ?
+            new _errors_index_js__WEBPACK_IMPORTED_MODULE_15__/* .ApolloError */ .K4({ graphQLErrors: result.errors })
             : result.error;
     };
     InternalState.prototype.getCurrentResult = function () {
@@ -25102,14 +25175,14 @@ var InternalState = /** @class */ (function () {
         var queryResult = this.toQueryResultCache.get(result);
         if (queryResult)
             return queryResult;
-        var data = result.data, partial = result.partial, resultWithoutPartial = (0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__rest */ .Tt)(result, ["data", "partial"]);
-        this.toQueryResultCache.set(result, (queryResult = (0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_12__/* .__assign */ .Cl)({ data: data }, resultWithoutPartial), this.obsQueryFields), { client: this.client, observable: this.observable, variables: this.observable.variables, called: !this.queryHookOptions.skip, previousData: this.previousData })));
-        if (!queryResult.error && (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_13__/* .isNonEmptyArray */ .E)(result.errors)) {
+        var data = result.data, partial = result.partial, resultWithoutPartial = (0,tslib__WEBPACK_IMPORTED_MODULE_13__/* .__rest */ .Tt)(result, ["data", "partial"]);
+        this.toQueryResultCache.set(result, (queryResult = (0,tslib__WEBPACK_IMPORTED_MODULE_13__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_13__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_13__/* .__assign */ .Cl)({ data: data }, resultWithoutPartial), this.obsQueryFields), { client: this.client, observable: this.observable, variables: this.observable.variables, called: !this.queryHookOptions.skip, previousData: this.previousData })));
+        if (!queryResult.error && (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_14__/* .isNonEmptyArray */ .E)(result.errors)) {
             // Until a set naming convention for networkError and graphQLErrors is
             // decided upon, we map errors (graphQLErrors) to the error options.
             // TODO: Is it possible for both result.error and result.errors to be
             // defined here?
-            queryResult.error = new _errors_index_js__WEBPACK_IMPORTED_MODULE_14__/* .ApolloError */ .K4({ graphQLErrors: result.errors });
+            queryResult.error = new _errors_index_js__WEBPACK_IMPORTED_MODULE_15__/* .ApolloError */ .K4({ graphQLErrors: result.errors });
         }
         return queryResult;
     };
@@ -25126,7 +25199,7 @@ var InternalState = /** @class */ (function () {
             this.observable.options.fetchPolicy !== "cache-only") {
             Object.assign(result, {
                 loading: true,
-                networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_5__/* .NetworkStatus */ .pT.refetch,
+                networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_6__/* .NetworkStatus */ .pT.refetch,
             });
             this.observable.refetch();
         }
@@ -25255,16 +25328,19 @@ function useReactiveVar(rv) {
 /* harmony export */ });
 /* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7243);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4047);
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4047);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7737);
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(8481);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useSuspenseQuery_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(5599);
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7737);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9770);
+	/* harmony import */ var _useSuspenseQuery_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5599);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9770);
 }
 
 
@@ -25272,25 +25348,28 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 
 
 function useReadQuery(queryRef) {
-    var internalQueryRef = rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () { return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .unwrapQueryRef */ .Fd)(queryRef); }, [queryRef]);
-    var getPromise = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () { return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .getWrappedPromise */ .Ve)(queryRef); }, [queryRef]);
+    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .wrapHook */ .Y)("useReadQuery", _useReadQuery, (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .unwrapQueryRef */ .Fd)(queryRef)["observable"])(queryRef);
+}
+function _useReadQuery(queryRef) {
+    var internalQueryRef = rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () { return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .unwrapQueryRef */ .Fd)(queryRef); }, [queryRef]);
+    var getPromise = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () { return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .getWrappedPromise */ .Ve)(queryRef); }, [queryRef]);
     if (internalQueryRef.disposed) {
         internalQueryRef.reinitialize();
-        (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .updateWrappedQueryRef */ .CY)(queryRef, internalQueryRef.promise);
+        (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .updateWrappedQueryRef */ .CY)(queryRef, internalQueryRef.promise);
     }
     rehackt__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () { return internalQueryRef.retain(); }, [internalQueryRef]);
-    var promise = (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_2__/* .useSyncExternalStore */ .r)(rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (forceUpdate) {
+    var promise = (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_3__/* .useSyncExternalStore */ .r)(rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (forceUpdate) {
         return internalQueryRef.listen(function (promise) {
-            (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .updateWrappedQueryRef */ .CY)(queryRef, promise);
+            (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .updateWrappedQueryRef */ .CY)(queryRef, promise);
             forceUpdate();
         });
     }, [internalQueryRef]), getPromise, getPromise);
-    var result = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_3__/* .__use */ .y)(promise);
+    var result = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_4__/* .__use */ .y)(promise);
     return rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
         return {
             data: result.data,
             networkStatus: result.networkStatus,
-            error: (0,_useSuspenseQuery_js__WEBPACK_IMPORTED_MODULE_4__/* .toApolloError */ .jy)(result),
+            error: (0,_useSuspenseQuery_js__WEBPACK_IMPORTED_MODULE_5__/* .toApolloError */ .jy)(result),
         };
     }, [result]);
 }
@@ -25566,39 +25645,42 @@ function useSubscription(subscription, options) {
 /* harmony export */   jy: () => (/* binding */ toApolloError)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1635);
+	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1635);
 }
 /* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7243);
 /* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4009);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(8599);
+	/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(8599);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(9211);
+	/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(9211);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(5636);
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(5636);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(111);
+	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(111);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _parser_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(5443);
+	/* harmony import */ var _parser_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(5443);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(7737);
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8481);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(7659);
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(7737);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9976);
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(7659);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(6269);
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9976);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _constants_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(3105);
+	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(6269);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _constants_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(3105);
 }
 
 
@@ -25613,8 +25695,11 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 
 function useSuspenseQuery(query, options) {
     if (options === void 0) { options = Object.create(null); }
-    var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__/* .useApolloClient */ .m)(options.client);
-    var suspenseCache = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_3__/* .getSuspenseCache */ .B)(client);
+    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .wrapHook */ .Y)("useSuspenseQuery", _useSuspenseQuery, (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)(typeof options === "object" ? options.client : undefined))(query, options);
+}
+function _useSuspenseQuery(query, options) {
+    var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)(options.client);
+    var suspenseCache = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_4__/* .getSuspenseCache */ .B)(client);
     var watchQueryOptions = useWatchQueryOptions({
         client: client,
         query: query,
@@ -25622,9 +25707,9 @@ function useSuspenseQuery(query, options) {
     });
     var fetchPolicy = watchQueryOptions.fetchPolicy, variables = watchQueryOptions.variables;
     var _a = options.queryKey, queryKey = _a === void 0 ? [] : _a;
-    var cacheKey = (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__spreadArray */ .fX)([
+    var cacheKey = (0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__spreadArray */ .fX)([
         query,
-        (0,_cache_index_js__WEBPACK_IMPORTED_MODULE_5__/* .canonicalStringify */ .M)(variables)
+        (0,_cache_index_js__WEBPACK_IMPORTED_MODULE_6__/* .canonicalStringify */ .M)(variables)
     ], [].concat(queryKey), true);
     var queryRef = suspenseCache.getQueryRef(cacheKey, function () {
         return client.watchQuery(watchQueryOptions);
@@ -25654,11 +25739,11 @@ function useSuspenseQuery(query, options) {
         return {
             loading: false,
             data: queryRef.result.data,
-            networkStatus: error ? _core_index_js__WEBPACK_IMPORTED_MODULE_6__/* .NetworkStatus */ .pT.error : _core_index_js__WEBPACK_IMPORTED_MODULE_6__/* .NetworkStatus */ .pT.ready,
+            networkStatus: error ? _core_index_js__WEBPACK_IMPORTED_MODULE_7__/* .NetworkStatus */ .pT.error : _core_index_js__WEBPACK_IMPORTED_MODULE_7__/* .NetworkStatus */ .pT.ready,
             error: error,
         };
     }, [queryRef.result]);
-    var result = fetchPolicy === "standby" ? skipResult : (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_7__/* .__use */ .y)(promise);
+    var result = fetchPolicy === "standby" ? skipResult : (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_8__/* .__use */ .y)(promise);
     var fetchMore = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback((function (options) {
         var promise = queryRef.fetchMore(options);
         setPromise([queryRef.key, queryRef.promise]);
@@ -25684,7 +25769,7 @@ function useSuspenseQuery(query, options) {
 }
 function validateOptions(options) {
     var query = options.query, fetchPolicy = options.fetchPolicy, returnPartialData = options.returnPartialData;
-    (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_8__/* .verifyDocumentType */ .D$)(query, _parser_index_js__WEBPACK_IMPORTED_MODULE_8__/* .DocumentType */ .KG.Query);
+    (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_9__/* .verifyDocumentType */ .D$)(query, _parser_index_js__WEBPACK_IMPORTED_MODULE_9__/* .DocumentType */ .KG.Query);
     validateFetchPolicy(fetchPolicy);
     validatePartialDataReturn(fetchPolicy, returnPartialData);
 }
@@ -25704,21 +25789,21 @@ function validatePartialDataReturn(fetchPolicy, returnPartialData) {
     }
 }
 function toApolloError(result) {
-    return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_9__/* .isNonEmptyArray */ .E)(result.errors) ?
-        new _core_index_js__WEBPACK_IMPORTED_MODULE_10__/* .ApolloError */ .K4({ graphQLErrors: result.errors })
+    return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_10__/* .isNonEmptyArray */ .E)(result.errors) ?
+        new _core_index_js__WEBPACK_IMPORTED_MODULE_11__/* .ApolloError */ .K4({ graphQLErrors: result.errors })
         : result.error;
 }
 function useWatchQueryOptions(_a) {
     var client = _a.client, query = _a.query, options = _a.options;
-    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_11__/* .useDeepMemo */ .k)(function () {
+    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_12__/* .useDeepMemo */ .k)(function () {
         var _a;
-        if (options === _constants_js__WEBPACK_IMPORTED_MODULE_12__/* .skipToken */ .h) {
+        if (options === _constants_js__WEBPACK_IMPORTED_MODULE_13__/* .skipToken */ .h) {
             return { query: query, fetchPolicy: "standby" };
         }
         var fetchPolicy = options.fetchPolicy ||
             ((_a = client.defaultOptions.watchQuery) === null || _a === void 0 ? void 0 : _a.fetchPolicy) ||
             "cache-first";
-        var watchQueryOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, options), { fetchPolicy: fetchPolicy, query: query, notifyOnNetworkStatusChange: false, nextFetchPolicy: void 0 });
+        var watchQueryOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({}, options), { fetchPolicy: fetchPolicy, query: query, notifyOnNetworkStatusChange: false, nextFetchPolicy: void 0 });
         if (globalThis.__DEV__ !== false) {
             validateOptions(watchQueryOptions);
         }
@@ -26162,11 +26247,23 @@ var InternalQueryReference = /** @class */ (function () {
         // promise is resolved correctly.
         returnedPromise
             .then(function (result) {
-            var _a;
-            if (_this.promise.status === "pending") {
-                _this.result = result;
-                (_a = _this.resolve) === null || _a === void 0 ? void 0 : _a.call(_this, result);
-            }
+            // In the case of `fetchMore`, this promise is resolved before a cache
+            // result is emitted due to the fact that `fetchMore` sets a `no-cache`
+            // fetch policy and runs `cache.batch` in its `.then` handler. Because
+            // the timing is different, we accidentally run this update twice
+            // causing an additional re-render with the `fetchMore` result by
+            // itself. By wrapping in `setTimeout`, this should provide a short
+            // delay to allow the `QueryInfo.notify` handler to run before this
+            // promise is checked.
+            // See https://github.com/apollographql/apollo-client/issues/11315 for
+            // more information
+            setTimeout(function () {
+                var _a;
+                if (_this.promise.status === "pending") {
+                    _this.result = result;
+                    (_a = _this.resolve) === null || _a === void 0 ? void 0 : _a.call(_this, result);
+                }
+            });
         })
             .catch(function () { });
         return returnedPromise;
@@ -29235,7 +29332,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.9.5";
+var version = "3.9.6";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
