@@ -1,7 +1,7 @@
 # Operator of add
 A action for manually add lint result
 ```yml
-- uses: MeilCli/common-lint-reporter/operator/add@v0
+- uses: MeilCli/common-lint-reporter/operator/add@v1
   with:
     function: |
       () => add({path: "test/path3.txt", rule: "test-rule-ext", message: "hello", level: "notice"})

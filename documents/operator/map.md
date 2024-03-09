@@ -1,7 +1,7 @@
 # Operator of map
 A action for map lint result
 ```yml
-- uses: MeilCli/common-lint-reporter/operator/map@v0
+- uses: MeilCli/common-lint-reporter/operator/map@v1
   with:
     function: |
       (x) => Object.assign(x, {message: "message: " + x.message})

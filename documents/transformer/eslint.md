@@ -1,6 +1,6 @@
 # Transformer of eslint
 ```yml
-- uses: MeilCli/common-lint-reporter/transformer/eslint@v0
+- uses: MeilCli/common-lint-reporter/transformer/eslint@v1
   with:
     report_files: |
       eslint_report.json

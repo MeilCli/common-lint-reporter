@@ -1,6 +1,6 @@
 # Transformer of android lint
 ```yml
-- uses: MeilCli/common-lint-reporter/transformer/androidlint@v0
+- uses: MeilCli/common-lint-reporter/transformer/androidlint@v1
   with:
     report_files: |
       android_lint.xml

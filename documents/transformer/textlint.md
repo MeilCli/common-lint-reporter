@@ -1,6 +1,6 @@
 # Transformer of textlint
 ```yml
-- uses: MeilCli/common-lint-reporter/transformer/textlint@v0
+- uses: MeilCli/common-lint-reporter/transformer/textlint@v1
   with:
     report_files: |
       textlint_report.json

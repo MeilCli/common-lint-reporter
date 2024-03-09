@@ -1,7 +1,7 @@
 # Operator of filter
 A action for filter lint result
 ```yml
-- uses: MeilCli/common-lint-reporter/operator/filter@v0
+- uses: MeilCli/common-lint-reporter/operator/filter@v1
   with:
     function: |
       (x) => x.path != "test/path1.txt"

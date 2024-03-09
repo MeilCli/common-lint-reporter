@@ -1,6 +1,6 @@
 # Transformer of checkstyle
 ```yml
-- uses: MeilCli/common-lint-reporter/transformer/checkstyle@v0
+- uses: MeilCli/common-lint-reporter/transformer/checkstyle@v1
   with:
     report_files: |
       checkstyle_report.xml

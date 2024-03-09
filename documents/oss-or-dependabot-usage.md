@@ -17,15 +17,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 12
+          node-version: 20
       - run: npm install
       - run: npm run build
       - run: npm run lint:report
         continue-on-error: true
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: eslint
           # your output path
@@ -46,19 +46,19 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.workflow_run.conclusion == 'success'
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Download artifact
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v3
         with:
           workflow: ci.yml
           run_id: ${{ github.event.workflow_run.id }}
           name: eslint
-      - uses: MeilCli/common-lint-reporter/transformer/eslint@v0
+      - uses: MeilCli/common-lint-reporter/transformer/eslint@v1
         with:
           report_files: |
             eslint_report.json
       - name: Report lint result
-        uses: MeilCli/common-lint-reporter@v0
+        uses: MeilCli/common-lint-reporter@v1
         with:
           report_type: 'check_run'
           report_name: 'Lint Report'
@@ -80,16 +80,16 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 12
+          node-version: 20
       - run: npm install
       - run: npm run build
       - run: npm run lint:report
         continue-on-error: true
-      - uses: MeilCli/common-lint-reporter/utils/export-context@v0
-      - uses: actions/upload-artifact@v2
+      - uses: MeilCli/common-lint-reporter/utils/export-context@v1
+      - uses: actions/upload-artifact@v4
         with:
           name: result
           # your output path, and exported path
@@ -114,19 +114,19 @@ jobs:
     steps:
       # download reported file and context and import context
       - name: Download artifact
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v3
         with:
           workflow: ci.yml
           run_id: ${{ github.event.workflow_run.id }}
           name: result
-      - uses: MeilCli/common-lint-reporter/utils/import-context@v0
+      - uses: MeilCli/common-lint-reporter/utils/import-context@v1
         id: lint_context
-      - uses: MeilCli/common-lint-reporter/transformer/eslint@v0
+      - uses: MeilCli/common-lint-reporter/transformer/eslint@v1
         with:
           report_files: |
             eslint_report.json
       - name: Report lint result
-        uses: MeilCli/common-lint-reporter@v0
+        uses: MeilCli/common-lint-reporter@v1
         with:
           # inline_comment can use only provided pull_request when in this situation
           report_type: 'inline_comment'

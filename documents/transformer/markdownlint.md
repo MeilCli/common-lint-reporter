@@ -1,6 +1,6 @@
 # Transformer of markdownlint
 ```yml
-- uses: MeilCli/common-lint-reporter/transformer/markdownlint@v0
+- uses: MeilCli/common-lint-reporter/transformer/markdownlint@v1
   with:
     report_files: |
       markdownlint_report.txt

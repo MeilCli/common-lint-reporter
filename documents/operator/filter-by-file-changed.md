@@ -1,7 +1,7 @@
 # Operator of filter-by-file-changed
 A action for filter lint result by PullRequest's changed files
 ```yml
-- uses: MeilCli/common-lint-reporter/operator/filter-by-file-changed@v0
+- uses: MeilCli/common-lint-reporter/operator/filter-by-file-changed@v1
 ```
 
 **If you use `workflow_run` workflow, must set `pull_request` input. see [this document](../oss-or-dependabot-usage.md)**

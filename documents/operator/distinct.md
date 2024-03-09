@@ -1,7 +1,7 @@
 # Operator of distinct
 A action for distinct duplicated lint result
 ```yml
-- uses: MeilCli/common-lint-reporter/operator/distinct@v0
+- uses: MeilCli/common-lint-reporter/operator/distinct@v1
   with:
     function: |
       (x) => x.path + x.startLine

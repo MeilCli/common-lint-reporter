@@ -1,6 +1,6 @@
 # Transformer of stylelint
 ```yml
-- uses: MeilCli/common-lint-reporter/transformer/stylelint@v0
+- uses: MeilCli/common-lint-reporter/transformer/stylelint@v1
   with:
     report_files: |
       stylelint_report.json
