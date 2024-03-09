@@ -532,7 +532,10 @@ var EnterpriseUserAccountMembershipRole;
     EnterpriseUserAccountMembershipRole["Member"] = "MEMBER";
     /** The user is an owner of an organization in the enterprise. */
     EnterpriseUserAccountMembershipRole["Owner"] = "OWNER";
-    /** The user is not an owner of the enterprise, and not a member or owner of any organizations in the enterprise; only for EMU-enabled enterprises. */
+    /**
+     * The user is not an owner of the enterprise, and not a member or owner of any
+     * organizations in the enterprise; only for EMU-enabled enterprises.
+     */
     EnterpriseUserAccountMembershipRole["Unaffiliated"] = "UNAFFILIATED";
 })(EnterpriseUserAccountMembershipRole || (exports.EnterpriseUserAccountMembershipRole = EnterpriseUserAccountMembershipRole = {}));
 /** The possible GitHub Enterprise deployments where this user can exist. */
@@ -578,8 +581,6 @@ var FundingPlatform;
     FundingPlatform["Liberapay"] = "LIBERAPAY";
     /** Open Collective funding platform. */
     FundingPlatform["OpenCollective"] = "OPEN_COLLECTIVE";
-    /** Otechie funding platform. */
-    FundingPlatform["Otechie"] = "OTECHIE";
     /** Patreon funding platform. */
     FundingPlatform["Patreon"] = "PATREON";
     /** Polar funding platform. */
@@ -1010,17 +1011,29 @@ var OrgRemoveBillingManagerAuditEntryReason;
 /** The type of membership a user has with an Organization. */
 var OrgRemoveMemberAuditEntryMembershipType;
 (function (OrgRemoveMemberAuditEntryMembershipType) {
-    /** Organization owners have full access and can change several settings, including the names of repositories that belong to the Organization and Owners team membership. In addition, organization owners can delete the organization and all of its repositories. */
+    /**
+     * Organization owners have full access and can change several settings,
+     * including the names of repositories that belong to the Organization and Owners
+     * team membership. In addition, organization owners can delete the organization
+     * and all of its repositories.
+     */
     OrgRemoveMemberAuditEntryMembershipType["Admin"] = "ADMIN";
     /** A billing manager is a user who manages the billing settings for the Organization, such as updating payment information. */
     OrgRemoveMemberAuditEntryMembershipType["BillingManager"] = "BILLING_MANAGER";
     /** A direct member is a user that is a member of the Organization. */
     OrgRemoveMemberAuditEntryMembershipType["DirectMember"] = "DIRECT_MEMBER";
-    /** An outside collaborator is a person who isn't explicitly a member of the Organization, but who has Read, Write, or Admin permissions to one or more repositories in the organization. */
+    /**
+     * An outside collaborator is a person who isn't explicitly a member of the
+     * Organization, but who has Read, Write, or Admin permissions to one or more
+     * repositories in the organization.
+     */
     OrgRemoveMemberAuditEntryMembershipType["OutsideCollaborator"] = "OUTSIDE_COLLABORATOR";
     /** A suspended member. */
     OrgRemoveMemberAuditEntryMembershipType["Suspended"] = "SUSPENDED";
-    /** An unaffiliated collaborator is a person who is not a member of the Organization and does not have access to any repositories in the Organization. */
+    /**
+     * An unaffiliated collaborator is a person who is not a member of the
+     * Organization and does not have access to any repositories in the Organization.
+     */
     OrgRemoveMemberAuditEntryMembershipType["Unaffiliated"] = "UNAFFILIATED";
 })(OrgRemoveMemberAuditEntryMembershipType || (exports.OrgRemoveMemberAuditEntryMembershipType = OrgRemoveMemberAuditEntryMembershipType = {}));
 /** The reason a member was removed from an Organization. */
@@ -1042,9 +1055,16 @@ var OrgRemoveOutsideCollaboratorAuditEntryMembershipType;
 (function (OrgRemoveOutsideCollaboratorAuditEntryMembershipType) {
     /** A billing manager is a user who manages the billing settings for the Organization, such as updating payment information. */
     OrgRemoveOutsideCollaboratorAuditEntryMembershipType["BillingManager"] = "BILLING_MANAGER";
-    /** An outside collaborator is a person who isn't explicitly a member of the Organization, but who has Read, Write, or Admin permissions to one or more repositories in the organization. */
+    /**
+     * An outside collaborator is a person who isn't explicitly a member of the
+     * Organization, but who has Read, Write, or Admin permissions to one or more
+     * repositories in the organization.
+     */
     OrgRemoveOutsideCollaboratorAuditEntryMembershipType["OutsideCollaborator"] = "OUTSIDE_COLLABORATOR";
-    /** An unaffiliated collaborator is a person who is not a member of the Organization and does not have access to any repositories in the organization. */
+    /**
+     * An unaffiliated collaborator is a person who is not a member of the
+     * Organization and does not have access to any repositories in the organization.
+     */
     OrgRemoveOutsideCollaboratorAuditEntryMembershipType["Unaffiliated"] = "UNAFFILIATED";
 })(OrgRemoveOutsideCollaboratorAuditEntryMembershipType || (exports.OrgRemoveOutsideCollaboratorAuditEntryMembershipType = OrgRemoveOutsideCollaboratorAuditEntryMembershipType = {}));
 /** The reason an outside collaborator was removed from an Organization. */
@@ -1863,7 +1883,10 @@ var RepositoryAffiliation;
 (function (RepositoryAffiliation) {
     /** Repositories that the user has been added to as a collaborator. */
     RepositoryAffiliation["Collaborator"] = "COLLABORATOR";
-    /** Repositories that the user has access to through being a member of an organization. This includes every repository on every team that the user is on. */
+    /**
+     * Repositories that the user has access to through being a member of an
+     * organization. This includes every repository on every team that the user is on.
+     */
     RepositoryAffiliation["OrganizationMember"] = "ORGANIZATION_MEMBER";
     /** Repositories that are owned by the authenticated user. */
     RepositoryAffiliation["Owner"] = "OWNER";
@@ -1971,7 +1994,10 @@ var RepositoryOrderField;
 /** The access level to a repository */
 var RepositoryPermission;
 (function (RepositoryPermission) {
-    /** Can read, clone, and push to this repository. Can also manage issues, pull requests, and repository settings, including adding collaborators */
+    /**
+     * Can read, clone, and push to this repository. Can also manage issues, pull
+     * requests, and repository settings, including adding collaborators
+     */
     RepositoryPermission["Admin"] = "ADMIN";
     /** Can read, clone, and push to this repository. They can also manage issues, pull requests, and some repository settings */
     RepositoryPermission["Maintain"] = "MAINTAIN";
@@ -2033,16 +2059,23 @@ var RepositoryRuleType;
     RepositoryRuleType["RequiredDeployments"] = "REQUIRED_DEPLOYMENTS";
     /** Prevent merge commits from being pushed to matching refs. */
     RepositoryRuleType["RequiredLinearHistory"] = "REQUIRED_LINEAR_HISTORY";
-    /** When enabled, all conversations on code must be resolved before a pull request can be merged into a branch that matches this rule. */
+    /**
+     * When enabled, all conversations on code must be resolved before a pull request
+     * can be merged into a branch that matches this rule.
+     */
     RepositoryRuleType["RequiredReviewThreadResolution"] = "REQUIRED_REVIEW_THREAD_RESOLUTION";
     /** Commits pushed to matching refs must have verified signatures. */
     RepositoryRuleType["RequiredSignatures"] = "REQUIRED_SIGNATURES";
-    /** Choose which status checks must pass before the ref is updated. When enabled, commits must first be pushed to another ref where the checks pass. */
+    /**
+     * Choose which status checks must pass before the ref is updated. When enabled,
+     * commits must first be pushed to another ref where the checks pass.
+     */
     RepositoryRuleType["RequiredStatusChecks"] = "REQUIRED_STATUS_CHECKS";
-    /** Require all commits be made to a non-target branch and submitted via a pull request and required workflow checks to pass before they can be merged. */
+    /**
+     * Require all commits be made to a non-target branch and submitted via a pull
+     * request and required workflow checks to pass before they can be merged.
+     */
     RepositoryRuleType["RequiredWorkflowStatusChecks"] = "REQUIRED_WORKFLOW_STATUS_CHECKS";
-    /** Commits pushed to matching refs must have verified signatures. */
-    RepositoryRuleType["RulesetRequiredSignatures"] = "RULESET_REQUIRED_SIGNATURES";
     /** Secret scanning */
     RepositoryRuleType["SecretScanning"] = "SECRET_SCANNING";
     /** Tag */
@@ -2133,7 +2166,10 @@ var RuleEnforcement;
     RuleEnforcement["Active"] = "ACTIVE";
     /** Do not evaluate or enforce rules */
     RuleEnforcement["Disabled"] = "DISABLED";
-    /** Allow admins to test rules before enforcing them. Admins can view insights on the Rule Insights page (`evaluate` is only available with GitHub Enterprise). */
+    /**
+     * Allow admins to test rules before enforcing them. Admins can view insights on
+     * the Rule Insights page (`evaluate` is only available with GitHub Enterprise).
+     */
     RuleEnforcement["Evaluate"] = "EVALUATE";
 })(RuleEnforcement || (exports.RuleEnforcement = RuleEnforcement = {}));
 /** The possible digest algorithms used to sign SAML requests for an identity provider. */

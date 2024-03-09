@@ -2,7 +2,7 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 3707:
+/***/ 6088:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -652,7 +652,7 @@ exports.equalsAnnotation = equalsAnnotation;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CheckRunReporter = void 0;
-const client_1 = __webpack_require__(3707);
+const client_1 = __webpack_require__(6088);
 const context_1 = __webpack_require__(6289);
 const paging_1 = __webpack_require__(6964);
 const graphql_1 = __webpack_require__(2634);
@@ -868,7 +868,7 @@ exports.createSummary = createSummary;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CommentReporter = void 0;
-const client_1 = __webpack_require__(3707);
+const client_1 = __webpack_require__(6088);
 const context_1 = __webpack_require__(6289);
 const paging_1 = __webpack_require__(6964);
 const graphql_1 = __webpack_require__(2634);
@@ -1352,10 +1352,38 @@ module.exports = require("assert");
 
 /***/ }),
 
+/***/ 290:
+/***/ ((module) => {
+
+module.exports = require("async_hooks");
+
+/***/ }),
+
+/***/ 181:
+/***/ ((module) => {
+
+module.exports = require("buffer");
+
+/***/ }),
+
+/***/ 4236:
+/***/ ((module) => {
+
+module.exports = require("console");
+
+/***/ }),
+
 /***/ 6982:
 /***/ ((module) => {
 
 module.exports = require("crypto");
+
+/***/ }),
+
+/***/ 1637:
+/***/ ((module) => {
+
+module.exports = require("diagnostics_channel");
 
 /***/ }),
 
@@ -1380,6 +1408,13 @@ module.exports = require("http");
 
 /***/ }),
 
+/***/ 5675:
+/***/ ((module) => {
+
+module.exports = require("http2");
+
+/***/ }),
+
 /***/ 5692:
 /***/ ((module) => {
 
@@ -1391,6 +1426,27 @@ module.exports = require("https");
 /***/ ((module) => {
 
 module.exports = require("net");
+
+/***/ }),
+
+/***/ 8474:
+/***/ ((module) => {
+
+module.exports = require("node:events");
+
+/***/ }),
+
+/***/ 7075:
+/***/ ((module) => {
+
+module.exports = require("node:stream");
+
+/***/ }),
+
+/***/ 7975:
+/***/ ((module) => {
+
+module.exports = require("node:util");
 
 /***/ }),
 
@@ -1408,6 +1464,13 @@ module.exports = require("path");
 
 /***/ }),
 
+/***/ 2987:
+/***/ ((module) => {
+
+module.exports = require("perf_hooks");
+
+/***/ }),
+
 /***/ 4876:
 /***/ ((module) => {
 
@@ -1415,10 +1478,31 @@ module.exports = require("punycode");
 
 /***/ }),
 
+/***/ 3480:
+/***/ ((module) => {
+
+module.exports = require("querystring");
+
+/***/ }),
+
 /***/ 2203:
 /***/ ((module) => {
 
 module.exports = require("stream");
+
+/***/ }),
+
+/***/ 3774:
+/***/ ((module) => {
+
+module.exports = require("stream/web");
+
+/***/ }),
+
+/***/ 3193:
+/***/ ((module) => {
+
+module.exports = require("string_decoder");
 
 /***/ }),
 
@@ -1440,6 +1524,20 @@ module.exports = require("url");
 /***/ ((module) => {
 
 module.exports = require("util");
+
+/***/ }),
+
+/***/ 8253:
+/***/ ((module) => {
+
+module.exports = require("util/types");
+
+/***/ }),
+
+/***/ 8167:
+/***/ ((module) => {
+
+module.exports = require("worker_threads");
 
 /***/ }),
 
