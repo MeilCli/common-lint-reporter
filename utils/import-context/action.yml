@@ -13,5 +13,5 @@ outputs:
   pull_request:
     description: 'pull request number'
 runs:
-  using: 'node16'
+  using: 'node20'
   main: '../../dist/utils-import-context.js'

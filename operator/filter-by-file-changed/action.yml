@@ -31,5 +31,5 @@ inputs:
     required: true
     default: 'common_lint.json'
 runs:
-  using: 'node16'
+  using: 'node20'
   main: '../../dist/operator-filter-by-file-changed.js'
