@@ -51,5 +51,5 @@ inputs:
     description: 'inline_comment only option, option of how resolve when found outdated thread'
     default: 'delete_or_force_resolve_thread'
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/main.js'
