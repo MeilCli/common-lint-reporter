@@ -565,6 +565,8 @@ var FileViewedState;
 /** The possible funding platforms for repository funding links. */
 var FundingPlatform;
 (function (FundingPlatform) {
+    /** Buy Me a Coffee funding platform. */
+    FundingPlatform["BuyMeACoffee"] = "BUY_ME_A_COFFEE";
     /** Community Bridge funding platform. */
     FundingPlatform["CommunityBridge"] = "COMMUNITY_BRIDGE";
     /** Custom funding platform. */
