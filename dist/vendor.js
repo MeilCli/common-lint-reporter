@@ -43101,9 +43101,9 @@ var LocalState = /** @class */ (function () {
     // and returned. Note that locally resolved fields will overwrite
     // remote data using the same field name.
     LocalState.prototype.runResolvers = function (_a) {
-        var document = _a.document, remoteResult = _a.remoteResult, context = _a.context, variables = _a.variables, _b = _a.onlyRunForcedResolvers, onlyRunForcedResolvers = _b === void 0 ? false : _b;
-        return (0,tslib_es6/* __awaiter */.sH)(this, void 0, void 0, function () {
-            return (0,tslib_es6/* __generator */.YH)(this, function (_c) {
+        return (0,tslib_es6/* __awaiter */.sH)(this, arguments, void 0, function (_b) {
+            var document = _b.document, remoteResult = _b.remoteResult, context = _b.context, variables = _b.variables, _c = _b.onlyRunForcedResolvers, onlyRunForcedResolvers = _c === void 0 ? false : _c;
+            return (0,tslib_es6/* __generator */.YH)(this, function (_d) {
                 if (document) {
                     return [2 /*return*/, this.resolveDocument(document, remoteResult.data, context, variables, this.fragmentMatcher, onlyRunForcedResolvers).then(function (localResult) { return ((0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, remoteResult), { data: localResult.result })); })];
                 }
@@ -43142,10 +43142,10 @@ var LocalState = /** @class */ (function () {
     // To support `@client @export(as: "someVar")` syntax, we'll first resolve
     // @client @export fields locally, then pass the resolved values back to be
     // used alongside the original operation variables.
-    LocalState.prototype.addExportedVariables = function (document, variables, context) {
-        if (variables === void 0) { variables = {}; }
-        if (context === void 0) { context = {}; }
-        return (0,tslib_es6/* __awaiter */.sH)(this, void 0, void 0, function () {
+    LocalState.prototype.addExportedVariables = function (document_1) {
+        return (0,tslib_es6/* __awaiter */.sH)(this, arguments, void 0, function (document, variables, context) {
+            if (variables === void 0) { variables = {}; }
+            if (context === void 0) { context = {}; }
             return (0,tslib_es6/* __generator */.YH)(this, function (_a) {
                 if (document) {
                     return [2 /*return*/, this.resolveDocument(document, this.buildRootValueFromCache(document, variables) || {}, this.prepareContext(context), variables).then(function (data) { return ((0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, variables), data.exportedVariables)); })];
@@ -43183,13 +43183,13 @@ var LocalState = /** @class */ (function () {
             optimistic: false,
         }).result;
     };
-    LocalState.prototype.resolveDocument = function (document, rootValue, context, variables, fragmentMatcher, onlyRunForcedResolvers) {
-        if (context === void 0) { context = {}; }
-        if (variables === void 0) { variables = {}; }
-        if (fragmentMatcher === void 0) { fragmentMatcher = function () { return true; }; }
-        if (onlyRunForcedResolvers === void 0) { onlyRunForcedResolvers = false; }
-        return (0,tslib_es6/* __awaiter */.sH)(this, void 0, void 0, function () {
+    LocalState.prototype.resolveDocument = function (document_1, rootValue_1) {
+        return (0,tslib_es6/* __awaiter */.sH)(this, arguments, void 0, function (document, rootValue, context, variables, fragmentMatcher, onlyRunForcedResolvers) {
             var mainDefinition, fragments, fragmentMap, selectionsToResolve, definitionOperation, defaultOperationType, _a, cache, client, execContext, isClientFieldDescendant;
+            if (context === void 0) { context = {}; }
+            if (variables === void 0) { variables = {}; }
+            if (fragmentMatcher === void 0) { fragmentMatcher = function () { return true; }; }
+            if (onlyRunForcedResolvers === void 0) { onlyRunForcedResolvers = false; }
             return (0,tslib_es6/* __generator */.YH)(this, function (_b) {
                 mainDefinition = (0,getFromAST/* getMainDefinition */.Vn)(document);
                 fragments = (0,getFromAST/* getFragmentDefinitions */.zK)(document);
@@ -43910,12 +43910,12 @@ var QueryManager = /** @class */ (function () {
         this.fetchCancelFns.clear();
     };
     QueryManager.prototype.mutate = function (_a) {
-        var _b, _c;
-        var mutation = _a.mutation, variables = _a.variables, optimisticResponse = _a.optimisticResponse, updateQueries = _a.updateQueries, _d = _a.refetchQueries, refetchQueries = _d === void 0 ? [] : _d, _e = _a.awaitRefetchQueries, awaitRefetchQueries = _e === void 0 ? false : _e, updateWithProxyFn = _a.update, onQueryUpdated = _a.onQueryUpdated, _f = _a.fetchPolicy, fetchPolicy = _f === void 0 ? ((_b = this.defaultOptions.mutate) === null || _b === void 0 ? void 0 : _b.fetchPolicy) || "network-only" : _f, _g = _a.errorPolicy, errorPolicy = _g === void 0 ? ((_c = this.defaultOptions.mutate) === null || _c === void 0 ? void 0 : _c.errorPolicy) || "none" : _g, keepRootFields = _a.keepRootFields, context = _a.context;
-        return (0,tslib_es6/* __awaiter */.sH)(this, void 0, void 0, function () {
+        return (0,tslib_es6/* __awaiter */.sH)(this, arguments, void 0, function (_b) {
             var mutationId, hasClientExports, mutationStoreValue, isOptimistic, self;
-            return (0,tslib_es6/* __generator */.YH)(this, function (_h) {
-                switch (_h.label) {
+            var _c, _d;
+            var mutation = _b.mutation, variables = _b.variables, optimisticResponse = _b.optimisticResponse, updateQueries = _b.updateQueries, _e = _b.refetchQueries, refetchQueries = _e === void 0 ? [] : _e, _f = _b.awaitRefetchQueries, awaitRefetchQueries = _f === void 0 ? false : _f, updateWithProxyFn = _b.update, onQueryUpdated = _b.onQueryUpdated, _g = _b.fetchPolicy, fetchPolicy = _g === void 0 ? ((_c = this.defaultOptions.mutate) === null || _c === void 0 ? void 0 : _c.fetchPolicy) || "network-only" : _g, _h = _b.errorPolicy, errorPolicy = _h === void 0 ? ((_d = this.defaultOptions.mutate) === null || _d === void 0 ? void 0 : _d.errorPolicy) || "none" : _h, keepRootFields = _b.keepRootFields, context = _b.context;
+            return (0,tslib_es6/* __generator */.YH)(this, function (_j) {
+                switch (_j.label) {
                     case 0:
                         (0,globals/* invariant */.V1)(mutation, 26);
                         (0,globals/* invariant */.V1)(fetchPolicy === "network-only" || fetchPolicy === "no-cache", 27);
@@ -43926,8 +43926,8 @@ var QueryManager = /** @class */ (function () {
                         if (!hasClientExports) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.localState.addExportedVariables(mutation, variables, context)];
                     case 1:
-                        variables = (_h.sent());
-                        _h.label = 2;
+                        variables = (_j.sent());
+                        _j.label = 2;
                     case 2:
                         mutationStoreValue = this.mutationStore &&
                             (this.mutationStore[mutationId] = {
@@ -47638,10 +47638,10 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 function readMultipartBody(response, nextValue) {
-    var _a;
     return (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__awaiter */ .sH)(this, void 0, void 0, function () {
-        var decoder, contentType, delimiter, boundaryVal, boundary, buffer, iterator, running, _b, value, done, chunk, searchFrom, bi, message, i, headers, contentType_1, body, result, next;
-        var _c, _d;
+        var decoder, contentType, delimiter, boundaryVal, boundary, buffer, iterator, running, _a, value, done, chunk, searchFrom, bi, message, i, headers, contentType_1, body, result, next;
+        var _b, _c;
+        var _d;
         return (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__generator */ .YH)(this, function (_e) {
             switch (_e.label) {
                 case 0:
@@ -47649,7 +47649,7 @@ function readMultipartBody(response, nextValue) {
                         throw new Error("TextDecoder must be defined in the environment: please import a polyfill.");
                     }
                     decoder = new TextDecoder("utf-8");
-                    contentType = (_a = response.headers) === null || _a === void 0 ? void 0 : _a.get("content-type");
+                    contentType = (_d = response.headers) === null || _d === void 0 ? void 0 : _d.get("content-type");
                     delimiter = "boundary=";
                     boundaryVal = (contentType === null || contentType === void 0 ? void 0 : contentType.includes(delimiter)) ?
                         contentType === null || contentType === void 0 ? void 0 : contentType.substring((contentType === null || contentType === void 0 ? void 0 : contentType.indexOf(delimiter)) + delimiter.length).replace(/['"]/g, "").replace(/\;(.*)/gm, "").trim()
@@ -47663,7 +47663,7 @@ function readMultipartBody(response, nextValue) {
                     if (!running) return [3 /*break*/, 3];
                     return [4 /*yield*/, iterator.next()];
                 case 2:
-                    _b = _e.sent(), value = _b.value, done = _b.done;
+                    _a = _e.sent(), value = _a.value, done = _a.done;
                     chunk = typeof value === "string" ? value : decoder.decode(value);
                     searchFrom = buffer.length - boundary.length + 1;
                     running = !done;
@@ -47671,10 +47671,10 @@ function readMultipartBody(response, nextValue) {
                     bi = buffer.indexOf(boundary, searchFrom);
                     while (bi > -1) {
                         message = void 0;
-                        _c = [
+                        _b = [
                             buffer.slice(0, bi),
                             buffer.slice(bi + boundary.length),
-                        ], message = _c[0], buffer = _c[1];
+                        ], message = _b[0], buffer = _b[1];
                         i = message.indexOf("\r\n\r\n");
                         headers = parseHeaders(message.slice(0, i));
                         contentType_1 = headers["content-type"];
@@ -47693,10 +47693,13 @@ function readMultipartBody(response, nextValue) {
                                 if ((0,_utilities_common_incrementalResult_js__WEBPACK_IMPORTED_MODULE_2__/* .isApolloPayloadResult */ .Nw)(result)) {
                                     next = {};
                                     if ("payload" in result) {
+                                        if (Object.keys(result).length === 1 && result.payload === null) {
+                                            return [2 /*return*/];
+                                        }
                                         next = (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .Cl)({}, result.payload);
                                     }
                                     if ("errors" in result) {
-                                        next = (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .Cl)({}, next), { extensions: (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .Cl)({}, ("extensions" in next ? next.extensions : null)), (_d = {}, _d[_errors_index_js__WEBPACK_IMPORTED_MODULE_3__/* .PROTOCOL_ERRORS_SYMBOL */ .K$] = result.errors, _d)) });
+                                        next = (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .Cl)({}, next), { extensions: (0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_0__/* .__assign */ .Cl)({}, ("extensions" in next ? next.extensions : null)), (_c = {}, _c[_errors_index_js__WEBPACK_IMPORTED_MODULE_3__/* .PROTOCOL_ERRORS_SYMBOL */ .K$] = result.errors, _c)) });
                                     }
                                     nextValue(next);
                                 }
@@ -48555,7 +48558,7 @@ https://github.com/facebook/relay/blob/8651fbca19adbfbb79af7a3bc40834d105fd7747/
 function useRenderGuard() {
     RenderDispatcher = getRenderDispatcher();
     return rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () {
-        return (RenderDispatcher !== null && RenderDispatcher === getRenderDispatcher());
+        return (RenderDispatcher != null && RenderDispatcher === getRenderDispatcher());
     }, []);
 }
 //# sourceMappingURL=useRenderGuard.js.map
@@ -53863,7 +53866,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.9.6";
+var version = "3.9.7";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
