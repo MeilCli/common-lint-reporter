@@ -44975,13 +44975,13 @@ var hasSuggestedDevtools = false;
 
 /**
  * This is the primary Apollo Client class. It is used to send GraphQL documents (i.e. queries
- * and mutations) to a GraphQL spec-compliant server over an {@link ApolloLink} instance,
+ * and mutations) to a GraphQL spec-compliant server over an `ApolloLink` instance,
  * receive results from the server and cache the results in a store. It also delivers updates
- * to GraphQL queries through {@link Observable} instances.
+ * to GraphQL queries through `Observable` instances.
  */
 var ApolloClient = /** @class */ (function () {
     /**
-     * Constructs an instance of {@link ApolloClient}.
+     * Constructs an instance of `ApolloClient`.
      *
      * @example
      * ```js
@@ -45143,7 +45143,7 @@ var ApolloClient = /** @class */ (function () {
     };
     /**
      * This watches the cache store of the query according to the options specified and
-     * returns an {@link ObservableQuery}. We can subscribe to this {@link ObservableQuery} and
+     * returns an `ObservableQuery`. We can subscribe to this `ObservableQuery` and
      * receive updated results through a GraphQL observer when the cache store changes.
      *
      * Note that this method is not an implementation of GraphQL subscriptions. Rather,
@@ -45177,7 +45177,7 @@ var ApolloClient = /** @class */ (function () {
      * returns a `Promise` which is either resolved with the resulting data
      * or rejected with an error.
      *
-     * @param options - An object of type {@link QueryOptions} that allows us to
+     * @param options - An object of type `QueryOptions` that allows us to
      * describe how this query should be treated e.g. whether it should hit the
      * server at all or just resolve from the cache, etc.
      */
@@ -45207,7 +45207,7 @@ var ApolloClient = /** @class */ (function () {
     };
     /**
      * This subscribes to a graphql subscription according to the options specified and returns an
-     * {@link Observable} which either emits received data or an error.
+     * `Observable` which either emits received data or an error.
      */
     ApolloClient.prototype.subscribe = function (options) {
         return this.queryManager.startGraphQLSubscription(options);
@@ -48797,6 +48797,11 @@ function _useFragment(options) {
     var resultRef = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_6__/* .useLazyRef */ .n)(function () {
         return diffToResult(cache.diff(diffOptions));
     });
+    // Since .next is async, we need to make sure that we
+    // get the correct diff on the next render given new diffOptions
+    rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
+        resultRef.current = diffToResult(cache.diff(diffOptions));
+    }, [diffOptions, cache]);
     // Used for both getSnapshot and getServerSnapshot
     var getSnapshot = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () { return resultRef.current; }, []);
     return (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_7__/* .useSyncExternalStore */ .r)(rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (forceUpdate) {
@@ -50681,7 +50686,8 @@ var InternalQueryReference = /** @class */ (function () {
     InternalQueryReference.prototype.didChangeOptions = function (watchQueryOptions) {
         var _this = this;
         return OBSERVED_CHANGED_OPTIONS.some(function (option) {
-            return !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_0__/* .equal */ .L)(_this.watchQueryOptions[option], watchQueryOptions[option]);
+            return option in watchQueryOptions &&
+                !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_0__/* .equal */ .L)(_this.watchQueryOptions[option], watchQueryOptions[option]);
         });
     };
     InternalQueryReference.prototype.applyOptions = function (watchQueryOptions) {
@@ -50782,7 +50788,7 @@ var InternalQueryReference = /** @class */ (function () {
         // to resolve the promise if `handleNext` hasn't been run to ensure the
         // promise is resolved correctly.
         returnedPromise
-            .then(function (result) {
+            .then(function () {
             // In the case of `fetchMore`, this promise is resolved before a cache
             // result is emitted due to the fact that `fetchMore` sets a `no-cache`
             // fetch policy and runs `cache.batch` in its `.then` handler. Because
@@ -50796,8 +50802,16 @@ var InternalQueryReference = /** @class */ (function () {
             setTimeout(function () {
                 var _a;
                 if (_this.promise.status === "pending") {
-                    _this.result = result;
-                    (_a = _this.resolve) === null || _a === void 0 ? void 0 : _a.call(_this, result);
+                    // Use the current result from the observable instead of the value
+                    // resolved from the promise. This avoids issues in some cases where
+                    // the raw resolved value should not be the emitted value, such as
+                    // when a `fetchMore` call returns an empty array after it has
+                    // reached the end of the list.
+                    //
+                    // See the following for more information:
+                    // https://github.com/apollographql/apollo-client/issues/11642
+                    _this.result = _this.observable.getCurrentResult();
+                    (_a = _this.resolve) === null || _a === void 0 ? void 0 : _a.call(_this, _this.result);
                 }
             });
         })
@@ -53868,7 +53882,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.9.7";
+var version = "3.9.8";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
