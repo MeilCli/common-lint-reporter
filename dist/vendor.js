@@ -48739,6 +48739,7 @@ function _useBackgroundQuery(query, options) {
         setWrappedQueryRef((0,_internal_index_js__WEBPACK_IMPORTED_MODULE_7__/* .wrapQueryRef */ .Qh)(queryRef));
         return promise;
     }, [queryRef]);
+    rehackt__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () { return queryRef.softRetain(); }, [queryRef]);
     return [
         didFetchResult.current ? wrappedQueryRef : void 0,
         { fetchMore: fetchMore, refetch: refetch },
@@ -50604,6 +50605,7 @@ var InternalQueryReference = /** @class */ (function () {
         this.key = {};
         this.listeners = new Set();
         this.references = 0;
+        this.softReferences = 0;
         this.handleNext = this.handleNext.bind(this);
         this.handleError = this.handleError.bind(this);
         this.dispose = this.dispose.bind(this);
@@ -50678,6 +50680,26 @@ var InternalQueryReference = /** @class */ (function () {
             // Wait before fully disposing in case the app is running in strict mode.
             setTimeout(function () {
                 if (!_this.references) {
+                    _this.dispose();
+                }
+            });
+        };
+    };
+    InternalQueryReference.prototype.softRetain = function () {
+        var _this = this;
+        this.softReferences++;
+        var disposed = false;
+        return function () {
+            // Tracking if this has already been called helps ensure that
+            // multiple calls to this function won't decrement the reference
+            // counter more than it should. Subsequent calls just result in a noop.
+            if (disposed) {
+                return;
+            }
+            disposed = true;
+            _this.softReferences--;
+            setTimeout(function () {
+                if (!_this.softReferences && !_this.references) {
                     _this.dispose();
                 }
             });
@@ -53882,7 +53904,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.9.8";
+var version = "3.9.9";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
