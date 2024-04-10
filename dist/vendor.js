@@ -50698,16 +50698,17 @@ var InternalQueryReference = /** @class */ (function () {
     InternalQueryReference.prototype.reinitialize = function () {
         var observable = this.observable;
         var originalFetchPolicy = this.watchQueryOptions.fetchPolicy;
+        var avoidNetworkRequests = originalFetchPolicy === "no-cache" || originalFetchPolicy === "standby";
         try {
-            if (originalFetchPolicy !== "no-cache") {
+            if (avoidNetworkRequests) {
+                observable.silentSetOptions({ fetchPolicy: "standby" });
+            }
+            else {
                 observable.resetLastResults();
                 observable.silentSetOptions({ fetchPolicy: "cache-first" });
             }
-            else {
-                observable.silentSetOptions({ fetchPolicy: "standby" });
-            }
             this.subscribeToQuery();
-            if (originalFetchPolicy === "no-cache") {
+            if (avoidNetworkRequests) {
                 return;
             }
             observable.resetDiff();
@@ -53956,7 +53957,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.9.10";
+var version = "3.9.11";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
