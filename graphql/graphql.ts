@@ -17732,6 +17732,8 @@ export type PullRequest = Assignable & Closable & Comment & Labelable & Lockable
   reviews?: Maybe<PullRequestReviewConnection>;
   /** Identifies the state of the pull request. */
   state: PullRequestState;
+  /** Check and Status rollup information for the PR's head ref. */
+  statusCheckRollup?: Maybe<StatusCheckRollup>;
   /** A list of reviewer suggestions based on commit history and past review comments. */
   suggestedReviewers: Array<Maybe<SuggestedReviewer>>;
   /**
@@ -39114,6 +39116,7 @@ export type PullRequestResolvers<ContextType = any, ParentType extends Resolvers
   reviewThreads?: Resolver<ResolversTypes['PullRequestReviewThreadConnection'], ParentType, ContextType, Partial<PullRequestReviewThreadsArgs>>;
   reviews?: Resolver<Maybe<ResolversTypes['PullRequestReviewConnection']>, ParentType, ContextType, Partial<PullRequestReviewsArgs>>;
   state?: Resolver<ResolversTypes['PullRequestState'], ParentType, ContextType>;
+  statusCheckRollup?: Resolver<Maybe<ResolversTypes['StatusCheckRollup']>, ParentType, ContextType>;
   suggestedReviewers?: Resolver<Array<Maybe<ResolversTypes['SuggestedReviewer']>>, ParentType, ContextType>;
   timeline?: Resolver<ResolversTypes['PullRequestTimelineConnection'], ParentType, ContextType, Partial<PullRequestTimelineArgs>>;
   timelineItems?: Resolver<ResolversTypes['PullRequestTimelineItemsConnection'], ParentType, ContextType, Partial<PullRequestTimelineItemsArgs>>;
