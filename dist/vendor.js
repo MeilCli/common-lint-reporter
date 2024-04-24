@@ -39164,12 +39164,16 @@ module.exports = parseParams
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   k: () => (/* binding */ ApolloCache)
 /* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1635);
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1635);
 /* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1161);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5215);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1212);
-/* harmony import */ var _wry_caches__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1744);
-/* harmony import */ var _utilities_caching_getMemoryInternals_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5051);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5215);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1212);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(3401);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(2922);
+/* harmony import */ var _wry_caches__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1744);
+/* harmony import */ var _utilities_caching_getMemoryInternals_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(5051);
+/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5381);
+
 
 
 
@@ -39180,10 +39184,10 @@ var ApolloCache = /** @class */ (function () {
         this.assumeImmutableResults = false;
         // Make sure we compute the same (===) fragment query document every
         // time we receive the same fragment in readFragment.
-        this.getFragmentDoc = (0,optimism__WEBPACK_IMPORTED_MODULE_0__/* .wrap */ .LV)(_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .getFragmentQueryDocument */ .ct, {
-            max: _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .cacheSizes */ .v["cache.fragmentQueryDocuments"] ||
+        this.getFragmentDoc = (0,optimism__WEBPACK_IMPORTED_MODULE_0__/* .wrap */ .LV)(_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .getFragmentQueryDocument */ .ct, {
+            max: _utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .cacheSizes */ .v["cache.fragmentQueryDocuments"] ||
                 1000 /* defaultCacheSizes["cache.fragmentQueryDocuments"] */,
-            cache: _wry_caches__WEBPACK_IMPORTED_MODULE_3__/* .WeakCache */ .l,
+            cache: _wry_caches__WEBPACK_IMPORTED_MODULE_4__/* .WeakCache */ .l,
         });
     }
     // Transactional API
@@ -39227,21 +39231,49 @@ var ApolloCache = /** @class */ (function () {
     // DataProxy API
     ApolloCache.prototype.readQuery = function (options, optimistic) {
         if (optimistic === void 0) { optimistic = !!options.optimistic; }
-        return this.read((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, options), { rootId: options.id || "ROOT_QUERY", optimistic: optimistic }));
+        return this.read((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({}, options), { rootId: options.id || "ROOT_QUERY", optimistic: optimistic }));
+    };
+    /** {@inheritDoc @apollo/client!ApolloClient#watchFragment:member(1)} */
+    ApolloCache.prototype.watchFragment = function (options) {
+        var _this = this;
+        var fragment = options.fragment, fragmentName = options.fragmentName, from = options.from, _a = options.optimistic, optimistic = _a === void 0 ? true : _a;
+        var diffOptions = {
+            returnPartialData: true,
+            id: typeof from === "string" ? from : this.identify(from),
+            query: this.getFragmentDoc(fragment, fragmentName),
+            optimistic: optimistic,
+        };
+        var latestDiff;
+        return new _utilities_index_js__WEBPACK_IMPORTED_MODULE_6__/* .Observable */ .c(function (observer) {
+            return _this.watch((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({}, diffOptions), { immediate: true, query: _this.getFragmentDoc(fragment, fragmentName), callback: function (diff) {
+                    if ((0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .L)(diff, latestDiff)) {
+                        return;
+                    }
+                    var result = {
+                        data: diff.result,
+                        complete: !!diff.complete,
+                    };
+                    if (diff.missing) {
+                        result.missing = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_7__/* .mergeDeepArray */ .IM)(diff.missing.map(function (error) { return error.missing; }));
+                    }
+                    latestDiff = diff;
+                    observer.next(result);
+                } }));
+        });
     };
     ApolloCache.prototype.readFragment = function (options, optimistic) {
         if (optimistic === void 0) { optimistic = !!options.optimistic; }
-        return this.read((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, options), { query: this.getFragmentDoc(options.fragment, options.fragmentName), rootId: options.id, optimistic: optimistic }));
+        return this.read((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({}, options), { query: this.getFragmentDoc(options.fragment, options.fragmentName), rootId: options.id, optimistic: optimistic }));
     };
     ApolloCache.prototype.writeQuery = function (_a) {
-        var id = _a.id, data = _a.data, options = (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__rest */ .Tt)(_a, ["id", "data"]);
+        var id = _a.id, data = _a.data, options = (0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__rest */ .Tt)(_a, ["id", "data"]);
         return this.write(Object.assign(options, {
             dataId: id || "ROOT_QUERY",
             result: data,
         }));
     };
     ApolloCache.prototype.writeFragment = function (_a) {
-        var id = _a.id, data = _a.data, fragment = _a.fragment, fragmentName = _a.fragmentName, options = (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__rest */ .Tt)(_a, ["id", "data", "fragment", "fragmentName"]);
+        var id = _a.id, data = _a.data, fragment = _a.fragment, fragmentName = _a.fragmentName, options = (0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__rest */ .Tt)(_a, ["id", "data", "fragment", "fragmentName"]);
         return this.write(Object.assign(options, {
             query: this.getFragmentDoc(fragment, fragmentName),
             dataId: id,
@@ -39255,7 +39287,7 @@ var ApolloCache = /** @class */ (function () {
                 var data = update(value);
                 if (data === void 0 || data === null)
                     return value;
-                cache.writeQuery((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, options), { data: data }));
+                cache.writeQuery((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({}, options), { data: data }));
                 return data;
             },
         });
@@ -39267,7 +39299,7 @@ var ApolloCache = /** @class */ (function () {
                 var data = update(value);
                 if (data === void 0 || data === null)
                     return value;
-                cache.writeFragment((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, options), { data: data }));
+                cache.writeFragment((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({}, options), { data: data }));
                 return data;
             },
         });
@@ -39276,7 +39308,7 @@ var ApolloCache = /** @class */ (function () {
 }());
 
 if (globalThis.__DEV__ !== false) {
-    ApolloCache.prototype.getMemoryInternals = _utilities_caching_getMemoryInternals_js__WEBPACK_IMPORTED_MODULE_5__/* .getApolloCacheMemoryInternals */ .tQ;
+    ApolloCache.prototype.getMemoryInternals = _utilities_caching_getMemoryInternals_js__WEBPACK_IMPORTED_MODULE_8__/* .getApolloCacheMemoryInternals */ .tQ;
 }
 //# sourceMappingURL=cache.js.map
 
@@ -45043,6 +45075,7 @@ var ApolloClient = /** @class */ (function () {
         this.watchQuery = this.watchQuery.bind(this);
         this.query = this.query.bind(this);
         this.mutate = this.mutate.bind(this);
+        this.watchFragment = this.watchFragment.bind(this);
         this.resetStore = this.resetStore.bind(this);
         this.reFetchObservableQueries = this.reFetchObservableQueries.bind(this);
         this.version = version/* version */.r;
@@ -45146,7 +45179,7 @@ var ApolloClient = /** @class */ (function () {
     /**
      * This watches the cache store of the query according to the options specified and
      * returns an `ObservableQuery`. We can subscribe to this `ObservableQuery` and
-     * receive updated results through a GraphQL observer when the cache store changes.
+     * receive updated results through an observer when the cache store changes.
      *
      * Note that this method is not an implementation of GraphQL subscriptions. Rather,
      * it uses Apollo's store in order to reactively deliver updates to your query results.
@@ -45226,6 +45259,25 @@ var ApolloClient = /** @class */ (function () {
     ApolloClient.prototype.readQuery = function (options, optimistic) {
         if (optimistic === void 0) { optimistic = false; }
         return this.cache.readQuery(options, optimistic);
+    };
+    /**
+     * Watches the cache store of the fragment according to the options specified
+     * and returns an `Observable`. We can subscribe to this
+     * `Observable` and receive updated results through an
+     * observer when the cache store changes.
+     *
+     * You must pass in a GraphQL document with a single fragment or a document
+     * with multiple fragments that represent what you are reading. If you pass
+     * in a document with multiple fragments then you must also specify a
+     * `fragmentName`.
+     *
+     * @since 3.10.0
+     * @param options - An object of type `WatchFragmentOptions` that allows
+     * the cache to identify the fragment and optionally specify whether to react
+     * to optimistic updates.
+     */
+    ApolloClient.prototype.watchFragment = function (options) {
+        return this.cache.watchFragment(options);
     };
     /**
      * Tries to read some data from the store in the shape of the provided
@@ -48775,7 +48827,6 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1635);
 }
 /* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7243);
-/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5381);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(2922);
 }
@@ -48794,6 +48845,7 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(2368);
 }
+/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5381);
 
 
 
@@ -48813,6 +48865,7 @@ function _useFragment(options) {
     var resultRef = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_6__/* .useLazyRef */ .n)(function () {
         return diffToResult(cache.diff(diffOptions));
     });
+    var stableOptions = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_4__/* .useDeepMemo */ .k)(function () { return options; }, [options]);
     // Since .next is async, we need to make sure that we
     // get the correct diff on the next render given new diffOptions
     rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
@@ -48822,22 +48875,24 @@ function _useFragment(options) {
     var getSnapshot = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () { return resultRef.current; }, []);
     return (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_7__/* .useSyncExternalStore */ .r)(rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (forceUpdate) {
         var lastTimeout = 0;
-        var unsubscribe = cache.watch((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({}, diffOptions), { immediate: true, callback: function (diff) {
-                if (!(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .L)(diff.result, resultRef.current.data)) {
-                    resultRef.current = diffToResult(diff);
-                    // If we get another update before we've re-rendered, bail out of
-                    // the update and try again. This ensures that the relative timing
-                    // between useQuery and useFragment stays roughly the same as
-                    // fixed in https://github.com/apollographql/apollo-client/pull/11083
-                    clearTimeout(lastTimeout);
-                    lastTimeout = setTimeout(forceUpdate);
-                }
-            } }));
+        var subscription = cache.watchFragment(stableOptions).subscribe({
+            next: function (result) {
+                if ((0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A)(result, resultRef.current))
+                    return;
+                resultRef.current = result;
+                // If we get another update before we've re-rendered, bail out of
+                // the update and try again. This ensures that the relative timing
+                // between useQuery and useFragment stays roughly the same as
+                // fixed in https://github.com/apollographql/apollo-client/pull/11083
+                clearTimeout(lastTimeout);
+                lastTimeout = setTimeout(forceUpdate);
+            },
+        });
         return function () {
-            unsubscribe();
+            subscription.unsubscribe();
             clearTimeout(lastTimeout);
         };
-    }, [cache, diffOptions]), getSnapshot, getSnapshot);
+    }, [cache, stableOptions]), getSnapshot, getSnapshot);
 }
 function diffToResult(diff) {
     var result = {
@@ -49778,6 +49833,14 @@ var InternalState = /** @class */ (function () {
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4047);
 }
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(111);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8481);
+}
+
+
 
 
 /**
@@ -49800,6 +49863,16 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
  * @param queryRef - A `QueryReference` returned from `useBackgroundQuery`, `useLoadableQuery`, or `createQueryPreloader`.
  */
 function useQueryRefHandlers(queryRef) {
+    var unwrapped = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .unwrapQueryRef */ .Fd)(queryRef);
+    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .wrapHook */ .Y)("useQueryRefHandlers", _useQueryRefHandlers, unwrapped ?
+        unwrapped["observable"]
+        // in the case of a "transported" queryRef object, we need to use the
+        // client that's available to us at the current position in the React tree
+        // that ApolloClient will then have the job to recreate a real queryRef from
+        // the transported object
+        : (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)())(queryRef);
+}
+function _useQueryRefHandlers(queryRef) {
     var _a = rehackt__WEBPACK_IMPORTED_MODULE_0__.useState(queryRef), previousQueryRef = _a[0], setPreviousQueryRef = _a[1];
     var _b = rehackt__WEBPACK_IMPORTED_MODULE_0__.useState(queryRef), wrappedQueryRef = _b[0], setWrappedQueryRef = _b[1];
     var internalQueryRef = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .unwrapQueryRef */ .Fd)(queryRef);
@@ -49885,34 +49958,45 @@ function useReactiveVar(rv) {
 /* harmony export */ });
 /* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7243);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4047);
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4047);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(8481);
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8481);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7737);
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(7737);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useSuspenseQuery_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5599);
+	/* harmony import */ var _useSuspenseQuery_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(5599);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9770);
+	/* harmony import */ var _useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9770);
 }
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(111);
+}
+
 
 
 
 
 
 function useReadQuery(queryRef) {
-    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .wrapHook */ .Y)("useReadQuery", _useReadQuery, (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .unwrapQueryRef */ .Fd)(queryRef)["observable"])(queryRef);
+    var unwrapped = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .unwrapQueryRef */ .Fd)(queryRef);
+    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .wrapHook */ .Y)("useReadQuery", _useReadQuery, unwrapped ?
+        unwrapped["observable"]
+        // in the case of a "transported" queryRef object, we need to use the
+        // client that's available to us at the current position in the React tree
+        // that ApolloClient will then have the job to recreate a real queryRef from
+        // the transported object
+        : (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)())(queryRef);
 }
 function _useReadQuery(queryRef) {
-    var internalQueryRef = rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () { return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .unwrapQueryRef */ .Fd)(queryRef); }, [queryRef]);
-    var getPromise = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () { return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .getWrappedPromise */ .Ve)(queryRef); }, [queryRef]);
+    var internalQueryRef = rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () { return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .unwrapQueryRef */ .Fd)(queryRef); }, [queryRef]);
+    var getPromise = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () { return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .getWrappedPromise */ .Ve)(queryRef); }, [queryRef]);
     if (internalQueryRef.disposed) {
         internalQueryRef.reinitialize();
-        (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .updateWrappedQueryRef */ .CY)(queryRef, internalQueryRef.promise);
+        (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .updateWrappedQueryRef */ .CY)(queryRef, internalQueryRef.promise);
     }
     rehackt__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () {
         // It may seem odd that we are trying to reinitialize the queryRef even
@@ -49924,18 +50008,18 @@ function _useReadQuery(queryRef) {
         }
         return internalQueryRef.retain();
     }, [internalQueryRef]);
-    var promise = (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_3__/* .useSyncExternalStore */ .r)(rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (forceUpdate) {
+    var promise = (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_4__/* .useSyncExternalStore */ .r)(rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (forceUpdate) {
         return internalQueryRef.listen(function (promise) {
-            (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .updateWrappedQueryRef */ .CY)(queryRef, promise);
+            (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .updateWrappedQueryRef */ .CY)(queryRef, promise);
             forceUpdate();
         });
     }, [internalQueryRef]), getPromise, getPromise);
-    var result = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_4__/* .__use */ .y)(promise);
+    var result = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_5__/* .__use */ .y)(promise);
     return rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
         return {
             data: result.data,
             networkStatus: result.networkStatus,
-            error: (0,_useSuspenseQuery_js__WEBPACK_IMPORTED_MODULE_5__/* .toApolloError */ .jy)(result),
+            error: (0,_useSuspenseQuery_js__WEBPACK_IMPORTED_MODULE_6__/* .toApolloError */ .jy)(result),
         };
     }, [result]);
 }
@@ -51146,7 +51230,6 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
  * const preloadQuery = createQueryPreloader(client);
  * ```
  * @since 3.9.0
- * @alpha
  */
 function createQueryPreloader(client) {
     return function preloadQuery(query, options) {
@@ -53957,7 +54040,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.9.11";
+var version = "3.10.0";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
