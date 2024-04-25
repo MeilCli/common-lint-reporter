@@ -14768,7 +14768,24 @@ if (true) {
 
 "use strict";
 
-module.exports = __webpack_require__(6540);
+if (false) {}
+// We don't want bundlers to error when they encounter usage of any of these exports.
+// It's up to the package author to ensure that if they access React internals,
+// they do so in a safe way that won't break if React changes how they use these internals.
+// (e.g. only access them in development, and only in an optional way that won't
+// break if internals are not there or do not have the expected structure)
+// @ts-ignore
+module.exports.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED = undefined;
+// @ts-ignore
+module.exports.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE = undefined;
+// @ts-ignore
+module.exports.__SERVER_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE = undefined;
+// Here we actually pull in the React library and add everything
+// it exports to our own `module.exports`.
+// If React suddenly were to add one of the above "polyfilled" exports,
+// the React version would overwrite our version, so this should be
+// future-proof.
+Object.assign(module.exports, __webpack_require__(6540));
 
 
 /***/ }),
@@ -48352,6 +48369,7 @@ var ApolloConsumer = function (props) {
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+var rehackt__WEBPACK_IMPORTED_MODULE_0___namespace_cache;
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   E: () => (/* binding */ resetApolloContext),
 /* harmony export */   l: () => (/* binding */ getApolloContext)
@@ -48368,7 +48386,7 @@ var ApolloConsumer = function (props) {
 // context), a single Apollo context is created and tracked in global state.
 var contextKey = _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .canUseSymbol */ .ol ? Symbol.for("__APOLLO_CONTEXT__") : "__APOLLO_CONTEXT__";
 function getApolloContext() {
-    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)( true, 45);
+    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)("createContext" in /*#__PURE__*/ (rehackt__WEBPACK_IMPORTED_MODULE_0___namespace_cache || (rehackt__WEBPACK_IMPORTED_MODULE_0___namespace_cache = __webpack_require__.t(rehackt__WEBPACK_IMPORTED_MODULE_0__, 2))), 45);
     var context = rehackt__WEBPACK_IMPORTED_MODULE_0__.createContext[contextKey];
     if (!context) {
         Object.defineProperty(rehackt__WEBPACK_IMPORTED_MODULE_0__.createContext, contextKey, {
@@ -51262,6 +51280,9 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 
 var scheduledCleanup = new WeakSet();
 function schedule(cache) {
+    if (cache.size <= (cache.max || -1)) {
+        return;
+    }
     if (!scheduledCleanup.has(cache)) {
         scheduledCleanup.add(cache);
         setTimeout(function () {
@@ -51273,7 +51294,7 @@ function schedule(cache) {
 /**
  * @internal
  * A version of WeakCache that will auto-schedule a cleanup of the cache when
- * a new item is added.
+ * a new item is added and the cache reached maximum size.
  * Throttled to once per 100ms.
  *
  * @privateRemarks
@@ -51291,15 +51312,16 @@ var AutoCleanedWeakCache = function (max, dispose) {
     */
     var cache = new _wry_caches__WEBPACK_IMPORTED_MODULE_0__/* .WeakCache */ .l(max, dispose);
     cache.set = function (key, value) {
+        var ret = _wry_caches__WEBPACK_IMPORTED_MODULE_0__/* .WeakCache */ .l.prototype.set.call(this, key, value);
         schedule(this);
-        return _wry_caches__WEBPACK_IMPORTED_MODULE_0__/* .WeakCache */ .l.prototype.set.call(this, key, value);
+        return ret;
     };
     return cache;
 };
 /**
  * @internal
  * A version of StrongCache that will auto-schedule a cleanup of the cache when
- * a new item is added.
+ * a new item is added and the cache reached maximum size.
  * Throttled to once per 100ms.
  *
  * @privateRemarks
@@ -51317,8 +51339,9 @@ var AutoCleanedStrongCache = function (max, dispose) {
     */
     var cache = new _wry_caches__WEBPACK_IMPORTED_MODULE_1__/* .StrongCache */ .C(max, dispose);
     cache.set = function (key, value) {
+        var ret = _wry_caches__WEBPACK_IMPORTED_MODULE_1__/* .StrongCache */ .C.prototype.set.call(this, key, value);
         schedule(this);
-        return _wry_caches__WEBPACK_IMPORTED_MODULE_1__/* .StrongCache */ .C.prototype.set.call(this, key, value);
+        return ret;
     };
     return cache;
 };
@@ -54040,7 +54063,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.10.0";
+var version = "3.10.1";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
