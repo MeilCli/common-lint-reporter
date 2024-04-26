@@ -2068,8 +2068,29 @@ var RepositoryRuleType;
     RepositoryRuleType["Creation"] = "CREATION";
     /** Only allow users with bypass permissions to delete matching refs. */
     RepositoryRuleType["Deletion"] = "DELETION";
+    /**
+     * Prevent commits that include files with specified file extensions from being
+     * pushed to the commit graph. NOTE: Thie rule is in beta and subject to change
+     */
+    RepositoryRuleType["FileExtensionRestriction"] = "FILE_EXTENSION_RESTRICTION";
+    /**
+     * Prevent commits that include changes in specified file paths from being pushed
+     * to the commit graph. NOTE: Thie rule is in beta and subject to change
+     */
+    RepositoryRuleType["FilePathRestriction"] = "FILE_PATH_RESTRICTION";
     /** Branch is read-only. Users cannot push to the branch. */
     RepositoryRuleType["LockBranch"] = "LOCK_BRANCH";
+    /**
+     * Prevent commits that include file paths that exceed a specified character
+     * limit from being pushed to the commit graph. NOTE: Thie rule is in beta and
+     * subject to change
+     */
+    RepositoryRuleType["MaxFilePathLength"] = "MAX_FILE_PATH_LENGTH";
+    /**
+     * Prevent commits that exceed a specified file size limit from being pushed to
+     * the commit. NOTE: Thie rule is in beta and subject to change
+     */
+    RepositoryRuleType["MaxFileSize"] = "MAX_FILE_SIZE";
     /** Max ref updates */
     RepositoryRuleType["MaxRefUpdates"] = "MAX_REF_UPDATES";
     /** Merges must be performed via a merge queue. */
@@ -2122,11 +2143,13 @@ var RepositoryRulesetBypassActorBypassMode;
     /** The actor can only bypass rules via a pull request */
     RepositoryRulesetBypassActorBypassMode["PullRequest"] = "PULL_REQUEST";
 })(RepositoryRulesetBypassActorBypassMode || (exports.RepositoryRulesetBypassActorBypassMode = RepositoryRulesetBypassActorBypassMode = {}));
-/** The targets supported for rulesets */
+/** The targets supported for rulesets. NOTE: The push target is in beta and subject to change. */
 var RepositoryRulesetTarget;
 (function (RepositoryRulesetTarget) {
     /** Branch */
     RepositoryRulesetTarget["Branch"] = "BRANCH";
+    /** Push */
+    RepositoryRulesetTarget["Push"] = "PUSH";
     /** Tag */
     RepositoryRulesetTarget["Tag"] = "TAG";
 })(RepositoryRulesetTarget || (exports.RepositoryRulesetTarget = RepositoryRulesetTarget = {}));
