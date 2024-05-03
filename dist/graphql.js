@@ -2058,6 +2058,12 @@ var RepositoryRuleType;
     RepositoryRuleType["Authorization"] = "AUTHORIZATION";
     /** Branch name pattern */
     RepositoryRuleType["BranchNamePattern"] = "BRANCH_NAME_PATTERN";
+    /**
+     * Choose which tools must provide code scanning results before the reference is
+     * updated. When configured, code scanning must be enabled and have results for
+     * both the commit and the reference being updated.
+     */
+    RepositoryRuleType["CodeScanning"] = "CODE_SCANNING";
     /** Committer email pattern */
     RepositoryRuleType["CommitterEmailPattern"] = "COMMITTER_EMAIL_PATTERN";
     /** Commit author email pattern */

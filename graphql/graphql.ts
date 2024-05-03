@@ -2249,6 +2249,62 @@ export type CodeOfConduct = Node & {
   url?: Maybe<Scalars['URI']['output']>;
 };
 
+/**
+ * Choose which tools must provide code scanning results before the reference is
+ * updated. When configured, code scanning must be enabled and have results for
+ * both the commit and the reference being updated.
+ */
+export type CodeScanningParameters = {
+  __typename?: 'CodeScanningParameters';
+  /** Tools that must provide code scanning results for this rule to pass. */
+  codeScanningTools: Array<CodeScanningTool>;
+};
+
+/**
+ * Choose which tools must provide code scanning results before the reference is
+ * updated. When configured, code scanning must be enabled and have results for
+ * both the commit and the reference being updated.
+ */
+export type CodeScanningParametersInput = {
+  /** Tools that must provide code scanning results for this rule to pass. */
+  codeScanningTools: Array<CodeScanningToolInput>;
+};
+
+/** A tool that must provide code scanning results for this rule to pass. */
+export type CodeScanningTool = {
+  __typename?: 'CodeScanningTool';
+  /**
+   * The severity level at which code scanning results that raise alerts block a
+   * reference update. For more information on alert severity levels, see "[About code scanning alerts](${externalDocsUrl}/code-security/code-scanning/managing-code-scanning-alerts/about-code-scanning-alerts#about-alert-severity-and-security-severity-levels)."
+   */
+  alertsThreshold: Scalars['String']['output'];
+  /**
+   * The severity level at which code scanning results that raise security alerts
+   * block a reference update. For more information on security severity levels,
+   * see "[About code scanning alerts](${externalDocsUrl}/code-security/code-scanning/managing-code-scanning-alerts/about-code-scanning-alerts#about-alert-severity-and-security-severity-levels)."
+   */
+  securityAlertsThreshold: Scalars['String']['output'];
+  /** The name of a code scanning tool */
+  tool: Scalars['String']['output'];
+};
+
+/** A tool that must provide code scanning results for this rule to pass. */
+export type CodeScanningToolInput = {
+  /**
+   * The severity level at which code scanning results that raise alerts block a
+   * reference update. For more information on alert severity levels, see "[About code scanning alerts](${externalDocsUrl}/code-security/code-scanning/managing-code-scanning-alerts/about-code-scanning-alerts#about-alert-severity-and-security-severity-levels)."
+   */
+  alertsThreshold: Scalars['String']['input'];
+  /**
+   * The severity level at which code scanning results that raise security alerts
+   * block a reference update. For more information on security severity levels,
+   * see "[About code scanning alerts](${externalDocsUrl}/code-security/code-scanning/managing-code-scanning-alerts/about-code-scanning-alerts#about-alert-severity-and-security-severity-levels)."
+   */
+  securityAlertsThreshold: Scalars['String']['input'];
+  /** The name of a code scanning tool */
+  tool: Scalars['String']['input'];
+};
+
 /** Collaborators affiliation level with a subject. */
 export enum CollaboratorAffiliation {
   /** All collaborators the authenticated user can see. */
@@ -23159,6 +23215,12 @@ export enum RepositoryRuleType {
   Authorization = 'AUTHORIZATION',
   /** Branch name pattern */
   BranchNamePattern = 'BRANCH_NAME_PATTERN',
+  /**
+   * Choose which tools must provide code scanning results before the reference is
+   * updated. When configured, code scanning must be enabled and have results for
+   * both the commit and the reference being updated.
+   */
+  CodeScanning = 'CODE_SCANNING',
   /** Committer email pattern */
   CommitterEmailPattern = 'COMMITTER_EMAIL_PATTERN',
   /** Commit author email pattern */
@@ -24066,12 +24128,14 @@ export enum RuleEnforcement {
 }
 
 /** Types which can be parameters for `RepositoryRule` objects. */
-export type RuleParameters = BranchNamePatternParameters | CommitAuthorEmailPatternParameters | CommitMessagePatternParameters | CommitterEmailPatternParameters | FileExtensionRestrictionParameters | FilePathRestrictionParameters | MaxFilePathLengthParameters | MaxFileSizeParameters | PullRequestParameters | RequiredDeploymentsParameters | RequiredStatusChecksParameters | TagNamePatternParameters | UpdateParameters | WorkflowsParameters;
+export type RuleParameters = BranchNamePatternParameters | CodeScanningParameters | CommitAuthorEmailPatternParameters | CommitMessagePatternParameters | CommitterEmailPatternParameters | FileExtensionRestrictionParameters | FilePathRestrictionParameters | MaxFilePathLengthParameters | MaxFileSizeParameters | PullRequestParameters | RequiredDeploymentsParameters | RequiredStatusChecksParameters | TagNamePatternParameters | UpdateParameters | WorkflowsParameters;
 
 /** Specifies the parameters for a `RepositoryRule` object. Only one of the fields should be specified. */
 export type RuleParametersInput = {
   /** Parameters used for the `branch_name_pattern` rule type */
   branchNamePattern?: InputMaybe<BranchNamePatternParametersInput>;
+  /** Parameters used for the `code_scanning` rule type */
+  codeScanning?: InputMaybe<CodeScanningParametersInput>;
   /** Parameters used for the `commit_author_email_pattern` rule type */
   commitAuthorEmailPattern?: InputMaybe<CommitAuthorEmailPatternParametersInput>;
   /** Parameters used for the `commit_message_pattern` rule type */
@@ -31002,7 +31066,7 @@ export type ResolversUnionTypes<RefType extends Record<string, unknown>> = {
   RenamedTitleSubject: ( Issue ) | ( PullRequest );
   RequestedReviewer: ( Bot ) | ( Mannequin ) | ( Team ) | ( User );
   ReviewDismissalAllowanceActor: ( App ) | ( Team ) | ( User );
-  RuleParameters: ( BranchNamePatternParameters ) | ( CommitAuthorEmailPatternParameters ) | ( CommitMessagePatternParameters ) | ( CommitterEmailPatternParameters ) | ( FileExtensionRestrictionParameters ) | ( FilePathRestrictionParameters ) | ( MaxFilePathLengthParameters ) | ( MaxFileSizeParameters ) | ( PullRequestParameters ) | ( RequiredDeploymentsParameters ) | ( RequiredStatusChecksParameters ) | ( TagNamePatternParameters ) | ( UpdateParameters ) | ( WorkflowsParameters );
+  RuleParameters: ( BranchNamePatternParameters ) | ( CodeScanningParameters ) | ( CommitAuthorEmailPatternParameters ) | ( CommitMessagePatternParameters ) | ( CommitterEmailPatternParameters ) | ( FileExtensionRestrictionParameters ) | ( FilePathRestrictionParameters ) | ( MaxFilePathLengthParameters ) | ( MaxFileSizeParameters ) | ( PullRequestParameters ) | ( RequiredDeploymentsParameters ) | ( RequiredStatusChecksParameters ) | ( TagNamePatternParameters ) | ( UpdateParameters ) | ( WorkflowsParameters );
   RuleSource: ( Organization ) | ( Omit<Repository, 'issueOrPullRequest'> & { issueOrPullRequest?: Maybe<RefType['IssueOrPullRequest']> } );
   SearchResultItem: ( App ) | ( Discussion ) | ( Issue ) | ( MarketplaceListing ) | ( Organization ) | ( PullRequest ) | ( Omit<Repository, 'issueOrPullRequest'> & { issueOrPullRequest?: Maybe<RefType['IssueOrPullRequest']> } ) | ( User );
   Sponsor: ( Organization ) | ( User );
@@ -31223,6 +31287,10 @@ export type ResolversTypes = {
   ClosedEvent: ResolverTypeWrapper<Omit<ClosedEvent, 'closer'> & { closer?: Maybe<ResolversTypes['Closer']> }>;
   Closer: ResolverTypeWrapper<ResolversUnionTypes<ResolversTypes>['Closer']>;
   CodeOfConduct: ResolverTypeWrapper<CodeOfConduct>;
+  CodeScanningParameters: ResolverTypeWrapper<CodeScanningParameters>;
+  CodeScanningParametersInput: CodeScanningParametersInput;
+  CodeScanningTool: ResolverTypeWrapper<CodeScanningTool>;
+  CodeScanningToolInput: CodeScanningToolInput;
   CollaboratorAffiliation: CollaboratorAffiliation;
   Comment: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Comment']>;
   CommentAuthorAssociation: CommentAuthorAssociation;
@@ -32777,6 +32845,10 @@ export type ResolversParentTypes = {
   ClosedEvent: Omit<ClosedEvent, 'closer'> & { closer?: Maybe<ResolversParentTypes['Closer']> };
   Closer: ResolversUnionTypes<ResolversParentTypes>['Closer'];
   CodeOfConduct: CodeOfConduct;
+  CodeScanningParameters: CodeScanningParameters;
+  CodeScanningParametersInput: CodeScanningParametersInput;
+  CodeScanningTool: CodeScanningTool;
+  CodeScanningToolInput: CodeScanningToolInput;
   Comment: ResolversInterfaceTypes<ResolversParentTypes>['Comment'];
   CommentDeletedEvent: CommentDeletedEvent;
   Commit: Commit;
@@ -34788,6 +34860,18 @@ export type CodeOfConductResolvers<ContextType = any, ParentType extends Resolve
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   resourcePath?: Resolver<Maybe<ResolversTypes['URI']>, ParentType, ContextType>;
   url?: Resolver<Maybe<ResolversTypes['URI']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CodeScanningParametersResolvers<ContextType = any, ParentType extends ResolversParentTypes['CodeScanningParameters'] = ResolversParentTypes['CodeScanningParameters']> = {
+  codeScanningTools?: Resolver<Array<ResolversTypes['CodeScanningTool']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CodeScanningToolResolvers<ContextType = any, ParentType extends ResolversParentTypes['CodeScanningTool'] = ResolversParentTypes['CodeScanningTool']> = {
+  alertsThreshold?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  securityAlertsThreshold?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  tool?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -42005,7 +42089,7 @@ export type RevokeMigratorRolePayloadResolvers<ContextType = any, ParentType ext
 };
 
 export type RuleParametersResolvers<ContextType = any, ParentType extends ResolversParentTypes['RuleParameters'] = ResolversParentTypes['RuleParameters']> = {
-  __resolveType: TypeResolveFn<'BranchNamePatternParameters' | 'CommitAuthorEmailPatternParameters' | 'CommitMessagePatternParameters' | 'CommitterEmailPatternParameters' | 'FileExtensionRestrictionParameters' | 'FilePathRestrictionParameters' | 'MaxFilePathLengthParameters' | 'MaxFileSizeParameters' | 'PullRequestParameters' | 'RequiredDeploymentsParameters' | 'RequiredStatusChecksParameters' | 'TagNamePatternParameters' | 'UpdateParameters' | 'WorkflowsParameters', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'BranchNamePatternParameters' | 'CodeScanningParameters' | 'CommitAuthorEmailPatternParameters' | 'CommitMessagePatternParameters' | 'CommitterEmailPatternParameters' | 'FileExtensionRestrictionParameters' | 'FilePathRestrictionParameters' | 'MaxFilePathLengthParameters' | 'MaxFileSizeParameters' | 'PullRequestParameters' | 'RequiredDeploymentsParameters' | 'RequiredStatusChecksParameters' | 'TagNamePatternParameters' | 'UpdateParameters' | 'WorkflowsParameters', ParentType, ContextType>;
 };
 
 export type RuleSourceResolvers<ContextType = any, ParentType extends ResolversParentTypes['RuleSource'] = ResolversParentTypes['RuleSource']> = {
@@ -44141,6 +44225,8 @@ export type Resolvers<ContextType = any> = {
   ClosedEvent?: ClosedEventResolvers<ContextType>;
   Closer?: CloserResolvers<ContextType>;
   CodeOfConduct?: CodeOfConductResolvers<ContextType>;
+  CodeScanningParameters?: CodeScanningParametersResolvers<ContextType>;
+  CodeScanningTool?: CodeScanningToolResolvers<ContextType>;
   Comment?: CommentResolvers<ContextType>;
   CommentDeletedEvent?: CommentDeletedEventResolvers<ContextType>;
   Commit?: CommitResolvers<ContextType>;
