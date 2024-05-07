@@ -42098,7 +42098,7 @@ function warnAboutDataLoss(existingRef, incomingObj, storeFieldName, store) {
         "either ensure all objects of type " +
             childTypenames.join(" and ") +
             " have an ID or a custom merge function, or "
-        : "", typeDotName, existing, incoming);
+        : "", typeDotName, (0,tslib_es6/* __assign */.Cl)({}, existing), (0,tslib_es6/* __assign */.Cl)({}, incoming));
 }
 //# sourceMappingURL=writeToStore.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/caching/getMemoryInternals.js
@@ -54033,7 +54033,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.10.2";
+var version = "3.10.3";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
