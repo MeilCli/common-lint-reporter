@@ -39181,15 +39181,15 @@ module.exports = parseParams
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   k: () => (/* binding */ ApolloCache)
 /* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1635);
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1635);
 /* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1161);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5215);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1212);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(3401);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5215);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1212);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(3401);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(2922);
-/* harmony import */ var _wry_caches__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1744);
+/* harmony import */ var _wry_caches__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1744);
 /* harmony import */ var _utilities_caching_getMemoryInternals_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(5051);
-/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5381);
+/* harmony import */ var _core_equalByQuery_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(9080);
 
 
 
@@ -39201,10 +39201,10 @@ var ApolloCache = /** @class */ (function () {
         this.assumeImmutableResults = false;
         // Make sure we compute the same (===) fragment query document every
         // time we receive the same fragment in readFragment.
-        this.getFragmentDoc = (0,optimism__WEBPACK_IMPORTED_MODULE_0__/* .wrap */ .LV)(_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .getFragmentQueryDocument */ .ct, {
-            max: _utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .cacheSizes */ .v["cache.fragmentQueryDocuments"] ||
+        this.getFragmentDoc = (0,optimism__WEBPACK_IMPORTED_MODULE_0__/* .wrap */ .LV)(_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .getFragmentQueryDocument */ .ct, {
+            max: _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .cacheSizes */ .v["cache.fragmentQueryDocuments"] ||
                 1000 /* defaultCacheSizes["cache.fragmentQueryDocuments"] */,
-            cache: _wry_caches__WEBPACK_IMPORTED_MODULE_4__/* .WeakCache */ .l,
+            cache: _wry_caches__WEBPACK_IMPORTED_MODULE_3__/* .WeakCache */ .l,
         });
     }
     // Transactional API
@@ -39248,22 +39248,26 @@ var ApolloCache = /** @class */ (function () {
     // DataProxy API
     ApolloCache.prototype.readQuery = function (options, optimistic) {
         if (optimistic === void 0) { optimistic = !!options.optimistic; }
-        return this.read((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({}, options), { rootId: options.id || "ROOT_QUERY", optimistic: optimistic }));
+        return this.read((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, options), { rootId: options.id || "ROOT_QUERY", optimistic: optimistic }));
     };
     /** {@inheritDoc @apollo/client!ApolloClient#watchFragment:member(1)} */
     ApolloCache.prototype.watchFragment = function (options) {
         var _this = this;
         var fragment = options.fragment, fragmentName = options.fragmentName, from = options.from, _a = options.optimistic, optimistic = _a === void 0 ? true : _a;
+        var query = this.getFragmentDoc(fragment, fragmentName);
         var diffOptions = {
             returnPartialData: true,
             id: typeof from === "string" ? from : this.identify(from),
-            query: this.getFragmentDoc(fragment, fragmentName),
+            query: query,
             optimistic: optimistic,
         };
         var latestDiff;
-        return new _utilities_index_js__WEBPACK_IMPORTED_MODULE_6__/* .Observable */ .c(function (observer) {
-            return _this.watch((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({}, diffOptions), { immediate: true, query: _this.getFragmentDoc(fragment, fragmentName), callback: function (diff) {
-                    if ((0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .L)(diff, latestDiff)) {
+        return new _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .Observable */ .c(function (observer) {
+            return _this.watch((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, diffOptions), { immediate: true, callback: function (diff) {
+                    if (
+                    // Always ensure we deliver the first result
+                    latestDiff &&
+                        (0,_core_equalByQuery_js__WEBPACK_IMPORTED_MODULE_6__/* .equalByQuery */ .a)(query, { data: latestDiff === null || latestDiff === void 0 ? void 0 : latestDiff.result }, { data: diff.result })) {
                         return;
                     }
                     var result = {
@@ -39280,17 +39284,17 @@ var ApolloCache = /** @class */ (function () {
     };
     ApolloCache.prototype.readFragment = function (options, optimistic) {
         if (optimistic === void 0) { optimistic = !!options.optimistic; }
-        return this.read((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({}, options), { query: this.getFragmentDoc(options.fragment, options.fragmentName), rootId: options.id, optimistic: optimistic }));
+        return this.read((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, options), { query: this.getFragmentDoc(options.fragment, options.fragmentName), rootId: options.id, optimistic: optimistic }));
     };
     ApolloCache.prototype.writeQuery = function (_a) {
-        var id = _a.id, data = _a.data, options = (0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__rest */ .Tt)(_a, ["id", "data"]);
+        var id = _a.id, data = _a.data, options = (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__rest */ .Tt)(_a, ["id", "data"]);
         return this.write(Object.assign(options, {
             dataId: id || "ROOT_QUERY",
             result: data,
         }));
     };
     ApolloCache.prototype.writeFragment = function (_a) {
-        var id = _a.id, data = _a.data, fragment = _a.fragment, fragmentName = _a.fragmentName, options = (0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__rest */ .Tt)(_a, ["id", "data", "fragment", "fragmentName"]);
+        var id = _a.id, data = _a.data, fragment = _a.fragment, fragmentName = _a.fragmentName, options = (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__rest */ .Tt)(_a, ["id", "data", "fragment", "fragmentName"]);
         return this.write(Object.assign(options, {
             query: this.getFragmentDoc(fragment, fragmentName),
             dataId: id,
@@ -39304,7 +39308,7 @@ var ApolloCache = /** @class */ (function () {
                 var data = update(value);
                 if (data === void 0 || data === null)
                     return value;
-                cache.writeQuery((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({}, options), { data: data }));
+                cache.writeQuery((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, options), { data: data }));
                 return data;
             },
         });
@@ -39316,7 +39320,7 @@ var ApolloCache = /** @class */ (function () {
                 var data = update(value);
                 if (data === void 0 || data === null)
                     return value;
-                cache.writeFragment((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({}, options), { data: data }));
+                cache.writeFragment((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, options), { data: data }));
                 return data;
             },
         });
@@ -39538,8 +39542,8 @@ __webpack_require__.d(__webpack_exports__, {
 
 // EXTERNAL MODULE: ./node_modules/tslib/tslib.es6.mjs
 var tslib_es6 = __webpack_require__(1635);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/globals/index.js + 3 modules
-var globals = __webpack_require__(4009);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/globals/index.js
+var globals = __webpack_require__(2687);
 // EXTERNAL MODULE: ./node_modules/optimism/lib/index.js + 7 modules
 var lib = __webpack_require__(1161);
 // EXTERNAL MODULE: ./node_modules/@wry/equality/lib/index.js
@@ -42690,8 +42694,8 @@ __webpack_require__.d(__webpack_exports__, {
 
 // EXTERNAL MODULE: ./node_modules/tslib/tslib.es6.mjs
 var tslib_es6 = __webpack_require__(1635);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/globals/index.js + 3 modules
-var globals = __webpack_require__(4009);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/globals/index.js
+var globals = __webpack_require__(2687);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/ApolloLink.js + 3 modules
 var ApolloLink = __webpack_require__(1188);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/link/core/execute.js
@@ -43012,8 +43016,8 @@ var Concast = /** @class */ (function (_super) {
 //# sourceMappingURL=Concast.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/errors/index.js
 var client_errors = __webpack_require__(9211);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/core/ObservableQuery.js + 1 modules
-var ObservableQuery = __webpack_require__(5860);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/core/ObservableQuery.js
+var ObservableQuery = __webpack_require__(2988);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/core/networkStatus.js
 var core_networkStatus = __webpack_require__(8599);
 // EXTERNAL MODULE: ./node_modules/graphql/language/visitor.mjs
@@ -43604,20 +43608,16 @@ var QueryInfo = /** @class */ (function () {
         var _this = this;
         var _a;
         var oldDiff = this.lastDiff && this.lastDiff.diff;
-        // If we do not tolerate partial results, skip this update to prevent it
-        // from being reported. This prevents a situtuation where a query that
-        // errors and another succeeds with overlapping data does not report the
-        // partial data result to the errored query.
+        // If we are trying to deliver an incomplete cache result, we avoid
+        // reporting it if the query has errored, otherwise we let the broadcast try
+        // and repair the partial result by refetching the query. This check avoids
+        // a situation where a query that errors and another succeeds with
+        // overlapping data does not report the partial data result to the errored
+        // query.
         //
         // See https://github.com/apollographql/apollo-client/issues/11400 for more
         // information on this issue.
-        if (diff &&
-            !diff.complete &&
-            !((_a = this.observableQuery) === null || _a === void 0 ? void 0 : _a.options.returnPartialData) &&
-            // In the case of a cache eviction, the diff will become partial so we
-            // schedule a notification to send a network request (this.oqListener) to
-            // go and fetch the missing data.
-            !(oldDiff && oldDiff.complete)) {
+        if (diff && !diff.complete && ((_a = this.observableQuery) === null || _a === void 0 ? void 0 : _a.getLastError())) {
             return;
         }
         this.updateLastDiff(diff);
@@ -45151,7 +45151,8 @@ var ApolloClient = /** @class */ (function () {
                 if (typeof window !== "undefined" &&
                     window.document &&
                     window.top === window.self &&
-                    !window.__APOLLO_DEVTOOLS_GLOBAL_HOOK__) {
+                    !window.__APOLLO_DEVTOOLS_GLOBAL_HOOK__ &&
+                    /^(https?|file):$/.test(window.location.protocol)) {
                     var nav = window.navigator;
                     var ua = nav && nav.userAgent;
                     var url = void 0;
@@ -45540,142 +45541,35 @@ if (globalThis.__DEV__ !== false) {
 
 /***/ }),
 
-/***/ 5860:
+/***/ 2988:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  U5: () => (/* binding */ ObservableQuery),
-  yd: () => (/* binding */ logMissingFieldErrors),
-  e8: () => (/* binding */ reobserveCacheFirst)
-});
-
-// EXTERNAL MODULE: ./node_modules/tslib/tslib.es6.mjs
-var tslib_es6 = __webpack_require__(1635);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/globals/index.js + 3 modules
-var globals = __webpack_require__(4009);
-// EXTERNAL MODULE: ./node_modules/@wry/equality/lib/index.js
-var lib = __webpack_require__(5381);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/core/networkStatus.js
-var core_networkStatus = __webpack_require__(8599);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/getFromAST.js
-var getFromAST = __webpack_require__(4824);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/compact.js
-var compact = __webpack_require__(7945);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/cloneDeep.js
-var cloneDeep = __webpack_require__(1495);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/observables/iteration.js
-var iteration = __webpack_require__(6502);
-// EXTERNAL MODULE: ./node_modules/zen-observable-ts/module.js
-var zen_observable_ts_module = __webpack_require__(3401);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/observables/subclassing.js
-var subclassing = __webpack_require__(1291);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/fragments.js
-var fragments = __webpack_require__(5215);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/directives.js
-var directives = __webpack_require__(1250);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/storeUtils.js
-var storeUtils = __webpack_require__(7194);
-;// CONCATENATED MODULE: ./node_modules/@apollo/client/core/equalByQuery.js
-
-
-
-// Returns true if aResult and bResult are deeply equal according to the fields
-// selected by the given query, ignoring any fields marked as @nonreactive.
-function equalByQuery(query, _a, _b, variables) {
-    var aData = _a.data, aRest = (0,tslib_es6/* __rest */.Tt)(_a, ["data"]);
-    var bData = _b.data, bRest = (0,tslib_es6/* __rest */.Tt)(_b, ["data"]);
-    return ((0,lib/* default */.A)(aRest, bRest) &&
-        equalBySelectionSet((0,getFromAST/* getMainDefinition */.Vn)(query).selectionSet, aData, bData, {
-            fragmentMap: (0,fragments/* createFragmentMap */.JG)((0,getFromAST/* getFragmentDefinitions */.zK)(query)),
-            variables: variables,
-        }));
-}
-function equalBySelectionSet(selectionSet, aResult, bResult, context) {
-    if (aResult === bResult) {
-        return true;
-    }
-    var seenSelections = new Set();
-    // Returning true from this Array.prototype.every callback function skips the
-    // current field/subtree. Returning false aborts the entire traversal
-    // immediately, causing equalBySelectionSet to return false.
-    return selectionSet.selections.every(function (selection) {
-        // Avoid re-processing the same selection at the same level of recursion, in
-        // case the same field gets included via multiple indirect fragment spreads.
-        if (seenSelections.has(selection))
-            return true;
-        seenSelections.add(selection);
-        // Ignore @skip(if: true) and @include(if: false) fields.
-        if (!(0,directives/* shouldInclude */.MS)(selection, context.variables))
-            return true;
-        // If the field or (named) fragment spread has a @nonreactive directive on
-        // it, we don't care if it's different, so we pretend it's the same.
-        if (selectionHasNonreactiveDirective(selection))
-            return true;
-        if ((0,storeUtils/* isField */.dt)(selection)) {
-            var resultKey = (0,storeUtils/* resultKeyNameFromField */.ue)(selection);
-            var aResultChild = aResult && aResult[resultKey];
-            var bResultChild = bResult && bResult[resultKey];
-            var childSelectionSet = selection.selectionSet;
-            if (!childSelectionSet) {
-                // These are scalar values, so we can compare them with deep equal
-                // without redoing the main recursive work.
-                return (0,lib/* default */.A)(aResultChild, bResultChild);
-            }
-            var aChildIsArray = Array.isArray(aResultChild);
-            var bChildIsArray = Array.isArray(bResultChild);
-            if (aChildIsArray !== bChildIsArray)
-                return false;
-            if (aChildIsArray && bChildIsArray) {
-                var length_1 = aResultChild.length;
-                if (bResultChild.length !== length_1) {
-                    return false;
-                }
-                for (var i = 0; i < length_1; ++i) {
-                    if (!equalBySelectionSet(childSelectionSet, aResultChild[i], bResultChild[i], context)) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-            return equalBySelectionSet(childSelectionSet, aResultChild, bResultChild, context);
-        }
-        else {
-            var fragment = (0,fragments/* getFragmentFromSelection */.HQ)(selection, context.fragmentMap);
-            if (fragment) {
-                // The fragment might === selection if it's an inline fragment, but
-                // could be !== if it's a named fragment ...spread.
-                if (selectionHasNonreactiveDirective(fragment))
-                    return true;
-                return equalBySelectionSet(fragment.selectionSet, 
-                // Notice that we reuse the same aResult and bResult values here,
-                // since the fragment ...spread does not specify a field name, but
-                // consists of multiple fields (within the fragment's selection set)
-                // that should be applied to the current result value(s).
-                aResult, bResult, context);
-            }
-        }
-    });
-}
-function selectionHasNonreactiveDirective(selection) {
-    return (!!selection.directives && selection.directives.some(directiveIsNonreactive));
-}
-function directiveIsNonreactive(dir) {
-    return dir.name.value === "nonreactive";
-}
-//# sourceMappingURL=equalByQuery.js.map
-;// CONCATENATED MODULE: ./node_modules/@apollo/client/core/ObservableQuery.js
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   U5: () => (/* binding */ ObservableQuery),
+/* harmony export */   e8: () => (/* binding */ reobserveCacheFirst),
+/* harmony export */   yd: () => (/* binding */ logMissingFieldErrors)
+/* harmony export */ });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1635);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
+/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5381);
+/* harmony import */ var _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(8599);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4824);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(7945);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(1495);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(6502);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(3401);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(1291);
+/* harmony import */ var _equalByQuery_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(9080);
 
 
 
 
 
 
-var ObservableQuery_assign = Object.assign, ObservableQuery_hasOwnProperty = Object.hasOwnProperty;
+var assign = Object.assign, hasOwnProperty = Object.hasOwnProperty;
 var ObservableQuery = /** @class */ (function (_super) {
-    (0,tslib_es6/* __extends */.C6)(ObservableQuery, _super);
+    (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__extends */ .C6)(ObservableQuery, _super);
     function ObservableQuery(_a) {
         var queryManager = _a.queryManager, queryInfo = _a.queryInfo, options = _a.options;
         var _this = _super.call(this, function (observer) {
@@ -45727,7 +45621,7 @@ var ObservableQuery = /** @class */ (function (_super) {
         _f = options.initialFetchPolicy, 
         // Make sure we don't store "standby" as the initialFetchPolicy.
         initialFetchPolicy = _f === void 0 ? fetchPolicy === "standby" ? defaultFetchPolicy : (fetchPolicy) : _f;
-        _this.options = (0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, options), { 
+        _this.options = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)({}, options), { 
             // Remember the initial options.fetchPolicy so we can revert back to this
             // policy when variables change. This information can also be specified
             // (or overridden) by providing options.initialFetchPolicy explicitly.
@@ -45736,7 +45630,7 @@ var ObservableQuery = /** @class */ (function (_super) {
             // case options.fetchPolicy was not provided.
             fetchPolicy: fetchPolicy });
         _this.queryId = queryInfo.queryId || queryManager.generateQueryId();
-        var opDef = (0,getFromAST/* getOperationDefinition */.Vu)(_this.query);
+        var opDef = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .getOperationDefinition */ .Vu)(_this.query);
         _this.queryName = opDef && opDef.name && opDef.name.value;
         return _this;
     }
@@ -45805,8 +45699,8 @@ var ObservableQuery = /** @class */ (function (_super) {
         var lastResult = this.getLastResult(true);
         var networkStatus = this.queryInfo.networkStatus ||
             (lastResult && lastResult.networkStatus) ||
-            core_networkStatus/* NetworkStatus */.pT.ready;
-        var result = (0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, lastResult), { loading: (0,core_networkStatus/* isNetworkRequestInFlight */.bi)(networkStatus), networkStatus: networkStatus });
+            _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .pT.ready;
+        var result = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)({}, lastResult), { loading: (0,_networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .isNetworkRequestInFlight */ .bi)(networkStatus), networkStatus: networkStatus });
         var _a = this.options.fetchPolicy, fetchPolicy = _a === void 0 ? "cache-first" : _a;
         if (
         // These fetch policies should never deliver data from the cache, unless
@@ -45830,7 +45724,7 @@ var ObservableQuery = /** @class */ (function (_super) {
             if (diff.complete || this.options.returnPartialData) {
                 result.data = diff.result;
             }
-            if ((0,lib/* equal */.L)(result.data, {})) {
+            if ((0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .L)(result.data, {})) {
                 result.data = void 0;
             }
             if (diff.complete) {
@@ -45841,9 +45735,9 @@ var ObservableQuery = /** @class */ (function (_super) {
                 // terminates after a complete cache read, we can assume the next result
                 // we receive will have NetworkStatus.ready and !loading.
                 if (diff.complete &&
-                    result.networkStatus === core_networkStatus/* NetworkStatus */.pT.loading &&
+                    result.networkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .pT.loading &&
                     (fetchPolicy === "cache-first" || fetchPolicy === "cache-only")) {
-                    result.networkStatus = core_networkStatus/* NetworkStatus */.pT.ready;
+                    result.networkStatus = _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .pT.ready;
                     result.loading = false;
                 }
             }
@@ -45871,15 +45765,15 @@ var ObservableQuery = /** @class */ (function (_super) {
             return true;
         }
         var resultIsDifferent = this.queryManager.getDocumentInfo(this.query).hasNonreactiveDirective ?
-            !equalByQuery(this.query, this.last.result, newResult, this.variables)
-            : !(0,lib/* equal */.L)(this.last.result, newResult);
-        return (resultIsDifferent || (variables && !(0,lib/* equal */.L)(this.last.variables, variables)));
+            !(0,_equalByQuery_js__WEBPACK_IMPORTED_MODULE_5__/* .equalByQuery */ .a)(this.query, this.last.result, newResult, this.variables)
+            : !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .L)(this.last.result, newResult);
+        return (resultIsDifferent || (variables && !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .L)(this.last.variables, variables)));
     };
     ObservableQuery.prototype.getLast = function (key, variablesMustMatch) {
         var last = this.last;
         if (last &&
             last[key] &&
-            (!variablesMustMatch || (0,lib/* equal */.L)(last.variables, this.variables))) {
+            (!variablesMustMatch || (0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .L)(last.variables, this.variables))) {
             return last[key];
         }
     };
@@ -45922,30 +45816,30 @@ var ObservableQuery = /** @class */ (function (_super) {
         else {
             reobserveOptions.fetchPolicy = "network-only";
         }
-        if (globalThis.__DEV__ !== false && variables && ObservableQuery_hasOwnProperty.call(variables, "variables")) {
-            var queryDef = (0,getFromAST/* getQueryDefinition */.AT)(this.query);
+        if (globalThis.__DEV__ !== false && variables && hasOwnProperty.call(variables, "variables")) {
+            var queryDef = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .getQueryDefinition */ .AT)(this.query);
             var vars = queryDef.variableDefinitions;
             if (!vars || !vars.some(function (v) { return v.variable.name.value === "variables"; })) {
-                globalThis.__DEV__ !== false && globals/* invariant */.V1.warn(
+                globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.warn(
                     20,
                     variables,
                     ((_a = queryDef.name) === null || _a === void 0 ? void 0 : _a.value) || queryDef
                 );
             }
         }
-        if (variables && !(0,lib/* equal */.L)(this.options.variables, variables)) {
+        if (variables && !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .L)(this.options.variables, variables)) {
             // Update the existing options with new variables
-            reobserveOptions.variables = this.options.variables = (0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, this.options.variables), variables);
+            reobserveOptions.variables = this.options.variables = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)({}, this.options.variables), variables);
         }
         this.queryInfo.resetLastWrite();
-        return this.reobserve(reobserveOptions, core_networkStatus/* NetworkStatus */.pT.refetch);
+        return this.reobserve(reobserveOptions, _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .pT.refetch);
     };
     /**
      * A function that helps you fetch the next set of results for a [paginated list field](https://www.apollographql.com/docs/react/pagination/core-api/).
      */
     ObservableQuery.prototype.fetchMore = function (fetchMoreOptions) {
         var _this = this;
-        var combinedOptions = (0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, (fetchMoreOptions.query ? fetchMoreOptions : ((0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, this.options), { query: this.options.query }), fetchMoreOptions), { variables: (0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, this.options.variables), fetchMoreOptions.variables) })))), { 
+        var combinedOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)({}, (fetchMoreOptions.query ? fetchMoreOptions : ((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)({}, this.options), { query: this.options.query }), fetchMoreOptions), { variables: (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)({}, this.options.variables), fetchMoreOptions.variables) })))), { 
             // The fetchMore request goes immediately to the network and does
             // not automatically write its result to the cache (hence no-cache
             // instead of network-only), because we allow the caller of
@@ -45967,16 +45861,16 @@ var ObservableQuery = /** @class */ (function (_super) {
         // result.networkStatus === NetworkStatus.fetchMore.
         var queryInfo = this.queryInfo;
         var originalNetworkStatus = queryInfo.networkStatus;
-        queryInfo.networkStatus = core_networkStatus/* NetworkStatus */.pT.fetchMore;
+        queryInfo.networkStatus = _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .pT.fetchMore;
         if (combinedOptions.notifyOnNetworkStatusChange) {
             this.observe();
         }
         var updatedQuerySet = new Set();
         return this.queryManager
-            .fetchQuery(qid, combinedOptions, core_networkStatus/* NetworkStatus */.pT.fetchMore)
+            .fetchQuery(qid, combinedOptions, _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .pT.fetchMore)
             .then(function (fetchMoreResult) {
             _this.queryManager.removeQuery(qid);
-            if (queryInfo.networkStatus === core_networkStatus/* NetworkStatus */.pT.fetchMore) {
+            if (queryInfo.networkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .pT.fetchMore) {
                 queryInfo.networkStatus = originalNetworkStatus;
             }
             // Performing this cache update inside a cache.batch transaction ensures
@@ -46066,7 +45960,7 @@ var ObservableQuery = /** @class */ (function (_super) {
                     options.onError(err);
                     return;
                 }
-                globalThis.__DEV__ !== false && globals/* invariant */.V1.error(21, err);
+                globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.error(21, err);
             },
         });
         this.subscriptions.add(subscription);
@@ -46080,8 +45974,8 @@ var ObservableQuery = /** @class */ (function (_super) {
         return this.reobserve(newOptions);
     };
     ObservableQuery.prototype.silentSetOptions = function (newOptions) {
-        var mergedOptions = (0,compact/* compact */.o)(this.options, newOptions || {});
-        ObservableQuery_assign(this.options, mergedOptions);
+        var mergedOptions = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_6__/* .compact */ .o)(this.options, newOptions || {});
+        assign(this.options, mergedOptions);
     };
     /**
      * Update the variables of this observable query, and fetch the new results
@@ -46102,7 +45996,7 @@ var ObservableQuery = /** @class */ (function (_super) {
      * the previous values of those variables will be used.
      */
     ObservableQuery.prototype.setVariables = function (variables) {
-        if ((0,lib/* equal */.L)(this.variables, variables)) {
+        if ((0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .L)(this.variables, variables)) {
             // If we have no observers, then we don't actually want to make a network
             // request. As soon as someone observes the query, the request will kick
             // off. For now, we just store any changes. (See #1077)
@@ -46117,7 +46011,7 @@ var ObservableQuery = /** @class */ (function (_super) {
             // Reset options.fetchPolicy to its original value.
             fetchPolicy: this.options.initialFetchPolicy,
             variables: variables,
-        }, core_networkStatus/* NetworkStatus */.pT.setVariables);
+        }, _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .pT.setVariables);
     };
     /**
      * A function that enables you to update the query's cached result without executing a followup GraphQL operation.
@@ -46211,7 +46105,7 @@ var ObservableQuery = /** @class */ (function (_super) {
             return;
         }
         var _a = this, pollingInfo = _a.pollingInfo, pollInterval = _a.options.pollInterval;
-        if (!pollInterval) {
+        if (!pollInterval || !this.hasObservers()) {
             if (pollingInfo) {
                 clearTimeout(pollingInfo.timeout);
                 delete this.pollingInfo;
@@ -46221,13 +46115,13 @@ var ObservableQuery = /** @class */ (function (_super) {
         if (pollingInfo && pollingInfo.interval === pollInterval) {
             return;
         }
-        (0,globals/* invariant */.V1)(pollInterval, 22);
+        (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(pollInterval, 22);
         var info = pollingInfo || (this.pollingInfo = {});
         info.interval = pollInterval;
         var maybeFetch = function () {
             var _a, _b;
             if (_this.pollingInfo) {
-                if (!(0,core_networkStatus/* isNetworkRequestInFlight */.bi)(_this.queryInfo.networkStatus) &&
+                if (!(0,_networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .isNetworkRequestInFlight */ .bi)(_this.queryInfo.networkStatus) &&
                     !((_b = (_a = _this.options).skipPollAttempt) === null || _b === void 0 ? void 0 : _b.call(_a))) {
                     _this.reobserve({
                         // Most fetchPolicy options don't make sense to use in a polling context, as
@@ -46237,7 +46131,7 @@ var ObservableQuery = /** @class */ (function (_super) {
                         fetchPolicy: _this.options.initialFetchPolicy === "no-cache" ?
                             "no-cache"
                             : "network-only",
-                    }, core_networkStatus/* NetworkStatus */.pT.poll).then(poll, poll);
+                    }, _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .pT.poll).then(poll, poll);
                 }
                 else {
                     poll();
@@ -46257,12 +46151,12 @@ var ObservableQuery = /** @class */ (function (_super) {
         if (variables === void 0) { variables = this.variables; }
         var error = this.getLastError();
         // Preserve this.last.error unless the variables have changed.
-        if (error && this.last && !(0,lib/* equal */.L)(variables, this.last.variables)) {
+        if (error && this.last && !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .L)(variables, this.last.variables)) {
             error = void 0;
         }
-        return (this.last = (0,tslib_es6/* __assign */.Cl)({ result: this.queryManager.assumeImmutableResults ?
+        return (this.last = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)({ result: this.queryManager.assumeImmutableResults ?
                 newResult
-                : (0,cloneDeep/* cloneDeep */.m)(newResult), variables: variables }, (error ? { error: error } : null)));
+                : (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_7__/* .cloneDeep */ .m)(newResult), variables: variables }, (error ? { error: error } : null)));
     };
     ObservableQuery.prototype.reobserveAsConcast = function (newOptions, newNetworkStatus) {
         var _this = this;
@@ -46271,22 +46165,22 @@ var ObservableQuery = /** @class */ (function (_super) {
         // Refetching uses a disposable Concast to allow refetches using different
         // options/variables, without permanently altering the options of the
         // original ObservableQuery.
-        newNetworkStatus === core_networkStatus/* NetworkStatus */.pT.refetch ||
+        newNetworkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .pT.refetch ||
             // The fetchMore method does not actually call the reobserve method, but,
             // if it did, it would definitely use a disposable Concast.
-            newNetworkStatus === core_networkStatus/* NetworkStatus */.pT.fetchMore ||
+            newNetworkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .pT.fetchMore ||
             // Polling uses a disposable Concast so the polling options (which force
             // fetchPolicy to be "network-only" or "no-cache") won't override the original options.
-            newNetworkStatus === core_networkStatus/* NetworkStatus */.pT.poll;
+            newNetworkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .pT.poll;
         // Save the old variables, since Object.assign may modify them below.
         var oldVariables = this.options.variables;
         var oldFetchPolicy = this.options.fetchPolicy;
-        var mergedOptions = (0,compact/* compact */.o)(this.options, newOptions || {});
+        var mergedOptions = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_6__/* .compact */ .o)(this.options, newOptions || {});
         var options = useDisposableConcast ?
             // Disposable Concast fetches receive a shallow copy of this.options
             // (merged with newOptions), leaving this.options unmodified.
             mergedOptions
-            : ObservableQuery_assign(this.options, mergedOptions);
+            : assign(this.options, mergedOptions);
         // Don't update options.query with the transformed query to avoid
         // overwriting this.options.query when we aren't using a disposable concast.
         // We want to ensure we can re-run the custom document transforms the next
@@ -46300,7 +46194,7 @@ var ObservableQuery = /** @class */ (function (_super) {
             // unless a new fetchPolicy was provided by newOptions.
             if (newOptions &&
                 newOptions.variables &&
-                !(0,lib/* equal */.L)(newOptions.variables, oldVariables) &&
+                !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .L)(newOptions.variables, oldVariables) &&
                 // Don't mess with the fetchPolicy if it's currently "standby".
                 options.fetchPolicy !== "standby" &&
                 // If we're changing the fetchPolicy anyway, don't try to change it here
@@ -46308,7 +46202,7 @@ var ObservableQuery = /** @class */ (function (_super) {
                 options.fetchPolicy === oldFetchPolicy) {
                 this.applyNextFetchPolicy("variables-changed", options);
                 if (newNetworkStatus === void 0) {
-                    newNetworkStatus = core_networkStatus/* NetworkStatus */.pT.setVariables;
+                    newNetworkStatus = _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .pT.setVariables;
                 }
             }
         }
@@ -46318,17 +46212,17 @@ var ObservableQuery = /** @class */ (function (_super) {
                 _this.waitForOwnResult = false;
             }
         };
-        var variables = options.variables && (0,tslib_es6/* __assign */.Cl)({}, options.variables);
+        var variables = options.variables && (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)({}, options.variables);
         var _a = this.fetch(options, newNetworkStatus, query), concast = _a.concast, fromLink = _a.fromLink;
         var observer = {
             next: function (result) {
-                if ((0,lib/* equal */.L)(_this.variables, variables)) {
+                if ((0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .L)(_this.variables, variables)) {
                     finishWaitingForOwnResult();
                     _this.reportResult(result, variables);
                 }
             },
             error: function (error) {
-                if ((0,lib/* equal */.L)(_this.variables, variables)) {
+                if ((0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .L)(_this.variables, variables)) {
                     finishWaitingForOwnResult();
                     _this.reportError(error, variables);
                 }
@@ -46388,15 +46282,15 @@ var ObservableQuery = /** @class */ (function (_super) {
             this.updateLastResult(result, variables);
         }
         if (lastError || isDifferent) {
-            (0,iteration/* iterateObserversSafely */.w)(this.observers, "next", result);
+            (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_8__/* .iterateObserversSafely */ .w)(this.observers, "next", result);
         }
     };
     ObservableQuery.prototype.reportError = function (error, variables) {
         // Since we don't get the current result on errors, only the error, we
         // must mirror the updates that occur in QueryStore.markQueryError here
-        var errorResult = (0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, this.getLastResult()), { error: error, errors: error.graphQLErrors, networkStatus: core_networkStatus/* NetworkStatus */.pT.error, loading: false });
+        var errorResult = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)({}, this.getLastResult()), { error: error, errors: error.graphQLErrors, networkStatus: _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .pT.error, loading: false });
         this.updateLastResult(errorResult, variables);
-        (0,iteration/* iterateObserversSafely */.w)(this.observers, "error", (this.last.error = error));
+        (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_8__/* .iterateObserversSafely */ .w)(this.observers, "error", (this.last.error = error));
     };
     ObservableQuery.prototype.hasObservers = function () {
         return this.observers.size > 0;
@@ -46421,11 +46315,11 @@ var ObservableQuery = /** @class */ (function (_super) {
         return this.queryManager.transform(document);
     };
     return ObservableQuery;
-}(zen_observable_ts_module/* Observable */.c));
+}(_utilities_index_js__WEBPACK_IMPORTED_MODULE_9__/* .Observable */ .c));
 
 // Necessary because the ObservableQuery constructor has a different
 // signature than the Observable constructor.
-(0,subclassing/* fixObservableSubclass */.r)(ObservableQuery);
+(0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_10__/* .fixObservableSubclass */ .r)(ObservableQuery);
 // Reobserve with fetchPolicy effectively set to "cache-first", triggering
 // delivery of any new data from the cache, possibly falling back to the network
 // if any cache data are missing. This allows _complete_ cache results to be
@@ -46457,11 +46351,11 @@ function reobserveCacheFirst(obsQuery) {
     return obsQuery.reobserve();
 }
 function defaultSubscriptionObserverErrorCallback(error) {
-    globalThis.__DEV__ !== false && globals/* invariant */.V1.error(23, error.message, error.stack);
+    globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.error(23, error.message, error.stack);
 }
 function logMissingFieldErrors(missing) {
     if (globalThis.__DEV__ !== false && missing) {
-        globalThis.__DEV__ !== false && globals/* invariant */.V1.debug(24, missing);
+        globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.debug(24, missing);
     }
 }
 function skipCacheDataFor(fetchPolicy /* `undefined` would mean `"cache-first"` */) {
@@ -46470,6 +46364,119 @@ function skipCacheDataFor(fetchPolicy /* `undefined` would mean `"cache-first"` 
         fetchPolicy === "standby");
 }
 //# sourceMappingURL=ObservableQuery.js.map
+
+/***/ }),
+
+/***/ 9080:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   a: () => (/* binding */ equalByQuery)
+/* harmony export */ });
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1635);
+}
+/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5381);
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4824);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5215);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1250);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(7194);
+}
+
+
+
+// Returns true if aResult and bResult are deeply equal according to the fields
+// selected by the given query, ignoring any fields marked as @nonreactive.
+function equalByQuery(query, _a, _b, variables) {
+    var aData = _a.data, aRest = (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__rest */ .Tt)(_a, ["data"]);
+    var bData = _b.data, bRest = (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__rest */ .Tt)(_b, ["data"]);
+    return ((0,_wry_equality__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A)(aRest, bRest) &&
+        equalBySelectionSet((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .getMainDefinition */ .Vn)(query).selectionSet, aData, bData, {
+            fragmentMap: (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .createFragmentMap */ .JG)((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .getFragmentDefinitions */ .zK)(query)),
+            variables: variables,
+        }));
+}
+function equalBySelectionSet(selectionSet, aResult, bResult, context) {
+    if (aResult === bResult) {
+        return true;
+    }
+    var seenSelections = new Set();
+    // Returning true from this Array.prototype.every callback function skips the
+    // current field/subtree. Returning false aborts the entire traversal
+    // immediately, causing equalBySelectionSet to return false.
+    return selectionSet.selections.every(function (selection) {
+        // Avoid re-processing the same selection at the same level of recursion, in
+        // case the same field gets included via multiple indirect fragment spreads.
+        if (seenSelections.has(selection))
+            return true;
+        seenSelections.add(selection);
+        // Ignore @skip(if: true) and @include(if: false) fields.
+        if (!(0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_4__/* .shouldInclude */ .MS)(selection, context.variables))
+            return true;
+        // If the field or (named) fragment spread has a @nonreactive directive on
+        // it, we don't care if it's different, so we pretend it's the same.
+        if (selectionHasNonreactiveDirective(selection))
+            return true;
+        if ((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .isField */ .dt)(selection)) {
+            var resultKey = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .resultKeyNameFromField */ .ue)(selection);
+            var aResultChild = aResult && aResult[resultKey];
+            var bResultChild = bResult && bResult[resultKey];
+            var childSelectionSet = selection.selectionSet;
+            if (!childSelectionSet) {
+                // These are scalar values, so we can compare them with deep equal
+                // without redoing the main recursive work.
+                return (0,_wry_equality__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A)(aResultChild, bResultChild);
+            }
+            var aChildIsArray = Array.isArray(aResultChild);
+            var bChildIsArray = Array.isArray(bResultChild);
+            if (aChildIsArray !== bChildIsArray)
+                return false;
+            if (aChildIsArray && bChildIsArray) {
+                var length_1 = aResultChild.length;
+                if (bResultChild.length !== length_1) {
+                    return false;
+                }
+                for (var i = 0; i < length_1; ++i) {
+                    if (!equalBySelectionSet(childSelectionSet, aResultChild[i], bResultChild[i], context)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return equalBySelectionSet(childSelectionSet, aResultChild, bResultChild, context);
+        }
+        else {
+            var fragment = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .getFragmentFromSelection */ .HQ)(selection, context.fragmentMap);
+            if (fragment) {
+                // The fragment might === selection if it's an inline fragment, but
+                // could be !== if it's a named fragment ...spread.
+                if (selectionHasNonreactiveDirective(fragment))
+                    return true;
+                return equalBySelectionSet(fragment.selectionSet, 
+                // Notice that we reuse the same aResult and bResult values here,
+                // since the fragment ...spread does not specify a field name, but
+                // consists of multiple fields (within the fragment's selection set)
+                // that should be applied to the current result value(s).
+                aResult, bResult, context);
+            }
+        }
+    });
+}
+function selectionHasNonreactiveDirective(selection) {
+    return (!!selection.directives && selection.directives.some(directiveIsNonreactive));
+}
+function directiveIsNonreactive(dir) {
+    return dir.name.value === "nonreactive";
+}
+//# sourceMappingURL=equalByQuery.js.map
 
 /***/ }),
 
@@ -46531,7 +46538,7 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _ApolloClient_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(144);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _ObservableQuery_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5860);
+	/* harmony import */ var _ObservableQuery_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2988);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _networkStatus_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(8599);
@@ -46705,7 +46712,7 @@ function isNetworkRequestSettled(networkStatus) {
 /* harmony export */   uR: () => (/* binding */ graphQLResultHasProtocolErrors)
 /* harmony export */ });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1635);
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2456);
 
 
@@ -46860,8 +46867,8 @@ __webpack_require__.d(__webpack_exports__, {
   C: () => (/* binding */ ApolloLink)
 });
 
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/globals/index.js + 3 modules
-var globals = __webpack_require__(4009);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/globals/index.js
+var globals = __webpack_require__(2687);
 // EXTERNAL MODULE: ./node_modules/zen-observable-ts/module.js
 var zen_observable_ts_module = __webpack_require__(3401);
 // EXTERNAL MODULE: ./node_modules/tslib/tslib.es6.mjs
@@ -47103,7 +47110,7 @@ var from = _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__/* .ApolloLink */ .C.from;
 /* harmony export */   lD: () => (/* reexport safe */ _split_js__WEBPACK_IMPORTED_MODULE_3__.l),
 /* harmony export */   xW: () => (/* reexport safe */ _concat_js__WEBPACK_IMPORTED_MODULE_4__.x)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _empty_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(9599);
 }
@@ -47183,7 +47190,7 @@ var HttpLink = /** @class */ (function (_super) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   S: () => (/* binding */ checkFetcher)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 
 var checkFetcher = function (fetcher) {
     if (!fetcher && typeof fetch === "undefined") {
@@ -47204,7 +47211,7 @@ var checkFetcher = function (fetcher) {
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1635);
 }
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1188);
 }
@@ -47444,7 +47451,7 @@ var createSignalIfSupported = function () {
 /* harmony export */   i1: () => (/* reexport safe */ _selectHttpOptionsAndBody_js__WEBPACK_IMPORTED_MODULE_3__.i1),
 /* harmony export */   zX: () => (/* reexport safe */ _selectURI_js__WEBPACK_IMPORTED_MODULE_6__.z)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _parseAndCheckHttpResponse_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1358);
 }
@@ -48188,7 +48195,7 @@ var selectURI = function (operation, fallbackURI) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Y: () => (/* binding */ serializeFetchParameter)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 
 var serializeFetchParameter = function (p, label) {
     var serialized;
@@ -48316,7 +48323,7 @@ var throwServerError = function (response, result, message) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   h: () => (/* binding */ toPromise)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 
 function toPromise(observable) {
     var completed = false;
@@ -48346,7 +48353,7 @@ function toPromise(observable) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Y: () => (/* binding */ ApolloConsumer)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 /* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7243);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _ApolloContext_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6741);
@@ -48376,7 +48383,7 @@ var rehackt__WEBPACK_IMPORTED_MODULE_0___namespace_cache;
 /* harmony export */ });
 /* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7243);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2619);
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4009);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2687);
 
 
 
@@ -48419,7 +48426,7 @@ var resetApolloContext = (/* runtime-dependent pure expression or super */ /^(25
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1635);
 }
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 /* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7243);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _ApolloContext_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6741);
@@ -48473,7 +48480,7 @@ var skipToken = Symbol.for("apollo.skipToken");
 /* harmony export */   sj: () => (/* reexport safe */ _useQueryRefHandlers_js__WEBPACK_IMPORTED_MODULE_11__.s),
 /* harmony export */   yE: () => (/* reexport safe */ _useLoadableQuery_js__WEBPACK_IMPORTED_MODULE_10__.y)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(111);
 }
@@ -48699,7 +48706,7 @@ function wrapHook(hookName, useHook, clientOrObsQuery) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   m: () => (/* binding */ useApolloClient)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 /* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7243);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _context_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6741);
@@ -49089,7 +49096,7 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(6269);
 }
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4009);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2687);
 
 
 
@@ -49105,6 +49112,7 @@ function useLoadableQuery(query, options) {
     var watchQueryOptions = (0,_useSuspenseQuery_js__WEBPACK_IMPORTED_MODULE_4__/* .useWatchQueryOptions */ .hO)({ client: client, query: query, options: options });
     var _a = options.queryKey, queryKey = _a === void 0 ? [] : _a;
     var _b = rehackt__WEBPACK_IMPORTED_MODULE_0__.useState(null), queryRef = _b[0], setQueryRef = _b[1];
+    (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_5__/* .assertWrappedQueryRef */ .Ru)(queryRef);
     var internalQueryRef = queryRef && (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_5__/* .unwrapQueryRef */ .Fd)(queryRef);
     if (queryRef && (internalQueryRef === null || internalQueryRef === void 0 ? void 0 : internalQueryRef.didChangeOptions(watchQueryOptions))) {
         var promise = internalQueryRef.applyOptions(watchQueryOptions);
@@ -49351,7 +49359,7 @@ function useMutation(mutation, options) {
 /* harmony export */   k: () => (/* binding */ useInternalState)
 /* harmony export */ });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(1635);
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 /* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7243);
 /* harmony import */ var _useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(9770);
 /* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5381);
@@ -49882,7 +49890,7 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
  * }
  * ```
  * @since 3.9.0
- * @param queryRef - A `QueryReference` returned from `useBackgroundQuery`, `useLoadableQuery`, or `createQueryPreloader`.
+ * @param queryRef - A `QueryRef` returned from `useBackgroundQuery`, `useLoadableQuery`, or `createQueryPreloader`.
  */
 function useQueryRefHandlers(queryRef) {
     var unwrapped = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .unwrapQueryRef */ .Fd)(queryRef);
@@ -49895,6 +49903,7 @@ function useQueryRefHandlers(queryRef) {
         : (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)())(queryRef);
 }
 function _useQueryRefHandlers(queryRef) {
+    (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .assertWrappedQueryRef */ .Ru)(queryRef);
     var _a = rehackt__WEBPACK_IMPORTED_MODULE_0__.useState(queryRef), previousQueryRef = _a[0], setPreviousQueryRef = _a[1];
     var _b = rehackt__WEBPACK_IMPORTED_MODULE_0__.useState(queryRef), wrappedQueryRef = _b[0], setWrappedQueryRef = _b[1];
     var internalQueryRef = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .unwrapQueryRef */ .Fd)(queryRef);
@@ -50014,6 +50023,7 @@ function useReadQuery(queryRef) {
         : (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)())(queryRef);
 }
 function _useReadQuery(queryRef) {
+    (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .assertWrappedQueryRef */ .Ru)(queryRef);
     var internalQueryRef = rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () { return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .unwrapQueryRef */ .Fd)(queryRef); }, [queryRef]);
     var getPromise = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () { return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .getWrappedPromise */ .Ve)(queryRef); }, [queryRef]);
     if (internalQueryRef.disposed) {
@@ -50047,7 +50057,7 @@ function _useReadQuery(queryRef) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   R: () => (/* binding */ useSubscription)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 /* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7243);
 /* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5381);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
@@ -50311,7 +50321,7 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1635);
 }
 /* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7243);
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4009);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2687);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(8599);
 }
@@ -50490,7 +50500,7 @@ var rehackt__WEBPACK_IMPORTED_MODULE_1___namespace_cache;
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ useSyncExternalStore)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 /* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7243);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2619);
@@ -50628,7 +50638,7 @@ function checkIfSnapshotChanged(_a) {
 /* harmony export */   sj: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.sj),
 /* harmony export */   yE: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.yE)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _context_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(8797);
 }
@@ -50666,11 +50676,14 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 /* harmony export */   Fd: () => (/* binding */ unwrapQueryRef),
 /* harmony export */   Hp: () => (/* binding */ InternalQueryReference),
 /* harmony export */   Qh: () => (/* binding */ wrapQueryRef),
+/* harmony export */   Ru: () => (/* binding */ assertWrappedQueryRef),
 /* harmony export */   Ve: () => (/* binding */ getWrappedPromise)
 /* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1635);
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1635);
 /* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5381);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(6697);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6697);
+/* harmony import */ var _utilities_globals_invariantWrappers_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7235);
+
 
 
 
@@ -50699,6 +50712,9 @@ function wrapQueryRef(internalQueryRef) {
         _a[PROMISE_SYMBOL] = internalQueryRef.promise,
         _a);
     return ref;
+}
+function assertWrappedQueryRef(queryRef) {
+    (0,_utilities_globals_invariantWrappers_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)(!queryRef || QUERY_REFERENCE_SYMBOL in queryRef, 59);
 }
 function getWrappedPromise(queryRef) {
     var internalQueryRef = unwrapQueryRef(queryRef);
@@ -50844,8 +50860,8 @@ var InternalQueryReference = /** @class */ (function () {
         else {
             this.observable.silentSetOptions(watchQueryOptions);
             if (currentCanonizeResults !== watchQueryOptions.canonizeResults) {
-                this.result = (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .Cl)({}, this.result), this.observable.getCurrentResult());
-                this.promise = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .createFulfilledPromise */ .$D)(this.result);
+                this.result = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)({}, this.result), this.observable.getCurrentResult());
+                this.promise = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .createFulfilledPromise */ .$D)(this.result);
             }
         }
         return this.promise;
@@ -50897,7 +50913,7 @@ var InternalQueryReference = /** @class */ (function () {
                     result.data = this.result.data;
                 }
                 this.result = result;
-                this.promise = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .createFulfilledPromise */ .$D)(result);
+                this.promise = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .createFulfilledPromise */ .$D)(result);
                 this.deliver(this.promise);
                 break;
             }
@@ -50913,7 +50929,7 @@ var InternalQueryReference = /** @class */ (function () {
                 break;
             }
             default: {
-                this.promise = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .createRejectedPromise */ .Il)(error);
+                this.promise = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .createRejectedPromise */ .Il)(error);
                 this.deliver(this.promise);
             }
         }
@@ -50978,12 +50994,12 @@ var InternalQueryReference = /** @class */ (function () {
         this.promise =
             (result.data &&
                 (!result.partial || this.watchQueryOptions.returnPartialData)) ?
-                (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .createFulfilledPromise */ .$D)(result)
+                (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .createFulfilledPromise */ .$D)(result)
                 : this.createPendingPromise();
     };
     InternalQueryReference.prototype.createPendingPromise = function () {
         var _this = this;
-        return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .wrapPromiseWithState */ .zq)(new Promise(function (resolve, reject) {
+        return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_3__/* .wrapPromiseWithState */ .zq)(new Promise(function (resolve, reject) {
             _this.resolve = resolve;
             _this.reject = reject;
         }));
@@ -51070,7 +51086,7 @@ function getSuspenseCache(client) {
 /* harmony export */   KG: () => (/* binding */ DocumentType),
 /* harmony export */   Xn: () => (/* binding */ operationName)
 /* harmony export */ });
-/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
+/* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(599);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1212);
 /* harmony import */ var _utilities_caching_getMemoryInternals_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5051);
@@ -51108,7 +51124,7 @@ function parser(document) {
     if (cached)
         return cached;
     var variables, type, name;
-    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(!!document && !!document.kind, 59, document);
+    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(!!document && !!document.kind, 60, document);
     var fragments = [];
     var queries = [];
     var mutations = [];
@@ -51136,10 +51152,10 @@ function parser(document) {
     (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(!fragments.length ||
         queries.length ||
         mutations.length ||
-        subscriptions.length, 60);
+        subscriptions.length, 61);
     (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(
         queries.length + mutations.length + subscriptions.length <= 1,
-        61,
+        62,
         document,
         queries.length,
         subscriptions.length,
@@ -51151,7 +51167,7 @@ function parser(document) {
     var definitions = queries.length ? queries
         : mutations.length ? mutations
             : subscriptions;
-    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(definitions.length === 1, 62, document, definitions.length);
+    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(definitions.length === 1, 63, document, definitions.length);
     var definition = definitions[0];
     variables = definition.variableDefinitions || [];
     if (definition.name && definition.name.kind === "Name") {
@@ -51176,7 +51192,7 @@ function verifyDocumentType(document, type) {
     var usedOperationName = operationName(operation.type);
     (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(
         operation.type === type,
-        63,
+        64,
         requiredOperationName,
         requiredOperationName,
         usedOperationName
@@ -51454,7 +51470,7 @@ function linkInfo(link) {
 /* harmony export */   v: () => (/* binding */ cacheSizes)
 /* harmony export */ });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1635);
-/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
+/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 
 
 var cacheSizeSymbol = Symbol.for("apollo.cacheSize");
@@ -51514,7 +51530,7 @@ function isNonEmptyArray(value) {
 /* harmony export */   uJ: () => (/* binding */ canUseAsyncIteratorSymbol)
 /* harmony export */ });
 /* unused harmony export canUseDOM */
-/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
+/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 
 var canUseWeakMap = typeof WeakMap === "function" &&
     !(0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .no)(function () { return navigator.product == "ReactNative" && !global.HermesInternal; });
@@ -52023,51 +52039,75 @@ function stringifyForDisplay(value, space) {
 
 /***/ }),
 
-/***/ 4009:
+/***/ 7008:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _maybe_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3687);
 
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  Sf: () => (/* reexport */ globals_global),
-  V1: () => (/* reexport */ invariant),
-  no: () => (/* reexport */ maybe),
-  vA: () => (/* reexport */ newInvariantError)
-});
-
-// UNUSED EXPORTS: DEV, InvariantError, __DEV__
-
-// EXTERNAL MODULE: ./node_modules/ts-invariant/lib/invariant.js
-var lib_invariant = __webpack_require__(2232);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/version.js
-var version = __webpack_require__(435);
-;// CONCATENATED MODULE: ./node_modules/@apollo/client/utilities/globals/maybe.js
-function maybe(thunk) {
-    try {
-        return thunk();
-    }
-    catch (_a) { }
-}
-//# sourceMappingURL=maybe.js.map
-;// CONCATENATED MODULE: ./node_modules/@apollo/client/utilities/globals/global.js
-
-/* harmony default export */ const globals_global = (maybe(function () { return globalThis; }) ||
-    maybe(function () { return window; }) ||
-    maybe(function () { return self; }) ||
-    maybe(function () { return global; }) || // We don't expect the Function constructor ever to be invoked at runtime, as
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,_maybe_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .n)(function () { return globalThis; }) ||
+    (0,_maybe_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .n)(function () { return window; }) ||
+    (0,_maybe_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .n)(function () { return self; }) ||
+    (0,_maybe_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .n)(function () { return global; }) || // We don't expect the Function constructor ever to be invoked at runtime, as
 // long as at least one of globalThis, window, self, or global is defined, so
 // we are under no obligation to make it easy for static analysis tools to
 // detect syntactic usage of the Function constructor. If you think you can
 // improve your static analysis to detect this obfuscation, think again. This
 // is an arms race you cannot win, at least not in JavaScript.
-maybe(function () {
-    return maybe.constructor("return this")();
+(0,_maybe_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .n)(function () {
+    return _maybe_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .n.constructor("return this")();
 }));
 //# sourceMappingURL=global.js.map
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/stringifyForDisplay.js
-var stringifyForDisplay = __webpack_require__(6194);
-;// CONCATENATED MODULE: ./node_modules/@apollo/client/utilities/globals/invariantWrappers.js
+
+/***/ }),
+
+/***/ 2687:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Sf: () => (/* reexport safe */ _global_js__WEBPACK_IMPORTED_MODULE_2__.A),
+/* harmony export */   V1: () => (/* reexport safe */ _invariantWrappers_js__WEBPACK_IMPORTED_MODULE_0__.V1),
+/* harmony export */   no: () => (/* reexport safe */ _maybe_js__WEBPACK_IMPORTED_MODULE_1__.n),
+/* harmony export */   vA: () => (/* reexport safe */ _invariantWrappers_js__WEBPACK_IMPORTED_MODULE_0__.vA)
+/* harmony export */ });
+/* unused harmony exports DEV, __DEV__ */
+/* harmony import */ var _invariantWrappers_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7235);
+/* harmony import */ var _maybe_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3687);
+/* harmony import */ var _global_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7008);
+
+
+
+
+/**
+ * @deprecated we do not use this internally anymore,
+ * it is just exported for backwards compatibility
+ */
+// this file is extempt from automatic `__DEV__` replacement
+// so we have to write it out here
+// @ts-ignore
+var DEV = globalThis.__DEV__ !== false;
+
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 7235:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   V1: () => (/* binding */ invariant),
+/* harmony export */   vA: () => (/* binding */ newInvariantError)
+/* harmony export */ });
+/* unused harmony export ApolloErrorMessageHandler */
+/* harmony import */ var ts_invariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2232);
+/* harmony import */ var _version_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(435);
+/* harmony import */ var _global_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7008);
+/* harmony import */ var _common_stringifyForDisplay_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6194);
 
 
 
@@ -52095,13 +52135,13 @@ var invariant = Object.assign(function invariant(condition, message) {
         args[_i - 2] = arguments[_i];
     }
     if (!condition) {
-        (0,lib_invariant/* invariant */.V1)(condition, getHandledErrorMsg(message, args) || getFallbackErrorMsg(message, args));
+        (0,ts_invariant__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(condition, getHandledErrorMsg(message, args) || getFallbackErrorMsg(message, args));
     }
 }, {
-    debug: wrap(lib_invariant/* invariant */.V1.debug),
-    log: wrap(lib_invariant/* invariant */.V1.log),
-    warn: wrap(lib_invariant/* invariant */.V1.warn),
-    error: wrap(lib_invariant/* invariant */.V1.error),
+    debug: wrap(ts_invariant__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.debug),
+    log: wrap(ts_invariant__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.log),
+    warn: wrap(ts_invariant__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.warn),
+    error: wrap(ts_invariant__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.error),
 });
 /**
  * Returns an InvariantError.
@@ -52118,47 +52158,49 @@ function newInvariantError(message) {
     for (var _i = 1; _i < arguments.length; _i++) {
         optionalParams[_i - 1] = arguments[_i];
     }
-    return new lib_invariant/* InvariantError */.zU(getHandledErrorMsg(message, optionalParams) ||
+    return new ts_invariant__WEBPACK_IMPORTED_MODULE_0__/* .InvariantError */ .zU(getHandledErrorMsg(message, optionalParams) ||
         getFallbackErrorMsg(message, optionalParams));
 }
-var ApolloErrorMessageHandler = Symbol.for("ApolloErrorMessageHandler_" + version/* version */.r);
+var ApolloErrorMessageHandler = Symbol.for("ApolloErrorMessageHandler_" + _version_js__WEBPACK_IMPORTED_MODULE_2__/* .version */ .r);
 function stringify(arg) {
-    return typeof arg == "string" ? arg : ((0,stringifyForDisplay/* stringifyForDisplay */.p)(arg, 2).slice(0, 1000));
+    return typeof arg == "string" ? arg : ((0,_common_stringifyForDisplay_js__WEBPACK_IMPORTED_MODULE_3__/* .stringifyForDisplay */ .p)(arg, 2).slice(0, 1000));
 }
 function getHandledErrorMsg(message, messageArgs) {
     if (messageArgs === void 0) { messageArgs = []; }
     if (!message)
         return;
-    return (globals_global[ApolloErrorMessageHandler] &&
-        globals_global[ApolloErrorMessageHandler](message, messageArgs.map(stringify)));
+    return (_global_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A[ApolloErrorMessageHandler] &&
+        _global_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A[ApolloErrorMessageHandler](message, messageArgs.map(stringify)));
 }
 function getFallbackErrorMsg(message, messageArgs) {
     if (messageArgs === void 0) { messageArgs = []; }
     if (!message)
         return;
     return "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#".concat(encodeURIComponent(JSON.stringify({
-        version: version/* version */.r,
+        version: _version_js__WEBPACK_IMPORTED_MODULE_2__/* .version */ .r,
         message: message,
         args: messageArgs.map(stringify),
     })));
 }
 
 //# sourceMappingURL=invariantWrappers.js.map
-;// CONCATENATED MODULE: ./node_modules/@apollo/client/utilities/globals/index.js
 
+/***/ }),
 
+/***/ 3687:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
-
-/**
- * @deprecated we do not use this internally anymore,
- * it is just exported for backwards compatibility
- */
-// this file is extempt from automatic `__DEV__` replacement
-// so we have to write it out here
-// @ts-ignore
-var DEV = globalThis.__DEV__ !== false;
-
-//# sourceMappingURL=index.js.map
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   n: () => (/* binding */ maybe)
+/* harmony export */ });
+function maybe(thunk) {
+    try {
+        return thunk();
+    }
+    catch (_a) { }
+}
+//# sourceMappingURL=maybe.js.map
 
 /***/ }),
 
@@ -52172,7 +52214,7 @@ var DEV = globalThis.__DEV__ !== false;
 /* harmony import */ var _wry_trie__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2453);
 /* harmony import */ var _common_canUse_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2619);
 /* harmony import */ var _getFromAST_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(4824);
-/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4009);
+/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2687);
 /* harmony import */ var _wry_caches__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1744);
 /* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1161);
 /* harmony import */ var _caching_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1212);
@@ -52232,7 +52274,7 @@ var DocumentTransform = /** @class */ (function () {
                 makeCacheKey: function (document) {
                     var cacheKeys = _this.getCacheKey(document);
                     if (cacheKeys) {
-                        (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)(Array.isArray(cacheKeys), 66);
+                        (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)(Array.isArray(cacheKeys), 67);
                         return stableCacheKeys_1.lookupArray(cacheKeys);
                     }
                 },
@@ -52283,7 +52325,7 @@ var DocumentTransform = /** @class */ (function () {
 /* harmony export */   f2: () => (/* binding */ hasClientExports)
 /* harmony export */ });
 /* unused harmony exports getDirectiveNames, hasAnyDirectives, hasAllDirectives, getInclusionDirectives */
-/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
+/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4705);
 }
@@ -52300,7 +52342,7 @@ function shouldInclude(_a, variables) {
         if (ifArgument.value.kind === "Variable") {
             evaledValue =
                 variables && variables[ifArgument.value.name.value];
-            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(evaledValue !== void 0, 67, directive.name.value);
+            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(evaledValue !== void 0, 68, directive.name.value);
         }
         else {
             evaledValue = ifArgument.value.value;
@@ -52352,13 +52394,13 @@ function getInclusionDirectives(directives) {
                 return;
             var directiveArguments = directive.arguments;
             var directiveName = directive.name.value;
-            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(directiveArguments && directiveArguments.length === 1, 68, directiveName);
+            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(directiveArguments && directiveArguments.length === 1, 69, directiveName);
             var ifArgument = directiveArguments[0];
-            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(ifArgument.name && ifArgument.name.value === "if", 69, directiveName);
+            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(ifArgument.name && ifArgument.name.value === "if", 70, directiveName);
             var ifValue = ifArgument.value;
             // means it has to be a variable value if this is a valid @skip or @include directive
             (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(ifValue &&
-                (ifValue.kind === "Variable" || ifValue.kind === "BooleanValue"), 70, directiveName);
+                (ifValue.kind === "Variable" || ifValue.kind === "BooleanValue"), 71, directiveName);
             result.push({ directive: directive, ifArgument: ifArgument });
         });
     }
@@ -52380,7 +52422,7 @@ function getInclusionDirectives(directives) {
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1635);
 }
-/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
+/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 
 
 /**
@@ -52416,7 +52458,7 @@ function getFragmentQueryDocument(document, fragmentName) {
         // define our own operation definition later on.
         if (definition.kind === "OperationDefinition") {
             throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(
-                71,
+                72,
                 definition.operation,
                 definition.name ? " named '".concat(definition.name.value, "'") : ""
             );
@@ -52430,7 +52472,7 @@ function getFragmentQueryDocument(document, fragmentName) {
     // If the user did not give us a fragment name then let us try to get a
     // name from a single fragment in the definition.
     if (typeof actualFragmentName === "undefined") {
-        (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(fragments.length === 1, 72, fragments.length);
+        (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(fragments.length === 1, 73, fragments.length);
         actualFragmentName = fragments[0].name.value;
     }
     // Generate a query document with an operation that simply spreads the
@@ -52476,7 +52518,7 @@ function getFragmentFromSelection(selection, fragmentMap) {
                 return fragmentMap(fragmentName);
             }
             var fragment = fragmentMap && fragmentMap[fragmentName];
-            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(fragment, 73, fragmentName);
+            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(fragment, 74, fragmentName);
             return fragment || null;
         }
         default:
@@ -52501,7 +52543,7 @@ function getFragmentFromSelection(selection, fragmentMap) {
 /* harmony export */   wY: () => (/* binding */ getDefaultValues),
 /* harmony export */   zK: () => (/* binding */ getFragmentDefinitions)
 /* harmony export */ });
-/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
+/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _storeUtils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7194);
 }
@@ -52509,16 +52551,16 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 
 // Checks the document for errors and throws an exception if there is an error.
 function checkDocument(doc) {
-    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(doc && doc.kind === "Document", 74);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(doc && doc.kind === "Document", 75);
     var operations = doc.definitions
         .filter(function (d) { return d.kind !== "FragmentDefinition"; })
         .map(function (definition) {
         if (definition.kind !== "OperationDefinition") {
-            throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(75, definition.kind);
+            throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(76, definition.kind);
         }
         return definition;
     });
-    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(operations.length <= 1, 76, operations.length);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(operations.length <= 1, 77, operations.length);
     return doc;
 }
 function getOperationDefinition(doc) {
@@ -52542,14 +52584,14 @@ function getFragmentDefinitions(doc) {
 }
 function getQueryDefinition(doc) {
     var queryDef = getOperationDefinition(doc);
-    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(queryDef && queryDef.operation === "query", 77);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(queryDef && queryDef.operation === "query", 78);
     return queryDef;
 }
 function getFragmentDefinition(doc) {
-    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(doc.kind === "Document", 78);
-    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(doc.definitions.length <= 1, 79);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(doc.kind === "Document", 79);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(doc.definitions.length <= 1, 80);
     var fragmentDef = doc.definitions[0];
-    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(fragmentDef.kind === "FragmentDefinition", 80);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(fragmentDef.kind === "FragmentDefinition", 81);
     return fragmentDef;
 }
 /**
@@ -52579,7 +52621,7 @@ function getMainDefinition(queryDoc) {
     if (fragmentDefinition) {
         return fragmentDefinition;
     }
-    throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(81);
+    throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(82);
 }
 function getDefaultValues(definition) {
     var defaultValues = Object.create(null);
@@ -53178,7 +53220,7 @@ if (globalThis.__DEV__ !== false) {
 /* harmony export */   o5: () => (/* binding */ getStoreKeyName),
 /* harmony export */   ue: () => (/* binding */ resultKeyNameFromField)
 /* harmony export */ });
-/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
+/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _common_objects_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2456);
 }
@@ -53260,7 +53302,7 @@ function valueToObjectRepresentation(argObj, name, value, variables) {
         argObj[name.value] = null;
     }
     else {
-        throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(82, name.value, value.kind);
+        throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(83, name.value, value.kind);
     }
 }
 function storeKeyNameFromField(field, variables) {
@@ -53414,7 +53456,7 @@ function isInlineFragment(selection) {
 /* harmony export */ });
 /* unused harmony exports removeConnectionDirectiveFromDocument, removeArgumentsFromDocument, removeFragmentSpreadFromDocument */
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(1635);
-/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4009);
+/* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 /* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3298);
 /* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4705);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
@@ -53516,7 +53558,7 @@ function removeDirectivesFromDocument(directives, doc) {
                 return getInUseByFragmentName(ancestor.name.value);
             }
         }
-        globalThis.__DEV__ !== false && _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.error(83);
+        globalThis.__DEV__ !== false && _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.error(84);
         return null;
     };
     var operationCount = 0;
@@ -53782,7 +53824,7 @@ var connectionRemoveConfig = {
         if (willRemove) {
             if (!directive.arguments ||
                 !directive.arguments.some(function (arg) { return arg.name.value === "key"; })) {
-                globalThis.__DEV__ !== false && _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.warn(84);
+                globalThis.__DEV__ !== false && _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.warn(85);
             }
         }
         return willRemove;
@@ -54033,7 +54075,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.10.3";
+var version = "3.10.4";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
