@@ -686,6 +686,8 @@ export type AddedToProjectEvent = Node & {
 export type AnnouncementBanner = {
   /** The text of the announcement */
   announcement?: Maybe<Scalars['String']['output']>;
+  /** The date the announcement was created */
+  announcementCreatedAt?: Maybe<Scalars['DateTime']['output']>;
   /** The expiration date of the announcement, if any */
   announcementExpiresAt?: Maybe<Scalars['DateTime']['output']>;
   /** Whether the announcement can be dismissed by the user */
@@ -6511,6 +6513,8 @@ export type Enterprise = AnnouncementBanner & Node & {
   __typename?: 'Enterprise';
   /** The text of the announcement */
   announcement?: Maybe<Scalars['String']['output']>;
+  /** The date the announcement was created */
+  announcementCreatedAt?: Maybe<Scalars['DateTime']['output']>;
   /** The expiration date of the announcement, if any */
   announcementExpiresAt?: Maybe<Scalars['DateTime']['output']>;
   /** Whether the announcement can be dismissed by the user */
@@ -14824,6 +14828,8 @@ export type Organization = Actor & AnnouncementBanner & MemberStatusable & Node 
   __typename?: 'Organization';
   /** The text of the announcement */
   announcement?: Maybe<Scalars['String']['output']>;
+  /** The date the announcement was created */
+  announcementCreatedAt?: Maybe<Scalars['DateTime']['output']>;
   /** The expiration date of the announcement, if any */
   announcementExpiresAt?: Maybe<Scalars['DateTime']['output']>;
   /** Whether the announcement can be dismissed by the user */
@@ -34388,6 +34394,7 @@ export type AddedToProjectEventResolvers<ContextType = any, ParentType extends R
 export type AnnouncementBannerResolvers<ContextType = any, ParentType extends ResolversParentTypes['AnnouncementBanner'] = ResolversParentTypes['AnnouncementBanner']> = {
   __resolveType: TypeResolveFn<'Enterprise' | 'Organization', ParentType, ContextType>;
   announcement?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  announcementCreatedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   announcementExpiresAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   announcementUserDismissible?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
 };
@@ -36405,6 +36412,7 @@ export type EnqueuePullRequestPayloadResolvers<ContextType = any, ParentType ext
 
 export type EnterpriseResolvers<ContextType = any, ParentType extends ResolversParentTypes['Enterprise'] = ResolversParentTypes['Enterprise']> = {
   announcement?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  announcementCreatedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   announcementExpiresAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   announcementUserDismissible?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   avatarUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType, Partial<EnterpriseAvatarUrlArgs>>;
@@ -38993,6 +39001,7 @@ export type OrgUpdateMemberRepositoryInvitationPermissionAuditEntryResolvers<Con
 
 export type OrganizationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Organization'] = ResolversParentTypes['Organization']> = {
   announcement?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  announcementCreatedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   announcementExpiresAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   announcementUserDismissible?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   anyPinnableItems?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, Partial<OrganizationAnyPinnableItemsArgs>>;
