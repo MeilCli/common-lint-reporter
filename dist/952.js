@@ -18,7 +18,7 @@ const graphql_1 = __webpack_require__(2634);
 function githubClient(option) {
     return new GitHubClient(new client_1.ApolloClient({
         link: new client_1.HttpLink({
-            uri: "https://api.github.com/graphql",
+            uri: option.githubGraphqlApiUrl ?? "https://api.github.com/graphql",
             headers: { authorization: `token ${option.githubToken}` },
             fetch: cross_fetch_1.default,
         }),
@@ -543,6 +543,7 @@ const core = __importStar(__webpack_require__(6977));
 function getCommonOption() {
     return {
         githubToken: getInput("github_token"),
+        githubGraphqlApiUrl: getInputOrNull("github_graphql_api_url"),
         workspacePath: getInputOrNull("workspace_path"),
         repository: getInputOrNull("repository"),
         pullRequest: getInputNumberOrNull("pull_request"),
