@@ -62,7 +62,7 @@ export function githubClient(option: CommonOption): GitHubClient {
     return new GitHubClient(
         new ApolloClient({
             link: new HttpLink({
-                uri: "https://api.github.com/graphql",
+                uri: option.githubGraphqlApiUrl ?? "https://api.github.com/graphql",
                 headers: { authorization: `token ${option.githubToken}` },
                 fetch,
             }),

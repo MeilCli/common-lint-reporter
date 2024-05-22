@@ -13,6 +13,9 @@ A action for distinct duplicated lint result
   - github app token, using to read and write repository
   - required
   - default: `${{ github.token }}`
+- `github_graphql_api_url`:
+  - github graphql api url, this option is for github enterprise user
+  - if this value is not set, this actions uses `https://api.github.com/graphql`
 - `workspace_path`:
   - workspace path, using to convert relative path from absolute path
 - `repository`:

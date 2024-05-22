@@ -3,6 +3,7 @@ import { FunctionalOption } from "../../src/operator/option";
 export function createOption(func: string): FunctionalOption {
     return {
         githubToken: "",
+        githubGraphqlApiUrl: null,
         workspacePath: "test/",
         repository: "MeilCli/common-lint-reporter",
         pullRequest: 1,
