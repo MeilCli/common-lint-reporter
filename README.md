@@ -1,6 +1,6 @@
 # common-lint-reporter
 [![CI-Master](https://github.com/MeilCli/common-lint-reporter/actions/workflows/ci-master.yml/badge.svg)](https://github.com/MeilCli/common-lint-reporter/actions/workflows/ci-master.yml)  
-This is generalized lint reporter action
+This is multiple format supported lint reporter for GitHub Actions
 
 Focuses on:
 - Many lint file format support
