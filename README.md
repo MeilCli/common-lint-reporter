@@ -89,13 +89,13 @@ jobs:
   - [Operator context](documents/operator/context.md)
 
 ## Contributes
-[<img src="https://gist.github.com/MeilCli/2d3bbbc636d3e542aba28207b33b78bc/raw/b4dd7406351e857572e45537f9f929bf355689ff/metrics_contributors.svg">](https://github.com/MeilCli/common-lint-reporter/graphs/contributors)
+[<img src="https://gist.githubusercontent.com/MeilCli/2d3bbbc636d3e542aba28207b33b78bc/raw/6e7801da9bce505660ac5f2b429f98e06853e3d1/metrics_contributors.svg">](https://github.com/MeilCli/common-lint-reporter/graphs/contributors)
 
 ### Could you want to contribute?
 see [Contributing.md](./.github/CONTRIBUTING.md)
 
 ## License
-[<img src="https://gist.github.com/MeilCli/2d3bbbc636d3e542aba28207b33b78bc/raw/b4dd7406351e857572e45537f9f929bf355689ff/metrics_licenses.svg">](LICENSE.txt)
+[<img src="https://gist.githubusercontent.com/MeilCli/2d3bbbc636d3e542aba28207b33b78bc/raw/6e7801da9bce505660ac5f2b429f98e06853e3d1/metrics_licenses.svg">](LICENSE.txt)
 
 ### Using
 - [actions/toolkit](https://github.com/actions/toolkit), published by [MIT License](https://github.com/actions/toolkit/blob/master/LICENSE.md)
