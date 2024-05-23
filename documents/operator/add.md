@@ -15,7 +15,7 @@ A action for manually add lint result
   - default: `${{ github.token }}`
 - `github_graphql_api_url`:
   - github graphql api url, this option is for github enterprise user
-  - if this value is not set, this actions uses `https://api.github.com/graphql`
+  - if this value is not set, this actions uses `github.graphql_url`
 - `workspace_path`:
   - workspace path, using to convert relative path from absolute path
 - `repository`:

@@ -1,5 +1,6 @@
 import fetch from "cross-fetch";
 import { ApolloClient, HttpLink, InMemoryCache, NormalizedCacheObject } from "@apollo/client";
+import { githubContext } from "./context";
 import { CommonOption } from "../option";
 import {
     CreateCheckRun,
@@ -59,10 +60,11 @@ import {
 } from "../../graphql/graphql";
 
 export function githubClient(option: CommonOption): GitHubClient {
+    const context = githubContext(option);
     return new GitHubClient(
         new ApolloClient({
             link: new HttpLink({
-                uri: option.githubGraphqlApiUrl ?? "https://api.github.com/graphql",
+                uri: context.graphqlApiUrl(),
                 headers: { authorization: `token ${option.githubToken}` },
                 fetch,
             }),
