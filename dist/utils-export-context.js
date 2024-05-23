@@ -58,6 +58,18 @@ class GitHubContext {
         }
         return github.context.repo.repo;
     }
+    serverUrl() {
+        if (this.option?.githubServerUrl != null) {
+            return this.option.githubServerUrl;
+        }
+        return github.context.serverUrl;
+    }
+    graphqlApiUrl() {
+        if (this.option?.githubGraphqlApiUrl != null) {
+            return this.option.githubGraphqlApiUrl;
+        }
+        return github.context.graphqlUrl;
+    }
     pullRequest() {
         if (this.option?.pullRequest != null) {
             return this.option.pullRequest;
