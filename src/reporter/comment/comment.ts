@@ -80,7 +80,7 @@ function createLevelTable(context: GitHubContext, lintResults: LintResult[], tar
         ) {
             line += `-L${lintResult.endLine}`;
         }
-        const baseUrl = `https://github.com/${context.owner()}/${context.repository()}`;
+        const baseUrl = `${context.serverUrl()}/${context.owner()}/${context.repository()}`;
         const path = trimPath(context, lintResult.path);
         const message = lintResult.message.replace(/(\r\n)|\r|\n/g, "<br />");
         const link = `${baseUrl}/blob/${context.commitSha()}/${path}#${line}`;

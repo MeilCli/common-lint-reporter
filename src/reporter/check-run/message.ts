@@ -20,7 +20,7 @@ function markdownLevelMessage(context: GitHubContext, lintResults: LintResult[],
         ) {
             line += `-L${lintResult.endLine}`;
         }
-        const baseUrl = `https://github.com/${context.owner()}/${context.repository()}`;
+        const baseUrl = `${context.serverUrl()}/${context.owner()}/${context.repository()}`;
         const link = `${baseUrl}/blob/${context.commitSha()}/${trimPath(context, lintResult.path)}#${line}`;
         result += `### [${trimPath(context, lintResult.path)} ${line}](${link})\n`;
         result += `Rule: ${lintResult.rule}\n`;

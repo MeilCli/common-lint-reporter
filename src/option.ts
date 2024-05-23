@@ -2,6 +2,7 @@ import * as core from "@actions/core";
 
 export interface CommonOption {
     githubToken: string;
+    githubServerUrl: string | null;
     githubGraphqlApiUrl: string | null;
     workspacePath: string | null;
     repository: string | null;
@@ -12,6 +13,7 @@ export interface CommonOption {
 export function getCommonOption(): CommonOption {
     return {
         githubToken: getInput("github_token"),
+        githubServerUrl: getInputOrNull("github_server_url"),
         githubGraphqlApiUrl: getInputOrNull("github_graphql_api_url"),
         workspacePath: getInputOrNull("workspace_path"),
         repository: getInputOrNull("repository"),

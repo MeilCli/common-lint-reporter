@@ -13,6 +13,9 @@ A action for filter lint result
   - github app token, using to read and write repository
   - required
   - default: `${{ github.token }}`
+- `github_server_url`:
+  - github server url, this option is for github enterprise user
+  - if this value is not set, this actions uses `github.server_url`
 - `github_graphql_api_url`:
   - github graphql api url, this option is for github enterprise user
   - if this value is not set, this actions uses `github.graphql_url`

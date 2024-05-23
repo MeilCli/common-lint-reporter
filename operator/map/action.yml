@@ -9,6 +9,8 @@ inputs:
     description: 'github app token, using to read and write repository'
     required: true
     default: ${{ github.token }}
+  github_server_url:
+    description: 'github server url, this option is for github enterprise user'
   github_graphql_api_url:
     description: 'github graphql api url, this option is for github enterprise user'
   workspace_path:

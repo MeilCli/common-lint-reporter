@@ -29,6 +29,13 @@ export class GitHubContext {
         return github.context.repo.repo;
     }
 
+    serverUrl(): string {
+        if (this.option?.githubServerUrl != null) {
+            return this.option.githubServerUrl;
+        }
+        return github.context.serverUrl;
+    }
+
     graphqlApiUrl(): string {
         if (this.option?.githubGraphqlApiUrl != null) {
             return this.option.githubGraphqlApiUrl;
