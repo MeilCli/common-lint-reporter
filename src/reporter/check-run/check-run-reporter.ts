@@ -6,7 +6,7 @@ import { githubClient, GitHubClient } from "../../github/client";
 import { githubContext, GitHubContext } from "../../github/context";
 import { getCommitStatusAndCheckRunWithPaging, getCheckRunAnnotationsWithPaging } from "../../github/paging";
 import { GetCheckRunAnnotationsQueryCheckRunAnnotationsNode } from "../../github/types";
-import { RequestableCheckStatusState, CheckAnnotationData } from "../../../graphql/graphql";
+import { RequestableCheckStatusState, CheckAnnotationData, CheckConclusionState } from "../../../graphql/graphql";
 import { calculateConclusion } from "../conclusion";
 import { createSummary } from "./summary";
 import { createMessage } from "./message";
@@ -46,6 +46,11 @@ export class CheckRunReporter implements Reporter {
             if (lintResult.level == "failure") {
                 core.error(annotation.message, annotationProperties);
             }
+        }
+
+        const conclusion = calculateConclusion(option, lintResults);
+        if (conclusion == CheckConclusionState.Failure) {
+            core.setFailed("conclusion is failure");
         }
     }
 
