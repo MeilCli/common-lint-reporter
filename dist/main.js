@@ -735,6 +735,12 @@ class CheckRunReporter {
                 core.error(annotation.message, annotationProperties);
             }
         }
+        core.summary.addRaw((0, summary_1.createSummary)(lintResults));
+        core.summary.addRaw((0, message_1.createMessage)(context, lintResults), true);
+        const conclusion = (0, conclusion_1.calculateConclusion)(option, lintResults);
+        if (conclusion == graphql_1.CheckConclusionState.Failure) {
+            core.setFailed("conclusion is failure");
+        }
     }
     async reportToNewCheckRun(option, lintResults) {
         const client = (0, client_1.githubClient)(option);
