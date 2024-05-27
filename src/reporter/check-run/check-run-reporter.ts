@@ -48,7 +48,7 @@ export class CheckRunReporter implements Reporter {
             }
         }
 
-        core.summary.addRaw(createSummary(lintResults));
+        core.summary.addRaw(createSummary(lintResults), true);
         core.summary.addRaw(createMessage(context, lintResults), true);
         core.summary.write();
 
