@@ -737,6 +737,7 @@ class CheckRunReporter {
         }
         core.summary.addRaw((0, summary_1.createSummary)(lintResults));
         core.summary.addRaw((0, message_1.createMessage)(context, lintResults), true);
+        core.summary.write();
         const conclusion = (0, conclusion_1.calculateConclusion)(option, lintResults);
         if (conclusion == graphql_1.CheckConclusionState.Failure) {
             core.setFailed("conclusion is failure");
