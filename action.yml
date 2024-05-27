@@ -35,6 +35,8 @@ inputs:
     description: 'report type, value is check_run or comment or inline_comment'
     required: true
     default: 'check_run'
+  report_to_same_check_run:
+    description: 'check_run only option, if true, report to same check run'
   conclusion_failure_threshold:
     description: 'threshold of conclution as failure'
     required: true

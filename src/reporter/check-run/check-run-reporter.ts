@@ -1,3 +1,4 @@
+import * as core from "@actions/core";
 import { LintResult } from "../../lint-result";
 import { Option } from "../../option";
 import { Reporter } from "../../reporter";
@@ -13,6 +14,42 @@ import { createAnnotation, equalsAnnotation } from "./annotation";
 
 export class CheckRunReporter implements Reporter {
     async report(option: Option, lintResults: LintResult[]): Promise<void> {
+        if (option.reportToSameCheckRun) {
+            this.reportToSameCheckRun(option, lintResults);
+        } else {
+            this.reportToNewCheckRun(option, lintResults);
+        }
+    }
+
+    async reportToSameCheckRun(option: Option, lintResults: LintResult[]): Promise<void> {
+        const context = githubContext(option);
+        for (const lintResult of lintResults) {
+            const annotation = createAnnotation(context, lintResult);
+            if (annotation == null) {
+                continue;
+            }
+            const annotationProperties = {
+                title: annotation.title ?? undefined,
+                file: annotation.path,
+                startLine: annotation.location.startLine,
+                endLine: annotation.location.endLine,
+                startColumn: annotation.location.startColumn ?? undefined,
+                endColumn: annotation.location.endColumn ?? undefined,
+            } as core.AnnotationProperties;
+
+            if (lintResult.level == "notice") {
+                core.notice(annotation.message, annotationProperties);
+            }
+            if (lintResult.level == "warning") {
+                core.warning(annotation.message, annotationProperties);
+            }
+            if (lintResult.level == "failure") {
+                core.error(annotation.message, annotationProperties);
+            }
+        }
+    }
+
+    async reportToNewCheckRun(option: Option, lintResults: LintResult[]): Promise<void> {
         const client = githubClient(option);
         const context = githubContext(option);
 

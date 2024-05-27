@@ -61,7 +61,7 @@ jobs:
       - uses: MeilCli/common-lint-reporter@v1
         with:
           report_type: 'check_run'
-          report_name: 'Lint Report'
+          report_to_same_check_run: 'true'
 ```
 
 ### Detail information

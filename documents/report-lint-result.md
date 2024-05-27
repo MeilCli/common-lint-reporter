@@ -5,7 +5,7 @@ common-lint-reporter's final step, it's report lint result to GitHub
 - uses: MeilCli/common-lint-reporter@v1
   with:
     report_type: 'check_run'
-    report_name: 'Lint Report'
+    report_to_same_check_run: 'true'
 ```
 
 ## Reporter type
@@ -71,6 +71,9 @@ You can select way to resolve when common-lint-reporter find outdated review com
   - report type, value is `check_run` or `comment` or `inline_comment`
   - required
   - default: `check_run`
+- `report_to_same_check_run`:
+  - check_run only option, if true, report to same check run
+  - *in future, it may do breaking change to default behavior*
 - `conclusion_failure_threshold`:
   - threshold of conclution as failure
   - required
