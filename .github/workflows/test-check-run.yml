@@ -24,7 +24,7 @@ jobs:
       - run: npm run test
       - run: npm run lint:report
         continue-on-error: true
-     - name: Transform report file
+      - name: Transform report file
         uses: ./transformer/eslint
         with:
           report_files: |
