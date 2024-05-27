@@ -1,0 +1,36 @@
+on:
+  push:
+    branches:
+      - test/check-run
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-build-${{ hashFiles('package.json') }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-build-${{ hashFiles('package.json') }}-
+            ${{ runner.OS }}-build-
+      - run: npm install
+      - run: npm run build
+      - run: npm run codegen
+      - run: npm run test
+      - run: npm run lint:report
+        continue-on-error: true
+     - name: Transform report file
+        uses: ./transformer/eslint
+        with:
+          report_files: |
+            eslint_report.json
+      - name: Report lint result
+        uses: ./
+        with:
+          report_type: 'check_run'
+          report_to_same_check_run: 'true'
