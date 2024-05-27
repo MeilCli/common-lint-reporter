@@ -553,6 +553,7 @@ function getOption() {
         reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
         reportName: getInput("report_name"),
         reportType: reportType,
+        reportToSameCheckRun: getInputOrNull("report_to_same_check_run") == "true",
         conclusionFailureThreshold: parseInt(getInput("conclusion_failure_threshold")),
         conclusionFailureWeight: parseInt(getInput("conclusion_failure_weight")),
         conclusionWarningWeight: parseInt(getInput("conclusion_warning_weight")),
@@ -663,11 +664,35 @@ exports.equalsAnnotation = equalsAnnotation;
 /***/ }),
 
 /***/ 7465:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CheckRunReporter = void 0;
+const core = __importStar(__webpack_require__(6977));
 const client_1 = __webpack_require__(6088);
 const context_1 = __webpack_require__(6289);
 const paging_1 = __webpack_require__(6964);
@@ -678,6 +703,40 @@ const message_1 = __webpack_require__(5736);
 const annotation_1 = __webpack_require__(4506);
 class CheckRunReporter {
     async report(option, lintResults) {
+        if (option.reportToSameCheckRun) {
+            this.reportToSameCheckRun(option, lintResults);
+        }
+        else {
+            this.reportToNewCheckRun(option, lintResults);
+        }
+    }
+    async reportToSameCheckRun(option, lintResults) {
+        const context = (0, context_1.githubContext)(option);
+        for (const lintResult of lintResults) {
+            const annotation = (0, annotation_1.createAnnotation)(context, lintResult);
+            if (annotation == null) {
+                continue;
+            }
+            const annotationProperties = {
+                title: annotation.title ?? undefined,
+                file: annotation.path,
+                startLine: annotation.location.startLine,
+                endLine: annotation.location.endLine,
+                startColumn: annotation.location.startColumn ?? undefined,
+                endColumn: annotation.location.endColumn ?? undefined,
+            };
+            if (lintResult.level == "notice") {
+                core.notice(annotation.message, annotationProperties);
+            }
+            if (lintResult.level == "warning") {
+                core.warning(annotation.message, annotationProperties);
+            }
+            if (lintResult.level == "failure") {
+                core.error(annotation.message, annotationProperties);
+            }
+        }
+    }
+    async reportToNewCheckRun(option, lintResults) {
         const client = (0, client_1.githubClient)(option);
         const context = (0, context_1.githubContext)(option);
         const repositoryId = (await client.getRepositoryId({ owner: context.owner(), name: context.repository() }))

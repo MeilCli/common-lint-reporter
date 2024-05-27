@@ -614,6 +614,7 @@ function getOption() {
         reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
         reportName: getInput("report_name"),
         reportType: reportType,
+        reportToSameCheckRun: getInputOrNull("report_to_same_check_run") == "true",
         conclusionFailureThreshold: parseInt(getInput("conclusion_failure_threshold")),
         conclusionFailureWeight: parseInt(getInput("conclusion_failure_weight")),
         conclusionWarningWeight: parseInt(getInput("conclusion_warning_weight")),
