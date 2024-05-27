@@ -48,6 +48,9 @@ export class CheckRunReporter implements Reporter {
             }
         }
 
+        core.summary.addRaw(createSummary(lintResults));
+        core.summary.addRaw(createMessage(context, lintResults), true);
+
         const conclusion = calculateConclusion(option, lintResults);
         if (conclusion == CheckConclusionState.Failure) {
             core.setFailed("conclusion is failure");
