@@ -55162,8 +55162,15 @@ function getObjectTag(object) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   h: () => (/* binding */ instanceOf)
 /* harmony export */ });
-/* harmony import */ var _inspect_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(129);
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _inspect_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(129);
+}
 
+/* c8 ignore next 3 */
+
+const isProduction =
+  globalThis.process && // eslint-disable-next-line no-undef
+  "production" === 'production';
 /**
  * A replacement for instanceof which includes an error warning when multi-realm
  * constructors are detected.
@@ -55174,7 +55181,7 @@ function getObjectTag(object) {
 const instanceOf =
   /* c8 ignore next 6 */
   // FIXME: https://github.com/graphql/graphql-js/issues/2317
-  globalThis.process && globalThis.process.env.NODE_ENV === 'production'
+  (/* runtime-dependent pure expression or super */ /^(250|49|6|748|792|888)$/.test(__webpack_require__.j) ? (isProduction
     ? function instanceOf(value, constructor) {
         return value instanceof constructor;
       }
@@ -55214,7 +55221,7 @@ spurious results.`);
         }
 
         return false;
-      };
+      }) : null);
 
 
 /***/ }),
