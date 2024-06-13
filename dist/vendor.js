@@ -48637,19 +48637,44 @@ function useLazyRef(getInitialValue) {
 /* harmony export */ });
 /* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7243);
 
-function getRenderDispatcher() {
-    var _a, _b;
-    return (_b = (_a = rehackt__WEBPACK_IMPORTED_MODULE_0__.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED) === null || _a === void 0 ? void 0 : _a.ReactCurrentDispatcher) === null || _b === void 0 ? void 0 : _b.current;
-}
-var RenderDispatcher = null;
-/*
-Relay does this too, so we hope this is safe.
-https://github.com/facebook/relay/blob/8651fbca19adbfbb79af7a3bc40834d105fd7747/packages/react-relay/relay-hooks/loadQuery.js#L90-L98
-*/
+var Ctx;
+function noop() { }
 function useRenderGuard() {
-    RenderDispatcher = getRenderDispatcher();
-    return rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () {
-        return (RenderDispatcher != null && RenderDispatcher === getRenderDispatcher());
+    if (!Ctx) {
+        // we want the intialization to be lazy because `createContext` would error on import in a RSC
+        Ctx = rehackt__WEBPACK_IMPORTED_MODULE_0__.createContext(null);
+    }
+    return rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(
+    /**
+     * @returns true if the hook was called during render
+     */ function () {
+        var orig = console.error;
+        try {
+            console.error = noop;
+            /**
+             * `useContext` can be called conditionally during render, so this is safe.
+             * (Also, during render we would want to throw as a reaction to this anyways, so it
+             * wouldn't even matter if we got the order of hooks mixed up...)
+             *
+             * They cannot however be called outside of Render, and that's what we're testing here.
+             *
+             * Different versions of React have different behaviour on an invalid hook call:
+             *
+             * React 16.8 - 17: throws an error
+             * https://github.com/facebook/react/blob/2b93d686e359c7afa299e2ec5cf63160a32a1155/packages/react/src/ReactHooks.js#L18-L26
+             *
+             * React 18 & 19: `console.error` in development, then `resolveDispatcher` returns `null` and a member access on `null` throws.
+             * https://github.com/facebook/react/blob/58e8304483ebfadd02a295339b5e9a989ac98c6e/packages/react/src/ReactHooks.js#L28-L35
+             */
+            rehackt__WEBPACK_IMPORTED_MODULE_0__.useContext(Ctx);
+            return true;
+        }
+        catch (e) {
+            return false;
+        }
+        finally {
+            console.error = orig;
+        }
     }, []);
 }
 //# sourceMappingURL=useRenderGuard.js.map
@@ -49032,19 +49057,17 @@ function useLazyQuery(query, options) {
     var useQueryResult = internalState.useQuery((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, merged), { skip: !execOptionsRef.current }));
     var initialFetchPolicy = useQueryResult.observable.options.initialFetchPolicy ||
         internalState.getDefaultFetchPolicy();
-    var result = Object.assign(useQueryResult, {
-        called: !!execOptionsRef.current,
-    });
+    var forceUpdateState = internalState.forceUpdateState, obsQueryFields = internalState.obsQueryFields;
     // We use useMemo here to make sure the eager methods have a stable identity.
     var eagerMethods = rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
         var eagerMethods = {};
         var _loop_1 = function (key) {
-            var method = result[key];
+            var method = obsQueryFields[key];
             eagerMethods[key] = function () {
                 if (!execOptionsRef.current) {
                     execOptionsRef.current = Object.create(null);
                     // Only the first time populating execOptionsRef.current matters here.
-                    internalState.forceUpdateState();
+                    forceUpdateState();
                 }
                 // @ts-expect-error this is just too generic to type
                 return method.apply(this, arguments);
@@ -49055,8 +49078,9 @@ function useLazyQuery(query, options) {
             _loop_1(key);
         }
         return eagerMethods;
-    }, []);
-    Object.assign(result, eagerMethods);
+    }, [forceUpdateState, obsQueryFields]);
+    var called = !!execOptionsRef.current;
+    var result = rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () { return ((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, useQueryResult), eagerMethods), { called: called })); }, [useQueryResult, eagerMethods, called]);
     var execute = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (executeOptions) {
         execOptionsRef.current =
             executeOptions ? (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, executeOptions), { fetchPolicy: executeOptions.fetchPolicy || initialFetchPolicy }) : {
@@ -49070,7 +49094,7 @@ function useLazyQuery(query, options) {
         // to catch the promise to prevent unhandled rejections.
         promise.catch(function () { });
         return promise;
-    }, []);
+    }, [eagerMethods, initialFetchPolicy, internalState]);
     return [execute, result];
 }
 //# sourceMappingURL=useLazyQuery.js.map
@@ -49160,10 +49184,17 @@ function useLoadableQuery(query, options) {
             return client.watchQuery((0,tslib__WEBPACK_IMPORTED_MODULE_7__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_7__/* .__assign */ .Cl)({}, watchQueryOptions), { variables: variables }));
         });
         setQueryRef((0,_internal_index_js__WEBPACK_IMPORTED_MODULE_5__/* .wrapQueryRef */ .Qh)(queryRef));
-    }, [query, queryKey, suspenseCache, watchQueryOptions, calledDuringRender]);
+    }, [
+        query,
+        queryKey,
+        suspenseCache,
+        watchQueryOptions,
+        calledDuringRender,
+        client,
+    ]);
     var reset = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () {
         setQueryRef(null);
-    }, [queryRef]);
+    }, []);
     return [loadQuery, queryRef, { fetchMore: fetchMore, refetch: refetch, reset: reset }];
 }
 //# sourceMappingURL=useLoadableQuery.js.map
@@ -49264,11 +49295,9 @@ function useMutation(mutation, options) {
         mutation: mutation,
         options: options,
     });
-    // TODO: Trying to assign these in a useEffect or useLayoutEffect breaks
-    // higher-order components.
-    {
+    rehackt__WEBPACK_IMPORTED_MODULE_0__.useLayoutEffect(function () {
         Object.assign(ref.current, { client: client, options: options, mutation: mutation });
-    }
+    });
     var execute = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (executeOptions) {
         if (executeOptions === void 0) { executeOptions = {}; }
         var _a = ref.current, options = _a.options, mutation = _a.mutation;
@@ -49343,15 +49372,20 @@ function useMutation(mutation, options) {
     }, []);
     var reset = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () {
         if (ref.current.isMounted) {
-            var result_3 = { called: false, loading: false, client: client };
+            var result_3 = {
+                called: false,
+                loading: false,
+                client: ref.current.client,
+            };
             Object.assign(ref.current, { mutationId: 0, result: result_3 });
             setResult(result_3);
         }
     }, []);
     rehackt__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () {
-        ref.current.isMounted = true;
+        var current = ref.current;
+        current.isMounted = true;
         return function () {
-            ref.current.isMounted = false;
+            current.isMounted = false;
         };
     }, []);
     return [execute, (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({ reset: reset }, result)];
@@ -49444,20 +49478,27 @@ function _useQuery(query, options) {
     return useInternalState((0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_4__/* .useApolloClient */ .m)(options.client), query).useQuery(options);
 }
 function useInternalState(client, query) {
-    var stateRef = rehackt__WEBPACK_IMPORTED_MODULE_1__.useRef();
-    if (!stateRef.current ||
-        client !== stateRef.current.client ||
-        query !== stateRef.current.query) {
-        stateRef.current = new InternalState(client, query, stateRef.current);
-    }
-    var state = stateRef.current;
     // By default, InternalState.prototype.forceUpdate is an empty function, but
     // we replace it here (before anyone has had a chance to see this state yet)
     // with a function that unconditionally forces an update, using the latest
-    // setTick function. Updating this state by calling state.forceUpdate is the
-    // only way we trigger React component updates (no other useState calls within
-    // the InternalState class).
-    state.forceUpdateState = rehackt__WEBPACK_IMPORTED_MODULE_1__.useReducer(function (tick) { return tick + 1; }, 0)[1];
+    // setTick function. Updating this state by calling state.forceUpdate or the
+    // uSES notification callback are the only way we trigger React component updates.
+    var forceUpdateState = rehackt__WEBPACK_IMPORTED_MODULE_1__.useReducer(function (tick) { return tick + 1; }, 0)[1];
+    function createInternalState(previous) {
+        return Object.assign(new InternalState(client, query, previous), {
+            forceUpdateState: forceUpdateState,
+        });
+    }
+    var _a = rehackt__WEBPACK_IMPORTED_MODULE_1__.useState(createInternalState), state = _a[0], updateState = _a[1];
+    if (client !== state.client || query !== state.query) {
+        // If the client or query have changed, we need to create a new InternalState.
+        // This will trigger a re-render with the new state, but it will also continue
+        // to run the current render function to completion.
+        // Since we sometimes trigger some side-effects in the render function, we
+        // re-assign `state` to the new state to ensure that those side-effects are
+        // triggered with the new state.
+        updateState((state = createInternalState(state)));
+    }
     return state;
 }
 var InternalState = /** @class */ (function () {
@@ -49551,10 +49592,14 @@ var InternalState = /** @class */ (function () {
         // initialization, this.renderPromises is usually undefined (unless SSR is
         // happening), but that's fine as long as it has been initialized that way,
         // rather than left uninitialized.
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         this.renderPromises = rehackt__WEBPACK_IMPORTED_MODULE_1__.useContext((0,_context_index_js__WEBPACK_IMPORTED_MODULE_9__/* .getApolloContext */ .l)()).renderPromises;
         this.useOptions(options);
         var obsQuery = this.useObservableQuery();
-        var result = (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_10__/* .useSyncExternalStore */ .r)(rehackt__WEBPACK_IMPORTED_MODULE_1__.useCallback(function (handleStoreChange) {
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        var result = (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_10__/* .useSyncExternalStore */ .r)(
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        rehackt__WEBPACK_IMPORTED_MODULE_1__.useCallback(function (handleStoreChange) {
             if (_this.renderPromises) {
                 return function () { };
             }
@@ -49610,7 +49655,9 @@ var InternalState = /** @class */ (function () {
             // effectively passing this dependency array to that useEffect buried
             // inside useSyncExternalStore, as desired.
             obsQuery,
+            // eslint-disable-next-line react-hooks/exhaustive-deps
             this.renderPromises,
+            // eslint-disable-next-line react-hooks/exhaustive-deps
             this.client.disableNetworkFetches,
         ]), function () { return _this.getCurrentResult(); }, function () { return _this.getCurrentResult(); });
         // TODO Remove this method when we remove support for options.partialRefetch.
@@ -49758,6 +49805,7 @@ var InternalState = /** @class */ (function () {
                 this.renderPromises.getSSRObservable(this.watchQueryOptions)) ||
                 this.observable || // Reuse this.observable if possible (and not SSR)
                 this.client.watchQuery(this.getObsQueryOptions()));
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         this.obsQueryFields = rehackt__WEBPACK_IMPORTED_MODULE_1__.useMemo(function () { return ({
             refetch: obsQuery.refetch.bind(obsQuery),
             reobserve: obsQuery.reobserve.bind(obsQuery),
@@ -49910,6 +49958,10 @@ function useQueryRefHandlers(queryRef) {
         // client that's available to us at the current position in the React tree
         // that ApolloClient will then have the job to recreate a real queryRef from
         // the transported object
+        // This is just a context read - it's fine to do this conditionally.
+        // This hook wrapper also shouldn't be optimized by React Compiler.
+        // eslint-disable-next-line react-compiler/react-compiler
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         : (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)())(queryRef);
 }
 function _useQueryRefHandlers(queryRef) {
@@ -50030,6 +50082,10 @@ function useReadQuery(queryRef) {
         // client that's available to us at the current position in the React tree
         // that ApolloClient will then have the job to recreate a real queryRef from
         // the transported object
+        // This is just a context read - it's fine to do this conditionally.
+        // This hook wrapper also shouldn't be optimized by React Compiler.
+        // eslint-disable-next-line react-compiler/react-compiler
+        // eslint-disable-next-line react-hooks/rules-of-hooks
         : (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)())(queryRef);
 }
 function _useReadQuery(queryRef) {
@@ -50046,7 +50102,7 @@ function _useReadQuery(queryRef) {
             (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .updateWrappedQueryRef */ .CY)(queryRef, promise);
             forceUpdate();
         });
-    }, [internalQueryRef]), getPromise, getPromise);
+    }, [internalQueryRef, queryRef]), getPromise, getPromise);
     var result = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_5__/* .__use */ .y)(promise);
     return rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
         return {
@@ -50244,6 +50300,8 @@ function useSubscription(subscription, options) {
             canResetObservableRef.current = false;
         }
         Object.assign(ref.current, { client: client, subscription: subscription, options: options });
+        // eslint-disable-next-line react-compiler/react-compiler
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [client, subscription, options, canResetObservableRef.current]);
     rehackt__WEBPACK_IMPORTED_MODULE_1__.useEffect(function () {
         if (!observable) {
@@ -50311,6 +50369,8 @@ function useSubscription(subscription, options) {
                 subscription.unsubscribe();
             });
         };
+        // eslint-disable-next-line react-compiler/react-compiler
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [observable]);
     return result;
 }
@@ -50427,11 +50487,11 @@ function _useSuspenseQuery(query, options) {
         };
     }, [queryRef.result]);
     var result = fetchPolicy === "standby" ? skipResult : (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_8__/* .__use */ .y)(promise);
-    var fetchMore = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback((function (options) {
+    var fetchMore = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (options) {
         var promise = queryRef.fetchMore(options);
         setPromise([queryRef.key, queryRef.promise]);
         return promise;
-    }), [queryRef]);
+    }, [queryRef]);
     var refetch = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (variables) {
         var promise = queryRef.refetch(variables);
         setPromise([queryRef.key, queryRef.promise]);
@@ -50580,6 +50640,8 @@ var useSyncExternalStore = (/* runtime-dependent pure expression or super */ /^(
                     // Force a re-render.
                     forceUpdate({ inst: inst });
                 }
+                // React Hook React.useLayoutEffect has a missing dependency: 'inst'. Either include it or remove the dependency array.
+                // eslint-disable-next-line react-hooks/exhaustive-deps
             }, [subscribe, value, getSnapshot]);
         }
         else {
@@ -50605,6 +50667,8 @@ var useSyncExternalStore = (/* runtime-dependent pure expression or super */ /^(
                     forceUpdate({ inst: inst });
                 }
             });
+            // React Hook React.useEffect has a missing dependency: 'inst'. Either include it or remove the dependency array.
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [subscribe]);
         return value;
     })) : null);
@@ -54085,7 +54149,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.10.4";
+var version = "3.10.5";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
