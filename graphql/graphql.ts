@@ -6599,6 +6599,10 @@ export type Enterprise = AnnouncementBanner & Node & {
    * personal access tokens (classic) with read:enterprise or admin:enterprise scope.
    */
   ownerInfo?: Maybe<EnterpriseOwnerInfo>;
+  /** The raw content of the enterprise README. */
+  readme?: Maybe<Scalars['String']['output']>;
+  /** The content of the enterprise README as HTML. */
+  readmeHTML: Scalars['HTML']['output'];
   /** The HTTP path for this enterprise. */
   resourcePath: Scalars['URI']['output'];
   /** The URL-friendly identifier for the enterprise. */
@@ -36657,6 +36661,8 @@ export type EnterpriseResolvers<ContextType = any, ParentType extends ResolversP
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   organizations?: Resolver<ResolversTypes['OrganizationConnection'], ParentType, ContextType, RequireFields<EnterpriseOrganizationsArgs, 'orderBy'>>;
   ownerInfo?: Resolver<Maybe<ResolversTypes['EnterpriseOwnerInfo']>, ParentType, ContextType>;
+  readme?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  readmeHTML?: Resolver<ResolversTypes['HTML'], ParentType, ContextType>;
   resourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   url?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
