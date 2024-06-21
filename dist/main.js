@@ -10,7 +10,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.GitHubClient = exports.githubClient = void 0;
+exports.GitHubClient = void 0;
+exports.githubClient = githubClient;
 const cross_fetch_1 = __importDefault(__webpack_require__(5221));
 const client_1 = __webpack_require__(2091);
 const context_1 = __webpack_require__(6289);
@@ -26,7 +27,6 @@ function githubClient(option) {
         cache: new client_1.InMemoryCache(),
     }));
 }
-exports.githubClient = githubClient;
 class GitHubClient {
     constructor(client) {
         this.client = client;
@@ -191,12 +191,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.GitHubContext = exports.githubContext = void 0;
+exports.GitHubContext = void 0;
+exports.githubContext = githubContext;
 const github = __importStar(__webpack_require__(4834));
 function githubContext(option) {
     return new GitHubContext(option);
 }
-exports.githubContext = githubContext;
 class GitHubContext {
     constructor(option) {
         this.option = option;
@@ -263,7 +263,11 @@ exports.GitHubContext = GitHubContext;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getPullRequestReviewThreadsWithPaging = exports.getPullRequestCommentsWithPaging = exports.getCheckRunAnnotationsWithPaging = exports.getCommitStatusAndCheckRunWithPaging = exports.getPullRequestChangedFileWithPaging = void 0;
+exports.getPullRequestChangedFileWithPaging = getPullRequestChangedFileWithPaging;
+exports.getCommitStatusAndCheckRunWithPaging = getCommitStatusAndCheckRunWithPaging;
+exports.getCheckRunAnnotationsWithPaging = getCheckRunAnnotationsWithPaging;
+exports.getPullRequestCommentsWithPaging = getPullRequestCommentsWithPaging;
+exports.getPullRequestReviewThreadsWithPaging = getPullRequestReviewThreadsWithPaging;
 // gurad for infinity loop
 const maxLoop = 100;
 async function getResponseWithPaging(variables, getResponse, selectorPageInfo, selectorNodes) {
@@ -308,7 +312,6 @@ async function getResponseWithPaging(variables, getResponse, selectorPageInfo, s
 async function getPullRequestChangedFileWithPaging(client, variables) {
     return getResponseWithPaging(variables, (variables) => client.getPullRequestChangedFile(variables), (response) => response.repository?.pullRequest?.files?.pageInfo, (response) => response.repository?.pullRequest?.files?.nodes);
 }
-exports.getPullRequestChangedFileWithPaging = getPullRequestChangedFileWithPaging;
 async function getCommitStatusAndCheckRunWithPaging(client, variables) {
     return getResponseWithPaging(variables, (variables) => client.getCommitStatusAndCheckRun(variables), (response) => {
         if (response.repository?.object?.__typename != "Commit") {
@@ -322,7 +325,6 @@ async function getCommitStatusAndCheckRunWithPaging(client, variables) {
         return response.repository.object.statusCheckRollup?.contexts.nodes;
     });
 }
-exports.getCommitStatusAndCheckRunWithPaging = getCommitStatusAndCheckRunWithPaging;
 async function getCheckRunAnnotationsWithPaging(client, variables) {
     return getResponseWithPaging(variables, (variables) => client.getCheckRunAnnotations(variables), (response) => {
         if (response.node?.__typename != "CheckRun") {
@@ -336,15 +338,12 @@ async function getCheckRunAnnotationsWithPaging(client, variables) {
         return response.node.annotations?.nodes;
     });
 }
-exports.getCheckRunAnnotationsWithPaging = getCheckRunAnnotationsWithPaging;
 async function getPullRequestCommentsWithPaging(client, variables) {
     return getResponseWithPaging(variables, (variables) => client.getPullRequestComments(variables), (response) => response.repository?.pullRequest?.comments.pageInfo, (response) => response.repository?.pullRequest?.comments.nodes);
 }
-exports.getPullRequestCommentsWithPaging = getPullRequestCommentsWithPaging;
 async function getPullRequestReviewThreadsWithPaging(client, variables) {
     return getResponseWithPaging(variables, (variables) => client.getPullRequestReviewThreads(variables), (response) => response.repository?.pullRequest?.reviewThreads.pageInfo, (response) => response.repository?.pullRequest?.reviewThreads.nodes);
 }
-exports.getPullRequestReviewThreadsWithPaging = getPullRequestReviewThreadsWithPaging;
 
 
 /***/ }),
@@ -377,7 +376,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.writeLintResults = exports.readLintResults = void 0;
+exports.readLintResults = readLintResults;
+exports.writeLintResults = writeLintResults;
 const glob = __importStar(__webpack_require__(631));
 const fs = __importStar(__webpack_require__(9896));
 async function readLintResults(option) {
@@ -392,12 +392,10 @@ async function readLintResults(option) {
     }
     return result;
 }
-exports.readLintResults = readLintResults;
 function writeLintResults(path, lintResults) {
     const text = JSON.stringify(lintResults);
     fs.writeFileSync(path, text);
 }
-exports.writeLintResults = writeLintResults;
 
 
 /***/ }),
@@ -491,7 +489,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getOption = exports.OutdatedResolver = exports.ReportType = exports.getCommonOption = void 0;
+exports.OutdatedResolver = exports.ReportType = void 0;
+exports.getCommonOption = getCommonOption;
+exports.getOption = getOption;
 const core = __importStar(__webpack_require__(6977));
 function getCommonOption() {
     return {
@@ -504,7 +504,6 @@ function getCommonOption() {
         commitSha: getInputOrNull("commit_sha"),
     };
 }
-exports.getCommonOption = getCommonOption;
 var ReportType;
 (function (ReportType) {
     ReportType[ReportType["CheckRun"] = 0] = "CheckRun";
@@ -562,7 +561,6 @@ function getOption() {
         ...getCommonOption(),
     };
 }
-exports.getOption = getOption;
 function getInput(key) {
     return core.getInput(key, { required: true });
 }
@@ -589,7 +587,8 @@ function getInputNumberOrNull(key) {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.equalsAnnotation = exports.createAnnotation = void 0;
+exports.createAnnotation = createAnnotation;
+exports.equalsAnnotation = equalsAnnotation;
 const graphql_1 = __webpack_require__(2634);
 const path_1 = __webpack_require__(969);
 function createAnnotation(context, lintResult) {
@@ -630,7 +629,6 @@ function createAnnotation(context, lintResult) {
         message: lintResult.message,
     };
 }
-exports.createAnnotation = createAnnotation;
 function equalsAnnotation(left, right) {
     if (left.path !== right.path) {
         return false;
@@ -658,7 +656,6 @@ function equalsAnnotation(left, right) {
     }
     return true;
 }
-exports.equalsAnnotation = equalsAnnotation;
 
 
 /***/ }),
@@ -838,7 +835,7 @@ exports.CheckRunReporter = CheckRunReporter;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createMessage = void 0;
+exports.createMessage = createMessage;
 const path_1 = __webpack_require__(969);
 const level_1 = __webpack_require__(3590);
 function markdownLevelMessage(context, lintResults, targetLevel) {
@@ -899,7 +896,6 @@ function createMessage(context, lintResults) {
     }
     return result;
 }
-exports.createMessage = createMessage;
 
 
 /***/ }),
@@ -909,7 +905,7 @@ exports.createMessage = createMessage;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createSummary = void 0;
+exports.createSummary = createSummary;
 const level_1 = __webpack_require__(3590);
 function createSummary(lintResults) {
     const noticeCount = (0, level_1.countLevel)(lintResults, "notice");
@@ -939,7 +935,6 @@ function createSummary(lintResults) {
     }
     return `${messages.join(" and ")} found`;
 }
-exports.createSummary = createSummary;
 
 
 /***/ }),
@@ -1060,7 +1055,9 @@ exports.CommentReporter = CommentReporter;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createComment = exports.createLintComment = exports.isLintComment = void 0;
+exports.isLintComment = isLintComment;
+exports.createLintComment = createLintComment;
+exports.createComment = createComment;
 const level_1 = __webpack_require__(3590);
 const path_1 = __webpack_require__(969);
 function lintCommentIdentifier(reportName) {
@@ -1069,11 +1066,9 @@ function lintCommentIdentifier(reportName) {
 function isLintComment(body, reportName) {
     return body.startsWith(lintCommentIdentifier(reportName));
 }
-exports.isLintComment = isLintComment;
 function createLintComment(body, reportName) {
     return `${lintCommentIdentifier(reportName)}  \n${body}`;
 }
-exports.createLintComment = createLintComment;
 function createComment(context, lintResults) {
     let result = `# ${createTitle(lintResults)}\n`;
     result += `\n`;
@@ -1091,7 +1086,6 @@ function createComment(context, lintResults) {
     }
     return result;
 }
-exports.createComment = createComment;
 function createTitle(lintResults) {
     const noticeCount = (0, level_1.countLevel)(lintResults, "notice");
     const warningCount = (0, level_1.countLevel)(lintResults, "warning");
@@ -1153,7 +1147,7 @@ function createLevelTable(context, lintResults, targetLevel) {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.calculateConclusion = void 0;
+exports.calculateConclusion = calculateConclusion;
 const graphql_1 = __webpack_require__(2634);
 const level_1 = __webpack_require__(3590);
 function calculateConclusion(option, lintResults) {
@@ -1165,7 +1159,6 @@ function calculateConclusion(option, lintResults) {
         failureCount * option.conclusionFailureWeight;
     return score < option.conclusionFailureThreshold ? graphql_1.CheckConclusionState.Success : graphql_1.CheckConclusionState.Failure;
 }
-exports.calculateConclusion = calculateConclusion;
 
 
 /***/ }),
@@ -1175,7 +1168,10 @@ exports.calculateConclusion = calculateConclusion;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.equalsInlineComment = exports.createInlineComment = exports.createLintInlineComment = exports.isLintInlineComment = void 0;
+exports.isLintInlineComment = isLintInlineComment;
+exports.createLintInlineComment = createLintInlineComment;
+exports.createInlineComment = createInlineComment;
+exports.equalsInlineComment = equalsInlineComment;
 const path_1 = __webpack_require__(969);
 function lintInlineCommentIdentifier(reportName) {
     return `<!-- common-lint-reporter: ${reportName} -->`;
@@ -1183,15 +1179,12 @@ function lintInlineCommentIdentifier(reportName) {
 function isLintInlineComment(body, reportName) {
     return body.startsWith(lintInlineCommentIdentifier(reportName));
 }
-exports.isLintInlineComment = isLintInlineComment;
 function createLintInlineComment(body, reportName) {
     return `${lintInlineCommentIdentifier(reportName)}  \n${body}`;
 }
-exports.createLintInlineComment = createLintInlineComment;
 function createInlineComment(lintResult) {
     return `**Rule: ${lintResult.rule}**\n\n${lintResult.message}`;
 }
-exports.createInlineComment = createInlineComment;
 function equalsInlineComment(left, right, context, reportName) {
     if (left.comments.nodes == null || left.comments.nodes == undefined) {
         return false;
@@ -1223,7 +1216,6 @@ function equalsInlineComment(left, right, context, reportName) {
     }
     return true;
 }
-exports.equalsInlineComment = equalsInlineComment;
 
 
 /***/ }),
@@ -1374,7 +1366,7 @@ exports.InlineCommentReporter = InlineCommentReporter;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.countLevel = void 0;
+exports.countLevel = countLevel;
 function countLevel(lintResults, targetLevel) {
     let count = 0;
     for (const lintResult of lintResults) {
@@ -1384,7 +1376,6 @@ function countLevel(lintResults, targetLevel) {
     }
     return count;
 }
-exports.countLevel = countLevel;
 
 
 /***/ }),
@@ -1417,12 +1408,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.trimPath = void 0;
+exports.trimPath = trimPath;
 const path = __importStar(__webpack_require__(6928));
 function trimPath(context, filePath) {
     return filePath.replace(`${context.workspacePath()}${path.sep}`, "");
 }
-exports.trimPath = trimPath;
 
 
 /***/ }),
