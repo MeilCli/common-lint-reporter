@@ -30,12 +30,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.GitHubContext = exports.githubContext = void 0;
+exports.GitHubContext = void 0;
+exports.githubContext = githubContext;
 const github = __importStar(__webpack_require__(4834));
 function githubContext(option) {
     return new GitHubContext(option);
 }
-exports.githubContext = githubContext;
 class GitHubContext {
     constructor(option) {
         this.option = option;

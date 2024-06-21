@@ -143,7 +143,7 @@ if (true) {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.convertJunitToLintResult = void 0;
+exports.convertJunitToLintResult = convertJunitToLintResult;
 const junit_handler_default_1 = __webpack_require__(2510);
 const junit_handler_eslint_1 = __webpack_require__(8162);
 const junit_handler_cpplint_1 = __webpack_require__(1359);
@@ -162,7 +162,6 @@ function convertJunitToLintResult(testSuites) {
     }
     return [];
 }
-exports.convertJunitToLintResult = convertJunitToLintResult;
 
 
 /***/ }),
@@ -541,7 +540,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getOption = void 0;
+exports.getOption = getOption;
 const core = __importStar(__webpack_require__(6977));
 function getOption() {
     return {
@@ -550,7 +549,6 @@ function getOption() {
         outputPath: getInput("output_path"),
     };
 }
-exports.getOption = getOption;
 function getInput(key) {
     return core.getInput(key, { required: true });
 }

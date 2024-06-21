@@ -114,7 +114,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getOption = void 0;
+exports.getOption = getOption;
 const core = __importStar(__webpack_require__(6977));
 function getOption() {
     return {
@@ -123,7 +123,6 @@ function getOption() {
         outputPath: getInput("output_path"),
     };
 }
-exports.getOption = getOption;
 function getInput(key) {
     return core.getInput(key, { required: true });
 }

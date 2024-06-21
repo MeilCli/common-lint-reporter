@@ -48607,6 +48607,27 @@ function useDeepMemo(memoFn, deps) {
 
 /***/ }),
 
+/***/ 4269:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   E: () => (/* binding */ useIsomorphicLayoutEffect)
+/* harmony export */ });
+/* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7243);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2619);
+
+
+// use canUseDOM here instead of canUseLayoutEffect because we want to be able
+// to use useLayoutEffect in our jest tests. useLayoutEffect seems to work fine
+// in useSuspenseQuery tests, but to honor the original comment about the
+// warnings for useSyncExternalStore implementation, canUseLayoutEffect is left
+// alone.
+var useIsomorphicLayoutEffect = _utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .canUseDOM */ .Sw ? rehackt__WEBPACK_IMPORTED_MODULE_0__.useLayoutEffect : rehackt__WEBPACK_IMPORTED_MODULE_0__.useEffect;
+//# sourceMappingURL=useIsomorphicLayoutEffect.js.map
+
+/***/ }),
+
 /***/ 2368:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
@@ -49209,22 +49230,26 @@ function useLoadableQuery(query, options) {
 /* harmony export */   n: () => (/* binding */ useMutation)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1635);
+	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1635);
 }
 /* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7243);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(144);
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(144);
 }
 /* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5381);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _parser_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5443);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _errors_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(9211);
+	/* harmony import */ var _errors_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(9211);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(111);
 }
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _internal_useIsomorphicLayoutEffect_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4269);
+}
+
 
 
 
@@ -49295,13 +49320,13 @@ function useMutation(mutation, options) {
         mutation: mutation,
         options: options,
     });
-    rehackt__WEBPACK_IMPORTED_MODULE_0__.useLayoutEffect(function () {
+    (0,_internal_useIsomorphicLayoutEffect_js__WEBPACK_IMPORTED_MODULE_4__/* .useIsomorphicLayoutEffect */ .E)(function () {
         Object.assign(ref.current, { client: client, options: options, mutation: mutation });
     });
     var execute = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (executeOptions) {
         if (executeOptions === void 0) { executeOptions = {}; }
         var _a = ref.current, options = _a.options, mutation = _a.mutation;
-        var baseOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, options), { mutation: mutation });
+        var baseOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({}, options), { mutation: mutation });
         var client = executeOptions.client || ref.current.client;
         if (!ref.current.result.loading &&
             !baseOptions.ignoreResults &&
@@ -49315,14 +49340,14 @@ function useMutation(mutation, options) {
             }));
         }
         var mutationId = ++ref.current.mutationId;
-        var clientOptions = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .mergeOptions */ .l)(baseOptions, executeOptions);
+        var clientOptions = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_6__/* .mergeOptions */ .l)(baseOptions, executeOptions);
         return client
             .mutate(clientOptions)
             .then(function (response) {
             var _a, _b;
             var data = response.data, errors = response.errors;
             var error = errors && errors.length > 0 ?
-                new _errors_index_js__WEBPACK_IMPORTED_MODULE_6__/* .ApolloError */ .K4({ graphQLErrors: errors })
+                new _errors_index_js__WEBPACK_IMPORTED_MODULE_7__/* .ApolloError */ .K4({ graphQLErrors: errors })
                 : void 0;
             var onError = executeOptions.onError || ((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onError);
             if (error && onError) {
@@ -49388,7 +49413,7 @@ function useMutation(mutation, options) {
             current.isMounted = false;
         };
     }, []);
-    return [execute, (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({ reset: reset }, result)];
+    return [execute, (0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({ reset: reset }, result)];
 }
 //# sourceMappingURL=useMutation.js.map
 
@@ -51599,11 +51624,11 @@ function isNonEmptyArray(value) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   En: () => (/* binding */ canUseWeakSet),
 /* harmony export */   JR: () => (/* binding */ canUseLayoutEffect),
+/* harmony export */   Sw: () => (/* binding */ canUseDOM),
 /* harmony export */   et: () => (/* binding */ canUseWeakMap),
 /* harmony export */   ol: () => (/* binding */ canUseSymbol),
 /* harmony export */   uJ: () => (/* binding */ canUseAsyncIteratorSymbol)
 /* harmony export */ });
-/* unused harmony export canUseDOM */
 /* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 
 var canUseWeakMap = typeof WeakMap === "function" &&
@@ -54149,7 +54174,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.10.5";
+var version = "3.10.6";
 //# sourceMappingURL=version.js.map
 
 /***/ }),

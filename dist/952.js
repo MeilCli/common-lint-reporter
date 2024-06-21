@@ -11,7 +11,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.GitHubClient = exports.githubClient = void 0;
+exports.GitHubClient = void 0;
+exports.githubClient = githubClient;
 const cross_fetch_1 = __importDefault(__webpack_require__(5221));
 const client_1 = __webpack_require__(2091);
 const context_1 = __webpack_require__(6289);
@@ -27,7 +28,6 @@ function githubClient(option) {
         cache: new client_1.InMemoryCache(),
     }));
 }
-exports.githubClient = githubClient;
 class GitHubClient {
     constructor(client) {
         this.client = client;
@@ -192,12 +192,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.GitHubContext = exports.githubContext = void 0;
+exports.GitHubContext = void 0;
+exports.githubContext = githubContext;
 const github = __importStar(__webpack_require__(4834));
 function githubContext(option) {
     return new GitHubContext(option);
 }
-exports.githubContext = githubContext;
 class GitHubContext {
     constructor(option) {
         this.option = option;
@@ -264,7 +264,11 @@ exports.GitHubContext = GitHubContext;
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getPullRequestReviewThreadsWithPaging = exports.getPullRequestCommentsWithPaging = exports.getCheckRunAnnotationsWithPaging = exports.getCommitStatusAndCheckRunWithPaging = exports.getPullRequestChangedFileWithPaging = void 0;
+exports.getPullRequestChangedFileWithPaging = getPullRequestChangedFileWithPaging;
+exports.getCommitStatusAndCheckRunWithPaging = getCommitStatusAndCheckRunWithPaging;
+exports.getCheckRunAnnotationsWithPaging = getCheckRunAnnotationsWithPaging;
+exports.getPullRequestCommentsWithPaging = getPullRequestCommentsWithPaging;
+exports.getPullRequestReviewThreadsWithPaging = getPullRequestReviewThreadsWithPaging;
 // gurad for infinity loop
 const maxLoop = 100;
 async function getResponseWithPaging(variables, getResponse, selectorPageInfo, selectorNodes) {
@@ -309,7 +313,6 @@ async function getResponseWithPaging(variables, getResponse, selectorPageInfo, s
 async function getPullRequestChangedFileWithPaging(client, variables) {
     return getResponseWithPaging(variables, (variables) => client.getPullRequestChangedFile(variables), (response) => response.repository?.pullRequest?.files?.pageInfo, (response) => response.repository?.pullRequest?.files?.nodes);
 }
-exports.getPullRequestChangedFileWithPaging = getPullRequestChangedFileWithPaging;
 async function getCommitStatusAndCheckRunWithPaging(client, variables) {
     return getResponseWithPaging(variables, (variables) => client.getCommitStatusAndCheckRun(variables), (response) => {
         if (response.repository?.object?.__typename != "Commit") {
@@ -323,7 +326,6 @@ async function getCommitStatusAndCheckRunWithPaging(client, variables) {
         return response.repository.object.statusCheckRollup?.contexts.nodes;
     });
 }
-exports.getCommitStatusAndCheckRunWithPaging = getCommitStatusAndCheckRunWithPaging;
 async function getCheckRunAnnotationsWithPaging(client, variables) {
     return getResponseWithPaging(variables, (variables) => client.getCheckRunAnnotations(variables), (response) => {
         if (response.node?.__typename != "CheckRun") {
@@ -337,15 +339,12 @@ async function getCheckRunAnnotationsWithPaging(client, variables) {
         return response.node.annotations?.nodes;
     });
 }
-exports.getCheckRunAnnotationsWithPaging = getCheckRunAnnotationsWithPaging;
 async function getPullRequestCommentsWithPaging(client, variables) {
     return getResponseWithPaging(variables, (variables) => client.getPullRequestComments(variables), (response) => response.repository?.pullRequest?.comments.pageInfo, (response) => response.repository?.pullRequest?.comments.nodes);
 }
-exports.getPullRequestCommentsWithPaging = getPullRequestCommentsWithPaging;
 async function getPullRequestReviewThreadsWithPaging(client, variables) {
     return getResponseWithPaging(variables, (variables) => client.getPullRequestReviewThreads(variables), (response) => response.repository?.pullRequest?.reviewThreads.pageInfo, (response) => response.repository?.pullRequest?.reviewThreads.nodes);
 }
-exports.getPullRequestReviewThreadsWithPaging = getPullRequestReviewThreadsWithPaging;
 
 
 /***/ }),
@@ -490,7 +489,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getFunctionalOption = exports.getOperatorOption = void 0;
+exports.getOperatorOption = getOperatorOption;
+exports.getFunctionalOption = getFunctionalOption;
 const core = __importStar(__webpack_require__(6977));
 const option_1 = __webpack_require__(2243);
 function getOperatorOption() {
@@ -502,14 +502,12 @@ function getOperatorOption() {
         ...(0, option_1.getCommonOption)(),
     };
 }
-exports.getOperatorOption = getOperatorOption;
 function getFunctionalOption() {
     return {
         func: getInput("function"),
         ...getOperatorOption(),
     };
 }
-exports.getFunctionalOption = getFunctionalOption;
 function getInput(key) {
     return core.getInput(key, { required: true });
 }
@@ -552,7 +550,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getOption = exports.OutdatedResolver = exports.ReportType = exports.getCommonOption = void 0;
+exports.OutdatedResolver = exports.ReportType = void 0;
+exports.getCommonOption = getCommonOption;
+exports.getOption = getOption;
 const core = __importStar(__webpack_require__(6977));
 function getCommonOption() {
     return {
@@ -565,7 +565,6 @@ function getCommonOption() {
         commitSha: getInputOrNull("commit_sha"),
     };
 }
-exports.getCommonOption = getCommonOption;
 var ReportType;
 (function (ReportType) {
     ReportType[ReportType["CheckRun"] = 0] = "CheckRun";
@@ -623,7 +622,6 @@ function getOption() {
         ...getCommonOption(),
     };
 }
-exports.getOption = getOption;
 function getInput(key) {
     return core.getInput(key, { required: true });
 }
