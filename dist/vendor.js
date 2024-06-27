@@ -51631,8 +51631,9 @@ function isNonEmptyArray(value) {
 /* harmony export */ });
 /* harmony import */ var _globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 
+var isReactNative = (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .no)(function () { return navigator.product; }) == "ReactNative";
 var canUseWeakMap = typeof WeakMap === "function" &&
-    !(0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .no)(function () { return navigator.product == "ReactNative" && !global.HermesInternal; });
+    !(isReactNative && !global.HermesInternal);
 var canUseWeakSet = typeof WeakSet === "function";
 var canUseSymbol = typeof Symbol === "function" && typeof Symbol.for === "function";
 var canUseAsyncIteratorSymbol = canUseSymbol && Symbol.asyncIterator;
@@ -51653,7 +51654,7 @@ var usingJSDOM =
 // warnings about useLayoutEffect doing nothing on the server. While these
 // warnings are harmless, this !usingJSDOM condition seems to be the best way to
 // prevent them (i.e. skipping useLayoutEffect when using jsdom).
-var canUseLayoutEffect = canUseDOM && !usingJSDOM;
+var canUseLayoutEffect = (canUseDOM || isReactNative) && !usingJSDOM;
 //# sourceMappingURL=canUse.js.map
 
 /***/ }),
@@ -52262,7 +52263,15 @@ function newInvariantError(message) {
 }
 var ApolloErrorMessageHandler = Symbol.for("ApolloErrorMessageHandler_" + _version_js__WEBPACK_IMPORTED_MODULE_2__/* .version */ .r);
 function stringify(arg) {
-    return typeof arg == "string" ? arg : ((0,_common_stringifyForDisplay_js__WEBPACK_IMPORTED_MODULE_3__/* .stringifyForDisplay */ .p)(arg, 2).slice(0, 1000));
+    if (typeof arg == "string") {
+        return arg;
+    }
+    try {
+        return (0,_common_stringifyForDisplay_js__WEBPACK_IMPORTED_MODULE_3__/* .stringifyForDisplay */ .p)(arg, 2).slice(0, 1000);
+    }
+    catch (_a) {
+        return "<non-serializable>";
+    }
 }
 function getHandledErrorMsg(message, messageArgs) {
     if (messageArgs === void 0) { messageArgs = []; }
@@ -54174,7 +54183,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.10.6";
+var version = "3.10.7";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
