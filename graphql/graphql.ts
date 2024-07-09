@@ -9440,6 +9440,7 @@ export type IssueProjectsV2Args = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+  minPermissionLevel?: InputMaybe<ProjectV2PermissionLevel>;
   orderBy?: InputMaybe<ProjectV2Order>;
   query?: InputMaybe<Scalars['String']['input']>;
 };
@@ -15464,6 +15465,7 @@ export type OrganizationProjectsV2Args = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+  minPermissionLevel?: InputMaybe<ProjectV2PermissionLevel>;
   orderBy?: InputMaybe<ProjectV2Order>;
   query?: InputMaybe<Scalars['String']['input']>;
 };
@@ -18000,9 +18002,20 @@ export type ProjectV2OwnerProjectsV2Args = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+  minPermissionLevel?: InputMaybe<ProjectV2PermissionLevel>;
   orderBy?: InputMaybe<ProjectV2Order>;
   query?: InputMaybe<Scalars['String']['input']>;
 };
+
+/** The possible roles of a collaborator on a project. */
+export enum ProjectV2PermissionLevel {
+  /** The collaborator can view, edit, and maange the settings of the project */
+  Admin = 'ADMIN',
+  /** The collaborator can view the project */
+  Read = 'READ',
+  /** The collaborator can view and edit the project */
+  Write = 'WRITE'
+}
 
 /** Recent projects for the owner. */
 export type ProjectV2Recent = {
@@ -18936,6 +18949,7 @@ export type PullRequestProjectsV2Args = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+  minPermissionLevel?: InputMaybe<ProjectV2PermissionLevel>;
   orderBy?: InputMaybe<ProjectV2Order>;
   query?: InputMaybe<Scalars['String']['input']>;
 };
@@ -22892,6 +22906,7 @@ export type RepositoryProjectsV2Args = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+  minPermissionLevel?: InputMaybe<ProjectV2PermissionLevel>;
   orderBy?: InputMaybe<ProjectV2Order>;
   query?: InputMaybe<Scalars['String']['input']>;
 };
@@ -27300,6 +27315,7 @@ export type TeamProjectsV2Args = {
   filterBy?: InputMaybe<ProjectV2Filters>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+  minPermissionLevel?: InputMaybe<ProjectV2PermissionLevel>;
   orderBy?: InputMaybe<ProjectV2Order>;
   query?: InputMaybe<Scalars['String']['input']>;
 };
@@ -30699,6 +30715,7 @@ export type UserProjectsV2Args = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+  minPermissionLevel?: InputMaybe<ProjectV2PermissionLevel>;
   orderBy?: InputMaybe<ProjectV2Order>;
   query?: InputMaybe<Scalars['String']['input']>;
 };
@@ -32580,6 +32597,7 @@ export type ResolversTypes = {
   ProjectV2Order: ProjectV2Order;
   ProjectV2OrderField: ProjectV2OrderField;
   ProjectV2Owner: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['ProjectV2Owner']>;
+  ProjectV2PermissionLevel: ProjectV2PermissionLevel;
   ProjectV2Recent: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['ProjectV2Recent']>;
   ProjectV2Roles: ProjectV2Roles;
   ProjectV2SingleSelectField: ResolverTypeWrapper<Omit<ProjectV2SingleSelectField, 'project'> & { project: ResolversTypes['ProjectV2'] }>;
@@ -37765,7 +37783,7 @@ export type IssueResolvers<ContextType = any, ParentType extends ResolversParent
   projectCards?: Resolver<ResolversTypes['ProjectCardConnection'], ParentType, ContextType, RequireFields<IssueProjectCardsArgs, 'archivedStates'>>;
   projectItems?: Resolver<ResolversTypes['ProjectV2ItemConnection'], ParentType, ContextType, RequireFields<IssueProjectItemsArgs, 'includeArchived'>>;
   projectV2?: Resolver<Maybe<ResolversTypes['ProjectV2']>, ParentType, ContextType, RequireFields<IssueProjectV2Args, 'number'>>;
-  projectsV2?: Resolver<ResolversTypes['ProjectV2Connection'], ParentType, ContextType, RequireFields<IssueProjectsV2Args, 'orderBy'>>;
+  projectsV2?: Resolver<ResolversTypes['ProjectV2Connection'], ParentType, ContextType, RequireFields<IssueProjectsV2Args, 'minPermissionLevel' | 'orderBy'>>;
   publishedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   reactionGroups?: Resolver<Maybe<Array<ResolversTypes['ReactionGroup']>>, ParentType, ContextType>;
   reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, Partial<IssueReactionsArgs>>;
@@ -39580,7 +39598,7 @@ export type OrganizationResolvers<ContextType = any, ParentType extends Resolver
   projects?: Resolver<ResolversTypes['ProjectConnection'], ParentType, ContextType, Partial<OrganizationProjectsArgs>>;
   projectsResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   projectsUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
-  projectsV2?: Resolver<ResolversTypes['ProjectV2Connection'], ParentType, ContextType, RequireFields<OrganizationProjectsV2Args, 'orderBy'>>;
+  projectsV2?: Resolver<ResolversTypes['ProjectV2Connection'], ParentType, ContextType, RequireFields<OrganizationProjectsV2Args, 'minPermissionLevel' | 'orderBy'>>;
   recentProjects?: Resolver<ResolversTypes['ProjectV2Connection'], ParentType, ContextType, Partial<OrganizationRecentProjectsArgs>>;
   repositories?: Resolver<ResolversTypes['RepositoryConnection'], ParentType, ContextType, RequireFields<OrganizationRepositoriesArgs, 'ownerAffiliations'>>;
   repository?: Resolver<Maybe<ResolversTypes['Repository']>, ParentType, ContextType, RequireFields<OrganizationRepositoryArgs, 'followRenames' | 'name'>>;
@@ -40536,7 +40554,7 @@ export type ProjectV2OwnerResolvers<ContextType = any, ParentType extends Resolv
   __resolveType: TypeResolveFn<'Issue' | 'Organization' | 'PullRequest' | 'User', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   projectV2?: Resolver<Maybe<ResolversTypes['ProjectV2']>, ParentType, ContextType, RequireFields<ProjectV2OwnerProjectV2Args, 'number'>>;
-  projectsV2?: Resolver<ResolversTypes['ProjectV2Connection'], ParentType, ContextType, RequireFields<ProjectV2OwnerProjectsV2Args, 'orderBy'>>;
+  projectsV2?: Resolver<ResolversTypes['ProjectV2Connection'], ParentType, ContextType, RequireFields<ProjectV2OwnerProjectsV2Args, 'minPermissionLevel' | 'orderBy'>>;
 };
 
 export type ProjectV2RecentResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProjectV2Recent'] = ResolversParentTypes['ProjectV2Recent']> = {
@@ -40799,7 +40817,7 @@ export type PullRequestResolvers<ContextType = any, ParentType extends Resolvers
   projectCards?: Resolver<ResolversTypes['ProjectCardConnection'], ParentType, ContextType, RequireFields<PullRequestProjectCardsArgs, 'archivedStates'>>;
   projectItems?: Resolver<ResolversTypes['ProjectV2ItemConnection'], ParentType, ContextType, RequireFields<PullRequestProjectItemsArgs, 'includeArchived'>>;
   projectV2?: Resolver<Maybe<ResolversTypes['ProjectV2']>, ParentType, ContextType, RequireFields<PullRequestProjectV2Args, 'number'>>;
-  projectsV2?: Resolver<ResolversTypes['ProjectV2Connection'], ParentType, ContextType, RequireFields<PullRequestProjectsV2Args, 'orderBy'>>;
+  projectsV2?: Resolver<ResolversTypes['ProjectV2Connection'], ParentType, ContextType, RequireFields<PullRequestProjectsV2Args, 'minPermissionLevel' | 'orderBy'>>;
   publishedAt?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
   reactionGroups?: Resolver<Maybe<Array<ResolversTypes['ReactionGroup']>>, ParentType, ContextType>;
   reactions?: Resolver<ResolversTypes['ReactionConnection'], ParentType, ContextType, Partial<PullRequestReactionsArgs>>;
@@ -42226,7 +42244,7 @@ export type RepositoryResolvers<ContextType = any, ParentType extends ResolversP
   projects?: Resolver<ResolversTypes['ProjectConnection'], ParentType, ContextType, Partial<RepositoryProjectsArgs>>;
   projectsResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   projectsUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
-  projectsV2?: Resolver<ResolversTypes['ProjectV2Connection'], ParentType, ContextType, RequireFields<RepositoryProjectsV2Args, 'orderBy'>>;
+  projectsV2?: Resolver<ResolversTypes['ProjectV2Connection'], ParentType, ContextType, RequireFields<RepositoryProjectsV2Args, 'minPermissionLevel' | 'orderBy'>>;
   pullRequest?: Resolver<Maybe<ResolversTypes['PullRequest']>, ParentType, ContextType, RequireFields<RepositoryPullRequestArgs, 'number'>>;
   pullRequestTemplates?: Resolver<Maybe<Array<ResolversTypes['PullRequestTemplate']>>, ParentType, ContextType>;
   pullRequests?: Resolver<ResolversTypes['PullRequestConnection'], ParentType, ContextType, Partial<RepositoryPullRequestsArgs>>;
@@ -43561,7 +43579,7 @@ export type TeamResolvers<ContextType = any, ParentType extends ResolversParentT
   parentTeam?: Resolver<Maybe<ResolversTypes['Team']>, ParentType, ContextType>;
   privacy?: Resolver<ResolversTypes['TeamPrivacy'], ParentType, ContextType>;
   projectV2?: Resolver<Maybe<ResolversTypes['ProjectV2']>, ParentType, ContextType, RequireFields<TeamProjectV2Args, 'number'>>;
-  projectsV2?: Resolver<ResolversTypes['ProjectV2Connection'], ParentType, ContextType, RequireFields<TeamProjectsV2Args, 'filterBy' | 'orderBy' | 'query'>>;
+  projectsV2?: Resolver<ResolversTypes['ProjectV2Connection'], ParentType, ContextType, RequireFields<TeamProjectsV2Args, 'filterBy' | 'minPermissionLevel' | 'orderBy' | 'query'>>;
   repositories?: Resolver<ResolversTypes['TeamRepositoryConnection'], ParentType, ContextType, Partial<TeamRepositoriesArgs>>;
   repositoriesResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   repositoriesUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
@@ -44594,7 +44612,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   projects?: Resolver<ResolversTypes['ProjectConnection'], ParentType, ContextType, Partial<UserProjectsArgs>>;
   projectsResourcePath?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
   projectsUrl?: Resolver<ResolversTypes['URI'], ParentType, ContextType>;
-  projectsV2?: Resolver<ResolversTypes['ProjectV2Connection'], ParentType, ContextType, RequireFields<UserProjectsV2Args, 'orderBy'>>;
+  projectsV2?: Resolver<ResolversTypes['ProjectV2Connection'], ParentType, ContextType, RequireFields<UserProjectsV2Args, 'minPermissionLevel' | 'orderBy'>>;
   pronouns?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   publicKeys?: Resolver<ResolversTypes['PublicKeyConnection'], ParentType, ContextType, Partial<UserPublicKeysArgs>>;
   pullRequests?: Resolver<ResolversTypes['PullRequestConnection'], ParentType, ContextType, Partial<UserPullRequestsArgs>>;
