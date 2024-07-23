@@ -39263,14 +39263,9 @@ var ApolloCache = /** @class */ (function () {
     /** {@inheritDoc @apollo/client!ApolloClient#watchFragment:member(1)} */
     ApolloCache.prototype.watchFragment = function (options) {
         var _this = this;
-        var fragment = options.fragment, fragmentName = options.fragmentName, from = options.from, _a = options.optimistic, optimistic = _a === void 0 ? true : _a;
+        var fragment = options.fragment, fragmentName = options.fragmentName, from = options.from, _a = options.optimistic, optimistic = _a === void 0 ? true : _a, otherOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__rest */ .Tt)(options, ["fragment", "fragmentName", "from", "optimistic"]);
         var query = this.getFragmentDoc(fragment, fragmentName);
-        var diffOptions = {
-            returnPartialData: true,
-            id: typeof from === "string" ? from : this.identify(from),
-            query: query,
-            optimistic: optimistic,
-        };
+        var diffOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, otherOptions), { returnPartialData: true, id: typeof from === "string" ? from : this.identify(from), query: query, optimistic: optimistic });
         var latestDiff;
         return new _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .Observable */ .c(function (observer) {
             return _this.watch((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, diffOptions), { immediate: true, callback: function (diff) {
@@ -43030,456 +43025,8 @@ var client_errors = __webpack_require__(9211);
 var ObservableQuery = __webpack_require__(2988);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/core/networkStatus.js
 var core_networkStatus = __webpack_require__(8599);
-// EXTERNAL MODULE: ./node_modules/graphql/language/visitor.mjs
-var visitor = __webpack_require__(4705);
-// EXTERNAL MODULE: ./node_modules/graphql/language/kinds.mjs
-var kinds = __webpack_require__(3298);
-;// CONCATENATED MODULE: ./node_modules/graphql/language/predicates.mjs
-
-function isDefinitionNode(node) {
-  return (
-    isExecutableDefinitionNode(node) ||
-    isTypeSystemDefinitionNode(node) ||
-    isTypeSystemExtensionNode(node)
-  );
-}
-function isExecutableDefinitionNode(node) {
-  return (
-    node.kind === Kind.OPERATION_DEFINITION ||
-    node.kind === Kind.FRAGMENT_DEFINITION
-  );
-}
-function isSelectionNode(node) {
-  return (
-    node.kind === kinds/* Kind */.b.FIELD ||
-    node.kind === kinds/* Kind */.b.FRAGMENT_SPREAD ||
-    node.kind === kinds/* Kind */.b.INLINE_FRAGMENT
-  );
-}
-function isValueNode(node) {
-  return (
-    node.kind === Kind.VARIABLE ||
-    node.kind === Kind.INT ||
-    node.kind === Kind.FLOAT ||
-    node.kind === Kind.STRING ||
-    node.kind === Kind.BOOLEAN ||
-    node.kind === Kind.NULL ||
-    node.kind === Kind.ENUM ||
-    node.kind === Kind.LIST ||
-    node.kind === Kind.OBJECT
-  );
-}
-function isConstValueNode(node) {
-  return (
-    isValueNode(node) &&
-    (node.kind === Kind.LIST
-      ? node.values.some(isConstValueNode)
-      : node.kind === Kind.OBJECT
-      ? node.fields.some((field) => isConstValueNode(field.value))
-      : node.kind !== Kind.VARIABLE)
-  );
-}
-function isTypeNode(node) {
-  return (
-    node.kind === Kind.NAMED_TYPE ||
-    node.kind === Kind.LIST_TYPE ||
-    node.kind === Kind.NON_NULL_TYPE
-  );
-}
-function isTypeSystemDefinitionNode(node) {
-  return (
-    node.kind === Kind.SCHEMA_DEFINITION ||
-    isTypeDefinitionNode(node) ||
-    node.kind === Kind.DIRECTIVE_DEFINITION
-  );
-}
-function isTypeDefinitionNode(node) {
-  return (
-    node.kind === Kind.SCALAR_TYPE_DEFINITION ||
-    node.kind === Kind.OBJECT_TYPE_DEFINITION ||
-    node.kind === Kind.INTERFACE_TYPE_DEFINITION ||
-    node.kind === Kind.UNION_TYPE_DEFINITION ||
-    node.kind === Kind.ENUM_TYPE_DEFINITION ||
-    node.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION
-  );
-}
-function isTypeSystemExtensionNode(node) {
-  return node.kind === Kind.SCHEMA_EXTENSION || isTypeExtensionNode(node);
-}
-function isTypeExtensionNode(node) {
-  return (
-    node.kind === Kind.SCALAR_TYPE_EXTENSION ||
-    node.kind === Kind.OBJECT_TYPE_EXTENSION ||
-    node.kind === Kind.INTERFACE_TYPE_EXTENSION ||
-    node.kind === Kind.UNION_TYPE_EXTENSION ||
-    node.kind === Kind.ENUM_TYPE_EXTENSION ||
-    node.kind === Kind.INPUT_OBJECT_TYPE_EXTENSION
-  );
-}
-
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/mergeDeep.js
 var mergeDeep = __webpack_require__(2922);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/fragments.js
-var graphql_fragments = __webpack_require__(5215);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/cache/inmemory/reactiveVars.js
-var reactiveVars = __webpack_require__(738);
-;// CONCATENATED MODULE: ./node_modules/@apollo/client/core/LocalState.js
-
-
-
-
-
-var LocalState = /** @class */ (function () {
-    function LocalState(_a) {
-        var cache = _a.cache, client = _a.client, resolvers = _a.resolvers, fragmentMatcher = _a.fragmentMatcher;
-        this.selectionsToResolveCache = new WeakMap();
-        this.cache = cache;
-        if (client) {
-            this.client = client;
-        }
-        if (resolvers) {
-            this.addResolvers(resolvers);
-        }
-        if (fragmentMatcher) {
-            this.setFragmentMatcher(fragmentMatcher);
-        }
-    }
-    LocalState.prototype.addResolvers = function (resolvers) {
-        var _this = this;
-        this.resolvers = this.resolvers || {};
-        if (Array.isArray(resolvers)) {
-            resolvers.forEach(function (resolverGroup) {
-                _this.resolvers = (0,mergeDeep/* mergeDeep */.D9)(_this.resolvers, resolverGroup);
-            });
-        }
-        else {
-            this.resolvers = (0,mergeDeep/* mergeDeep */.D9)(this.resolvers, resolvers);
-        }
-    };
-    LocalState.prototype.setResolvers = function (resolvers) {
-        this.resolvers = {};
-        this.addResolvers(resolvers);
-    };
-    LocalState.prototype.getResolvers = function () {
-        return this.resolvers || {};
-    };
-    // Run local client resolvers against the incoming query and remote data.
-    // Locally resolved field values are merged with the incoming remote data,
-    // and returned. Note that locally resolved fields will overwrite
-    // remote data using the same field name.
-    LocalState.prototype.runResolvers = function (_a) {
-        return (0,tslib_es6/* __awaiter */.sH)(this, arguments, void 0, function (_b) {
-            var document = _b.document, remoteResult = _b.remoteResult, context = _b.context, variables = _b.variables, _c = _b.onlyRunForcedResolvers, onlyRunForcedResolvers = _c === void 0 ? false : _c;
-            return (0,tslib_es6/* __generator */.YH)(this, function (_d) {
-                if (document) {
-                    return [2 /*return*/, this.resolveDocument(document, remoteResult.data, context, variables, this.fragmentMatcher, onlyRunForcedResolvers).then(function (localResult) { return ((0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, remoteResult), { data: localResult.result })); })];
-                }
-                return [2 /*return*/, remoteResult];
-            });
-        });
-    };
-    LocalState.prototype.setFragmentMatcher = function (fragmentMatcher) {
-        this.fragmentMatcher = fragmentMatcher;
-    };
-    LocalState.prototype.getFragmentMatcher = function () {
-        return this.fragmentMatcher;
-    };
-    // Client queries contain everything in the incoming document (if a @client
-    // directive is found).
-    LocalState.prototype.clientQuery = function (document) {
-        if ((0,directives/* hasDirectives */.d8)(["client"], document)) {
-            if (this.resolvers) {
-                return document;
-            }
-        }
-        return null;
-    };
-    // Server queries are stripped of all @client based selection sets.
-    LocalState.prototype.serverQuery = function (document) {
-        return (0,transform/* removeClientSetsFromDocument */.er)(document);
-    };
-    LocalState.prototype.prepareContext = function (context) {
-        var cache = this.cache;
-        return (0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, context), { cache: cache, 
-            // Getting an entry's cache key is useful for local state resolvers.
-            getCacheKey: function (obj) {
-                return cache.identify(obj);
-            } });
-    };
-    // To support `@client @export(as: "someVar")` syntax, we'll first resolve
-    // @client @export fields locally, then pass the resolved values back to be
-    // used alongside the original operation variables.
-    LocalState.prototype.addExportedVariables = function (document_1) {
-        return (0,tslib_es6/* __awaiter */.sH)(this, arguments, void 0, function (document, variables, context) {
-            if (variables === void 0) { variables = {}; }
-            if (context === void 0) { context = {}; }
-            return (0,tslib_es6/* __generator */.YH)(this, function (_a) {
-                if (document) {
-                    return [2 /*return*/, this.resolveDocument(document, this.buildRootValueFromCache(document, variables) || {}, this.prepareContext(context), variables).then(function (data) { return ((0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, variables), data.exportedVariables)); })];
-                }
-                return [2 /*return*/, (0,tslib_es6/* __assign */.Cl)({}, variables)];
-            });
-        });
-    };
-    LocalState.prototype.shouldForceResolvers = function (document) {
-        var forceResolvers = false;
-        (0,visitor/* visit */.YR)(document, {
-            Directive: {
-                enter: function (node) {
-                    if (node.name.value === "client" && node.arguments) {
-                        forceResolvers = node.arguments.some(function (arg) {
-                            return arg.name.value === "always" &&
-                                arg.value.kind === "BooleanValue" &&
-                                arg.value.value === true;
-                        });
-                        if (forceResolvers) {
-                            return visitor/* BREAK */.sP;
-                        }
-                    }
-                },
-            },
-        });
-        return forceResolvers;
-    };
-    // Query the cache and return matching data.
-    LocalState.prototype.buildRootValueFromCache = function (document, variables) {
-        return this.cache.diff({
-            query: (0,transform/* buildQueryFromSelectionSet */.zc)(document),
-            variables: variables,
-            returnPartialData: true,
-            optimistic: false,
-        }).result;
-    };
-    LocalState.prototype.resolveDocument = function (document_1, rootValue_1) {
-        return (0,tslib_es6/* __awaiter */.sH)(this, arguments, void 0, function (document, rootValue, context, variables, fragmentMatcher, onlyRunForcedResolvers) {
-            var mainDefinition, fragments, fragmentMap, selectionsToResolve, definitionOperation, defaultOperationType, _a, cache, client, execContext, isClientFieldDescendant;
-            if (context === void 0) { context = {}; }
-            if (variables === void 0) { variables = {}; }
-            if (fragmentMatcher === void 0) { fragmentMatcher = function () { return true; }; }
-            if (onlyRunForcedResolvers === void 0) { onlyRunForcedResolvers = false; }
-            return (0,tslib_es6/* __generator */.YH)(this, function (_b) {
-                mainDefinition = (0,getFromAST/* getMainDefinition */.Vn)(document);
-                fragments = (0,getFromAST/* getFragmentDefinitions */.zK)(document);
-                fragmentMap = (0,graphql_fragments/* createFragmentMap */.JG)(fragments);
-                selectionsToResolve = this.collectSelectionsToResolve(mainDefinition, fragmentMap);
-                definitionOperation = mainDefinition.operation;
-                defaultOperationType = definitionOperation ?
-                    definitionOperation.charAt(0).toUpperCase() +
-                        definitionOperation.slice(1)
-                    : "Query";
-                _a = this, cache = _a.cache, client = _a.client;
-                execContext = {
-                    fragmentMap: fragmentMap,
-                    context: (0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, context), { cache: cache, client: client }),
-                    variables: variables,
-                    fragmentMatcher: fragmentMatcher,
-                    defaultOperationType: defaultOperationType,
-                    exportedVariables: {},
-                    selectionsToResolve: selectionsToResolve,
-                    onlyRunForcedResolvers: onlyRunForcedResolvers,
-                };
-                isClientFieldDescendant = false;
-                return [2 /*return*/, this.resolveSelectionSet(mainDefinition.selectionSet, isClientFieldDescendant, rootValue, execContext).then(function (result) { return ({
-                        result: result,
-                        exportedVariables: execContext.exportedVariables,
-                    }); })];
-            });
-        });
-    };
-    LocalState.prototype.resolveSelectionSet = function (selectionSet, isClientFieldDescendant, rootValue, execContext) {
-        return (0,tslib_es6/* __awaiter */.sH)(this, void 0, void 0, function () {
-            var fragmentMap, context, variables, resultsToMerge, execute;
-            var _this = this;
-            return (0,tslib_es6/* __generator */.YH)(this, function (_a) {
-                fragmentMap = execContext.fragmentMap, context = execContext.context, variables = execContext.variables;
-                resultsToMerge = [rootValue];
-                execute = function (selection) { return (0,tslib_es6/* __awaiter */.sH)(_this, void 0, void 0, function () {
-                    var fragment, typeCondition;
-                    return (0,tslib_es6/* __generator */.YH)(this, function (_a) {
-                        if (!isClientFieldDescendant &&
-                            !execContext.selectionsToResolve.has(selection)) {
-                            // Skip selections without @client directives
-                            // (still processing if one of the ancestors or one of the child fields has @client directive)
-                            return [2 /*return*/];
-                        }
-                        if (!(0,directives/* shouldInclude */.MS)(selection, variables)) {
-                            // Skip this entirely.
-                            return [2 /*return*/];
-                        }
-                        if ((0,storeUtils/* isField */.dt)(selection)) {
-                            return [2 /*return*/, this.resolveField(selection, isClientFieldDescendant, rootValue, execContext).then(function (fieldResult) {
-                                    var _a;
-                                    if (typeof fieldResult !== "undefined") {
-                                        resultsToMerge.push((_a = {},
-                                            _a[(0,storeUtils/* resultKeyNameFromField */.ue)(selection)] = fieldResult,
-                                            _a));
-                                    }
-                                })];
-                        }
-                        if ((0,storeUtils/* isInlineFragment */.kd)(selection)) {
-                            fragment = selection;
-                        }
-                        else {
-                            // This is a named fragment.
-                            fragment = fragmentMap[selection.name.value];
-                            (0,globals/* invariant */.V1)(fragment, 18, selection.name.value);
-                        }
-                        if (fragment && fragment.typeCondition) {
-                            typeCondition = fragment.typeCondition.name.value;
-                            if (execContext.fragmentMatcher(rootValue, typeCondition, context)) {
-                                return [2 /*return*/, this.resolveSelectionSet(fragment.selectionSet, isClientFieldDescendant, rootValue, execContext).then(function (fragmentResult) {
-                                        resultsToMerge.push(fragmentResult);
-                                    })];
-                            }
-                        }
-                        return [2 /*return*/];
-                    });
-                }); };
-                return [2 /*return*/, Promise.all(selectionSet.selections.map(execute)).then(function () {
-                        return (0,mergeDeep/* mergeDeepArray */.IM)(resultsToMerge);
-                    })];
-            });
-        });
-    };
-    LocalState.prototype.resolveField = function (field, isClientFieldDescendant, rootValue, execContext) {
-        return (0,tslib_es6/* __awaiter */.sH)(this, void 0, void 0, function () {
-            var variables, fieldName, aliasedFieldName, aliasUsed, defaultResult, resultPromise, resolverType, resolverMap, resolve;
-            var _this = this;
-            return (0,tslib_es6/* __generator */.YH)(this, function (_a) {
-                if (!rootValue) {
-                    return [2 /*return*/, null];
-                }
-                variables = execContext.variables;
-                fieldName = field.name.value;
-                aliasedFieldName = (0,storeUtils/* resultKeyNameFromField */.ue)(field);
-                aliasUsed = fieldName !== aliasedFieldName;
-                defaultResult = rootValue[aliasedFieldName] || rootValue[fieldName];
-                resultPromise = Promise.resolve(defaultResult);
-                // Usually all local resolvers are run when passing through here, but
-                // if we've specifically identified that we only want to run forced
-                // resolvers (that is, resolvers for fields marked with
-                // `@client(always: true)`), then we'll skip running non-forced resolvers.
-                if (!execContext.onlyRunForcedResolvers ||
-                    this.shouldForceResolvers(field)) {
-                    resolverType = rootValue.__typename || execContext.defaultOperationType;
-                    resolverMap = this.resolvers && this.resolvers[resolverType];
-                    if (resolverMap) {
-                        resolve = resolverMap[aliasUsed ? fieldName : aliasedFieldName];
-                        if (resolve) {
-                            resultPromise = Promise.resolve(
-                            // In case the resolve function accesses reactive variables,
-                            // set cacheSlot to the current cache instance.
-                            reactiveVars/* cacheSlot */.bl.withValue(this.cache, resolve, [
-                                rootValue,
-                                (0,storeUtils/* argumentsObjectFromField */.MB)(field, variables),
-                                execContext.context,
-                                { field: field, fragmentMap: execContext.fragmentMap },
-                            ]));
-                        }
-                    }
-                }
-                return [2 /*return*/, resultPromise.then(function (result) {
-                        var _a, _b;
-                        if (result === void 0) { result = defaultResult; }
-                        // If an @export directive is associated with the current field, store
-                        // the `as` export variable name and current result for later use.
-                        if (field.directives) {
-                            field.directives.forEach(function (directive) {
-                                if (directive.name.value === "export" && directive.arguments) {
-                                    directive.arguments.forEach(function (arg) {
-                                        if (arg.name.value === "as" && arg.value.kind === "StringValue") {
-                                            execContext.exportedVariables[arg.value.value] = result;
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                        // Handle all scalar types here.
-                        if (!field.selectionSet) {
-                            return result;
-                        }
-                        // From here down, the field has a selection set, which means it's trying
-                        // to query a GraphQLObjectType.
-                        if (result == null) {
-                            // Basically any field in a GraphQL response can be null, or missing
-                            return result;
-                        }
-                        var isClientField = (_b = (_a = field.directives) === null || _a === void 0 ? void 0 : _a.some(function (d) { return d.name.value === "client"; })) !== null && _b !== void 0 ? _b : false;
-                        if (Array.isArray(result)) {
-                            return _this.resolveSubSelectedArray(field, isClientFieldDescendant || isClientField, result, execContext);
-                        }
-                        // Returned value is an object, and the query has a sub-selection. Recurse.
-                        if (field.selectionSet) {
-                            return _this.resolveSelectionSet(field.selectionSet, isClientFieldDescendant || isClientField, result, execContext);
-                        }
-                    })];
-            });
-        });
-    };
-    LocalState.prototype.resolveSubSelectedArray = function (field, isClientFieldDescendant, result, execContext) {
-        var _this = this;
-        return Promise.all(result.map(function (item) {
-            if (item === null) {
-                return null;
-            }
-            // This is a nested array, recurse.
-            if (Array.isArray(item)) {
-                return _this.resolveSubSelectedArray(field, isClientFieldDescendant, item, execContext);
-            }
-            // This is an object, run the selection set on it.
-            if (field.selectionSet) {
-                return _this.resolveSelectionSet(field.selectionSet, isClientFieldDescendant, item, execContext);
-            }
-        }));
-    };
-    // Collect selection nodes on paths from document root down to all @client directives.
-    // This function takes into account transitive fragment spreads.
-    // Complexity equals to a single `visit` over the full document.
-    LocalState.prototype.collectSelectionsToResolve = function (mainDefinition, fragmentMap) {
-        var isSingleASTNode = function (node) { return !Array.isArray(node); };
-        var selectionsToResolveCache = this.selectionsToResolveCache;
-        function collectByDefinition(definitionNode) {
-            if (!selectionsToResolveCache.has(definitionNode)) {
-                var matches_1 = new Set();
-                selectionsToResolveCache.set(definitionNode, matches_1);
-                (0,visitor/* visit */.YR)(definitionNode, {
-                    Directive: function (node, _, __, ___, ancestors) {
-                        if (node.name.value === "client") {
-                            ancestors.forEach(function (node) {
-                                if (isSingleASTNode(node) && isSelectionNode(node)) {
-                                    matches_1.add(node);
-                                }
-                            });
-                        }
-                    },
-                    FragmentSpread: function (spread, _, __, ___, ancestors) {
-                        var fragment = fragmentMap[spread.name.value];
-                        (0,globals/* invariant */.V1)(fragment, 19, spread.name.value);
-                        var fragmentSelections = collectByDefinition(fragment);
-                        if (fragmentSelections.size > 0) {
-                            // Fragment for this spread contains @client directive (either directly or transitively)
-                            // Collect selection nodes on paths from the root down to fields with the @client directive
-                            ancestors.forEach(function (node) {
-                                if (isSingleASTNode(node) && isSelectionNode(node)) {
-                                    matches_1.add(node);
-                                }
-                            });
-                            matches_1.add(spread);
-                            fragmentSelections.forEach(function (selection) {
-                                matches_1.add(selection);
-                            });
-                        }
-                    },
-                });
-            }
-            return selectionsToResolveCache.get(definitionNode);
-        }
-        return collectByDefinition(mainDefinition);
-    };
-    return LocalState;
-}());
-
-//# sourceMappingURL=LocalState.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/canUse.js
 var canUse = __webpack_require__(2619);
 ;// CONCATENATED MODULE: ./node_modules/@apollo/client/core/QueryInfo.js
@@ -43905,14 +43452,12 @@ var sizes = __webpack_require__(1212);
 
 
 
-
 var QueryManager_hasOwnProperty = Object.prototype.hasOwnProperty;
 var IGNORE = Object.create(null);
 
 
 var QueryManager = /** @class */ (function () {
-    function QueryManager(_a) {
-        var cache = _a.cache, link = _a.link, defaultOptions = _a.defaultOptions, documentTransform = _a.documentTransform, _b = _a.queryDeduplication, queryDeduplication = _b === void 0 ? false : _b, onBroadcast = _a.onBroadcast, _c = _a.ssrMode, ssrMode = _c === void 0 ? false : _c, _d = _a.clientAwareness, clientAwareness = _d === void 0 ? {} : _d, localState = _a.localState, _e = _a.assumeImmutableResults, assumeImmutableResults = _e === void 0 ? !!cache.assumeImmutableResults : _e, defaultContext = _a.defaultContext;
+    function QueryManager(options) {
         var _this = this;
         this.clientAwareness = {};
         // All the queries that the QueryManager is currently managing (not
@@ -43934,14 +43479,15 @@ var QueryManager = /** @class */ (function () {
         var defaultDocumentTransform = new DocumentTransform/* DocumentTransform */.c(function (document) { return _this.cache.transformDocument(document); }, 
         // Allow the apollo cache to manage its own transform caches
         { cache: false });
-        this.cache = cache;
-        this.link = link;
-        this.defaultOptions = defaultOptions || Object.create(null);
-        this.queryDeduplication = queryDeduplication;
-        this.clientAwareness = clientAwareness;
-        this.localState = localState || new LocalState({ cache: cache });
-        this.ssrMode = ssrMode;
-        this.assumeImmutableResults = assumeImmutableResults;
+        this.cache = options.cache;
+        this.link = options.link;
+        this.defaultOptions = options.defaultOptions;
+        this.queryDeduplication = options.queryDeduplication;
+        this.clientAwareness = options.clientAwareness;
+        this.localState = options.localState;
+        this.ssrMode = options.ssrMode;
+        this.assumeImmutableResults = options.assumeImmutableResults;
+        var documentTransform = options.documentTransform;
         this.documentTransform =
             documentTransform ?
                 defaultDocumentTransform
@@ -43952,8 +43498,8 @@ var QueryManager = /** @class */ (function () {
                     // selections and fragments from the fragment registry.
                     .concat(defaultDocumentTransform)
                 : defaultDocumentTransform;
-        this.defaultContext = defaultContext || Object.create(null);
-        if ((this.onBroadcast = onBroadcast)) {
+        this.defaultContext = options.defaultContext || Object.create(null);
+        if ((this.onBroadcast = options.onBroadcast)) {
             this.mutationStore = Object.create(null);
         }
     }
@@ -44014,7 +43560,7 @@ var QueryManager = /** @class */ (function () {
                         this.broadcastQueries();
                         self = this;
                         return [2 /*return*/, new Promise(function (resolve, reject) {
-                                return asyncMap(self.getObservableFromLink(mutation, (0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, context), { optimisticResponse: isOptimistic ? optimisticResponse : void 0 }), variables, false), function (result) {
+                                return asyncMap(self.getObservableFromLink(mutation, (0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, context), { optimisticResponse: isOptimistic ? optimisticResponse : void 0 }), variables, {}, false), function (result) {
                                     if (graphQLResultHasError(result) && errorPolicy === "none") {
                                         throw new client_errors/* ApolloError */.K4({
                                             graphQLErrors: getGraphQLErrorsFromResult(result),
@@ -44497,11 +44043,11 @@ var QueryManager = /** @class */ (function () {
     };
     QueryManager.prototype.startGraphQLSubscription = function (_a) {
         var _this = this;
-        var query = _a.query, fetchPolicy = _a.fetchPolicy, _b = _a.errorPolicy, errorPolicy = _b === void 0 ? "none" : _b, variables = _a.variables, _c = _a.context, context = _c === void 0 ? {} : _c;
+        var query = _a.query, fetchPolicy = _a.fetchPolicy, _b = _a.errorPolicy, errorPolicy = _b === void 0 ? "none" : _b, variables = _a.variables, _c = _a.context, context = _c === void 0 ? {} : _c, _d = _a.extensions, extensions = _d === void 0 ? {} : _d;
         query = this.transform(query);
         variables = this.getVariables(query, variables);
         var makeObservable = function (variables) {
-            return _this.getObservableFromLink(query, context, variables).map(function (result) {
+            return _this.getObservableFromLink(query, context, variables, extensions).map(function (result) {
                 if (fetchPolicy !== "no-cache") {
                     // the subscription interface should handle not sending us results we no longer subscribe to.
                     // XXX I don't think we ever send in an object with errors, but we might in the future...
@@ -44578,7 +44124,7 @@ var QueryManager = /** @class */ (function () {
     QueryManager.prototype.getLocalState = function () {
         return this.localState;
     };
-    QueryManager.prototype.getObservableFromLink = function (query, context, variables, 
+    QueryManager.prototype.getObservableFromLink = function (query, context, variables, extensions, 
     // Prefer context.queryDeduplication if specified.
     deduplication) {
         var _this = this;
@@ -44593,6 +44139,7 @@ var QueryManager = /** @class */ (function () {
                 variables: variables,
                 operationName: (0,getFromAST/* getOperationName */.n4)(serverQuery) || void 0,
                 context: this.prepareContext((0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, context), { forceFetch: !deduplication })),
+                extensions: extensions,
             };
             context = operation.context;
             if (deduplication) {
@@ -45014,6 +44561,454 @@ var QueryManager = /** @class */ (function () {
 }());
 
 //# sourceMappingURL=QueryManager.js.map
+// EXTERNAL MODULE: ./node_modules/graphql/language/visitor.mjs
+var visitor = __webpack_require__(4705);
+// EXTERNAL MODULE: ./node_modules/graphql/language/kinds.mjs
+var kinds = __webpack_require__(3298);
+;// CONCATENATED MODULE: ./node_modules/graphql/language/predicates.mjs
+
+function isDefinitionNode(node) {
+  return (
+    isExecutableDefinitionNode(node) ||
+    isTypeSystemDefinitionNode(node) ||
+    isTypeSystemExtensionNode(node)
+  );
+}
+function isExecutableDefinitionNode(node) {
+  return (
+    node.kind === Kind.OPERATION_DEFINITION ||
+    node.kind === Kind.FRAGMENT_DEFINITION
+  );
+}
+function isSelectionNode(node) {
+  return (
+    node.kind === kinds/* Kind */.b.FIELD ||
+    node.kind === kinds/* Kind */.b.FRAGMENT_SPREAD ||
+    node.kind === kinds/* Kind */.b.INLINE_FRAGMENT
+  );
+}
+function isValueNode(node) {
+  return (
+    node.kind === Kind.VARIABLE ||
+    node.kind === Kind.INT ||
+    node.kind === Kind.FLOAT ||
+    node.kind === Kind.STRING ||
+    node.kind === Kind.BOOLEAN ||
+    node.kind === Kind.NULL ||
+    node.kind === Kind.ENUM ||
+    node.kind === Kind.LIST ||
+    node.kind === Kind.OBJECT
+  );
+}
+function isConstValueNode(node) {
+  return (
+    isValueNode(node) &&
+    (node.kind === Kind.LIST
+      ? node.values.some(isConstValueNode)
+      : node.kind === Kind.OBJECT
+      ? node.fields.some((field) => isConstValueNode(field.value))
+      : node.kind !== Kind.VARIABLE)
+  );
+}
+function isTypeNode(node) {
+  return (
+    node.kind === Kind.NAMED_TYPE ||
+    node.kind === Kind.LIST_TYPE ||
+    node.kind === Kind.NON_NULL_TYPE
+  );
+}
+function isTypeSystemDefinitionNode(node) {
+  return (
+    node.kind === Kind.SCHEMA_DEFINITION ||
+    isTypeDefinitionNode(node) ||
+    node.kind === Kind.DIRECTIVE_DEFINITION
+  );
+}
+function isTypeDefinitionNode(node) {
+  return (
+    node.kind === Kind.SCALAR_TYPE_DEFINITION ||
+    node.kind === Kind.OBJECT_TYPE_DEFINITION ||
+    node.kind === Kind.INTERFACE_TYPE_DEFINITION ||
+    node.kind === Kind.UNION_TYPE_DEFINITION ||
+    node.kind === Kind.ENUM_TYPE_DEFINITION ||
+    node.kind === Kind.INPUT_OBJECT_TYPE_DEFINITION
+  );
+}
+function isTypeSystemExtensionNode(node) {
+  return node.kind === Kind.SCHEMA_EXTENSION || isTypeExtensionNode(node);
+}
+function isTypeExtensionNode(node) {
+  return (
+    node.kind === Kind.SCALAR_TYPE_EXTENSION ||
+    node.kind === Kind.OBJECT_TYPE_EXTENSION ||
+    node.kind === Kind.INTERFACE_TYPE_EXTENSION ||
+    node.kind === Kind.UNION_TYPE_EXTENSION ||
+    node.kind === Kind.ENUM_TYPE_EXTENSION ||
+    node.kind === Kind.INPUT_OBJECT_TYPE_EXTENSION
+  );
+}
+
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/fragments.js
+var graphql_fragments = __webpack_require__(5215);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/cache/inmemory/reactiveVars.js
+var reactiveVars = __webpack_require__(738);
+;// CONCATENATED MODULE: ./node_modules/@apollo/client/core/LocalState.js
+
+
+
+
+
+var LocalState = /** @class */ (function () {
+    function LocalState(_a) {
+        var cache = _a.cache, client = _a.client, resolvers = _a.resolvers, fragmentMatcher = _a.fragmentMatcher;
+        this.selectionsToResolveCache = new WeakMap();
+        this.cache = cache;
+        if (client) {
+            this.client = client;
+        }
+        if (resolvers) {
+            this.addResolvers(resolvers);
+        }
+        if (fragmentMatcher) {
+            this.setFragmentMatcher(fragmentMatcher);
+        }
+    }
+    LocalState.prototype.addResolvers = function (resolvers) {
+        var _this = this;
+        this.resolvers = this.resolvers || {};
+        if (Array.isArray(resolvers)) {
+            resolvers.forEach(function (resolverGroup) {
+                _this.resolvers = (0,mergeDeep/* mergeDeep */.D9)(_this.resolvers, resolverGroup);
+            });
+        }
+        else {
+            this.resolvers = (0,mergeDeep/* mergeDeep */.D9)(this.resolvers, resolvers);
+        }
+    };
+    LocalState.prototype.setResolvers = function (resolvers) {
+        this.resolvers = {};
+        this.addResolvers(resolvers);
+    };
+    LocalState.prototype.getResolvers = function () {
+        return this.resolvers || {};
+    };
+    // Run local client resolvers against the incoming query and remote data.
+    // Locally resolved field values are merged with the incoming remote data,
+    // and returned. Note that locally resolved fields will overwrite
+    // remote data using the same field name.
+    LocalState.prototype.runResolvers = function (_a) {
+        return (0,tslib_es6/* __awaiter */.sH)(this, arguments, void 0, function (_b) {
+            var document = _b.document, remoteResult = _b.remoteResult, context = _b.context, variables = _b.variables, _c = _b.onlyRunForcedResolvers, onlyRunForcedResolvers = _c === void 0 ? false : _c;
+            return (0,tslib_es6/* __generator */.YH)(this, function (_d) {
+                if (document) {
+                    return [2 /*return*/, this.resolveDocument(document, remoteResult.data, context, variables, this.fragmentMatcher, onlyRunForcedResolvers).then(function (localResult) { return ((0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, remoteResult), { data: localResult.result })); })];
+                }
+                return [2 /*return*/, remoteResult];
+            });
+        });
+    };
+    LocalState.prototype.setFragmentMatcher = function (fragmentMatcher) {
+        this.fragmentMatcher = fragmentMatcher;
+    };
+    LocalState.prototype.getFragmentMatcher = function () {
+        return this.fragmentMatcher;
+    };
+    // Client queries contain everything in the incoming document (if a @client
+    // directive is found).
+    LocalState.prototype.clientQuery = function (document) {
+        if ((0,directives/* hasDirectives */.d8)(["client"], document)) {
+            if (this.resolvers) {
+                return document;
+            }
+        }
+        return null;
+    };
+    // Server queries are stripped of all @client based selection sets.
+    LocalState.prototype.serverQuery = function (document) {
+        return (0,transform/* removeClientSetsFromDocument */.er)(document);
+    };
+    LocalState.prototype.prepareContext = function (context) {
+        var cache = this.cache;
+        return (0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, context), { cache: cache, 
+            // Getting an entry's cache key is useful for local state resolvers.
+            getCacheKey: function (obj) {
+                return cache.identify(obj);
+            } });
+    };
+    // To support `@client @export(as: "someVar")` syntax, we'll first resolve
+    // @client @export fields locally, then pass the resolved values back to be
+    // used alongside the original operation variables.
+    LocalState.prototype.addExportedVariables = function (document_1) {
+        return (0,tslib_es6/* __awaiter */.sH)(this, arguments, void 0, function (document, variables, context) {
+            if (variables === void 0) { variables = {}; }
+            if (context === void 0) { context = {}; }
+            return (0,tslib_es6/* __generator */.YH)(this, function (_a) {
+                if (document) {
+                    return [2 /*return*/, this.resolveDocument(document, this.buildRootValueFromCache(document, variables) || {}, this.prepareContext(context), variables).then(function (data) { return ((0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, variables), data.exportedVariables)); })];
+                }
+                return [2 /*return*/, (0,tslib_es6/* __assign */.Cl)({}, variables)];
+            });
+        });
+    };
+    LocalState.prototype.shouldForceResolvers = function (document) {
+        var forceResolvers = false;
+        (0,visitor/* visit */.YR)(document, {
+            Directive: {
+                enter: function (node) {
+                    if (node.name.value === "client" && node.arguments) {
+                        forceResolvers = node.arguments.some(function (arg) {
+                            return arg.name.value === "always" &&
+                                arg.value.kind === "BooleanValue" &&
+                                arg.value.value === true;
+                        });
+                        if (forceResolvers) {
+                            return visitor/* BREAK */.sP;
+                        }
+                    }
+                },
+            },
+        });
+        return forceResolvers;
+    };
+    // Query the cache and return matching data.
+    LocalState.prototype.buildRootValueFromCache = function (document, variables) {
+        return this.cache.diff({
+            query: (0,transform/* buildQueryFromSelectionSet */.zc)(document),
+            variables: variables,
+            returnPartialData: true,
+            optimistic: false,
+        }).result;
+    };
+    LocalState.prototype.resolveDocument = function (document_1, rootValue_1) {
+        return (0,tslib_es6/* __awaiter */.sH)(this, arguments, void 0, function (document, rootValue, context, variables, fragmentMatcher, onlyRunForcedResolvers) {
+            var mainDefinition, fragments, fragmentMap, selectionsToResolve, definitionOperation, defaultOperationType, _a, cache, client, execContext, isClientFieldDescendant;
+            if (context === void 0) { context = {}; }
+            if (variables === void 0) { variables = {}; }
+            if (fragmentMatcher === void 0) { fragmentMatcher = function () { return true; }; }
+            if (onlyRunForcedResolvers === void 0) { onlyRunForcedResolvers = false; }
+            return (0,tslib_es6/* __generator */.YH)(this, function (_b) {
+                mainDefinition = (0,getFromAST/* getMainDefinition */.Vn)(document);
+                fragments = (0,getFromAST/* getFragmentDefinitions */.zK)(document);
+                fragmentMap = (0,graphql_fragments/* createFragmentMap */.JG)(fragments);
+                selectionsToResolve = this.collectSelectionsToResolve(mainDefinition, fragmentMap);
+                definitionOperation = mainDefinition.operation;
+                defaultOperationType = definitionOperation ?
+                    definitionOperation.charAt(0).toUpperCase() +
+                        definitionOperation.slice(1)
+                    : "Query";
+                _a = this, cache = _a.cache, client = _a.client;
+                execContext = {
+                    fragmentMap: fragmentMap,
+                    context: (0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, context), { cache: cache, client: client }),
+                    variables: variables,
+                    fragmentMatcher: fragmentMatcher,
+                    defaultOperationType: defaultOperationType,
+                    exportedVariables: {},
+                    selectionsToResolve: selectionsToResolve,
+                    onlyRunForcedResolvers: onlyRunForcedResolvers,
+                };
+                isClientFieldDescendant = false;
+                return [2 /*return*/, this.resolveSelectionSet(mainDefinition.selectionSet, isClientFieldDescendant, rootValue, execContext).then(function (result) { return ({
+                        result: result,
+                        exportedVariables: execContext.exportedVariables,
+                    }); })];
+            });
+        });
+    };
+    LocalState.prototype.resolveSelectionSet = function (selectionSet, isClientFieldDescendant, rootValue, execContext) {
+        return (0,tslib_es6/* __awaiter */.sH)(this, void 0, void 0, function () {
+            var fragmentMap, context, variables, resultsToMerge, execute;
+            var _this = this;
+            return (0,tslib_es6/* __generator */.YH)(this, function (_a) {
+                fragmentMap = execContext.fragmentMap, context = execContext.context, variables = execContext.variables;
+                resultsToMerge = [rootValue];
+                execute = function (selection) { return (0,tslib_es6/* __awaiter */.sH)(_this, void 0, void 0, function () {
+                    var fragment, typeCondition;
+                    return (0,tslib_es6/* __generator */.YH)(this, function (_a) {
+                        if (!isClientFieldDescendant &&
+                            !execContext.selectionsToResolve.has(selection)) {
+                            // Skip selections without @client directives
+                            // (still processing if one of the ancestors or one of the child fields has @client directive)
+                            return [2 /*return*/];
+                        }
+                        if (!(0,directives/* shouldInclude */.MS)(selection, variables)) {
+                            // Skip this entirely.
+                            return [2 /*return*/];
+                        }
+                        if ((0,storeUtils/* isField */.dt)(selection)) {
+                            return [2 /*return*/, this.resolveField(selection, isClientFieldDescendant, rootValue, execContext).then(function (fieldResult) {
+                                    var _a;
+                                    if (typeof fieldResult !== "undefined") {
+                                        resultsToMerge.push((_a = {},
+                                            _a[(0,storeUtils/* resultKeyNameFromField */.ue)(selection)] = fieldResult,
+                                            _a));
+                                    }
+                                })];
+                        }
+                        if ((0,storeUtils/* isInlineFragment */.kd)(selection)) {
+                            fragment = selection;
+                        }
+                        else {
+                            // This is a named fragment.
+                            fragment = fragmentMap[selection.name.value];
+                            (0,globals/* invariant */.V1)(fragment, 18, selection.name.value);
+                        }
+                        if (fragment && fragment.typeCondition) {
+                            typeCondition = fragment.typeCondition.name.value;
+                            if (execContext.fragmentMatcher(rootValue, typeCondition, context)) {
+                                return [2 /*return*/, this.resolveSelectionSet(fragment.selectionSet, isClientFieldDescendant, rootValue, execContext).then(function (fragmentResult) {
+                                        resultsToMerge.push(fragmentResult);
+                                    })];
+                            }
+                        }
+                        return [2 /*return*/];
+                    });
+                }); };
+                return [2 /*return*/, Promise.all(selectionSet.selections.map(execute)).then(function () {
+                        return (0,mergeDeep/* mergeDeepArray */.IM)(resultsToMerge);
+                    })];
+            });
+        });
+    };
+    LocalState.prototype.resolveField = function (field, isClientFieldDescendant, rootValue, execContext) {
+        return (0,tslib_es6/* __awaiter */.sH)(this, void 0, void 0, function () {
+            var variables, fieldName, aliasedFieldName, aliasUsed, defaultResult, resultPromise, resolverType, resolverMap, resolve;
+            var _this = this;
+            return (0,tslib_es6/* __generator */.YH)(this, function (_a) {
+                if (!rootValue) {
+                    return [2 /*return*/, null];
+                }
+                variables = execContext.variables;
+                fieldName = field.name.value;
+                aliasedFieldName = (0,storeUtils/* resultKeyNameFromField */.ue)(field);
+                aliasUsed = fieldName !== aliasedFieldName;
+                defaultResult = rootValue[aliasedFieldName] || rootValue[fieldName];
+                resultPromise = Promise.resolve(defaultResult);
+                // Usually all local resolvers are run when passing through here, but
+                // if we've specifically identified that we only want to run forced
+                // resolvers (that is, resolvers for fields marked with
+                // `@client(always: true)`), then we'll skip running non-forced resolvers.
+                if (!execContext.onlyRunForcedResolvers ||
+                    this.shouldForceResolvers(field)) {
+                    resolverType = rootValue.__typename || execContext.defaultOperationType;
+                    resolverMap = this.resolvers && this.resolvers[resolverType];
+                    if (resolverMap) {
+                        resolve = resolverMap[aliasUsed ? fieldName : aliasedFieldName];
+                        if (resolve) {
+                            resultPromise = Promise.resolve(
+                            // In case the resolve function accesses reactive variables,
+                            // set cacheSlot to the current cache instance.
+                            reactiveVars/* cacheSlot */.bl.withValue(this.cache, resolve, [
+                                rootValue,
+                                (0,storeUtils/* argumentsObjectFromField */.MB)(field, variables),
+                                execContext.context,
+                                { field: field, fragmentMap: execContext.fragmentMap },
+                            ]));
+                        }
+                    }
+                }
+                return [2 /*return*/, resultPromise.then(function (result) {
+                        var _a, _b;
+                        if (result === void 0) { result = defaultResult; }
+                        // If an @export directive is associated with the current field, store
+                        // the `as` export variable name and current result for later use.
+                        if (field.directives) {
+                            field.directives.forEach(function (directive) {
+                                if (directive.name.value === "export" && directive.arguments) {
+                                    directive.arguments.forEach(function (arg) {
+                                        if (arg.name.value === "as" && arg.value.kind === "StringValue") {
+                                            execContext.exportedVariables[arg.value.value] = result;
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                        // Handle all scalar types here.
+                        if (!field.selectionSet) {
+                            return result;
+                        }
+                        // From here down, the field has a selection set, which means it's trying
+                        // to query a GraphQLObjectType.
+                        if (result == null) {
+                            // Basically any field in a GraphQL response can be null, or missing
+                            return result;
+                        }
+                        var isClientField = (_b = (_a = field.directives) === null || _a === void 0 ? void 0 : _a.some(function (d) { return d.name.value === "client"; })) !== null && _b !== void 0 ? _b : false;
+                        if (Array.isArray(result)) {
+                            return _this.resolveSubSelectedArray(field, isClientFieldDescendant || isClientField, result, execContext);
+                        }
+                        // Returned value is an object, and the query has a sub-selection. Recurse.
+                        if (field.selectionSet) {
+                            return _this.resolveSelectionSet(field.selectionSet, isClientFieldDescendant || isClientField, result, execContext);
+                        }
+                    })];
+            });
+        });
+    };
+    LocalState.prototype.resolveSubSelectedArray = function (field, isClientFieldDescendant, result, execContext) {
+        var _this = this;
+        return Promise.all(result.map(function (item) {
+            if (item === null) {
+                return null;
+            }
+            // This is a nested array, recurse.
+            if (Array.isArray(item)) {
+                return _this.resolveSubSelectedArray(field, isClientFieldDescendant, item, execContext);
+            }
+            // This is an object, run the selection set on it.
+            if (field.selectionSet) {
+                return _this.resolveSelectionSet(field.selectionSet, isClientFieldDescendant, item, execContext);
+            }
+        }));
+    };
+    // Collect selection nodes on paths from document root down to all @client directives.
+    // This function takes into account transitive fragment spreads.
+    // Complexity equals to a single `visit` over the full document.
+    LocalState.prototype.collectSelectionsToResolve = function (mainDefinition, fragmentMap) {
+        var isSingleASTNode = function (node) { return !Array.isArray(node); };
+        var selectionsToResolveCache = this.selectionsToResolveCache;
+        function collectByDefinition(definitionNode) {
+            if (!selectionsToResolveCache.has(definitionNode)) {
+                var matches_1 = new Set();
+                selectionsToResolveCache.set(definitionNode, matches_1);
+                (0,visitor/* visit */.YR)(definitionNode, {
+                    Directive: function (node, _, __, ___, ancestors) {
+                        if (node.name.value === "client") {
+                            ancestors.forEach(function (node) {
+                                if (isSingleASTNode(node) && isSelectionNode(node)) {
+                                    matches_1.add(node);
+                                }
+                            });
+                        }
+                    },
+                    FragmentSpread: function (spread, _, __, ___, ancestors) {
+                        var fragment = fragmentMap[spread.name.value];
+                        (0,globals/* invariant */.V1)(fragment, 19, spread.name.value);
+                        var fragmentSelections = collectByDefinition(fragment);
+                        if (fragmentSelections.size > 0) {
+                            // Fragment for this spread contains @client directive (either directly or transitively)
+                            // Collect selection nodes on paths from the root down to fields with the @client directive
+                            ancestors.forEach(function (node) {
+                                if (isSingleASTNode(node) && isSelectionNode(node)) {
+                                    matches_1.add(node);
+                                }
+                            });
+                            matches_1.add(spread);
+                            fragmentSelections.forEach(function (selection) {
+                                matches_1.add(selection);
+                            });
+                        }
+                    },
+                });
+            }
+            return selectionsToResolveCache.get(definitionNode);
+        }
+        return collectByDefinition(mainDefinition);
+    };
+    return LocalState;
+}());
+
+//# sourceMappingURL=LocalState.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/mergeOptions.js
 var mergeOptions = __webpack_require__(144);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/caching/getMemoryInternals.js
@@ -45078,13 +45073,7 @@ var ApolloClient = /** @class */ (function () {
         // Expose the client instance as window.__APOLLO_CLIENT__ and call
         // onBroadcast in queryManager.broadcastQueries to enable browser
         // devtools, but disable them by default in production.
-        _c = options.connectToDevTools, 
-        // Expose the client instance as window.__APOLLO_CLIENT__ and call
-        // onBroadcast in queryManager.broadcastQueries to enable browser
-        // devtools, but disable them by default in production.
-        connectToDevTools = _c === void 0 ? typeof window === "object" &&
-            !window.__APOLLO_CLIENT__ &&
-            globalThis.__DEV__ !== false : _c, _d = options.queryDeduplication, queryDeduplication = _d === void 0 ? true : _d, defaultOptions = options.defaultOptions, defaultContext = options.defaultContext, _e = options.assumeImmutableResults, assumeImmutableResults = _e === void 0 ? cache.assumeImmutableResults : _e, resolvers = options.resolvers, typeDefs = options.typeDefs, fragmentMatcher = options.fragmentMatcher, clientAwarenessName = options.name, clientAwarenessVersion = options.version;
+        connectToDevTools = options.connectToDevTools, _c = options.queryDeduplication, queryDeduplication = _c === void 0 ? true : _c, defaultOptions = options.defaultOptions, defaultContext = options.defaultContext, _d = options.assumeImmutableResults, assumeImmutableResults = _d === void 0 ? cache.assumeImmutableResults : _d, resolvers = options.resolvers, typeDefs = options.typeDefs, fragmentMatcher = options.fragmentMatcher, clientAwarenessName = options.name, clientAwarenessVersion = options.version, devtools = options.devtools;
         var link = options.link;
         if (!link) {
             link =
@@ -45096,6 +45085,10 @@ var ApolloClient = /** @class */ (function () {
         this.queryDeduplication = queryDeduplication;
         this.defaultOptions = defaultOptions || Object.create(null);
         this.typeDefs = typeDefs;
+        this.devtoolsConfig = (0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, devtools), { enabled: (devtools === null || devtools === void 0 ? void 0 : devtools.enabled) || connectToDevTools });
+        if (this.devtoolsConfig.enabled === undefined) {
+            this.devtoolsConfig.enabled = globalThis.__DEV__ !== false;
+        }
         if (ssrForceFetchDelay) {
             setTimeout(function () { return (_this.disableNetworkFetches = false); }, ssrForceFetchDelay);
         }
@@ -45126,7 +45119,7 @@ var ApolloClient = /** @class */ (function () {
             },
             localState: this.localState,
             assumeImmutableResults: assumeImmutableResults,
-            onBroadcast: connectToDevTools ?
+            onBroadcast: this.devtoolsConfig.enabled ?
                 function () {
                     if (_this.devToolsHookCb) {
                         _this.devToolsHookCb({
@@ -45141,48 +45134,49 @@ var ApolloClient = /** @class */ (function () {
                 }
                 : void 0,
         });
-        if (connectToDevTools)
+        if (this.devtoolsConfig.enabled)
             this.connectToDevTools();
     }
     ApolloClient.prototype.connectToDevTools = function () {
-        if (typeof window === "object") {
-            var windowWithDevTools = window;
-            var devtoolsSymbol = Symbol.for("apollo.devtools");
-            (windowWithDevTools[devtoolsSymbol] =
-                windowWithDevTools[devtoolsSymbol] || []).push(this);
-            windowWithDevTools.__APOLLO_CLIENT__ = this;
+        if (typeof window === "undefined") {
+            return;
         }
+        var windowWithDevTools = window;
+        var devtoolsSymbol = Symbol.for("apollo.devtools");
+        (windowWithDevTools[devtoolsSymbol] =
+            windowWithDevTools[devtoolsSymbol] || []).push(this);
+        windowWithDevTools.__APOLLO_CLIENT__ = this;
         /**
          * Suggest installing the devtools for developers who don't have them
          */
         if (!hasSuggestedDevtools && globalThis.__DEV__ !== false) {
             hasSuggestedDevtools = true;
-            setTimeout(function () {
-                if (typeof window !== "undefined" &&
-                    window.document &&
-                    window.top === window.self &&
-                    !window.__APOLLO_DEVTOOLS_GLOBAL_HOOK__ &&
-                    /^(https?|file):$/.test(window.location.protocol)) {
-                    var nav = window.navigator;
-                    var ua = nav && nav.userAgent;
-                    var url = void 0;
-                    if (typeof ua === "string") {
-                        if (ua.indexOf("Chrome/") > -1) {
-                            url =
-                                "https://chrome.google.com/webstore/detail/" +
-                                    "apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm";
+            if (window.document &&
+                window.top === window.self &&
+                /^(https?|file):$/.test(window.location.protocol)) {
+                setTimeout(function () {
+                    if (!window.__APOLLO_DEVTOOLS_GLOBAL_HOOK__) {
+                        var nav = window.navigator;
+                        var ua = nav && nav.userAgent;
+                        var url = void 0;
+                        if (typeof ua === "string") {
+                            if (ua.indexOf("Chrome/") > -1) {
+                                url =
+                                    "https://chrome.google.com/webstore/detail/" +
+                                        "apollo-client-developer-t/jdkknkkbebbapilgoeccciglkfbmbnfm";
+                            }
+                            else if (ua.indexOf("Firefox/") > -1) {
+                                url =
+                                    "https://addons.mozilla.org/en-US/firefox/addon/apollo-developer-tools/";
+                            }
                         }
-                        else if (ua.indexOf("Firefox/") > -1) {
-                            url =
-                                "https://addons.mozilla.org/en-US/firefox/addon/apollo-developer-tools/";
+                        if (url) {
+                            globalThis.__DEV__ !== false && globals/* invariant */.V1.log("Download the Apollo DevTools for a better development " +
+                                "experience: %s", url);
                         }
                     }
-                    if (url) {
-                        globalThis.__DEV__ !== false && globals/* invariant */.V1.log("Download the Apollo DevTools for a better development " +
-                            "experience: %s", url);
-                    }
-                }
-            }, 10000);
+                }, 10000);
+            }
         }
     };
     Object.defineProperty(ApolloClient.prototype, "documentTransform", {
@@ -45625,6 +45619,7 @@ var ObservableQuery = /** @class */ (function (_super) {
         // active state
         _this.waitForOwnResult = skipCacheDataFor(options.fetchPolicy);
         _this.isTornDown = false;
+        _this.subscribeToMore = _this.subscribeToMore.bind(_this);
         var _b = queryManager.defaultOptions.watchQuery, _c = _b === void 0 ? {} : _b, _d = _c.fetchPolicy, defaultFetchPolicy = _d === void 0 ? "cache-first" : _d;
         var _e = options.fetchPolicy, fetchPolicy = _e === void 0 ? defaultFetchPolicy : _e, 
         // Make sure we don't store "standby" as the initialFetchPolicy.
@@ -46209,7 +46204,10 @@ var ObservableQuery = /** @class */ (function (_super) {
                 options.fetchPolicy !== "standby" &&
                 // If we're changing the fetchPolicy anyway, don't try to change it here
                 // using applyNextFetchPolicy. The explicit options.fetchPolicy wins.
-                options.fetchPolicy === oldFetchPolicy) {
+                (options.fetchPolicy === oldFetchPolicy ||
+                    // A `nextFetchPolicy` function has even higher priority, though,
+                    // so in that case `applyNextFetchPolicy` must be called.
+                    typeof options.nextFetchPolicy === "function")) {
                 this.applyNextFetchPolicy("variables-changed", options);
                 if (newNetworkStatus === void 0) {
                     newNetworkStatus = _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .pT.setVariables;
@@ -46757,8 +46755,9 @@ var generateErrorMessage = function (err) {
 };
 var ApolloError = /** @class */ (function (_super) {
     (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__extends */ .C6)(ApolloError, _super);
-    // Constructs an instance of ApolloError given a GraphQLError
-    // or a network error. Note that one of these has to be a valid
+    // Constructs an instance of ApolloError given serialized GraphQL errors,
+    // client errors, protocol errors or network errors.
+    // Note that one of these has to be a valid
     // value or the constructed error will be meaningless.
     function ApolloError(_a) {
         var graphQLErrors = _a.graphQLErrors, protocolErrors = _a.protocolErrors, clientErrors = _a.clientErrors, networkError = _a.networkError, errorMessage = _a.errorMessage, extraInfo = _a.extraInfo;
@@ -46770,6 +46769,10 @@ var ApolloError = /** @class */ (function (_super) {
         _this.networkError = networkError || null;
         _this.message = errorMessage || generateErrorMessage(_this);
         _this.extraInfo = extraInfo;
+        _this.cause =
+            (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__spreadArray */ .fX)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__spreadArray */ .fX)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__spreadArray */ .fX)([
+                networkError
+            ], (graphQLErrors || []), true), (protocolErrors || []), true), (clientErrors || []), true).find(function (e) { return !!e; }) || null;
         // We're not using `Object.setPrototypeOf` here as it isn't fully
         // supported on Android (see issue #3236).
         _this.__proto__ = ApolloError.prototype;
@@ -48478,7 +48481,7 @@ var skipToken = Symbol.for("apollo.skipToken");
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   EL: () => (/* reexport safe */ _useBackgroundQuery_js__WEBPACK_IMPORTED_MODULE_9__.E),
 /* harmony export */   I3: () => (/* reexport safe */ _useFragment_js__WEBPACK_IMPORTED_MODULE_7__.I),
-/* harmony export */   IT: () => (/* reexport safe */ _useQuery_js__WEBPACK_IMPORTED_MODULE_4__.I),
+/* harmony export */   IT: () => (/* reexport safe */ _useQuery_js__WEBPACK_IMPORTED_MODULE_4__.IT),
 /* harmony export */   Rs: () => (/* reexport safe */ _useSubscription_js__WEBPACK_IMPORTED_MODULE_5__.R),
 /* harmony export */   UX: () => (/* reexport safe */ _useSuspenseQuery_js__WEBPACK_IMPORTED_MODULE_8__.UX),
 /* harmony export */   _l: () => (/* reexport safe */ _useLazyQuery_js__WEBPACK_IMPORTED_MODULE_2__._),
@@ -48894,7 +48897,11 @@ function _useBackgroundQuery(query, options) {
     rehackt__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () { return queryRef.softRetain(); }, [queryRef]);
     return [
         didFetchResult.current ? wrappedQueryRef : void 0,
-        { fetchMore: fetchMore, refetch: refetch },
+        {
+            fetchMore: fetchMore,
+            refetch: refetch,
+            subscribeToMore: queryRef.observable.subscribeToMore,
+        },
     ];
 }
 //# sourceMappingURL=useBackgroundQuery.js.map
@@ -49001,17 +49008,17 @@ function diffToResult(diff) {
 /* harmony export */   _: () => (/* binding */ useLazyQuery)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1635);
+	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1635);
 }
 /* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7243);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(144);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useQuery_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1723);
+	/* harmony import */ var _useQuery_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(1723);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(111);
+	/* harmony import */ var _internal_useIsomorphicLayoutEffect_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4269);
 }
 
 
@@ -49026,6 +49033,7 @@ var EAGER_METHODS = (/* runtime-dependent pure expression or super */ /^(250|49|
     "fetchMore",
     "updateQuery",
     "startPolling",
+    "stopPolling",
     "subscribeToMore",
 ]) : null);
 /**
@@ -49074,11 +49082,11 @@ function useLazyQuery(query, options) {
     // function remains referentially stable between renders.
     optionsRef.current = options;
     queryRef.current = document;
-    var internalState = (0,_useQuery_js__WEBPACK_IMPORTED_MODULE_2__/* .useInternalState */ .k)((0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)(options && options.client), document);
-    var useQueryResult = internalState.useQuery((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, merged), { skip: !execOptionsRef.current }));
-    var initialFetchPolicy = useQueryResult.observable.options.initialFetchPolicy ||
-        internalState.getDefaultFetchPolicy();
-    var forceUpdateState = internalState.forceUpdateState, obsQueryFields = internalState.obsQueryFields;
+    var queryHookOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)({}, merged), { skip: !execOptionsRef.current });
+    var _b = (0,_useQuery_js__WEBPACK_IMPORTED_MODULE_3__/* .useQueryInternals */ .SX)(document, queryHookOptions), obsQueryFields = _b.obsQueryFields, useQueryResult = _b.result, client = _b.client, resultData = _b.resultData, observable = _b.observable, onQueryExecuted = _b.onQueryExecuted;
+    var initialFetchPolicy = observable.options.initialFetchPolicy ||
+        (0,_useQuery_js__WEBPACK_IMPORTED_MODULE_3__/* .getDefaultFetchPolicy */ .kk)(queryHookOptions.defaultOptions, client.defaultOptions);
+    var forceUpdateState = rehackt__WEBPACK_IMPORTED_MODULE_0__.useReducer(function (tick) { return tick + 1; }, 0)[1];
     // We use useMemo here to make sure the eager methods have a stable identity.
     var eagerMethods = rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
         var eagerMethods = {};
@@ -49101,22 +49109,63 @@ function useLazyQuery(query, options) {
         return eagerMethods;
     }, [forceUpdateState, obsQueryFields]);
     var called = !!execOptionsRef.current;
-    var result = rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () { return ((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, useQueryResult), eagerMethods), { called: called })); }, [useQueryResult, eagerMethods, called]);
+    var result = rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () { return ((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)({}, useQueryResult), eagerMethods), { called: called })); }, [useQueryResult, eagerMethods, called]);
     var execute = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (executeOptions) {
         execOptionsRef.current =
-            executeOptions ? (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, executeOptions), { fetchPolicy: executeOptions.fetchPolicy || initialFetchPolicy }) : {
+            executeOptions ? (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)({}, executeOptions), { fetchPolicy: executeOptions.fetchPolicy || initialFetchPolicy }) : {
                 fetchPolicy: initialFetchPolicy,
             };
-        var options = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .mergeOptions */ .l)(optionsRef.current, (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({ query: queryRef.current }, execOptionsRef.current));
-        var promise = internalState
-            .executeQuery((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, options), { skip: false }))
-            .then(function (queryResult) { return Object.assign(queryResult, eagerMethods); });
+        var options = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .mergeOptions */ .l)(optionsRef.current, (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)({ query: queryRef.current }, execOptionsRef.current));
+        var promise = executeQuery(resultData, observable, client, document, (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)({}, options), { skip: false }), onQueryExecuted).then(function (queryResult) { return Object.assign(queryResult, eagerMethods); });
         // Because the return value of `useLazyQuery` is usually floated, we need
         // to catch the promise to prevent unhandled rejections.
         promise.catch(function () { });
         return promise;
-    }, [eagerMethods, initialFetchPolicy, internalState]);
-    return [execute, result];
+    }, [
+        client,
+        document,
+        eagerMethods,
+        initialFetchPolicy,
+        observable,
+        resultData,
+        onQueryExecuted,
+    ]);
+    var executeRef = rehackt__WEBPACK_IMPORTED_MODULE_0__.useRef(execute);
+    (0,_internal_useIsomorphicLayoutEffect_js__WEBPACK_IMPORTED_MODULE_4__/* .useIsomorphicLayoutEffect */ .E)(function () {
+        executeRef.current = execute;
+    });
+    var stableExecute = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            args[_i] = arguments[_i];
+        }
+        return executeRef.current.apply(executeRef, args);
+    }, []);
+    return [stableExecute, result];
+}
+function executeQuery(resultData, observable, client, currentQuery, options, onQueryExecuted) {
+    var query = options.query || currentQuery;
+    var watchQueryOptions = (0,_useQuery_js__WEBPACK_IMPORTED_MODULE_3__/* .createMakeWatchQueryOptions */ .Er)(client, query, options, false)(observable);
+    var concast = observable.reobserveAsConcast((0,_useQuery_js__WEBPACK_IMPORTED_MODULE_3__/* .getObsQueryOptions */ .t_)(observable, client, options, watchQueryOptions));
+    onQueryExecuted(watchQueryOptions);
+    return new Promise(function (resolve) {
+        var result;
+        // Subscribe to the concast independently of the ObservableQuery in case
+        // the component gets unmounted before the promise resolves. This prevents
+        // the concast from terminating early and resolving with `undefined` when
+        // there are no more subscribers for the concast.
+        concast.subscribe({
+            next: function (value) {
+                result = value;
+            },
+            error: function () {
+                resolve((0,_useQuery_js__WEBPACK_IMPORTED_MODULE_3__/* .toQueryResult */ .$X)(observable.getCurrentResult(), resultData.previousData, observable, client));
+            },
+            complete: function () {
+                resolve((0,_useQuery_js__WEBPACK_IMPORTED_MODULE_3__/* .toQueryResult */ .$X)(result, resultData.previousData, observable, client));
+            },
+        });
+    });
 }
 //# sourceMappingURL=useLazyQuery.js.map
 
@@ -49213,10 +49262,14 @@ function useLoadableQuery(query, options) {
         calledDuringRender,
         client,
     ]);
+    var subscribeToMore = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (options) {
+        (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)(internalQueryRef, 51);
+        return internalQueryRef.observable.subscribeToMore(options);
+    }, [internalQueryRef]);
     var reset = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () {
         setQueryRef(null);
     }, []);
-    return [loadQuery, queryRef, { fetchMore: fetchMore, refetch: refetch, reset: reset }];
+    return [loadQuery, queryRef, { fetchMore: fetchMore, refetch: refetch, reset: reset, subscribeToMore: subscribeToMore }];
 }
 //# sourceMappingURL=useLoadableQuery.js.map
 
@@ -49424,30 +49477,70 @@ function useMutation(mutation, options) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   I: () => (/* binding */ useQuery),
-/* harmony export */   k: () => (/* binding */ useInternalState)
+/* harmony export */   $X: () => (/* binding */ toQueryResult),
+/* harmony export */   Er: () => (/* binding */ createMakeWatchQueryOptions),
+/* harmony export */   IT: () => (/* binding */ useQuery),
+/* harmony export */   SX: () => (/* binding */ useQueryInternals),
+/* harmony export */   jy: () => (/* binding */ toApolloError),
+/* harmony export */   kk: () => (/* binding */ getDefaultFetchPolicy),
+/* harmony export */   t_: () => (/* binding */ getObsQueryOptions)
 /* harmony export */ });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(1635);
+/* unused harmony export lastWatchOptions */
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1635);
+}
 /* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 /* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7243);
-/* harmony import */ var _useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(9770);
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(9770);
+}
 /* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5381);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(144);
-/* harmony import */ var _context_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(6741);
-/* harmony import */ var _errors_index_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(9211);
-/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(8599);
-/* harmony import */ var _parser_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(5443);
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(144);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _context_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(6741);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _errors_index_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(9211);
+}
+/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(8599);
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _parser_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(5443);
+}
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(111);
 }
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1469);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(2619);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(7945);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(3255);
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(7945);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(3255);
+}
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(1469);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(8481);
 }
 
+/**
+ * Function parameters in this file try to follow a common order for the sake of
+ * readability and consistency. The order is as follows:
+ *
+ * resultData
+ * observable
+ * client
+ * query
+ * options
+ * watchQueryOptions
+ * makeWatchQueryOptions
+ * isSSRAllowed
+ * disableNetworkFetches
+ * partialRefetch
+ * renderPromises
+ * isSyncSSR
+ * callbacks
+ */
+/** */
 
 
 
@@ -49461,6 +49554,8 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 
 
 var hasOwnProperty = Object.prototype.hasOwnProperty;
+function noop() { }
+var lastWatchOptions = Symbol();
 /**
  * A hook for executing queries in an Apollo application.
  *
@@ -49500,239 +49595,114 @@ function useQuery(query, options) {
     return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_3__/* .wrapHook */ .Y)("useQuery", _useQuery, (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_4__/* .useApolloClient */ .m)(options && options.client))(query, options);
 }
 function _useQuery(query, options) {
-    return useInternalState((0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_4__/* .useApolloClient */ .m)(options.client), query).useQuery(options);
+    var _a = useQueryInternals(query, options), result = _a.result, obsQueryFields = _a.obsQueryFields;
+    return rehackt__WEBPACK_IMPORTED_MODULE_1__.useMemo(function () { return ((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({}, result), obsQueryFields)); }, [result, obsQueryFields]);
 }
-function useInternalState(client, query) {
-    // By default, InternalState.prototype.forceUpdate is an empty function, but
-    // we replace it here (before anyone has had a chance to see this state yet)
-    // with a function that unconditionally forces an update, using the latest
-    // setTick function. Updating this state by calling state.forceUpdate or the
-    // uSES notification callback are the only way we trigger React component updates.
-    var forceUpdateState = rehackt__WEBPACK_IMPORTED_MODULE_1__.useReducer(function (tick) { return tick + 1; }, 0)[1];
+function useInternalState(client, query, options, renderPromises, makeWatchQueryOptions) {
     function createInternalState(previous) {
-        return Object.assign(new InternalState(client, query, previous), {
-            forceUpdateState: forceUpdateState,
-        });
+        var _a;
+        (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_6__/* .verifyDocumentType */ .D$)(query, _parser_index_js__WEBPACK_IMPORTED_MODULE_6__/* .DocumentType */ .KG.Query);
+        var internalState = {
+            client: client,
+            query: query,
+            observable: 
+            // See if there is an existing observable that was used to fetch the same
+            // data and if so, use it instead since it will contain the proper queryId
+            // to fetch the result set. This is used during SSR.
+            (renderPromises &&
+                renderPromises.getSSRObservable(makeWatchQueryOptions())) ||
+                client.watchQuery(getObsQueryOptions(void 0, client, options, makeWatchQueryOptions())),
+            resultData: {
+                // Reuse previousData from previous InternalState (if any) to provide
+                // continuity of previousData even if/when the query or client changes.
+                previousData: (_a = previous === null || previous === void 0 ? void 0 : previous.resultData.current) === null || _a === void 0 ? void 0 : _a.data,
+            },
+        };
+        return internalState;
     }
-    var _a = rehackt__WEBPACK_IMPORTED_MODULE_1__.useState(createInternalState), state = _a[0], updateState = _a[1];
-    if (client !== state.client || query !== state.query) {
+    var _a = rehackt__WEBPACK_IMPORTED_MODULE_1__.useState(createInternalState), internalState = _a[0], updateInternalState = _a[1];
+    /**
+     * Used by `useLazyQuery` when a new query is executed.
+     * We keep this logic here since it needs to update things in unsafe
+     * ways and here we at least can keep track of that in a single place.
+     */
+    function onQueryExecuted(watchQueryOptions) {
+        var _a;
+        var _b;
+        // this needs to be set to prevent an immediate `resubscribe` in the
+        // next rerender of the `useQuery` internals
+        Object.assign(internalState.observable, (_a = {},
+            _a[lastWatchOptions] = watchQueryOptions,
+            _a));
+        var resultData = internalState.resultData;
+        updateInternalState((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({}, internalState), { 
+            // might be a different query
+            query: watchQueryOptions.query, resultData: Object.assign(resultData, {
+                // We need to modify the previous `resultData` object as we rely on the
+                // object reference in other places
+                previousData: ((_b = resultData.current) === null || _b === void 0 ? void 0 : _b.data) || resultData.previousData,
+                current: undefined,
+            }) }));
+    }
+    if (client !== internalState.client || query !== internalState.query) {
         // If the client or query have changed, we need to create a new InternalState.
         // This will trigger a re-render with the new state, but it will also continue
         // to run the current render function to completion.
         // Since we sometimes trigger some side-effects in the render function, we
         // re-assign `state` to the new state to ensure that those side-effects are
         // triggered with the new state.
-        updateState((state = createInternalState(state)));
+        var newInternalState = createInternalState(internalState);
+        updateInternalState(newInternalState);
+        return [newInternalState, onQueryExecuted];
     }
-    return state;
+    return [internalState, onQueryExecuted];
 }
-var InternalState = /** @class */ (function () {
-    function InternalState(client, query, previous) {
-        var _this = this;
-        this.client = client;
-        this.query = query;
-        /**
-         * Will be overwritten by the `useSyncExternalStore` "force update" method
-         * whenever it is available and reset to `forceUpdateState` when it isn't.
-         */
-        this.forceUpdate = function () { return _this.forceUpdateState(); };
-        this.ssrDisabledResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .maybeDeepFreeze */ .G)({
-            loading: true,
-            data: void 0,
-            error: void 0,
-            networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_6__/* .NetworkStatus */ .pT.loading,
-        });
-        this.skipStandbyResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .maybeDeepFreeze */ .G)({
-            loading: false,
-            data: void 0,
-            error: void 0,
-            networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_6__/* .NetworkStatus */ .pT.ready,
-        });
-        // This cache allows the referential stability of this.result (as returned by
-        // getCurrentResult) to translate into referential stability of the resulting
-        // QueryResult object returned by toQueryResult.
-        this.toQueryResultCache = new (_utilities_index_js__WEBPACK_IMPORTED_MODULE_7__/* .canUseWeakMap */ .et ? WeakMap : Map)();
-        (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_8__/* .verifyDocumentType */ .D$)(query, _parser_index_js__WEBPACK_IMPORTED_MODULE_8__/* .DocumentType */ .KG.Query);
-        // Reuse previousData from previous InternalState (if any) to provide
-        // continuity of previousData even if/when the query or client changes.
-        var previousResult = previous && previous.result;
-        var previousData = previousResult && previousResult.data;
-        if (previousData) {
-            this.previousData = previousData;
-        }
-    }
-    /**
-     * Forces an update using local component state.
-     * As this is not batched with `useSyncExternalStore` updates,
-     * this is only used as a fallback if the `useSyncExternalStore` "force update"
-     * method is not registered at the moment.
-     * See https://github.com/facebook/react/issues/25191
-     *  */
-    InternalState.prototype.forceUpdateState = function () {
-        // Replaced (in useInternalState) with a method that triggers an update.
-        globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.warn(51);
+function useQueryInternals(query, options) {
+    var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_4__/* .useApolloClient */ .m)(options.client);
+    var renderPromises = rehackt__WEBPACK_IMPORTED_MODULE_1__.useContext((0,_context_index_js__WEBPACK_IMPORTED_MODULE_7__/* .getApolloContext */ .l)()).renderPromises;
+    var isSyncSSR = !!renderPromises;
+    var disableNetworkFetches = client.disableNetworkFetches;
+    var ssrAllowed = options.ssr !== false && !options.skip;
+    var partialRefetch = options.partialRefetch;
+    var makeWatchQueryOptions = createMakeWatchQueryOptions(client, query, options, isSyncSSR);
+    var _a = useInternalState(client, query, options, renderPromises, makeWatchQueryOptions), _b = _a[0], observable = _b.observable, resultData = _b.resultData, onQueryExecuted = _a[1];
+    var watchQueryOptions = makeWatchQueryOptions(observable);
+    useResubscribeIfNecessary(resultData, // might get mutated during render
+    observable, // might get mutated during render
+    client, options, watchQueryOptions);
+    var obsQueryFields = rehackt__WEBPACK_IMPORTED_MODULE_1__.useMemo(function () { return bindObservableMethods(observable); }, [observable]);
+    useRegisterSSRObservable(observable, renderPromises, ssrAllowed);
+    var result = useObservableSubscriptionResult(resultData, observable, client, options, watchQueryOptions, disableNetworkFetches, partialRefetch, isSyncSSR, {
+        onCompleted: options.onCompleted || noop,
+        onError: options.onError || noop,
+    });
+    return {
+        result: result,
+        obsQueryFields: obsQueryFields,
+        observable: observable,
+        resultData: resultData,
+        client: client,
+        onQueryExecuted: onQueryExecuted,
     };
-    InternalState.prototype.executeQuery = function (options) {
-        var _this = this;
-        var _a;
-        if (options.query) {
-            Object.assign(this, { query: options.query });
-        }
-        this.watchQueryOptions = this.createWatchQueryOptions((this.queryHookOptions = options));
-        var concast = this.observable.reobserveAsConcast(this.getObsQueryOptions());
-        // Make sure getCurrentResult returns a fresh ApolloQueryResult<TData>,
-        // but save the current data as this.previousData, just like setResult
-        // usually does.
-        this.previousData = ((_a = this.result) === null || _a === void 0 ? void 0 : _a.data) || this.previousData;
-        this.result = void 0;
-        this.forceUpdate();
-        return new Promise(function (resolve) {
-            var result;
-            // Subscribe to the concast independently of the ObservableQuery in case
-            // the component gets unmounted before the promise resolves. This prevents
-            // the concast from terminating early and resolving with `undefined` when
-            // there are no more subscribers for the concast.
-            concast.subscribe({
-                next: function (value) {
-                    result = value;
-                },
-                error: function () {
-                    resolve(_this.toQueryResult(_this.observable.getCurrentResult()));
-                },
-                complete: function () {
-                    resolve(_this.toQueryResult(result));
-                },
-            });
-        });
-    };
-    // Methods beginning with use- should be called according to the standard
-    // rules of React hooks: only at the top level of the calling function, and
-    // without any dynamic conditional logic.
-    InternalState.prototype.useQuery = function (options) {
-        var _this = this;
-        // The renderPromises field gets initialized here in the useQuery method, at
-        // the beginning of everything (for a given component rendering, at least),
-        // so we can safely use this.renderPromises in other/later InternalState
-        // methods without worrying it might be uninitialized. Even after
-        // initialization, this.renderPromises is usually undefined (unless SSR is
-        // happening), but that's fine as long as it has been initialized that way,
-        // rather than left uninitialized.
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        this.renderPromises = rehackt__WEBPACK_IMPORTED_MODULE_1__.useContext((0,_context_index_js__WEBPACK_IMPORTED_MODULE_9__/* .getApolloContext */ .l)()).renderPromises;
-        this.useOptions(options);
-        var obsQuery = this.useObservableQuery();
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        var result = (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_10__/* .useSyncExternalStore */ .r)(
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        rehackt__WEBPACK_IMPORTED_MODULE_1__.useCallback(function (handleStoreChange) {
-            if (_this.renderPromises) {
-                return function () { };
-            }
-            _this.forceUpdate = handleStoreChange;
-            var onNext = function () {
-                var previousResult = _this.result;
-                // We use `getCurrentResult()` instead of the onNext argument because
-                // the values differ slightly. Specifically, loading results will have
-                // an empty object for data instead of `undefined` for some reason.
-                var result = obsQuery.getCurrentResult();
-                // Make sure we're not attempting to re-render similar results
-                if (previousResult &&
-                    previousResult.loading === result.loading &&
-                    previousResult.networkStatus === result.networkStatus &&
-                    (0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .L)(previousResult.data, result.data)) {
-                    return;
-                }
-                _this.setResult(result);
-            };
-            var onError = function (error) {
-                subscription.unsubscribe();
-                subscription = obsQuery.resubscribeAfterError(onNext, onError);
-                if (!hasOwnProperty.call(error, "graphQLErrors")) {
-                    // The error is not a GraphQL error
-                    throw error;
-                }
-                var previousResult = _this.result;
-                if (!previousResult ||
-                    (previousResult && previousResult.loading) ||
-                    !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .L)(error, previousResult.error)) {
-                    _this.setResult({
-                        data: (previousResult && previousResult.data),
-                        error: error,
-                        loading: false,
-                        networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_6__/* .NetworkStatus */ .pT.error,
-                    });
-                }
-            };
-            var subscription = obsQuery.subscribe(onNext, onError);
-            // Do the "unsubscribe" with a short delay.
-            // This way, an existing subscription can be reused without an additional
-            // request if "unsubscribe"  and "resubscribe" to the same ObservableQuery
-            // happen in very fast succession.
-            return function () {
-                setTimeout(function () { return subscription.unsubscribe(); });
-                _this.forceUpdate = function () { return _this.forceUpdateState(); };
-            };
-        }, [
-            // We memoize the subscribe function using useCallback and the following
-            // dependency keys, because the subscribe function reference is all that
-            // useSyncExternalStore uses internally as a dependency key for the
-            // useEffect ultimately responsible for the subscription, so we are
-            // effectively passing this dependency array to that useEffect buried
-            // inside useSyncExternalStore, as desired.
-            obsQuery,
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-            this.renderPromises,
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-            this.client.disableNetworkFetches,
-        ]), function () { return _this.getCurrentResult(); }, function () { return _this.getCurrentResult(); });
-        // TODO Remove this method when we remove support for options.partialRefetch.
-        this.unsafeHandlePartialRefetch(result);
-        return this.toQueryResult(result);
-    };
-    InternalState.prototype.useOptions = function (options) {
-        var _a;
-        var watchQueryOptions = this.createWatchQueryOptions((this.queryHookOptions = options));
-        // Update this.watchQueryOptions, but only when they have changed, which
-        // allows us to depend on the referential stability of
-        // this.watchQueryOptions elsewhere.
-        var currentWatchQueryOptions = this.watchQueryOptions;
-        if (!(0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .L)(watchQueryOptions, currentWatchQueryOptions)) {
-            this.watchQueryOptions = watchQueryOptions;
-            if (currentWatchQueryOptions && this.observable) {
-                // Though it might be tempting to postpone this reobserve call to the
-                // useEffect block, we need getCurrentResult to return an appropriate
-                // loading:true result synchronously (later within the same call to
-                // useQuery). Since we already have this.observable here (not true for
-                // the very first call to useQuery), we are not initiating any new
-                // subscriptions, though it does feel less than ideal that reobserve
-                // (potentially) kicks off a network request (for example, when the
-                // variables have changed), which is technically a side-effect.
-                this.observable.reobserve(this.getObsQueryOptions());
-                // Make sure getCurrentResult returns a fresh ApolloQueryResult<TData>,
-                // but save the current data as this.previousData, just like setResult
-                // usually does.
-                this.previousData = ((_a = this.result) === null || _a === void 0 ? void 0 : _a.data) || this.previousData;
-                this.result = void 0;
-            }
-        }
+}
+function useObservableSubscriptionResult(resultData, observable, client, options, watchQueryOptions, disableNetworkFetches, partialRefetch, isSyncSSR, callbacks) {
+    var callbackRef = rehackt__WEBPACK_IMPORTED_MODULE_1__.useRef(callbacks);
+    rehackt__WEBPACK_IMPORTED_MODULE_1__.useEffect(function () {
         // Make sure state.onCompleted and state.onError always reflect the latest
         // options.onCompleted and options.onError callbacks provided to useQuery,
         // since those functions are often recreated every time useQuery is called.
         // Like the forceUpdate method, the versions of these methods inherited from
         // InternalState.prototype are empty no-ops, but we can override them on the
         // base state object (without modifying the prototype).
-        this.onCompleted =
-            options.onCompleted || InternalState.prototype.onCompleted;
-        this.onError = options.onError || InternalState.prototype.onError;
-        if ((this.renderPromises || this.client.disableNetworkFetches) &&
-            this.queryHookOptions.ssr === false &&
-            !this.queryHookOptions.skip) {
-            // If SSR has been explicitly disabled, and this function has been called
-            // on the server side, return the default loading state.
-            this.result = this.ssrDisabledResult;
-        }
-        else if (this.queryHookOptions.skip ||
-            this.watchQueryOptions.fetchPolicy === "standby") {
+        callbackRef.current = callbacks;
+    });
+    var resultOverride = ((isSyncSSR || disableNetworkFetches) &&
+        options.ssr === false &&
+        !options.skip) ?
+        // If SSR has been explicitly disabled, and this function has been called
+        // on the server side, return the default loading state.
+        ssrDisabledResult
+        : options.skip || watchQueryOptions.fetchPolicy === "standby" ?
             // When skipping a query (ie. we're not querying for data but still want to
             // render children), make sure the `data` is cleared out and `loading` is
             // set to `false` (since we aren't loading anything).
@@ -49743,47 +49713,136 @@ var InternalState = /** @class */ (function () {
             // previously received data is all of a sudden removed. Unfortunately,
             // changing this is breaking, so we'll have to wait until Apollo Client 4.0
             // to address this.
-            this.result = this.skipStandbyResult;
+            skipStandbyResult
+            : void 0;
+    var previousData = resultData.previousData;
+    var currentResultOverride = rehackt__WEBPACK_IMPORTED_MODULE_1__.useMemo(function () {
+        return resultOverride &&
+            toQueryResult(resultOverride, previousData, observable, client);
+    }, [client, observable, resultOverride, previousData]);
+    return (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_8__/* .useSyncExternalStore */ .r)(rehackt__WEBPACK_IMPORTED_MODULE_1__.useCallback(function (handleStoreChange) {
+        // reference `disableNetworkFetches` here to ensure that the rules of hooks
+        // keep it as a dependency of this effect, even though it's not used
+        disableNetworkFetches;
+        if (isSyncSSR) {
+            return function () { };
         }
-        else if (this.result === this.ssrDisabledResult ||
-            this.result === this.skipStandbyResult) {
-            this.result = void 0;
+        var onNext = function () {
+            var previousResult = resultData.current;
+            // We use `getCurrentResult()` instead of the onNext argument because
+            // the values differ slightly. Specifically, loading results will have
+            // an empty object for data instead of `undefined` for some reason.
+            var result = observable.getCurrentResult();
+            // Make sure we're not attempting to re-render similar results
+            if (previousResult &&
+                previousResult.loading === result.loading &&
+                previousResult.networkStatus === result.networkStatus &&
+                (0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .L)(previousResult.data, result.data)) {
+                return;
+            }
+            setResult(result, resultData, observable, client, partialRefetch, handleStoreChange, callbackRef.current);
+        };
+        var onError = function (error) {
+            subscription.current.unsubscribe();
+            subscription.current = observable.resubscribeAfterError(onNext, onError);
+            if (!hasOwnProperty.call(error, "graphQLErrors")) {
+                // The error is not a GraphQL error
+                throw error;
+            }
+            var previousResult = resultData.current;
+            if (!previousResult ||
+                (previousResult && previousResult.loading) ||
+                !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .L)(error, previousResult.error)) {
+                setResult({
+                    data: (previousResult && previousResult.data),
+                    error: error,
+                    loading: false,
+                    networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_9__/* .NetworkStatus */ .pT.error,
+                }, resultData, observable, client, partialRefetch, handleStoreChange, callbackRef.current);
+            }
+        };
+        // TODO evaluate if we keep this in
+        // React Compiler cannot handle scoped `let` access, but a mutable object
+        // like this is fine.
+        // was:
+        // let subscription = observable.subscribe(onNext, onError);
+        var subscription = { current: observable.subscribe(onNext, onError) };
+        // Do the "unsubscribe" with a short delay.
+        // This way, an existing subscription can be reused without an additional
+        // request if "unsubscribe"  and "resubscribe" to the same ObservableQuery
+        // happen in very fast succession.
+        return function () {
+            setTimeout(function () { return subscription.current.unsubscribe(); });
+        };
+    }, [
+        disableNetworkFetches,
+        isSyncSSR,
+        observable,
+        resultData,
+        partialRefetch,
+        client,
+    ]), function () {
+        return currentResultOverride ||
+            getCurrentResult(resultData, observable, callbackRef.current, partialRefetch, client);
+    }, function () {
+        return currentResultOverride ||
+            getCurrentResult(resultData, observable, callbackRef.current, partialRefetch, client);
+    });
+}
+function useRegisterSSRObservable(observable, renderPromises, ssrAllowed) {
+    if (renderPromises && ssrAllowed) {
+        renderPromises.registerSSRObservable(observable);
+        if (observable.getCurrentResult().loading) {
+            // TODO: This is a legacy API which could probably be cleaned up
+            renderPromises.addObservableQueryPromise(observable);
         }
-    };
-    InternalState.prototype.getObsQueryOptions = function () {
-        var toMerge = [];
-        var globalDefaults = this.client.defaultOptions.watchQuery;
-        if (globalDefaults)
-            toMerge.push(globalDefaults);
-        if (this.queryHookOptions.defaultOptions) {
-            toMerge.push(this.queryHookOptions.defaultOptions);
-        }
-        // We use compact rather than mergeOptions for this part of the merge,
-        // because we want watchQueryOptions.variables (if defined) to replace
-        // this.observable.options.variables whole. This replacement allows
-        // removing variables by removing them from the variables input to
-        // useQuery. If the variables were always merged together (rather than
-        // replaced), there would be no way to remove existing variables.
-        // However, the variables from options.defaultOptions and globalDefaults
-        // (if provided) should be merged, to ensure individual defaulted
-        // variables always have values, if not otherwise defined in
-        // observable.options or watchQueryOptions.
-        toMerge.push((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_11__/* .compact */ .o)(this.observable && this.observable.options, this.watchQueryOptions));
-        return toMerge.reduce(_utilities_index_js__WEBPACK_IMPORTED_MODULE_12__/* .mergeOptions */ .l);
-    };
-    // A function to massage options before passing them to ObservableQuery.
-    InternalState.prototype.createWatchQueryOptions = function (_a) {
-        var _b;
-        if (_a === void 0) { _a = {}; }
-        var skip = _a.skip, ssr = _a.ssr, onCompleted = _a.onCompleted, onError = _a.onError, defaultOptions = _a.defaultOptions, 
-        // The above options are useQuery-specific, so this ...otherOptions spread
-        // makes otherOptions almost a WatchQueryOptions object, except for the
-        // query property that we add below.
-        otherOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_13__/* .__rest */ .Tt)(_a, ["skip", "ssr", "onCompleted", "onError", "defaultOptions"]);
+    }
+}
+// this hook is not compatible with any rules of React, and there's no good way to rewrite it.
+// it should stay a separate hook that will not be optimized by the compiler
+function useResubscribeIfNecessary(
+/** this hook will mutate properties on `resultData` */
+resultData, 
+/** this hook will mutate properties on `observable` */
+observable, client, options, watchQueryOptions) {
+    var _a;
+    if (observable[lastWatchOptions] &&
+        !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .L)(observable[lastWatchOptions], watchQueryOptions)) {
+        // Though it might be tempting to postpone this reobserve call to the
+        // useEffect block, we need getCurrentResult to return an appropriate
+        // loading:true result synchronously (later within the same call to
+        // useQuery). Since we already have this.observable here (not true for
+        // the very first call to useQuery), we are not initiating any new
+        // subscriptions, though it does feel less than ideal that reobserve
+        // (potentially) kicks off a network request (for example, when the
+        // variables have changed), which is technically a side-effect.
+        observable.reobserve(getObsQueryOptions(observable, client, options, watchQueryOptions));
+        // Make sure getCurrentResult returns a fresh ApolloQueryResult<TData>,
+        // but save the current data as this.previousData, just like setResult
+        // usually does.
+        resultData.previousData =
+            ((_a = resultData.current) === null || _a === void 0 ? void 0 : _a.data) || resultData.previousData;
+        resultData.current = void 0;
+    }
+    observable[lastWatchOptions] = watchQueryOptions;
+}
+/*
+ * A function to massage options before passing them to ObservableQuery.
+ * This is two-step curried because we want to reuse the `make` function,
+ * but the `observable` might differ between calls to `make`.
+ */
+function createMakeWatchQueryOptions(client, query, _a, isSyncSSR) {
+    if (_a === void 0) { _a = {}; }
+    var skip = _a.skip, ssr = _a.ssr, onCompleted = _a.onCompleted, onError = _a.onError, defaultOptions = _a.defaultOptions, 
+    // The above options are useQuery-specific, so this ...otherOptions spread
+    // makes otherOptions almost a WatchQueryOptions object, except for the
+    // query property that we add below.
+    otherOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__rest */ .Tt)(_a, ["skip", "ssr", "onCompleted", "onError", "defaultOptions"]);
+    return function (observable) {
         // This Object.assign is safe because otherOptions is a fresh ...rest object
         // that did not exist until just now, so modifications are still allowed.
-        var watchQueryOptions = Object.assign(otherOptions, { query: this.query });
-        if (this.renderPromises &&
+        var watchQueryOptions = Object.assign(otherOptions, { query: query });
+        if (isSyncSSR &&
             (watchQueryOptions.fetchPolicy === "network-only" ||
                 watchQueryOptions.fetchPolicy === "cache-and-network")) {
             // this behavior was added to react-apollo without explanation in this PR
@@ -49794,143 +49853,146 @@ var InternalState = /** @class */ (function () {
             watchQueryOptions.variables = {};
         }
         if (skip) {
-            var _c = watchQueryOptions.fetchPolicy, fetchPolicy = _c === void 0 ? this.getDefaultFetchPolicy() : _c, _d = watchQueryOptions.initialFetchPolicy, initialFetchPolicy = _d === void 0 ? fetchPolicy : _d;
             // When skipping, we set watchQueryOptions.fetchPolicy initially to
             // "standby", but we also need/want to preserve the initial non-standby
             // fetchPolicy that would have been used if not skipping.
-            Object.assign(watchQueryOptions, {
-                initialFetchPolicy: initialFetchPolicy,
-                fetchPolicy: "standby",
-            });
+            watchQueryOptions.initialFetchPolicy =
+                watchQueryOptions.initialFetchPolicy ||
+                    watchQueryOptions.fetchPolicy ||
+                    getDefaultFetchPolicy(defaultOptions, client.defaultOptions);
+            watchQueryOptions.fetchPolicy = "standby";
         }
         else if (!watchQueryOptions.fetchPolicy) {
             watchQueryOptions.fetchPolicy =
-                ((_b = this.observable) === null || _b === void 0 ? void 0 : _b.options.initialFetchPolicy) ||
-                    this.getDefaultFetchPolicy();
+                (observable === null || observable === void 0 ? void 0 : observable.options.initialFetchPolicy) ||
+                    getDefaultFetchPolicy(defaultOptions, client.defaultOptions);
         }
         return watchQueryOptions;
     };
-    InternalState.prototype.getDefaultFetchPolicy = function () {
-        var _a, _b;
-        return (((_a = this.queryHookOptions.defaultOptions) === null || _a === void 0 ? void 0 : _a.fetchPolicy) ||
-            ((_b = this.client.defaultOptions.watchQuery) === null || _b === void 0 ? void 0 : _b.fetchPolicy) ||
-            "cache-first");
-    };
-    // Defining these methods as no-ops on the prototype allows us to call
-    // state.onCompleted and/or state.onError without worrying about whether a
-    // callback was provided.
-    InternalState.prototype.onCompleted = function (data) { };
-    InternalState.prototype.onError = function (error) { };
-    InternalState.prototype.useObservableQuery = function () {
-        // See if there is an existing observable that was used to fetch the same
-        // data and if so, use it instead since it will contain the proper queryId
-        // to fetch the result set. This is used during SSR.
-        var obsQuery = (this.observable =
-            (this.renderPromises &&
-                this.renderPromises.getSSRObservable(this.watchQueryOptions)) ||
-                this.observable || // Reuse this.observable if possible (and not SSR)
-                this.client.watchQuery(this.getObsQueryOptions()));
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        this.obsQueryFields = rehackt__WEBPACK_IMPORTED_MODULE_1__.useMemo(function () { return ({
-            refetch: obsQuery.refetch.bind(obsQuery),
-            reobserve: obsQuery.reobserve.bind(obsQuery),
-            fetchMore: obsQuery.fetchMore.bind(obsQuery),
-            updateQuery: obsQuery.updateQuery.bind(obsQuery),
-            startPolling: obsQuery.startPolling.bind(obsQuery),
-            stopPolling: obsQuery.stopPolling.bind(obsQuery),
-            subscribeToMore: obsQuery.subscribeToMore.bind(obsQuery),
-        }); }, [obsQuery]);
-        var ssrAllowed = !(this.queryHookOptions.ssr === false || this.queryHookOptions.skip);
-        if (this.renderPromises && ssrAllowed) {
-            this.renderPromises.registerSSRObservable(obsQuery);
-            if (obsQuery.getCurrentResult().loading) {
-                // TODO: This is a legacy API which could probably be cleaned up
-                this.renderPromises.addObservableQueryPromise(obsQuery);
+}
+function getObsQueryOptions(observable, client, queryHookOptions, watchQueryOptions) {
+    var toMerge = [];
+    var globalDefaults = client.defaultOptions.watchQuery;
+    if (globalDefaults)
+        toMerge.push(globalDefaults);
+    if (queryHookOptions.defaultOptions) {
+        toMerge.push(queryHookOptions.defaultOptions);
+    }
+    // We use compact rather than mergeOptions for this part of the merge,
+    // because we want watchQueryOptions.variables (if defined) to replace
+    // this.observable.options.variables whole. This replacement allows
+    // removing variables by removing them from the variables input to
+    // useQuery. If the variables were always merged together (rather than
+    // replaced), there would be no way to remove existing variables.
+    // However, the variables from options.defaultOptions and globalDefaults
+    // (if provided) should be merged, to ensure individual defaulted
+    // variables always have values, if not otherwise defined in
+    // observable.options or watchQueryOptions.
+    toMerge.push((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_10__/* .compact */ .o)(observable && observable.options, watchQueryOptions));
+    return toMerge.reduce(_utilities_index_js__WEBPACK_IMPORTED_MODULE_11__/* .mergeOptions */ .l);
+}
+function setResult(nextResult, resultData, observable, client, partialRefetch, forceUpdate, callbacks) {
+    var previousResult = resultData.current;
+    if (previousResult && previousResult.data) {
+        resultData.previousData = previousResult.data;
+    }
+    if (!nextResult.error && (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_12__/* .isNonEmptyArray */ .E)(nextResult.errors)) {
+        // Until a set naming convention for networkError and graphQLErrors is
+        // decided upon, we map errors (graphQLErrors) to the error options.
+        // TODO: Is it possible for both result.error and result.errors to be
+        // defined here?
+        nextResult.error = new _errors_index_js__WEBPACK_IMPORTED_MODULE_13__/* .ApolloError */ .K4({ graphQLErrors: nextResult.errors });
+    }
+    resultData.current = toQueryResult(unsafeHandlePartialRefetch(nextResult, observable, partialRefetch), resultData.previousData, observable, client);
+    // Calling state.setResult always triggers an update, though some call sites
+    // perform additional equality checks before committing to an update.
+    forceUpdate();
+    handleErrorOrCompleted(nextResult, previousResult === null || previousResult === void 0 ? void 0 : previousResult.networkStatus, callbacks);
+}
+function handleErrorOrCompleted(result, previousNetworkStatus, callbacks) {
+    if (!result.loading) {
+        var error_1 = toApolloError(result);
+        // wait a tick in case we are in the middle of rendering a component
+        Promise.resolve()
+            .then(function () {
+            if (error_1) {
+                callbacks.onError(error_1);
             }
-        }
-        return obsQuery;
-    };
-    InternalState.prototype.setResult = function (nextResult) {
-        var previousResult = this.result;
-        if (previousResult && previousResult.data) {
-            this.previousData = previousResult.data;
-        }
-        this.result = nextResult;
-        // Calling state.setResult always triggers an update, though some call sites
-        // perform additional equality checks before committing to an update.
-        this.forceUpdate();
-        this.handleErrorOrCompleted(nextResult, previousResult);
-    };
-    InternalState.prototype.handleErrorOrCompleted = function (result, previousResult) {
-        var _this = this;
-        if (!result.loading) {
-            var error_1 = this.toApolloError(result);
-            // wait a tick in case we are in the middle of rendering a component
-            Promise.resolve()
-                .then(function () {
-                if (error_1) {
-                    _this.onError(error_1);
-                }
-                else if (result.data &&
-                    (previousResult === null || previousResult === void 0 ? void 0 : previousResult.networkStatus) !== result.networkStatus &&
-                    result.networkStatus === _core_index_js__WEBPACK_IMPORTED_MODULE_6__/* .NetworkStatus */ .pT.ready) {
-                    _this.onCompleted(result.data);
-                }
-            })
-                .catch(function (error) {
-                globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.warn(error);
-            });
-        }
-    };
-    InternalState.prototype.toApolloError = function (result) {
-        return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_14__/* .isNonEmptyArray */ .E)(result.errors) ?
-            new _errors_index_js__WEBPACK_IMPORTED_MODULE_15__/* .ApolloError */ .K4({ graphQLErrors: result.errors })
-            : result.error;
-    };
-    InternalState.prototype.getCurrentResult = function () {
-        // Using this.result as a cache ensures getCurrentResult continues returning
-        // the same (===) result object, unless state.setResult has been called, or
-        // we're doing server rendering and therefore override the result below.
-        if (!this.result) {
-            this.handleErrorOrCompleted((this.result = this.observable.getCurrentResult()));
-        }
-        return this.result;
-    };
-    InternalState.prototype.toQueryResult = function (result) {
-        var queryResult = this.toQueryResultCache.get(result);
-        if (queryResult)
-            return queryResult;
-        var data = result.data, partial = result.partial, resultWithoutPartial = (0,tslib__WEBPACK_IMPORTED_MODULE_13__/* .__rest */ .Tt)(result, ["data", "partial"]);
-        this.toQueryResultCache.set(result, (queryResult = (0,tslib__WEBPACK_IMPORTED_MODULE_13__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_13__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_13__/* .__assign */ .Cl)({ data: data }, resultWithoutPartial), this.obsQueryFields), { client: this.client, observable: this.observable, variables: this.observable.variables, called: !this.queryHookOptions.skip, previousData: this.previousData })));
-        if (!queryResult.error && (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_14__/* .isNonEmptyArray */ .E)(result.errors)) {
-            // Until a set naming convention for networkError and graphQLErrors is
-            // decided upon, we map errors (graphQLErrors) to the error options.
-            // TODO: Is it possible for both result.error and result.errors to be
-            // defined here?
-            queryResult.error = new _errors_index_js__WEBPACK_IMPORTED_MODULE_15__/* .ApolloError */ .K4({ graphQLErrors: result.errors });
-        }
-        return queryResult;
-    };
-    InternalState.prototype.unsafeHandlePartialRefetch = function (result) {
+            else if (result.data &&
+                previousNetworkStatus !== result.networkStatus &&
+                result.networkStatus === _core_index_js__WEBPACK_IMPORTED_MODULE_9__/* .NetworkStatus */ .pT.ready) {
+                callbacks.onCompleted(result.data);
+            }
+        })
+            .catch(function (error) {
+            globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.warn(error);
+        });
+    }
+}
+function getCurrentResult(resultData, observable, callbacks, partialRefetch, client) {
+    // Using this.result as a cache ensures getCurrentResult continues returning
+    // the same (===) result object, unless state.setResult has been called, or
+    // we're doing server rendering and therefore override the result below.
+    if (!resultData.current) {
         // WARNING: SIDE-EFFECTS IN THE RENDER FUNCTION
-        //
-        // TODO: This code should be removed when the partialRefetch option is
-        // removed. I was unable to get this hook to behave reasonably in certain
-        // edge cases when this block was put in an effect.
-        if (result.partial &&
-            this.queryHookOptions.partialRefetch &&
-            !result.loading &&
-            (!result.data || Object.keys(result.data).length === 0) &&
-            this.observable.options.fetchPolicy !== "cache-only") {
-            Object.assign(result, {
-                loading: true,
-                networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_6__/* .NetworkStatus */ .pT.refetch,
-            });
-            this.observable.refetch();
-        }
+        // this could call unsafeHandlePartialRefetch
+        setResult(observable.getCurrentResult(), resultData, observable, client, partialRefetch, function () { }, callbacks);
+    }
+    return resultData.current;
+}
+function getDefaultFetchPolicy(queryHookDefaultOptions, clientDefaultOptions) {
+    var _a;
+    return ((queryHookDefaultOptions === null || queryHookDefaultOptions === void 0 ? void 0 : queryHookDefaultOptions.fetchPolicy) ||
+        ((_a = clientDefaultOptions === null || clientDefaultOptions === void 0 ? void 0 : clientDefaultOptions.watchQuery) === null || _a === void 0 ? void 0 : _a.fetchPolicy) ||
+        "cache-first");
+}
+function toApolloError(result) {
+    return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_12__/* .isNonEmptyArray */ .E)(result.errors) ?
+        new _errors_index_js__WEBPACK_IMPORTED_MODULE_13__/* .ApolloError */ .K4({ graphQLErrors: result.errors })
+        : result.error;
+}
+function toQueryResult(result, previousData, observable, client) {
+    var data = result.data, partial = result.partial, resultWithoutPartial = (0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__rest */ .Tt)(result, ["data", "partial"]);
+    var queryResult = (0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({ data: data }, resultWithoutPartial), { client: client, observable: observable, variables: observable.variables, called: result !== ssrDisabledResult && result !== skipStandbyResult, previousData: previousData });
+    return queryResult;
+}
+function unsafeHandlePartialRefetch(result, observable, partialRefetch) {
+    // TODO: This code should be removed when the partialRefetch option is
+    // removed. I was unable to get this hook to behave reasonably in certain
+    // edge cases when this block was put in an effect.
+    if (result.partial &&
+        partialRefetch &&
+        !result.loading &&
+        (!result.data || Object.keys(result.data).length === 0) &&
+        observable.options.fetchPolicy !== "cache-only") {
+        observable.refetch();
+        return (0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({}, result), { loading: true, networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_9__/* .NetworkStatus */ .pT.refetch });
+    }
+    return result;
+}
+var ssrDisabledResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_14__/* .maybeDeepFreeze */ .G)({
+    loading: true,
+    data: void 0,
+    error: void 0,
+    networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_9__/* .NetworkStatus */ .pT.loading,
+});
+var skipStandbyResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_14__/* .maybeDeepFreeze */ .G)({
+    loading: false,
+    data: void 0,
+    error: void 0,
+    networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_9__/* .NetworkStatus */ .pT.ready,
+});
+function bindObservableMethods(observable) {
+    return {
+        refetch: observable.refetch.bind(observable),
+        reobserve: observable.reobserve.bind(observable),
+        fetchMore: observable.fetchMore.bind(observable),
+        updateQuery: observable.updateQuery.bind(observable),
+        startPolling: observable.startPolling.bind(observable),
+        stopPolling: observable.stopPolling.bind(observable),
+        subscribeToMore: observable.subscribeToMore.bind(observable),
     };
-    return InternalState;
-}());
+}
 //# sourceMappingURL=useQuery.js.map
 
 /***/ }),
@@ -50014,7 +50076,11 @@ function _useQueryRefHandlers(queryRef) {
         setWrappedQueryRef((0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .wrapQueryRef */ .Qh)(internalQueryRef));
         return promise;
     }, [internalQueryRef]);
-    return { refetch: refetch, fetchMore: fetchMore };
+    return {
+        refetch: refetch,
+        fetchMore: fetchMore,
+        subscribeToMore: internalQueryRef.observable.subscribeToMore,
+    };
 }
 //# sourceMappingURL=useQueryRefHandlers.js.map
 
@@ -50148,6 +50214,9 @@ function _useReadQuery(queryRef) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   R: () => (/* binding */ useSubscription)
 /* harmony export */ });
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(1635);
+}
 /* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 /* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7243);
 /* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5381);
@@ -50155,8 +50224,32 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _parser_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(5443);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(9211);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(3401);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(111);
 }
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _internal_useDeepMemo_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(7659);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(9770);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _useQuery_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(1723);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _internal_useIsomorphicLayoutEffect_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(4269);
+}
+
+
+
+
+
+
 
 
 
@@ -50185,11 +50278,11 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
  * }
  * ```
  * @remarks
- * #### Subscriptions and React 18 Automatic Batching
+ * #### Consider using `onData` instead of `useEffect`
  *
- * With React 18's [automatic batching](https://react.dev/blog/2022/03/29/react-v18#new-feature-automatic-batching), multiple state updates may be grouped into a single re-render for better performance.
- *
- * If your subscription API sends multiple messages at the same time or in very fast succession (within fractions of a millisecond), it is likely that only the last message received in that narrow time frame will result in a re-render.
+ * If you want to react to incoming data, please use the `onData` option instead of `useEffect`.
+ * State updates you make inside a `useEffect` hook might cause additional rerenders, and `useEffect` is mostly meant for side effects of rendering, not as an event handler.
+ * State updates made in an event handler like `onData` might - depending on the React version - be batched and cause only a single rerender.
  *
  * Consider the following component:
  *
@@ -50210,10 +50303,6 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
  *   );
  * }
  * ```
- *
- * If your subscription back-end emits two messages with the same timestamp, only the last message received by Apollo Client will be rendered. This is because React 18 will batch these two state updates into a single re-render.
- *
- * Since the component above is using `useEffect` to push `data` into a piece of local state on each `Subscriptions` re-render, the first message will never be added to the `accumulatedData` array since its render was skipped.
  *
  * Instead of using `useEffect` here, we can re-write this component to use the `onData` callback function accepted in `useSubscription`'s `options` object:
  *
@@ -50248,91 +50337,75 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
  * @returns Query result object
  */
 function useSubscription(subscription, options) {
+    if (options === void 0) { options = Object.create(null); }
     var hasIssuedDeprecationWarningRef = rehackt__WEBPACK_IMPORTED_MODULE_1__.useRef(false);
-    var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)(options === null || options === void 0 ? void 0 : options.client);
+    var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)(options.client);
     (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_4__/* .verifyDocumentType */ .D$)(subscription, _parser_index_js__WEBPACK_IMPORTED_MODULE_4__/* .DocumentType */ .KG.Subscription);
-    var _a = rehackt__WEBPACK_IMPORTED_MODULE_1__.useState({
-        loading: !(options === null || options === void 0 ? void 0 : options.skip),
-        error: void 0,
-        data: void 0,
-        variables: options === null || options === void 0 ? void 0 : options.variables,
-    }), result = _a[0], setResult = _a[1];
     if (!hasIssuedDeprecationWarningRef.current) {
         hasIssuedDeprecationWarningRef.current = true;
-        if (options === null || options === void 0 ? void 0 : options.onSubscriptionData) {
+        if (options.onSubscriptionData) {
             globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.warn(options.onData ? 52 : 53);
         }
-        if (options === null || options === void 0 ? void 0 : options.onSubscriptionComplete) {
+        if (options.onSubscriptionComplete) {
             globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.warn(options.onComplete ? 54 : 55);
         }
     }
-    var _b = rehackt__WEBPACK_IMPORTED_MODULE_1__.useState(function () {
-        if (options === null || options === void 0 ? void 0 : options.skip) {
-            return null;
+    var skip = options.skip, fetchPolicy = options.fetchPolicy, errorPolicy = options.errorPolicy, shouldResubscribe = options.shouldResubscribe, context = options.context, extensions = options.extensions, ignoreResults = options.ignoreResults;
+    var variables = (0,_internal_useDeepMemo_js__WEBPACK_IMPORTED_MODULE_5__/* .useDeepMemo */ .k)(function () { return options.variables; }, [options.variables]);
+    var recreate = function () {
+        return createSubscription(client, subscription, variables, fetchPolicy, errorPolicy, context, extensions);
+    };
+    var _a = rehackt__WEBPACK_IMPORTED_MODULE_1__.useState(options.skip ? null : recreate), observable = _a[0], setObservable = _a[1];
+    var recreateRef = rehackt__WEBPACK_IMPORTED_MODULE_1__.useRef(recreate);
+    (0,_internal_useIsomorphicLayoutEffect_js__WEBPACK_IMPORTED_MODULE_6__/* .useIsomorphicLayoutEffect */ .E)(function () {
+        recreateRef.current = recreate;
+    });
+    if (skip) {
+        if (observable) {
+            setObservable((observable = null));
         }
-        return client.subscribe({
-            query: subscription,
-            variables: options === null || options === void 0 ? void 0 : options.variables,
-            fetchPolicy: options === null || options === void 0 ? void 0 : options.fetchPolicy,
-            context: options === null || options === void 0 ? void 0 : options.context,
-        });
-    }), observable = _b[0], setObservable = _b[1];
-    var canResetObservableRef = rehackt__WEBPACK_IMPORTED_MODULE_1__.useRef(false);
+    }
+    else if (!observable ||
+        ((client !== observable.__.client ||
+            subscription !== observable.__.query ||
+            fetchPolicy !== observable.__.fetchPolicy ||
+            errorPolicy !== observable.__.errorPolicy ||
+            !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .L)(variables, observable.__.variables)) &&
+            (typeof shouldResubscribe === "function" ?
+                !!shouldResubscribe(options)
+                : shouldResubscribe) !== false)) {
+        setObservable((observable = recreate()));
+    }
+    var optionsRef = rehackt__WEBPACK_IMPORTED_MODULE_1__.useRef(options);
     rehackt__WEBPACK_IMPORTED_MODULE_1__.useEffect(function () {
-        return function () {
-            canResetObservableRef.current = true;
-        };
-    }, []);
-    var ref = rehackt__WEBPACK_IMPORTED_MODULE_1__.useRef({ client: client, subscription: subscription, options: options });
-    rehackt__WEBPACK_IMPORTED_MODULE_1__.useEffect(function () {
-        var _a, _b, _c, _d;
-        var shouldResubscribe = options === null || options === void 0 ? void 0 : options.shouldResubscribe;
-        if (typeof shouldResubscribe === "function") {
-            shouldResubscribe = !!shouldResubscribe(options);
-        }
-        if (options === null || options === void 0 ? void 0 : options.skip) {
-            if (!(options === null || options === void 0 ? void 0 : options.skip) !== !((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.skip) ||
-                canResetObservableRef.current) {
-                setResult({
-                    loading: false,
-                    data: void 0,
-                    error: void 0,
-                    variables: options === null || options === void 0 ? void 0 : options.variables,
-                });
-                setObservable(null);
-                canResetObservableRef.current = false;
-            }
-        }
-        else if ((shouldResubscribe !== false &&
-            (client !== ref.current.client ||
-                subscription !== ref.current.subscription ||
-                (options === null || options === void 0 ? void 0 : options.fetchPolicy) !== ((_b = ref.current.options) === null || _b === void 0 ? void 0 : _b.fetchPolicy) ||
-                !(options === null || options === void 0 ? void 0 : options.skip) !== !((_c = ref.current.options) === null || _c === void 0 ? void 0 : _c.skip) ||
-                !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_2__/* .equal */ .L)(options === null || options === void 0 ? void 0 : options.variables, (_d = ref.current.options) === null || _d === void 0 ? void 0 : _d.variables))) ||
-            canResetObservableRef.current) {
-            setResult({
-                loading: true,
-                data: void 0,
-                error: void 0,
-                variables: options === null || options === void 0 ? void 0 : options.variables,
-            });
-            setObservable(client.subscribe({
-                query: subscription,
-                variables: options === null || options === void 0 ? void 0 : options.variables,
-                fetchPolicy: options === null || options === void 0 ? void 0 : options.fetchPolicy,
-                context: options === null || options === void 0 ? void 0 : options.context,
-            }));
-            canResetObservableRef.current = false;
-        }
-        Object.assign(ref.current, { client: client, subscription: subscription, options: options });
-        // eslint-disable-next-line react-compiler/react-compiler
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [client, subscription, options, canResetObservableRef.current]);
-    rehackt__WEBPACK_IMPORTED_MODULE_1__.useEffect(function () {
+        optionsRef.current = options;
+    });
+    var fallbackLoading = !skip && !ignoreResults;
+    var fallbackResult = rehackt__WEBPACK_IMPORTED_MODULE_1__.useMemo(function () { return ({
+        loading: fallbackLoading,
+        error: void 0,
+        data: void 0,
+        variables: variables,
+    }); }, [fallbackLoading, variables]);
+    var ignoreResultsRef = rehackt__WEBPACK_IMPORTED_MODULE_1__.useRef(ignoreResults);
+    (0,_internal_useIsomorphicLayoutEffect_js__WEBPACK_IMPORTED_MODULE_6__/* .useIsomorphicLayoutEffect */ .E)(function () {
+        // We cannot reference `ignoreResults` directly in the effect below
+        // it would add a dependency to the `useEffect` deps array, which means the
+        // subscription would be recreated if `ignoreResults` changes
+        // As a result, on resubscription, the last result would be re-delivered,
+        // rendering the component one additional time, and re-triggering `onData`.
+        // The same applies to `fetchPolicy`, which results in a new `observable`
+        // being created. We cannot really avoid it in that case, but we can at least
+        // avoid it for `ignoreResults`.
+        ignoreResultsRef.current = ignoreResults;
+    });
+    var ret = (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_7__/* .useSyncExternalStore */ .r)(rehackt__WEBPACK_IMPORTED_MODULE_1__.useCallback(function (update) {
         if (!observable) {
-            return;
+            return function () { };
         }
         var subscriptionStopped = false;
+        var variables = observable.__.variables;
+        var client = observable.__.client;
         var subscription = observable.subscribe({
             next: function (fetchResult) {
                 var _a, _b;
@@ -50344,18 +50417,23 @@ function useSubscription(subscription, options) {
                     // TODO: fetchResult.data can be null but SubscriptionResult.data
                     // expects TData | undefined only
                     data: fetchResult.data,
-                    error: void 0,
-                    variables: options === null || options === void 0 ? void 0 : options.variables,
+                    error: (0,_useQuery_js__WEBPACK_IMPORTED_MODULE_8__/* .toApolloError */ .jy)(fetchResult),
+                    variables: variables,
                 };
-                setResult(result);
-                if ((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onData) {
-                    ref.current.options.onData({
+                observable.__.setResult(result);
+                if (!ignoreResultsRef.current)
+                    update();
+                if (result.error) {
+                    (_b = (_a = optionsRef.current).onError) === null || _b === void 0 ? void 0 : _b.call(_a, result.error);
+                }
+                else if (optionsRef.current.onData) {
+                    optionsRef.current.onData({
                         client: client,
                         data: result,
                     });
                 }
-                else if ((_b = ref.current.options) === null || _b === void 0 ? void 0 : _b.onSubscriptionData) {
-                    ref.current.options.onSubscriptionData({
+                else if (optionsRef.current.onSubscriptionData) {
+                    optionsRef.current.onSubscriptionData({
                         client: client,
                         subscriptionData: result,
                     });
@@ -50363,24 +50441,27 @@ function useSubscription(subscription, options) {
             },
             error: function (error) {
                 var _a, _b;
+                error =
+                    error instanceof _core_index_js__WEBPACK_IMPORTED_MODULE_9__/* .ApolloError */ .K4 ? error : (new _core_index_js__WEBPACK_IMPORTED_MODULE_9__/* .ApolloError */ .K4({ protocolErrors: [error] }));
                 if (!subscriptionStopped) {
-                    setResult({
+                    observable.__.setResult({
                         loading: false,
                         data: void 0,
                         error: error,
-                        variables: options === null || options === void 0 ? void 0 : options.variables,
+                        variables: variables,
                     });
-                    (_b = (_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onError) === null || _b === void 0 ? void 0 : _b.call(_a, error);
+                    if (!ignoreResultsRef.current)
+                        update();
+                    (_b = (_a = optionsRef.current).onError) === null || _b === void 0 ? void 0 : _b.call(_a, error);
                 }
             },
             complete: function () {
-                var _a, _b;
                 if (!subscriptionStopped) {
-                    if ((_a = ref.current.options) === null || _a === void 0 ? void 0 : _a.onComplete) {
-                        ref.current.options.onComplete();
+                    if (optionsRef.current.onComplete) {
+                        optionsRef.current.onComplete();
                     }
-                    else if ((_b = ref.current.options) === null || _b === void 0 ? void 0 : _b.onSubscriptionComplete) {
-                        ref.current.options.onSubscriptionComplete();
+                    else if (optionsRef.current.onSubscriptionComplete) {
+                        optionsRef.current.onSubscriptionComplete();
                     }
                 }
             },
@@ -50394,10 +50475,48 @@ function useSubscription(subscription, options) {
                 subscription.unsubscribe();
             });
         };
-        // eslint-disable-next-line react-compiler/react-compiler
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [observable]);
-    return result;
+    }, [observable]), function () {
+        return observable && !skip && !ignoreResults ?
+            observable.__.result
+            : fallbackResult;
+    });
+    return rehackt__WEBPACK_IMPORTED_MODULE_1__.useMemo(function () { return ((0,tslib__WEBPACK_IMPORTED_MODULE_10__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_10__/* .__assign */ .Cl)({}, ret), { restart: function () {
+            (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(!optionsRef.current.skip, 56);
+            setObservable(recreateRef.current());
+        } })); }, [ret]);
+}
+function createSubscription(client, query, variables, fetchPolicy, errorPolicy, context, extensions) {
+    var options = {
+        query: query,
+        variables: variables,
+        fetchPolicy: fetchPolicy,
+        errorPolicy: errorPolicy,
+        context: context,
+        extensions: extensions,
+    };
+    var __ = (0,tslib__WEBPACK_IMPORTED_MODULE_10__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_10__/* .__assign */ .Cl)({}, options), { client: client, result: {
+            loading: true,
+            data: void 0,
+            error: void 0,
+            variables: variables,
+        }, setResult: function (result) {
+            __.result = result;
+        } });
+    var observable = null;
+    return Object.assign(new _core_index_js__WEBPACK_IMPORTED_MODULE_11__/* .Observable */ .c(function (observer) {
+        // lazily start the subscription when the first observer subscribes
+        // to get around strict mode
+        if (!observable) {
+            observable = client.subscribe(options);
+        }
+        var sub = observable.subscribe(observer);
+        return function () { return sub.unsubscribe(); };
+    }), {
+        /**
+         * A tracking object to store details about the observable and the latest result of the subscription.
+         */
+        __: __,
+    });
 }
 //# sourceMappingURL=useSubscription.js.map
 
@@ -50522,7 +50641,7 @@ function _useSuspenseQuery(query, options) {
         setPromise([queryRef.key, queryRef.promise]);
         return promise;
     }, [queryRef]);
-    var subscribeToMore = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (options) { return queryRef.observable.subscribeToMore(options); }, [queryRef]);
+    var subscribeToMore = queryRef.observable.subscribeToMore;
     return rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
         return {
             client: client,
@@ -50549,11 +50668,11 @@ function validateFetchPolicy(fetchPolicy) {
         "no-cache",
         "cache-and-network",
     ];
-    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)(supportedFetchPolicies.includes(fetchPolicy), 56, fetchPolicy);
+    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)(supportedFetchPolicies.includes(fetchPolicy), 57, fetchPolicy);
 }
 function validatePartialDataReturn(fetchPolicy, returnPartialData) {
     if (fetchPolicy === "no-cache" && returnPartialData) {
-        globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1.warn(57);
+        globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1.warn(58);
     }
 }
 function toApolloError(result) {
@@ -50628,7 +50747,7 @@ var useSyncExternalStore = (/* runtime-dependent pure expression or super */ /^(
             value !== getSnapshot()) {
             didWarnUncachedGetSnapshot = true;
             // DEVIATION: Using invariant.error instead of console.error directly.
-            globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.error(58);
+            globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.error(59);
         }
         // Because updates are synchronous, we don't queue them. Instead we force a
         // re-render whenever the subscribed state changes by updating an some
@@ -50813,7 +50932,7 @@ function wrapQueryRef(internalQueryRef) {
     return ref;
 }
 function assertWrappedQueryRef(queryRef) {
-    (0,_utilities_globals_invariantWrappers_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)(!queryRef || QUERY_REFERENCE_SYMBOL in queryRef, 59);
+    (0,_utilities_globals_invariantWrappers_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)(!queryRef || QUERY_REFERENCE_SYMBOL in queryRef, 60);
 }
 function getWrappedPromise(queryRef) {
     var internalQueryRef = unwrapQueryRef(queryRef);
@@ -51223,7 +51342,7 @@ function parser(document) {
     if (cached)
         return cached;
     var variables, type, name;
-    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(!!document && !!document.kind, 60, document);
+    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(!!document && !!document.kind, 61, document);
     var fragments = [];
     var queries = [];
     var mutations = [];
@@ -51251,10 +51370,10 @@ function parser(document) {
     (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(!fragments.length ||
         queries.length ||
         mutations.length ||
-        subscriptions.length, 61);
+        subscriptions.length, 62);
     (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(
         queries.length + mutations.length + subscriptions.length <= 1,
-        62,
+        63,
         document,
         queries.length,
         subscriptions.length,
@@ -51266,7 +51385,7 @@ function parser(document) {
     var definitions = queries.length ? queries
         : mutations.length ? mutations
             : subscriptions;
-    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(definitions.length === 1, 63, document, definitions.length);
+    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(definitions.length === 1, 64, document, definitions.length);
     var definition = definitions[0];
     variables = definition.variableDefinitions || [];
     if (definition.name && definition.name.kind === "Name") {
@@ -51291,7 +51410,7 @@ function verifyDocumentType(document, type) {
     var usedOperationName = operationName(operation.type);
     (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(
         operation.type === type,
-        64,
+        65,
         requiredOperationName,
         requiredOperationName,
         usedOperationName
@@ -51309,11 +51428,15 @@ function verifyDocumentType(document, type) {
 /* harmony export */   d: () => (/* binding */ createQueryPreloader)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1635);
+	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(1635);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4047);
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4047);
 }
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _hooks_internal_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8481);
+}
+
 
 
 /**
@@ -51335,15 +51458,18 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
  * @since 3.9.0
  */
 function createQueryPreloader(client) {
+    return (0,_hooks_internal_index_js__WEBPACK_IMPORTED_MODULE_0__/* .wrapHook */ .Y)("createQueryPreloader", _createQueryPreloader, client)(client);
+}
+var _createQueryPreloader = function (client) {
     return function preloadQuery(query, options) {
         var _a, _b;
         if (options === void 0) { options = Object.create(null); }
-        var queryRef = new _internal_index_js__WEBPACK_IMPORTED_MODULE_0__/* .InternalQueryReference */ .Hp(client.watchQuery((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .Cl)({}, options), { query: query })), {
+        var queryRef = new _internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .InternalQueryReference */ .Hp(client.watchQuery((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)({}, options), { query: query })), {
             autoDisposeTimeoutMs: (_b = (_a = client.defaultOptions.react) === null || _a === void 0 ? void 0 : _a.suspense) === null || _b === void 0 ? void 0 : _b.autoDisposeTimeoutMs,
         });
-        return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_0__/* .wrapQueryRef */ .Qh)(queryRef);
+        return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .wrapQueryRef */ .Qh)(queryRef);
     };
-}
+};
 //# sourceMappingURL=createQueryPreloader.js.map
 
 /***/ }),
@@ -52382,7 +52508,7 @@ var DocumentTransform = /** @class */ (function () {
                 makeCacheKey: function (document) {
                     var cacheKeys = _this.getCacheKey(document);
                     if (cacheKeys) {
-                        (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)(Array.isArray(cacheKeys), 67);
+                        (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)(Array.isArray(cacheKeys), 68);
                         return stableCacheKeys_1.lookupArray(cacheKeys);
                     }
                 },
@@ -52450,7 +52576,7 @@ function shouldInclude(_a, variables) {
         if (ifArgument.value.kind === "Variable") {
             evaledValue =
                 variables && variables[ifArgument.value.name.value];
-            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(evaledValue !== void 0, 68, directive.name.value);
+            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(evaledValue !== void 0, 69, directive.name.value);
         }
         else {
             evaledValue = ifArgument.value.value;
@@ -52502,13 +52628,13 @@ function getInclusionDirectives(directives) {
                 return;
             var directiveArguments = directive.arguments;
             var directiveName = directive.name.value;
-            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(directiveArguments && directiveArguments.length === 1, 69, directiveName);
+            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(directiveArguments && directiveArguments.length === 1, 70, directiveName);
             var ifArgument = directiveArguments[0];
-            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(ifArgument.name && ifArgument.name.value === "if", 70, directiveName);
+            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(ifArgument.name && ifArgument.name.value === "if", 71, directiveName);
             var ifValue = ifArgument.value;
             // means it has to be a variable value if this is a valid @skip or @include directive
             (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(ifValue &&
-                (ifValue.kind === "Variable" || ifValue.kind === "BooleanValue"), 71, directiveName);
+                (ifValue.kind === "Variable" || ifValue.kind === "BooleanValue"), 72, directiveName);
             result.push({ directive: directive, ifArgument: ifArgument });
         });
     }
@@ -52566,7 +52692,7 @@ function getFragmentQueryDocument(document, fragmentName) {
         // define our own operation definition later on.
         if (definition.kind === "OperationDefinition") {
             throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(
-                72,
+                73,
                 definition.operation,
                 definition.name ? " named '".concat(definition.name.value, "'") : ""
             );
@@ -52580,7 +52706,7 @@ function getFragmentQueryDocument(document, fragmentName) {
     // If the user did not give us a fragment name then let us try to get a
     // name from a single fragment in the definition.
     if (typeof actualFragmentName === "undefined") {
-        (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(fragments.length === 1, 73, fragments.length);
+        (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(fragments.length === 1, 74, fragments.length);
         actualFragmentName = fragments[0].name.value;
     }
     // Generate a query document with an operation that simply spreads the
@@ -52626,7 +52752,7 @@ function getFragmentFromSelection(selection, fragmentMap) {
                 return fragmentMap(fragmentName);
             }
             var fragment = fragmentMap && fragmentMap[fragmentName];
-            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(fragment, 74, fragmentName);
+            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(fragment, 75, fragmentName);
             return fragment || null;
         }
         default:
@@ -52659,16 +52785,16 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 
 // Checks the document for errors and throws an exception if there is an error.
 function checkDocument(doc) {
-    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(doc && doc.kind === "Document", 75);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(doc && doc.kind === "Document", 76);
     var operations = doc.definitions
         .filter(function (d) { return d.kind !== "FragmentDefinition"; })
         .map(function (definition) {
         if (definition.kind !== "OperationDefinition") {
-            throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(76, definition.kind);
+            throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(77, definition.kind);
         }
         return definition;
     });
-    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(operations.length <= 1, 77, operations.length);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(operations.length <= 1, 78, operations.length);
     return doc;
 }
 function getOperationDefinition(doc) {
@@ -52692,14 +52818,14 @@ function getFragmentDefinitions(doc) {
 }
 function getQueryDefinition(doc) {
     var queryDef = getOperationDefinition(doc);
-    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(queryDef && queryDef.operation === "query", 78);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(queryDef && queryDef.operation === "query", 79);
     return queryDef;
 }
 function getFragmentDefinition(doc) {
-    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(doc.kind === "Document", 79);
-    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(doc.definitions.length <= 1, 80);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(doc.kind === "Document", 80);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(doc.definitions.length <= 1, 81);
     var fragmentDef = doc.definitions[0];
-    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(fragmentDef.kind === "FragmentDefinition", 81);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(fragmentDef.kind === "FragmentDefinition", 82);
     return fragmentDef;
 }
 /**
@@ -52729,7 +52855,7 @@ function getMainDefinition(queryDoc) {
     if (fragmentDefinition) {
         return fragmentDefinition;
     }
-    throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(82);
+    throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(83);
 }
 function getDefaultValues(definition) {
     var defaultValues = Object.create(null);
@@ -53410,7 +53536,7 @@ function valueToObjectRepresentation(argObj, name, value, variables) {
         argObj[name.value] = null;
     }
     else {
-        throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(83, name.value, value.kind);
+        throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(84, name.value, value.kind);
     }
 }
 function storeKeyNameFromField(field, variables) {
@@ -53666,7 +53792,7 @@ function removeDirectivesFromDocument(directives, doc) {
                 return getInUseByFragmentName(ancestor.name.value);
             }
         }
-        globalThis.__DEV__ !== false && _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.error(84);
+        globalThis.__DEV__ !== false && _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.error(85);
         return null;
     };
     var operationCount = 0;
@@ -53932,7 +54058,7 @@ var connectionRemoveConfig = {
         if (willRemove) {
             if (!directive.arguments ||
                 !directive.arguments.some(function (arg) { return arg.name.value === "key"; })) {
-                globalThis.__DEV__ !== false && _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.warn(85);
+                globalThis.__DEV__ !== false && _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.warn(86);
             }
         }
         return willRemove;
@@ -54183,7 +54309,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.10.8";
+var version = "3.11.1";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
