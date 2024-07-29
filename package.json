@@ -30,7 +30,7 @@
         "@actions/glob": "^0.4.0",
         "@apollo/client": "^3.11.1",
         "cross-fetch": "^4.0.0",
-        "fast-xml-parser": "^4.4.0",
+        "fast-xml-parser": "^4.4.1",
         "graphql": "^16.9.0",
         "he": "^1.2.0"
     },
