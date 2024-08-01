@@ -50490,7 +50490,7 @@ function useSubscription(subscription, options) {
         return observable && !skip && !ignoreResults ?
             observable.__.result
             : fallbackResult;
-    });
+    }, function () { return fallbackResult; });
     return rehackt__WEBPACK_IMPORTED_MODULE_1__.useMemo(function () { return ((0,tslib__WEBPACK_IMPORTED_MODULE_10__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_10__/* .__assign */ .Cl)({}, ret), { restart: function () {
             (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(!optionsRef.current.skip, 56);
             setObservable(recreateRef.current());
@@ -54320,7 +54320,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.11.1";
+var version = "3.11.2";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
