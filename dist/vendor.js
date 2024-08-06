@@ -43523,7 +43523,7 @@ var QueryManager = /** @class */ (function () {
         this.queries.forEach(function (_info, queryId) {
             _this.stopQueryNoBroadcast(queryId);
         });
-        this.cancelPendingFetches((0,globals/* newInvariantError */.vA)(25));
+        this.cancelPendingFetches((0,globals/* newInvariantError */.vA)(26));
     };
     QueryManager.prototype.cancelPendingFetches = function (error) {
         this.fetchCancelFns.forEach(function (cancel) { return cancel(error); });
@@ -43537,8 +43537,8 @@ var QueryManager = /** @class */ (function () {
             return (0,tslib_es6/* __generator */.YH)(this, function (_j) {
                 switch (_j.label) {
                     case 0:
-                        (0,globals/* invariant */.V1)(mutation, 26);
-                        (0,globals/* invariant */.V1)(fetchPolicy === "network-only" || fetchPolicy === "no-cache", 27);
+                        (0,globals/* invariant */.V1)(mutation, 27);
+                        (0,globals/* invariant */.V1)(fetchPolicy === "network-only" || fetchPolicy === "no-cache", 28);
                         mutationId = this.generateMutationId();
                         mutation = this.cache.transformForLink(this.transform(mutation));
                         hasClientExports = this.getDocumentInfo(mutation).hasClientExports;
@@ -43912,10 +43912,10 @@ var QueryManager = /** @class */ (function () {
     QueryManager.prototype.query = function (options, queryId) {
         var _this = this;
         if (queryId === void 0) { queryId = this.generateQueryId(); }
-        (0,globals/* invariant */.V1)(options.query, 28);
-        (0,globals/* invariant */.V1)(options.query.kind === "Document", 29);
-        (0,globals/* invariant */.V1)(!options.returnPartialData, 30);
-        (0,globals/* invariant */.V1)(!options.pollInterval, 31);
+        (0,globals/* invariant */.V1)(options.query, 29);
+        (0,globals/* invariant */.V1)(options.query.kind === "Document", 30);
+        (0,globals/* invariant */.V1)(!options.returnPartialData, 31);
+        (0,globals/* invariant */.V1)(!options.pollInterval, 32);
         return this.fetchQuery(queryId, (0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, options), { query: this.transform(options.query) })).finally(function () { return _this.stopQuery(queryId); });
     };
     QueryManager.prototype.generateQueryId = function () {
@@ -43945,7 +43945,7 @@ var QueryManager = /** @class */ (function () {
         // depend on values that previously existed in the data portion of the
         // store. So, we cancel the promises and observers that we have issued
         // so far and not yet resolved (in the case of queries).
-        this.cancelPendingFetches((0,globals/* newInvariantError */.vA)(32));
+        this.cancelPendingFetches((0,globals/* newInvariantError */.vA)(33));
         this.queries.forEach(function (queryInfo) {
             if (queryInfo.observableQuery) {
                 // Set loading to true so listeners don't trigger unless they want
@@ -44027,7 +44027,7 @@ var QueryManager = /** @class */ (function () {
         if (globalThis.__DEV__ !== false && queryNamesAndDocs.size) {
             queryNamesAndDocs.forEach(function (included, nameOrDoc) {
                 if (!included) {
-                    globalThis.__DEV__ !== false && globals/* invariant */.V1.warn(typeof nameOrDoc === "string" ? 33 : 34, nameOrDoc);
+                    globalThis.__DEV__ !== false && globals/* invariant */.V1.warn(typeof nameOrDoc === "string" ? 34 : 35, nameOrDoc);
                 }
             });
         }
@@ -44199,10 +44199,11 @@ var QueryManager = /** @class */ (function () {
         return asyncMap(this.getObservableFromLink(linkDocument, options.context, options.variables), function (result) {
             var graphQLErrors = getGraphQLErrorsFromResult(result);
             var hasErrors = graphQLErrors.length > 0;
+            var errorPolicy = options.errorPolicy;
             // If we interrupted this request by calling getResultsFromLink again
             // with the same QueryInfo object, we ignore the old results.
             if (requestId >= queryInfo.lastRequestId) {
-                if (hasErrors && options.errorPolicy === "none") {
+                if (hasErrors && errorPolicy === "none") {
                     // Throwing here effectively calls observer.error.
                     throw queryInfo.markError(new client_errors/* ApolloError */.K4({
                         graphQLErrors: graphQLErrors,
@@ -44219,7 +44220,14 @@ var QueryManager = /** @class */ (function () {
                 loading: false,
                 networkStatus: core_networkStatus/* NetworkStatus */.pT.ready,
             };
-            if (hasErrors && options.errorPolicy !== "ignore") {
+            // In the case we start multiple network requests simulatenously, we
+            // want to ensure we properly set `data` if we're reporting on an old
+            // result which will not be caught by the conditional above that ends up
+            // throwing the markError result.
+            if (hasErrors && errorPolicy === "none") {
+                aqr.data = void 0;
+            }
+            if (hasErrors && errorPolicy !== "ignore") {
                 aqr.errors = graphQLErrors;
                 aqr.networkStatus = core_networkStatus/* NetworkStatus */.pT.error;
             }
@@ -45882,6 +45890,11 @@ var ObservableQuery = /** @class */ (function (_super) {
             this.observe();
         }
         var updatedQuerySet = new Set();
+        var updateQuery = fetchMoreOptions === null || fetchMoreOptions === void 0 ? void 0 : fetchMoreOptions.updateQuery;
+        var isCached = this.options.fetchPolicy !== "no-cache";
+        if (!isCached) {
+            (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(updateQuery, 21);
+        }
         return this.queryManager
             .fetchQuery(qid, combinedOptions, _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .pT.fetchMore)
             .then(function (fetchMoreResult) {
@@ -45889,46 +45902,70 @@ var ObservableQuery = /** @class */ (function (_super) {
             if (queryInfo.networkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .pT.fetchMore) {
                 queryInfo.networkStatus = originalNetworkStatus;
             }
-            // Performing this cache update inside a cache.batch transaction ensures
-            // any affected cache.watch watchers are notified at most once about any
-            // updates. Most watchers will be using the QueryInfo class, which
-            // responds to notifications by calling reobserveCacheFirst to deliver
-            // fetchMore cache results back to this ObservableQuery.
-            _this.queryManager.cache.batch({
-                update: function (cache) {
-                    var updateQuery = fetchMoreOptions.updateQuery;
-                    if (updateQuery) {
-                        cache.updateQuery({
-                            query: _this.query,
-                            variables: _this.variables,
-                            returnPartialData: true,
-                            optimistic: false,
-                        }, function (previous) {
-                            return updateQuery(previous, {
-                                fetchMoreResult: fetchMoreResult.data,
-                                variables: combinedOptions.variables,
+            if (isCached) {
+                // Performing this cache update inside a cache.batch transaction ensures
+                // any affected cache.watch watchers are notified at most once about any
+                // updates. Most watchers will be using the QueryInfo class, which
+                // responds to notifications by calling reobserveCacheFirst to deliver
+                // fetchMore cache results back to this ObservableQuery.
+                _this.queryManager.cache.batch({
+                    update: function (cache) {
+                        var updateQuery = fetchMoreOptions.updateQuery;
+                        if (updateQuery) {
+                            cache.updateQuery({
+                                query: _this.query,
+                                variables: _this.variables,
+                                returnPartialData: true,
+                                optimistic: false,
+                            }, function (previous) {
+                                return updateQuery(previous, {
+                                    fetchMoreResult: fetchMoreResult.data,
+                                    variables: combinedOptions.variables,
+                                });
                             });
-                        });
-                    }
-                    else {
-                        // If we're using a field policy instead of updateQuery, the only
-                        // thing we need to do is write the new data to the cache using
-                        // combinedOptions.variables (instead of this.variables, which is
-                        // what this.updateQuery uses, because it works by abusing the
-                        // original field value, keyed by the original variables).
-                        cache.writeQuery({
-                            query: combinedOptions.query,
-                            variables: combinedOptions.variables,
-                            data: fetchMoreResult.data,
-                        });
-                    }
-                },
-                onWatchUpdated: function (watch) {
-                    // Record the DocumentNode associated with any watched query whose
-                    // data were updated by the cache writes above.
-                    updatedQuerySet.add(watch.query);
-                },
-            });
+                        }
+                        else {
+                            // If we're using a field policy instead of updateQuery, the only
+                            // thing we need to do is write the new data to the cache using
+                            // combinedOptions.variables (instead of this.variables, which is
+                            // what this.updateQuery uses, because it works by abusing the
+                            // original field value, keyed by the original variables).
+                            cache.writeQuery({
+                                query: combinedOptions.query,
+                                variables: combinedOptions.variables,
+                                data: fetchMoreResult.data,
+                            });
+                        }
+                    },
+                    onWatchUpdated: function (watch) {
+                        // Record the DocumentNode associated with any watched query whose
+                        // data were updated by the cache writes above.
+                        updatedQuerySet.add(watch.query);
+                    },
+                });
+            }
+            else {
+                // There is a possibility `lastResult` may not be set when
+                // `fetchMore` is called which would cause this to crash. This should
+                // only happen if we haven't previously reported a result. We don't
+                // quite know what the right behavior should be here since this block
+                // of code runs after the fetch result has executed on the network.
+                // We plan to let it crash in the meantime.
+                //
+                // If we get bug reports due to the `data` property access on
+                // undefined, this should give us a real-world scenario that we can
+                // use to test against and determine the right behavior. If we do end
+                // up changing this behavior, this may require, for example, an
+                // adjustment to the types on `updateQuery` since that function
+                // expects that the first argument always contains previous result
+                // data, but not `undefined`.
+                var lastResult = _this.getLast("result");
+                var data = updateQuery(lastResult.data, {
+                    fetchMoreResult: fetchMoreResult.data,
+                    variables: combinedOptions.variables,
+                });
+                _this.reportResult((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)({}, lastResult), { data: data }), _this.variables);
+            }
             return fetchMoreResult;
         })
             .finally(function () {
@@ -45937,7 +45974,7 @@ var ObservableQuery = /** @class */ (function (_super) {
             // likely because the written data were the same as what was already in
             // the cache, we still want fetchMore to deliver its final loading:false
             // result with the unchanged data.
-            if (!updatedQuerySet.has(_this.query)) {
+            if (isCached && !updatedQuerySet.has(_this.query)) {
                 reobserveCacheFirst(_this);
             }
         });
@@ -45976,7 +46013,7 @@ var ObservableQuery = /** @class */ (function (_super) {
                     options.onError(err);
                     return;
                 }
-                globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.error(21, err);
+                globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.error(22, err);
             },
         });
         this.subscriptions.add(subscription);
@@ -46131,7 +46168,7 @@ var ObservableQuery = /** @class */ (function (_super) {
         if (pollingInfo && pollingInfo.interval === pollInterval) {
             return;
         }
-        (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(pollInterval, 22);
+        (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(pollInterval, 23);
         var info = pollingInfo || (this.pollingInfo = {});
         info.interval = pollInterval;
         var maybeFetch = function () {
@@ -46370,11 +46407,11 @@ function reobserveCacheFirst(obsQuery) {
     return obsQuery.reobserve();
 }
 function defaultSubscriptionObserverErrorCallback(error) {
-    globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.error(23, error.message, error.stack);
+    globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.error(24, error.message, error.stack);
 }
 function logMissingFieldErrors(missing) {
     if (globalThis.__DEV__ !== false && missing) {
-        globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.debug(24, missing);
+        globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.debug(25, missing);
     }
 }
 function skipCacheDataFor(fetchPolicy /* `undefined` would mean `"cache-first"` */) {
@@ -46955,7 +46992,7 @@ function validateOperation(operation) {
     for (var _i = 0, _a = Object.keys(operation); _i < _a.length; _i++) {
         var key = _a[_i];
         if (OPERATION_FIELDS.indexOf(key) < 0) {
-            throw (0,globals/* newInvariantError */.vA)(43, key);
+            throw (0,globals/* newInvariantError */.vA)(44, key);
         }
     }
     return operation;
@@ -47013,7 +47050,7 @@ var ApolloLink = /** @class */ (function () {
     ApolloLink.concat = function (first, second) {
         var firstLink = toLink(first);
         if (isTerminating(firstLink)) {
-            globalThis.__DEV__ !== false && globals/* invariant */.V1.warn(35, firstLink);
+            globalThis.__DEV__ !== false && globals/* invariant */.V1.warn(36, firstLink);
             return firstLink;
         }
         var nextLink = toLink(second);
@@ -47039,7 +47076,7 @@ var ApolloLink = /** @class */ (function () {
         return ApolloLink.concat(this, next);
     };
     ApolloLink.prototype.request = function (operation, forward) {
-        throw (0,globals/* newInvariantError */.vA)(36);
+        throw (0,globals/* newInvariantError */.vA)(37);
     };
     ApolloLink.prototype.onError = function (error, observer) {
         if (observer && observer.error) {
@@ -47218,7 +47255,7 @@ var HttpLink = /** @class */ (function (_super) {
 
 var checkFetcher = function (fetcher) {
     if (!fetcher && typeof fetch === "undefined") {
-        throw (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(37);
+        throw (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(38);
     }
 };
 //# sourceMappingURL=checkFetcher.js.map
@@ -47367,7 +47404,7 @@ var createHttpLink = function (linkOptions) {
             // Omit defer-specific headers if the user attempts to defer a selection
             // set on a subscription and log a warning.
             if (isSubscription && hasDefer) {
-                globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.warn(38);
+                globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.warn(39);
             }
             if (isSubscription) {
                 acceptHeader +=
@@ -48227,7 +48264,7 @@ var serializeFetchParameter = function (p, label) {
         serialized = JSON.stringify(p);
     }
     catch (e) {
-        var parseError = (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(39, label, e.message);
+        var parseError = (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(40, label, e.message);
         parseError.parseError = e;
         throw parseError;
     }
@@ -48355,7 +48392,7 @@ function toPromise(observable) {
         observable.subscribe({
             next: function (data) {
                 if (completed) {
-                    globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.warn(42);
+                    globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.warn(43);
                 }
                 else {
                     completed = true;
@@ -48388,7 +48425,7 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 var ApolloConsumer = function (props) {
     var ApolloContext = (0,_ApolloContext_js__WEBPACK_IMPORTED_MODULE_2__/* .getApolloContext */ .l)();
     return (rehackt__WEBPACK_IMPORTED_MODULE_1__.createElement(ApolloContext.Consumer, null, function (context) {
-        (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(context && context.client, 44);
+        (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(context && context.client, 45);
         return props.children(context.client);
     }));
 };
@@ -48417,7 +48454,7 @@ var rehackt__WEBPACK_IMPORTED_MODULE_0___namespace_cache;
 // context), a single Apollo context is created and tracked in global state.
 var contextKey = _utilities_index_js__WEBPACK_IMPORTED_MODULE_2__/* .canUseSymbol */ .ol ? Symbol.for("__APOLLO_CONTEXT__") : "__APOLLO_CONTEXT__";
 function getApolloContext() {
-    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)("createContext" in /*#__PURE__*/ (rehackt__WEBPACK_IMPORTED_MODULE_0___namespace_cache || (rehackt__WEBPACK_IMPORTED_MODULE_0___namespace_cache = __webpack_require__.t(rehackt__WEBPACK_IMPORTED_MODULE_0__, 2))), 45);
+    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)("createContext" in /*#__PURE__*/ (rehackt__WEBPACK_IMPORTED_MODULE_0___namespace_cache || (rehackt__WEBPACK_IMPORTED_MODULE_0___namespace_cache = __webpack_require__.t(rehackt__WEBPACK_IMPORTED_MODULE_0__, 2))), 46);
     var context = rehackt__WEBPACK_IMPORTED_MODULE_0__.createContext[contextKey];
     if (!context) {
         Object.defineProperty(rehackt__WEBPACK_IMPORTED_MODULE_0__.createContext, contextKey, {
@@ -48466,7 +48503,7 @@ var ApolloProvider = function (_a) {
     var context = rehackt__WEBPACK_IMPORTED_MODULE_1__.useMemo(function () {
         return (0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_3__/* .__assign */ .Cl)({}, parentContext), { client: client || parentContext.client });
     }, [parentContext, client]);
-    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(context.client, 46);
+    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(context.client, 47);
     return (rehackt__WEBPACK_IMPORTED_MODULE_1__.createElement(ApolloContext.Provider, { value: context }, children));
 };
 //# sourceMappingURL=ApolloProvider.js.map
@@ -48802,7 +48839,7 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 function useApolloClient(override) {
     var context = rehackt__WEBPACK_IMPORTED_MODULE_1__.useContext((0,_context_index_js__WEBPACK_IMPORTED_MODULE_2__/* .getApolloContext */ .l)());
     var client = override || context.client;
-    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(!!client, 49);
+    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(!!client, 50);
     return client;
 }
 //# sourceMappingURL=useApolloClient.js.map
@@ -49255,7 +49292,7 @@ function useLoadableQuery(query, options) {
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
-        (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)(!calledDuringRender(), 50);
+        (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)(!calledDuringRender(), 51);
         var variables = args[0];
         var cacheKey = (0,tslib__WEBPACK_IMPORTED_MODULE_7__/* .__spreadArray */ .fX)([
             query,
@@ -49274,7 +49311,7 @@ function useLoadableQuery(query, options) {
         client,
     ]);
     var subscribeToMore = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (options) {
-        (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)(internalQueryRef, 51);
+        (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)(internalQueryRef, 52);
         return internalQueryRef.observable.subscribeToMore(options);
     }, [internalQueryRef]);
     var reset = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () {
@@ -50355,10 +50392,10 @@ function useSubscription(subscription, options) {
     if (!hasIssuedDeprecationWarningRef.current) {
         hasIssuedDeprecationWarningRef.current = true;
         if (options.onSubscriptionData) {
-            globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.warn(options.onData ? 52 : 53);
+            globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.warn(options.onData ? 53 : 54);
         }
         if (options.onSubscriptionComplete) {
-            globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.warn(options.onComplete ? 54 : 55);
+            globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.warn(options.onComplete ? 55 : 56);
         }
     }
     var skip = options.skip, fetchPolicy = options.fetchPolicy, errorPolicy = options.errorPolicy, shouldResubscribe = options.shouldResubscribe, context = options.context, extensions = options.extensions, ignoreResults = options.ignoreResults;
@@ -50492,7 +50529,7 @@ function useSubscription(subscription, options) {
             : fallbackResult;
     }, function () { return fallbackResult; });
     return rehackt__WEBPACK_IMPORTED_MODULE_1__.useMemo(function () { return ((0,tslib__WEBPACK_IMPORTED_MODULE_10__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_10__/* .__assign */ .Cl)({}, ret), { restart: function () {
-            (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(!optionsRef.current.skip, 56);
+            (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(!optionsRef.current.skip, 57);
             setObservable(recreateRef.current());
         } })); }, [ret]);
 }
@@ -50679,11 +50716,11 @@ function validateFetchPolicy(fetchPolicy) {
         "no-cache",
         "cache-and-network",
     ];
-    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)(supportedFetchPolicies.includes(fetchPolicy), 57, fetchPolicy);
+    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)(supportedFetchPolicies.includes(fetchPolicy), 58, fetchPolicy);
 }
 function validatePartialDataReturn(fetchPolicy, returnPartialData) {
     if (fetchPolicy === "no-cache" && returnPartialData) {
-        globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1.warn(58);
+        globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1.warn(59);
     }
 }
 function toApolloError(result) {
@@ -50758,7 +50795,7 @@ var useSyncExternalStore = (/* runtime-dependent pure expression or super */ /^(
             value !== getSnapshot()) {
             didWarnUncachedGetSnapshot = true;
             // DEVIATION: Using invariant.error instead of console.error directly.
-            globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.error(59);
+            globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.error(60);
         }
         // Because updates are synchronous, we don't queue them. Instead we force a
         // re-render whenever the subscribed state changes by updating an some
@@ -50943,7 +50980,7 @@ function wrapQueryRef(internalQueryRef) {
     return ref;
 }
 function assertWrappedQueryRef(queryRef) {
-    (0,_utilities_globals_invariantWrappers_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)(!queryRef || QUERY_REFERENCE_SYMBOL in queryRef, 60);
+    (0,_utilities_globals_invariantWrappers_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)(!queryRef || QUERY_REFERENCE_SYMBOL in queryRef, 61);
 }
 function getWrappedPromise(queryRef) {
     var internalQueryRef = unwrapQueryRef(queryRef);
@@ -51353,7 +51390,7 @@ function parser(document) {
     if (cached)
         return cached;
     var variables, type, name;
-    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(!!document && !!document.kind, 61, document);
+    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(!!document && !!document.kind, 62, document);
     var fragments = [];
     var queries = [];
     var mutations = [];
@@ -51381,10 +51418,10 @@ function parser(document) {
     (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(!fragments.length ||
         queries.length ||
         mutations.length ||
-        subscriptions.length, 62);
+        subscriptions.length, 63);
     (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(
         queries.length + mutations.length + subscriptions.length <= 1,
-        63,
+        64,
         document,
         queries.length,
         subscriptions.length,
@@ -51396,7 +51433,7 @@ function parser(document) {
     var definitions = queries.length ? queries
         : mutations.length ? mutations
             : subscriptions;
-    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(definitions.length === 1, 64, document, definitions.length);
+    (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(definitions.length === 1, 65, document, definitions.length);
     var definition = definitions[0];
     variables = definition.variableDefinitions || [];
     if (definition.name && definition.name.kind === "Name") {
@@ -51421,7 +51458,7 @@ function verifyDocumentType(document, type) {
     var usedOperationName = operationName(operation.type);
     (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(
         operation.type === type,
-        65,
+        66,
         requiredOperationName,
         requiredOperationName,
         usedOperationName
@@ -52519,7 +52556,7 @@ var DocumentTransform = /** @class */ (function () {
                 makeCacheKey: function (document) {
                     var cacheKeys = _this.getCacheKey(document);
                     if (cacheKeys) {
-                        (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)(Array.isArray(cacheKeys), 68);
+                        (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)(Array.isArray(cacheKeys), 69);
                         return stableCacheKeys_1.lookupArray(cacheKeys);
                     }
                 },
@@ -52587,7 +52624,7 @@ function shouldInclude(_a, variables) {
         if (ifArgument.value.kind === "Variable") {
             evaledValue =
                 variables && variables[ifArgument.value.name.value];
-            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(evaledValue !== void 0, 69, directive.name.value);
+            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(evaledValue !== void 0, 70, directive.name.value);
         }
         else {
             evaledValue = ifArgument.value.value;
@@ -52639,13 +52676,13 @@ function getInclusionDirectives(directives) {
                 return;
             var directiveArguments = directive.arguments;
             var directiveName = directive.name.value;
-            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(directiveArguments && directiveArguments.length === 1, 70, directiveName);
+            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(directiveArguments && directiveArguments.length === 1, 71, directiveName);
             var ifArgument = directiveArguments[0];
-            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(ifArgument.name && ifArgument.name.value === "if", 71, directiveName);
+            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(ifArgument.name && ifArgument.name.value === "if", 72, directiveName);
             var ifValue = ifArgument.value;
             // means it has to be a variable value if this is a valid @skip or @include directive
             (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(ifValue &&
-                (ifValue.kind === "Variable" || ifValue.kind === "BooleanValue"), 72, directiveName);
+                (ifValue.kind === "Variable" || ifValue.kind === "BooleanValue"), 73, directiveName);
             result.push({ directive: directive, ifArgument: ifArgument });
         });
     }
@@ -52703,7 +52740,7 @@ function getFragmentQueryDocument(document, fragmentName) {
         // define our own operation definition later on.
         if (definition.kind === "OperationDefinition") {
             throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(
-                73,
+                74,
                 definition.operation,
                 definition.name ? " named '".concat(definition.name.value, "'") : ""
             );
@@ -52717,7 +52754,7 @@ function getFragmentQueryDocument(document, fragmentName) {
     // If the user did not give us a fragment name then let us try to get a
     // name from a single fragment in the definition.
     if (typeof actualFragmentName === "undefined") {
-        (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(fragments.length === 1, 74, fragments.length);
+        (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(fragments.length === 1, 75, fragments.length);
         actualFragmentName = fragments[0].name.value;
     }
     // Generate a query document with an operation that simply spreads the
@@ -52763,7 +52800,7 @@ function getFragmentFromSelection(selection, fragmentMap) {
                 return fragmentMap(fragmentName);
             }
             var fragment = fragmentMap && fragmentMap[fragmentName];
-            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(fragment, 75, fragmentName);
+            (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(fragment, 76, fragmentName);
             return fragment || null;
         }
         default:
@@ -52796,16 +52833,16 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 
 // Checks the document for errors and throws an exception if there is an error.
 function checkDocument(doc) {
-    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(doc && doc.kind === "Document", 76);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(doc && doc.kind === "Document", 77);
     var operations = doc.definitions
         .filter(function (d) { return d.kind !== "FragmentDefinition"; })
         .map(function (definition) {
         if (definition.kind !== "OperationDefinition") {
-            throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(77, definition.kind);
+            throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(78, definition.kind);
         }
         return definition;
     });
-    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(operations.length <= 1, 78, operations.length);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(operations.length <= 1, 79, operations.length);
     return doc;
 }
 function getOperationDefinition(doc) {
@@ -52829,14 +52866,14 @@ function getFragmentDefinitions(doc) {
 }
 function getQueryDefinition(doc) {
     var queryDef = getOperationDefinition(doc);
-    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(queryDef && queryDef.operation === "query", 79);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(queryDef && queryDef.operation === "query", 80);
     return queryDef;
 }
 function getFragmentDefinition(doc) {
-    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(doc.kind === "Document", 80);
-    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(doc.definitions.length <= 1, 81);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(doc.kind === "Document", 81);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(doc.definitions.length <= 1, 82);
     var fragmentDef = doc.definitions[0];
-    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(fragmentDef.kind === "FragmentDefinition", 82);
+    (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(fragmentDef.kind === "FragmentDefinition", 83);
     return fragmentDef;
 }
 /**
@@ -52866,7 +52903,7 @@ function getMainDefinition(queryDoc) {
     if (fragmentDefinition) {
         return fragmentDefinition;
     }
-    throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(83);
+    throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(84);
 }
 function getDefaultValues(definition) {
     var defaultValues = Object.create(null);
@@ -53547,7 +53584,7 @@ function valueToObjectRepresentation(argObj, name, value, variables) {
         argObj[name.value] = null;
     }
     else {
-        throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(84, name.value, value.kind);
+        throw (0,_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(85, name.value, value.kind);
     }
 }
 function storeKeyNameFromField(field, variables) {
@@ -53803,7 +53840,7 @@ function removeDirectivesFromDocument(directives, doc) {
                 return getInUseByFragmentName(ancestor.name.value);
             }
         }
-        globalThis.__DEV__ !== false && _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.error(85);
+        globalThis.__DEV__ !== false && _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.error(86);
         return null;
     };
     var operationCount = 0;
@@ -54069,7 +54106,7 @@ var connectionRemoveConfig = {
         if (willRemove) {
             if (!directive.arguments ||
                 !directive.arguments.some(function (arg) { return arg.name.value === "key"; })) {
-                globalThis.__DEV__ !== false && _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.warn(86);
+                globalThis.__DEV__ !== false && _globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.warn(87);
             }
         }
         return willRemove;
@@ -54320,7 +54357,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.11.2";
+var version = "3.11.3";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
