@@ -42934,7 +42934,7 @@ var Concast = /** @class */ (function (_super) {
         _this.cancel = function (reason) {
             _this.reject(reason);
             _this.sources = [];
-            _this.handlers.complete();
+            _this.handlers.error(reason);
         };
         // Suppress rejection warnings for this.promise, since it's perfectly
         // acceptable to pay no attention to this.promise if you're consuming
@@ -45580,10 +45580,12 @@ if (globalThis.__DEV__ !== false) {
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4824);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(7945);
 /* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(1495);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(6502);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(3401);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(1291);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(6502);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(3401);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(1291);
+/* harmony import */ var _errors_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(9211);
 /* harmony import */ var _equalByQuery_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(9080);
+
 
 
 
@@ -46279,6 +46281,12 @@ var ObservableQuery = /** @class */ (function (_super) {
             },
             error: function (error) {
                 if ((0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .L)(_this.variables, variables)) {
+                    // Coming from `getResultsFromLink`, `error` here should always be an `ApolloError`.
+                    // However, calling `concast.cancel` can inject another type of error, so we have to
+                    // wrap it again here.
+                    if (!(0,_errors_index_js__WEBPACK_IMPORTED_MODULE_8__/* .isApolloError */ .Mn)(error)) {
+                        error = new _errors_index_js__WEBPACK_IMPORTED_MODULE_8__/* .ApolloError */ .K4({ networkError: error });
+                    }
                     finishWaitingForOwnResult();
                     _this.reportError(error, variables);
                 }
@@ -46338,7 +46346,7 @@ var ObservableQuery = /** @class */ (function (_super) {
             this.updateLastResult(result, variables);
         }
         if (lastError || isDifferent) {
-            (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_8__/* .iterateObserversSafely */ .w)(this.observers, "next", result);
+            (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_9__/* .iterateObserversSafely */ .w)(this.observers, "next", result);
         }
     };
     ObservableQuery.prototype.reportError = function (error, variables) {
@@ -46346,7 +46354,7 @@ var ObservableQuery = /** @class */ (function (_super) {
         // must mirror the updates that occur in QueryStore.markQueryError here
         var errorResult = (0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_2__/* .__assign */ .Cl)({}, this.getLastResult()), { error: error, errors: error.graphQLErrors, networkStatus: _networkStatus_js__WEBPACK_IMPORTED_MODULE_4__/* .NetworkStatus */ .pT.error, loading: false });
         this.updateLastResult(errorResult, variables);
-        (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_8__/* .iterateObserversSafely */ .w)(this.observers, "error", (this.last.error = error));
+        (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_9__/* .iterateObserversSafely */ .w)(this.observers, "error", (this.last.error = error));
     };
     ObservableQuery.prototype.hasObservers = function () {
         return this.observers.size > 0;
@@ -46371,11 +46379,11 @@ var ObservableQuery = /** @class */ (function (_super) {
         return this.queryManager.transform(document);
     };
     return ObservableQuery;
-}(_utilities_index_js__WEBPACK_IMPORTED_MODULE_9__/* .Observable */ .c));
+}(_utilities_index_js__WEBPACK_IMPORTED_MODULE_10__/* .Observable */ .c));
 
 // Necessary because the ObservableQuery constructor has a different
 // signature than the Observable constructor.
-(0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_10__/* .fixObservableSubclass */ .r)(ObservableQuery);
+(0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_11__/* .fixObservableSubclass */ .r)(ObservableQuery);
 // Reobserve with fetchPolicy effectively set to "cache-first", triggering
 // delivery of any new data from the cache, possibly falling back to the network
 // if any cache data are missing. This allows _complete_ cache results to be
@@ -54357,7 +54365,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.11.3";
+var version = "3.11.4";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
