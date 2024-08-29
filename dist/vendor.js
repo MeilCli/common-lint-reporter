@@ -48728,27 +48728,6 @@ var useIsomorphicLayoutEffect = _utilities_index_js__WEBPACK_IMPORTED_MODULE_1__
 
 /***/ }),
 
-/***/ 2368:
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   n: () => (/* binding */ useLazyRef)
-/* harmony export */ });
-/* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7243);
-
-var INIT = {};
-function useLazyRef(getInitialValue) {
-    var ref = rehackt__WEBPACK_IMPORTED_MODULE_0__.useRef(INIT);
-    if (ref.current === INIT) {
-        ref.current = getInitialValue();
-    }
-    return ref;
-}
-//# sourceMappingURL=useLazyRef.js.map
-
-/***/ }),
-
 /***/ 4854:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
@@ -49013,26 +48992,23 @@ function _useBackgroundQuery(query, options) {
 /* harmony export */   I: () => (/* binding */ useFragment)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1635);
+	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(1635);
 }
 /* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7243);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(2922);
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(2922);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(111);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(9770);
+	/* harmony import */ var _useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(9770);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8481);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7659);
-}
-if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(2368);
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(7659);
 }
 /* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5381);
 
@@ -49047,26 +49023,31 @@ function useFragment(options) {
 }
 function _useFragment(options) {
     var cache = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)(options.client).cache;
-    var diffOptions = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_4__/* .useDeepMemo */ .k)(function () {
-        var fragment = options.fragment, fragmentName = options.fragmentName, from = options.from, _a = options.optimistic, optimistic = _a === void 0 ? true : _a, rest = (0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__rest */ .Tt)(options, ["fragment", "fragmentName", "from", "optimistic"]);
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({}, rest), { returnPartialData: true, id: typeof from === "string" ? from : cache.identify(from), query: cache["getFragmentDoc"](fragment, fragmentName), optimistic: optimistic });
-    }, [options]);
-    var resultRef = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_6__/* .useLazyRef */ .n)(function () {
-        return diffToResult(cache.diff(diffOptions));
-    });
-    var stableOptions = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_4__/* .useDeepMemo */ .k)(function () { return options; }, [options]);
+    var from = options.from, rest = (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__rest */ .Tt)(options, ["from"]);
+    // We calculate the cache id seperately from `stableOptions` because we don't
+    // want changes to non key fields in the `from` property to affect
+    // `stableOptions` and retrigger our subscription. If the cache identifier
+    // stays the same between renders, we want to reuse the existing subscription.
+    var id = rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () { return (typeof from === "string" ? from : cache.identify(from)); }, [cache, from]);
+    var resultRef = rehackt__WEBPACK_IMPORTED_MODULE_0__.useRef();
+    var stableOptions = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_5__/* .useDeepMemo */ .k)(function () { return ((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, rest), { from: id })); }, [rest, id]);
     // Since .next is async, we need to make sure that we
     // get the correct diff on the next render given new diffOptions
-    rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
-        resultRef.current = diffToResult(cache.diff(diffOptions));
-    }, [diffOptions, cache]);
+    var currentDiff = rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
+        var fragment = stableOptions.fragment, fragmentName = stableOptions.fragmentName, from = stableOptions.from, _a = stableOptions.optimistic, optimistic = _a === void 0 ? true : _a;
+        return diffToResult(cache.diff((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, stableOptions), { returnPartialData: true, id: from, query: cache["getFragmentDoc"](fragment, fragmentName), optimistic: optimistic })));
+    }, [stableOptions, cache]);
     // Used for both getSnapshot and getServerSnapshot
-    var getSnapshot = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () { return resultRef.current; }, []);
-    return (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_7__/* .useSyncExternalStore */ .r)(rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (forceUpdate) {
+    var getSnapshot = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () { return resultRef.current || currentDiff; }, [currentDiff]);
+    return (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_6__/* .useSyncExternalStore */ .r)(rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (forceUpdate) {
         var lastTimeout = 0;
         var subscription = cache.watchFragment(stableOptions).subscribe({
             next: function (result) {
-                if ((0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A)(result, resultRef.current))
+                // Since `next` is called async by zen-observable, we want to avoid
+                // unnecessarily rerendering this hook for the initial result
+                // emitted from watchFragment which should be equal to
+                // `currentDiff`.
+                if ((0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A)(result, currentDiff))
                     return;
                 resultRef.current = result;
                 // If we get another update before we've re-rendered, bail out of
@@ -49078,10 +49059,11 @@ function _useFragment(options) {
             },
         });
         return function () {
+            resultRef.current = void 0;
             subscription.unsubscribe();
             clearTimeout(lastTimeout);
         };
-    }, [cache, stableOptions]), getSnapshot, getSnapshot);
+    }, [cache, stableOptions, currentDiff]), getSnapshot, getSnapshot);
 }
 function diffToResult(diff) {
     var result = {
@@ -49089,7 +49071,7 @@ function diffToResult(diff) {
         complete: !!diff.complete,
     };
     if (diff.missing) {
-        result.missing = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_8__/* .mergeDeepArray */ .IM)(diff.missing.map(function (error) { return error.missing; }));
+        result.missing = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_7__/* .mergeDeepArray */ .IM)(diff.missing.map(function (error) { return error.missing; }));
     }
     return result;
 }
@@ -54406,7 +54388,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.11.4";
+var version = "3.11.5";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
