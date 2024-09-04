@@ -49063,16 +49063,17 @@ function _useFragment(options) {
     // `stableOptions` and retrigger our subscription. If the cache identifier
     // stays the same between renders, we want to reuse the existing subscription.
     var id = rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () { return (typeof from === "string" ? from : cache.identify(from)); }, [cache, from]);
-    var resultRef = rehackt__WEBPACK_IMPORTED_MODULE_0__.useRef();
     var stableOptions = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_5__/* .useDeepMemo */ .k)(function () { return ((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, rest), { from: id })); }, [rest, id]);
     // Since .next is async, we need to make sure that we
     // get the correct diff on the next render given new diffOptions
-    var currentDiff = rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
+    var diff = rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
         var fragment = stableOptions.fragment, fragmentName = stableOptions.fragmentName, from = stableOptions.from, _a = stableOptions.optimistic, optimistic = _a === void 0 ? true : _a;
-        return diffToResult(cache.diff((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, stableOptions), { returnPartialData: true, id: from, query: cache["getFragmentDoc"](fragment, fragmentName), optimistic: optimistic })));
+        return {
+            result: diffToResult(cache.diff((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, stableOptions), { returnPartialData: true, id: from, query: cache["getFragmentDoc"](fragment, fragmentName), optimistic: optimistic }))),
+        };
     }, [stableOptions, cache]);
     // Used for both getSnapshot and getServerSnapshot
-    var getSnapshot = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () { return resultRef.current || currentDiff; }, [currentDiff]);
+    var getSnapshot = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () { return diff.result; }, [diff]);
     return (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_6__/* .useSyncExternalStore */ .r)(rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (forceUpdate) {
         var lastTimeout = 0;
         var subscription = cache.watchFragment(stableOptions).subscribe({
@@ -49080,10 +49081,10 @@ function _useFragment(options) {
                 // Since `next` is called async by zen-observable, we want to avoid
                 // unnecessarily rerendering this hook for the initial result
                 // emitted from watchFragment which should be equal to
-                // `currentDiff`.
-                if ((0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A)(result, currentDiff))
+                // `diff.result`.
+                if ((0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A)(result, diff.result))
                     return;
-                resultRef.current = result;
+                diff.result = result;
                 // If we get another update before we've re-rendered, bail out of
                 // the update and try again. This ensures that the relative timing
                 // between useQuery and useFragment stays roughly the same as
@@ -49093,11 +49094,10 @@ function _useFragment(options) {
             },
         });
         return function () {
-            resultRef.current = void 0;
             subscription.unsubscribe();
             clearTimeout(lastTimeout);
         };
-    }, [cache, stableOptions, currentDiff]), getSnapshot, getSnapshot);
+    }, [cache, stableOptions, diff]), getSnapshot, getSnapshot);
 }
 function diffToResult(diff) {
     var result = {
@@ -50593,10 +50593,11 @@ function useSubscription(subscription, options) {
             observable.__.result
             : fallbackResult;
     }, function () { return fallbackResult; });
-    return rehackt__WEBPACK_IMPORTED_MODULE_1__.useMemo(function () { return ((0,tslib__WEBPACK_IMPORTED_MODULE_10__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_10__/* .__assign */ .Cl)({}, ret), { restart: function () {
-            (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(!optionsRef.current.skip, 57);
-            setObservable(recreateRef.current());
-        } })); }, [ret]);
+    var restart = rehackt__WEBPACK_IMPORTED_MODULE_1__.useCallback(function () {
+        (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(!optionsRef.current.skip, 57);
+        setObservable(recreateRef.current());
+    }, [optionsRef, recreateRef]);
+    return rehackt__WEBPACK_IMPORTED_MODULE_1__.useMemo(function () { return ((0,tslib__WEBPACK_IMPORTED_MODULE_10__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_10__/* .__assign */ .Cl)({}, ret), { restart: restart })); }, [ret, restart]);
 }
 function createSubscription(client, query, variables, fetchPolicy, errorPolicy, context, extensions) {
     var options = {
@@ -54422,7 +54423,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.11.5";
+var version = "3.11.6";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
