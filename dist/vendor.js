@@ -39351,7 +39351,16 @@ var ApolloCache = /** @class */ (function () {
         var _this = this;
         var fragment = options.fragment, fragmentName = options.fragmentName, from = options.from, _a = options.optimistic, optimistic = _a === void 0 ? true : _a, otherOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__rest */ .Tt)(options, ["fragment", "fragmentName", "from", "optimistic"]);
         var query = this.getFragmentDoc(fragment, fragmentName);
-        var diffOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, otherOptions), { returnPartialData: true, id: typeof from === "string" ? from : this.identify(from), query: query, optimistic: optimistic });
+        var diffOptions = (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, otherOptions), { returnPartialData: true, id: 
+            // While our TypeScript types do not allow for `undefined` as a valid
+            // `from`, its possible `useFragment` gives us an `undefined` since it
+            // calls` cache.identify` and provides that value to `from`. We are
+            // adding this fix here however to ensure those using plain JavaScript
+            // and using `cache.identify` themselves will avoid seeing the obscure
+            // warning.
+            typeof from === "undefined" || typeof from === "string" ?
+                from
+                : this.identify(from), query: query, optimistic: optimistic });
         var latestDiff;
         return new _utilities_index_js__WEBPACK_IMPORTED_MODULE_5__/* .Observable */ .c(function (observer) {
             return _this.watch((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__assign */ .Cl)({}, diffOptions), { immediate: true, callback: function (diff) {
@@ -48281,7 +48290,7 @@ function selectHttpOptionsAndBodyInternal(operation, printer) {
 function removeDuplicateHeaders(headers, preserveHeaderCase) {
     // If we're not preserving the case, just remove duplicates w/ normalization.
     if (!preserveHeaderCase) {
-        var normalizedHeaders_1 = Object.create(null);
+        var normalizedHeaders_1 = {};
         Object.keys(Object(headers)).forEach(function (name) {
             normalizedHeaders_1[name.toLowerCase()] = headers[name];
         });
@@ -48291,14 +48300,14 @@ function removeDuplicateHeaders(headers, preserveHeaderCase) {
     // preserving the original name.
     // This allows for non-http-spec-compliant servers that expect intentionally
     // capitalized header names (See #6741).
-    var headerData = Object.create(null);
+    var headerData = {};
     Object.keys(Object(headers)).forEach(function (name) {
         headerData[name.toLowerCase()] = {
             originalName: name,
             value: headers[name],
         };
     });
-    var normalizedHeaders = Object.create(null);
+    var normalizedHeaders = {};
     Object.keys(headerData).forEach(function (name) {
         normalizedHeaders[headerData[name].originalName] = headerData[name].value;
     });
@@ -54423,7 +54432,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.11.6";
+var version = "3.11.8";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
