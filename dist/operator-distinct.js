@@ -88,6 +88,13 @@ module.exports = require("buffer");
 
 /***/ }),
 
+/***/ 5317:
+/***/ ((module) => {
+
+module.exports = require("child_process");
+
+/***/ }),
+
 /***/ 4236:
 /***/ ((module) => {
 
@@ -225,6 +232,13 @@ module.exports = require("stream/web");
 /***/ ((module) => {
 
 module.exports = require("string_decoder");
+
+/***/ }),
+
+/***/ 3557:
+/***/ ((module) => {
+
+module.exports = require("timers");
 
 /***/ }),
 
