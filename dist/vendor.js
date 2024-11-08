@@ -52304,7 +52304,7 @@ var InternalQueryReference = /** @class */ (function () {
                 }
             });
         })
-            .catch(function () { });
+            .catch(function (error) { var _a; return (_a = _this.reject) === null || _a === void 0 ? void 0 : _a.call(_this, error); });
         return returnedPromise;
     };
     InternalQueryReference.prototype.subscribeToQuery = function () {
@@ -55421,7 +55421,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.11.8";
+var version = "3.11.9";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
