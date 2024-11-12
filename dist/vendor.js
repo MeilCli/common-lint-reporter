@@ -46156,16 +46156,17 @@ var ApolloClient = /** @class */ (function () {
      */
     function ApolloClient(options) {
         var _this = this;
+        var _a;
         this.resetStoreCallbacks = [];
         this.clearStoreCallbacks = [];
         if (!options.cache) {
             throw (0,globals/* newInvariantError */.vA)(15);
         }
-        var uri = options.uri, credentials = options.credentials, headers = options.headers, cache = options.cache, documentTransform = options.documentTransform, _a = options.ssrMode, ssrMode = _a === void 0 ? false : _a, _b = options.ssrForceFetchDelay, ssrForceFetchDelay = _b === void 0 ? 0 : _b, 
+        var uri = options.uri, credentials = options.credentials, headers = options.headers, cache = options.cache, documentTransform = options.documentTransform, _b = options.ssrMode, ssrMode = _b === void 0 ? false : _b, _c = options.ssrForceFetchDelay, ssrForceFetchDelay = _c === void 0 ? 0 : _c, 
         // Expose the client instance as window.__APOLLO_CLIENT__ and call
         // onBroadcast in queryManager.broadcastQueries to enable browser
         // devtools, but disable them by default in production.
-        connectToDevTools = options.connectToDevTools, _c = options.queryDeduplication, queryDeduplication = _c === void 0 ? true : _c, defaultOptions = options.defaultOptions, defaultContext = options.defaultContext, _d = options.assumeImmutableResults, assumeImmutableResults = _d === void 0 ? cache.assumeImmutableResults : _d, resolvers = options.resolvers, typeDefs = options.typeDefs, fragmentMatcher = options.fragmentMatcher, clientAwarenessName = options.name, clientAwarenessVersion = options.version, devtools = options.devtools;
+        connectToDevTools = options.connectToDevTools, _d = options.queryDeduplication, queryDeduplication = _d === void 0 ? true : _d, defaultOptions = options.defaultOptions, defaultContext = options.defaultContext, _e = options.assumeImmutableResults, assumeImmutableResults = _e === void 0 ? cache.assumeImmutableResults : _e, resolvers = options.resolvers, typeDefs = options.typeDefs, fragmentMatcher = options.fragmentMatcher, clientAwarenessName = options.name, clientAwarenessVersion = options.version, devtools = options.devtools;
         var link = options.link;
         if (!link) {
             link =
@@ -46177,7 +46178,7 @@ var ApolloClient = /** @class */ (function () {
         this.queryDeduplication = queryDeduplication;
         this.defaultOptions = defaultOptions || Object.create(null);
         this.typeDefs = typeDefs;
-        this.devtoolsConfig = (0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, devtools), { enabled: (devtools === null || devtools === void 0 ? void 0 : devtools.enabled) || connectToDevTools });
+        this.devtoolsConfig = (0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, devtools), { enabled: (_a = devtools === null || devtools === void 0 ? void 0 : devtools.enabled) !== null && _a !== void 0 ? _a : connectToDevTools });
         if (this.devtoolsConfig.enabled === undefined) {
             this.devtoolsConfig.enabled = globalThis.__DEV__ !== false;
         }
@@ -55421,7 +55422,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.11.9";
+var version = "3.11.10";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
