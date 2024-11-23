@@ -16,7 +16,7 @@ test("transform", async () => {
         endLine: 1,
         startColumn: 10,
         endColumn: 16,
-        level: "warning",
+        level: "failure",
     } as LintResult);
     expect(result[1]).toMatchObject({
         path: "filepath.txt",
@@ -36,6 +36,6 @@ test("transform", async () => {
         endLine: 2,
         startColumn: 11,
         endColumn: 12,
-        level: "warning",
+        level: "failure",
     } as LintResult);
 });

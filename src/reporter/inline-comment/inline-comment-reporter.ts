@@ -93,7 +93,7 @@ export class InlineCommentReporter extends CommentReporter {
                 } else {
                     cannotReportedLintResults.push(lintResult);
                 }
-            } catch (error) {
+            } catch {
                 cannotReportedLintResults.push(lintResult);
             }
         }
