@@ -55953,7 +55953,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.12.1";
+var version = "3.12.2";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
