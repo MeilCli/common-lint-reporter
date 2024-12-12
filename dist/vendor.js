@@ -50161,7 +50161,7 @@ var __use = (/* runtime-dependent pure expression or super */ /^(250|49|6|748|79
 
 
 function useDeepMemo(memoFn, deps) {
-    var ref = rehackt__WEBPACK_IMPORTED_MODULE_0__.useRef();
+    var ref = rehackt__WEBPACK_IMPORTED_MODULE_0__.useRef(void 0);
     if (!ref.current || !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .L)(ref.current.deps, deps)) {
         ref.current = { value: memoFn(), deps: deps };
     }
@@ -50637,9 +50637,9 @@ var EAGER_METHODS = (/* runtime-dependent pure expression or super */ /^(250|49|
  */
 function useLazyQuery(query, options) {
     var _a;
-    var execOptionsRef = rehackt__WEBPACK_IMPORTED_MODULE_0__.useRef();
-    var optionsRef = rehackt__WEBPACK_IMPORTED_MODULE_0__.useRef();
-    var queryRef = rehackt__WEBPACK_IMPORTED_MODULE_0__.useRef();
+    var execOptionsRef = rehackt__WEBPACK_IMPORTED_MODULE_0__.useRef(void 0);
+    var optionsRef = rehackt__WEBPACK_IMPORTED_MODULE_0__.useRef(void 0);
+    var queryRef = rehackt__WEBPACK_IMPORTED_MODULE_0__.useRef(void 0);
     var merged = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .mergeOptions */ .l)(options, execOptionsRef.current || {});
     var document = (_a = merged === null || merged === void 0 ? void 0 : merged.query) !== null && _a !== void 0 ? _a : query;
     // Use refs to track options and the used query to ensure the `execute`
@@ -55953,7 +55953,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.12.2";
+var version = "3.12.3";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
