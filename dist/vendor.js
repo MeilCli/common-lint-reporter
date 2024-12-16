@@ -11024,7 +11024,12 @@ var tokenKind = __webpack_require__(590);
  */
 function parse(source, options) {
   const parser = new Parser(source, options);
-  return parser.parseDocument();
+  const document = parser.parseDocument();
+  Object.defineProperty(document, 'tokenCount', {
+    enumerable: false,
+    value: parser.tokenCount,
+  });
+  return document;
 }
 /**
  * Given a string containing a GraphQL value (ex. `[42]`), parse the AST for
@@ -11092,6 +11097,10 @@ class Parser {
     this._lexer = new lexer/* Lexer */.J(sourceObj);
     this._options = options;
     this._tokenCounter = 0;
+  }
+
+  get tokenCount() {
+    return this._tokenCounter;
   }
   /**
    * Converts a name lex token into a name parse node.
@@ -12503,10 +12512,10 @@ class Parser {
 
     const token = this._lexer.advance();
 
-    if (maxTokens !== undefined && token.kind !== tokenKind/* TokenKind */.Y.EOF) {
+    if (token.kind !== tokenKind/* TokenKind */.Y.EOF) {
       ++this._tokenCounter;
 
-      if (this._tokenCounter > maxTokens) {
+      if (maxTokens !== undefined && this._tokenCounter > maxTokens) {
         throw (0,syntaxError/* syntaxError */.I)(
           this._lexer.source,
           token.start,
