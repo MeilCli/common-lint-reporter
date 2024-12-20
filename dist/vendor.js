@@ -45140,15 +45140,19 @@ var QueryManager = /** @class */ (function () {
         var _this = this;
         if (include === void 0) { include = "active"; }
         var queries = new Map();
-        var queryNamesAndDocs = new Map();
+        var queryNames = new Map();
+        var queryNamesAndQueryStrings = new Map();
         var legacyQueryOptions = new Set();
         if (Array.isArray(include)) {
             include.forEach(function (desc) {
                 if (typeof desc === "string") {
-                    queryNamesAndDocs.set(desc, false);
+                    queryNames.set(desc, desc);
+                    queryNamesAndQueryStrings.set(desc, false);
                 }
                 else if ((0,storeUtils/* isDocumentNode */.Kc)(desc)) {
-                    queryNamesAndDocs.set(_this.transform(desc), false);
+                    var queryString = (0,print/* print */.y)(_this.transform(desc));
+                    queryNames.set(queryString, (0,getFromAST/* getOperationName */.n4)(desc));
+                    queryNamesAndQueryStrings.set(queryString, false);
                 }
                 else if ((0,objects/* isNonNullObject */.U)(desc) && desc.query) {
                     legacyQueryOptions.add(desc);
@@ -45168,13 +45172,13 @@ var QueryManager = /** @class */ (function () {
                     return;
                 }
                 if (include === "active" ||
-                    (queryName && queryNamesAndDocs.has(queryName)) ||
-                    (document && queryNamesAndDocs.has(document))) {
+                    (queryName && queryNamesAndQueryStrings.has(queryName)) ||
+                    (document && queryNamesAndQueryStrings.has((0,print/* print */.y)(document)))) {
                     queries.set(queryId, oq);
                     if (queryName)
-                        queryNamesAndDocs.set(queryName, true);
+                        queryNamesAndQueryStrings.set(queryName, true);
                     if (document)
-                        queryNamesAndDocs.set(document, true);
+                        queryNamesAndQueryStrings.set((0,print/* print */.y)(document), true);
                 }
             }
         });
@@ -45198,10 +45202,16 @@ var QueryManager = /** @class */ (function () {
                 queries.set(queryId, oq);
             });
         }
-        if (globalThis.__DEV__ !== false && queryNamesAndDocs.size) {
-            queryNamesAndDocs.forEach(function (included, nameOrDoc) {
+        if (globalThis.__DEV__ !== false && queryNamesAndQueryStrings.size) {
+            queryNamesAndQueryStrings.forEach(function (included, nameOrQueryString) {
                 if (!included) {
-                    globalThis.__DEV__ !== false && globals/* invariant */.V1.warn(typeof nameOrDoc === "string" ? 35 : 36, nameOrDoc);
+                    var queryName = queryNames.get(nameOrQueryString);
+                    if (queryName) {
+                        globalThis.__DEV__ !== false && globals/* invariant */.V1.warn(35, queryName);
+                    }
+                    else {
+                        globalThis.__DEV__ !== false && globals/* invariant */.V1.warn(36);
+                    }
                 }
             });
         }
@@ -55963,7 +55973,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.12.3";
+var version = "3.12.4";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
