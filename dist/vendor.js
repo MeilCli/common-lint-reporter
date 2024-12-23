@@ -59212,6 +59212,7 @@ function getVisitFn(visitor, kind, isLeaving) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   AbortError: () => (/* binding */ AbortError),
 /* harmony export */   FetchError: () => (/* binding */ FetchError),
 /* harmony export */   Headers: () => (/* binding */ Headers),
 /* harmony export */   Request: () => (/* binding */ Request),
@@ -60583,10 +60584,6 @@ function getNodeRequestOptions(request) {
 	let agent = request.agent;
 	if (typeof agent === 'function') {
 		agent = agent(parsedURL);
-	}
-
-	if (!headers.has('Connection') && !agent) {
-		headers.set('Connection', 'close');
 	}
 
 	// HTTP-network fetch step 4.2
