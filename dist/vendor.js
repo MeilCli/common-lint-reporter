@@ -47925,8 +47925,6 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 
 
 
-
-
 /* Link */
 
 
@@ -48458,7 +48456,6 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _ApolloLink_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(1188);
 }
-
 
 
 
@@ -50183,6 +50180,7 @@ var __use = (/* runtime-dependent pure expression or super */ /^(250|49|6|748|79
 function useDeepMemo(memoFn, deps) {
     var ref = rehackt__WEBPACK_IMPORTED_MODULE_0__.useRef(void 0);
     if (!ref.current || !(0,_wry_equality__WEBPACK_IMPORTED_MODULE_1__/* .equal */ .L)(ref.current.deps, deps)) {
+        // eslint-disable-next-line react-compiler/react-compiler
         ref.current = { value: memoFn(), deps: deps };
     }
     return ref.current.value;
@@ -50396,9 +50394,11 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 
 function useBackgroundQuery(query, options) {
     if (options === void 0) { options = Object.create(null); }
-    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .wrapHook */ .Y)("useBackgroundQuery", _useBackgroundQuery, (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__/* .useApolloClient */ .m)(typeof options === "object" ? options.client : undefined))(query, options);
+    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .wrapHook */ .Y)("useBackgroundQuery", 
+    // eslint-disable-next-line react-compiler/react-compiler
+    useBackgroundQuery_, (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__/* .useApolloClient */ .m)(typeof options === "object" ? options.client : undefined))(query, options);
 }
-function _useBackgroundQuery(query, options) {
+function useBackgroundQuery_(query, options) {
     var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__/* .useApolloClient */ .m)(options.client);
     var suspenseCache = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_3__/* .getSuspenseCache */ .B)(client);
     var watchQueryOptions = (0,_useSuspenseQuery_js__WEBPACK_IMPORTED_MODULE_4__/* .useWatchQueryOptions */ .hO)({ client: client, query: query, options: options });
@@ -50503,9 +50503,11 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 
 
 function useFragment(options) {
-    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .wrapHook */ .Y)("useFragment", _useFragment, (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)(options.client))(options);
+    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .wrapHook */ .Y)("useFragment", 
+    // eslint-disable-next-line react-compiler/react-compiler
+    useFragment_, (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)(options.client))(options);
 }
-function _useFragment(options) {
+function useFragment_(options) {
     var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)(options.client);
     var cache = client.cache;
     var from = options.from, rest = (0,tslib__WEBPACK_IMPORTED_MODULE_4__/* .__rest */ .Tt)(options, ["from"]);
@@ -51045,6 +51047,7 @@ function useMutation(mutation, options) {
     }, []);
     rehackt__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () {
         var current = ref.current;
+        // eslint-disable-next-line react-compiler/react-compiler
         current.isMounted = true;
         return function () {
             current.isMounted = false;
@@ -51176,9 +51179,11 @@ var lastWatchOptions = Symbol();
  */
 function useQuery(query, options) {
     if (options === void 0) { options = Object.create(null); }
-    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_3__/* .wrapHook */ .Y)("useQuery", _useQuery, (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_4__/* .useApolloClient */ .m)(options && options.client))(query, options);
+    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_3__/* .wrapHook */ .Y)("useQuery", 
+    // eslint-disable-next-line react-compiler/react-compiler
+    useQuery_, (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_4__/* .useApolloClient */ .m)(options && options.client))(query, options);
 }
-function _useQuery(query, options) {
+function useQuery_(query, options) {
     var _a = useQueryInternals(query, options), result = _a.result, obsQueryFields = _a.obsQueryFields;
     return rehackt__WEBPACK_IMPORTED_MODULE_1__.useMemo(function () { return ((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({}, result), obsQueryFields)); }, [result, obsQueryFields]);
 }
@@ -51278,6 +51283,7 @@ function useObservableSubscriptionResult(resultData, observable, client, options
         // Like the forceUpdate method, the versions of these methods inherited from
         // InternalState.prototype are empty no-ops, but we can override them on the
         // base state object (without modifying the prototype).
+        // eslint-disable-next-line react-compiler/react-compiler
         callbackRef.current = callbacks;
     });
     var resultOverride = ((isSyncSSR || disableNetworkFetches) &&
@@ -51624,7 +51630,7 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
  */
 function useQueryRefHandlers(queryRef) {
     var unwrapped = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .unwrapQueryRef */ .Fd)(queryRef);
-    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .wrapHook */ .Y)("useQueryRefHandlers", _useQueryRefHandlers, unwrapped ?
+    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .wrapHook */ .Y)("useQueryRefHandlers", useQueryRefHandlers_, unwrapped ?
         unwrapped["observable"]
         // in the case of a "transported" queryRef object, we need to use the
         // client that's available to us at the current position in the React tree
@@ -51636,7 +51642,7 @@ function useQueryRefHandlers(queryRef) {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         : (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)())(queryRef);
 }
-function _useQueryRefHandlers(queryRef) {
+function useQueryRefHandlers_(queryRef) {
     (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .assertWrappedQueryRef */ .Ru)(queryRef);
     var _a = rehackt__WEBPACK_IMPORTED_MODULE_0__.useState(queryRef), previousQueryRef = _a[0], setPreviousQueryRef = _a[1];
     var _b = rehackt__WEBPACK_IMPORTED_MODULE_0__.useState(queryRef), wrappedQueryRef = _b[0], setWrappedQueryRef = _b[1];
@@ -51752,7 +51758,7 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 
 function useReadQuery(queryRef) {
     var unwrapped = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .unwrapQueryRef */ .Fd)(queryRef);
-    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .wrapHook */ .Y)("useReadQuery", _useReadQuery, unwrapped ?
+    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .wrapHook */ .Y)("useReadQuery", useReadQuery_, unwrapped ?
         unwrapped["observable"]
         // in the case of a "transported" queryRef object, we need to use the
         // client that's available to us at the current position in the React tree
@@ -51764,7 +51770,7 @@ function useReadQuery(queryRef) {
         // eslint-disable-next-line react-hooks/rules-of-hooks
         : (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)())(queryRef);
 }
-function _useReadQuery(queryRef) {
+function useReadQuery_(queryRef) {
     (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .assertWrappedQueryRef */ .Ru)(queryRef);
     var internalQueryRef = rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () { return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .unwrapQueryRef */ .Fd)(queryRef); }, [queryRef]);
     var getPromise = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () { return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .getWrappedPromise */ .Ve)(queryRef); }, [queryRef]);
@@ -51927,6 +51933,7 @@ function useSubscription(subscription, options) {
     var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)(options.client);
     (0,_parser_index_js__WEBPACK_IMPORTED_MODULE_4__/* .verifyDocumentType */ .D$)(subscription, _parser_index_js__WEBPACK_IMPORTED_MODULE_4__/* .DocumentType */ .KG.Subscription);
     if (!hasIssuedDeprecationWarningRef.current) {
+        // eslint-disable-next-line react-compiler/react-compiler
         hasIssuedDeprecationWarningRef.current = true;
         if (options.onSubscriptionData) {
             globalThis.__DEV__ !== false && _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1.warn(options.onData ? 61 : 62);
@@ -52168,9 +52175,11 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 
 function useSuspenseQuery(query, options) {
     if (options === void 0) { options = Object.create(null); }
-    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .wrapHook */ .Y)("useSuspenseQuery", _useSuspenseQuery, (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)(typeof options === "object" ? options.client : undefined))(query, options);
+    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .wrapHook */ .Y)("useSuspenseQuery", 
+    // eslint-disable-next-line react-compiler/react-compiler
+    useSuspenseQuery_, (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)(typeof options === "object" ? options.client : undefined))(query, options);
 }
-function _useSuspenseQuery(query, options) {
+function useSuspenseQuery_(query, options) {
     var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)(options.client);
     var suspenseCache = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_4__/* .getSuspenseCache */ .B)(client);
     var watchQueryOptions = useWatchQueryOptions({
@@ -52190,6 +52199,7 @@ function _useSuspenseQuery(query, options) {
     var _b = rehackt__WEBPACK_IMPORTED_MODULE_0__.useState([queryRef.key, queryRef.promise]), current = _b[0], setPromise = _b[1];
     // This saves us a re-execution of the render function when a variable changed.
     if (current[0] !== queryRef.key) {
+        // eslint-disable-next-line react-compiler/react-compiler
         current[0] = queryRef.key;
         current[1] = queryRef.promise;
     }
@@ -52461,7 +52471,6 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _query_preloader_createQueryPreloader_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(8857);
 }
-
 
 
 
@@ -55973,7 +55982,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.12.6";
+var version = "3.12.7";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
