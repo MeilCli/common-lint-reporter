@@ -46,7 +46,7 @@
         "@types/node": "^20.17.16",
         "@typescript-eslint/eslint-plugin": "^8.21.0",
         "@typescript-eslint/parser": "^8.21.0",
-        "eslint": "^9.18.0",
+        "eslint": "^9.19.0",
         "eslint-config-prettier": "^10.0.1",
         "eslint-formatter-checkstyle": "^8.40.0",
         "eslint-formatter-junit": "^8.40.0",
