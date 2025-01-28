@@ -40387,7 +40387,10 @@ var ApolloCache = /** @class */ (function () {
                     if (
                     // Always ensure we deliver the first result
                     latestDiff &&
-                        (0,_core_equalByQuery_js__WEBPACK_IMPORTED_MODULE_9__/* .equalByQuery */ .a)(query, { data: latestDiff === null || latestDiff === void 0 ? void 0 : latestDiff.result }, { data: data })) {
+                        (0,_core_equalByQuery_js__WEBPACK_IMPORTED_MODULE_9__/* .equalByQuery */ .a)(query, { data: latestDiff.result }, { data: data }, 
+                        // TODO: Fix the type on WatchFragmentOptions so that TVars
+                        // extends OperationVariables
+                        options.variables)) {
                         return;
                     }
                     var result = {
@@ -55982,7 +55985,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.12.7";
+var version = "3.12.8";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
