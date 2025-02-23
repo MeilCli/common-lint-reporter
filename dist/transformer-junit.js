@@ -42,7 +42,7 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.JunitTransformer = void 0;
 const core = __importStar(__webpack_require__(6977));
-const xml = __importStar(__webpack_require__(6454));
+const xml = __importStar(__webpack_require__(4603));
 const he = __importStar(__webpack_require__(6067));
 const option_1 = __webpack_require__(8851);
 const transformer_1 = __webpack_require__(6435);
