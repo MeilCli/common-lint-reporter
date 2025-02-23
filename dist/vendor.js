@@ -43393,12 +43393,17 @@ var QueryManager = /** @class */ (function () {
                 var entry = inFlightLinkObservables_1.lookup(printedServerQuery_1, varJson_1);
                 observable = entry.observable;
                 if (!observable) {
-                    var concast = new Concast([
+                    var concast_1 = new Concast([
                         (0,execute/* execute */.g)(link, operation),
                     ]);
-                    observable = entry.observable = concast;
-                    concast.beforeNext(function () {
-                        inFlightLinkObservables_1.remove(printedServerQuery_1, varJson_1);
+                    observable = entry.observable = concast_1;
+                    concast_1.beforeNext(function cb(method, arg) {
+                        if (method === "next" && "hasNext" in arg && arg.hasNext) {
+                            concast_1.beforeNext(cb);
+                        }
+                        else {
+                            inFlightLinkObservables_1.remove(printedServerQuery_1, varJson_1);
+                        }
                     });
                 }
             }
@@ -45135,10 +45140,7 @@ var ObservableQuery = /** @class */ (function (_super) {
         // (no-cache, network-only, or cache-and-network), override it with
         // network-only to force the refetch for this fetchQuery call.
         var fetchPolicy = this.options.fetchPolicy;
-        if (fetchPolicy === "cache-and-network") {
-            reobserveOptions.fetchPolicy = fetchPolicy;
-        }
-        else if (fetchPolicy === "no-cache") {
+        if (fetchPolicy === "no-cache") {
             reobserveOptions.fetchPolicy = "no-cache";
         }
         else {
@@ -45268,7 +45270,7 @@ var ObservableQuery = /** @class */ (function (_super) {
                     fetchMoreResult: fetchMoreResult.data,
                     variables: combinedOptions.variables,
                 });
-                _this.reportResult((0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, lastResult), { data: data }), _this.variables);
+                _this.reportResult((0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, lastResult), { networkStatus: originalNetworkStatus, loading: (0,core_networkStatus/* isNetworkRequestInFlight */.bi)(originalNetworkStatus), data: data }), _this.variables);
             }
             return _this.maskResult(fetchMoreResult);
         })
@@ -45303,12 +45305,8 @@ var ObservableQuery = /** @class */ (function (_super) {
             next: function (subscriptionData) {
                 var updateQuery = options.updateQuery;
                 if (updateQuery) {
-                    _this.updateQuery(function (previous, _a) {
-                        var variables = _a.variables;
-                        return updateQuery(previous, {
-                            subscriptionData: subscriptionData,
-                            variables: variables,
-                        });
+                    _this.updateQuery(function (previous, updateOptions) {
+                        return updateQuery(previous, (0,tslib_es6/* __assign */.Cl)({ subscriptionData: subscriptionData }, updateOptions));
                     });
                 }
             },
@@ -45377,14 +45375,16 @@ var ObservableQuery = /** @class */ (function (_super) {
      */
     ObservableQuery.prototype.updateQuery = function (mapFn) {
         var queryManager = this.queryManager;
-        var result = queryManager.cache.diff({
+        var _a = queryManager.cache.diff({
             query: this.options.query,
             variables: this.variables,
             returnPartialData: true,
             optimistic: false,
-        }).result;
+        }), result = _a.result, complete = _a.complete;
         var newResult = mapFn(result, {
             variables: this.variables,
+            complete: !!complete,
+            previousData: result,
         });
         if (newResult) {
             queryManager.cache.writeQuery({
@@ -46219,6 +46219,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   useReactiveVar: () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.qs),
 /* harmony export */   useReadQuery: () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.oz),
 /* harmony export */   useSubscription: () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.Rs),
+/* harmony export */   useSuspenseFragment: () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.UV),
 /* harmony export */   useSuspenseQuery: () => (/* reexport safe */ _react_index_js__WEBPACK_IMPORTED_MODULE_1__.UX)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
@@ -48110,15 +48111,16 @@ var skipToken = Symbol.for("apollo.skipToken");
 /* harmony export */   I3: () => (/* reexport safe */ _useFragment_js__WEBPACK_IMPORTED_MODULE_7__.I),
 /* harmony export */   IT: () => (/* reexport safe */ _useQuery_js__WEBPACK_IMPORTED_MODULE_4__.IT),
 /* harmony export */   Rs: () => (/* reexport safe */ _useSubscription_js__WEBPACK_IMPORTED_MODULE_5__.R),
+/* harmony export */   UV: () => (/* reexport safe */ _useSuspenseFragment_js__WEBPACK_IMPORTED_MODULE_10__.U),
 /* harmony export */   UX: () => (/* reexport safe */ _useSuspenseQuery_js__WEBPACK_IMPORTED_MODULE_8__.UX),
 /* harmony export */   _l: () => (/* reexport safe */ _useLazyQuery_js__WEBPACK_IMPORTED_MODULE_2__._),
-/* harmony export */   hT: () => (/* reexport safe */ _constants_js__WEBPACK_IMPORTED_MODULE_13__.h),
+/* harmony export */   hT: () => (/* reexport safe */ _constants_js__WEBPACK_IMPORTED_MODULE_14__.h),
 /* harmony export */   mK: () => (/* reexport safe */ _useApolloClient_js__WEBPACK_IMPORTED_MODULE_1__.m),
 /* harmony export */   n_: () => (/* reexport safe */ _useMutation_js__WEBPACK_IMPORTED_MODULE_3__.n),
-/* harmony export */   oz: () => (/* reexport safe */ _useReadQuery_js__WEBPACK_IMPORTED_MODULE_12__.o),
+/* harmony export */   oz: () => (/* reexport safe */ _useReadQuery_js__WEBPACK_IMPORTED_MODULE_13__.o),
 /* harmony export */   qs: () => (/* reexport safe */ _useReactiveVar_js__WEBPACK_IMPORTED_MODULE_6__.q),
-/* harmony export */   sj: () => (/* reexport safe */ _useQueryRefHandlers_js__WEBPACK_IMPORTED_MODULE_11__.s),
-/* harmony export */   yE: () => (/* reexport safe */ _useLoadableQuery_js__WEBPACK_IMPORTED_MODULE_10__.y)
+/* harmony export */   sj: () => (/* reexport safe */ _useQueryRefHandlers_js__WEBPACK_IMPORTED_MODULE_12__.s),
+/* harmony export */   yE: () => (/* reexport safe */ _useLoadableQuery_js__WEBPACK_IMPORTED_MODULE_11__.y)
 /* harmony export */ });
 /* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
@@ -48149,17 +48151,21 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _useBackgroundQuery_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(5207);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useLoadableQuery_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(215);
+	/* harmony import */ var _useSuspenseFragment_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(6243);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useQueryRefHandlers_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(7539);
+	/* harmony import */ var _useLoadableQuery_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(215);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useReadQuery_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(8351);
+	/* harmony import */ var _useQueryRefHandlers_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(7539);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _constants_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(3105);
+	/* harmony import */ var _useReadQuery_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(8351);
 }
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _constants_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(3105);
+}
+
 
 
 
@@ -48509,7 +48515,9 @@ function useBackgroundQuery_(query, options) {
         {
             fetchMore: fetchMore,
             refetch: refetch,
-            subscribeToMore: queryRef.observable.subscribeToMore,
+            // TODO: The internalQueryRef doesn't have TVariables' type information so we have to cast it here
+            subscribeToMore: queryRef.observable
+                .subscribeToMore,
         },
     ];
 }
@@ -48899,7 +48907,9 @@ function useLoadableQuery(query, options) {
     ]);
     var subscribeToMore = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function (options) {
         (0,_utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)(internalQueryRef, 60);
-        return internalQueryRef.observable.subscribeToMore(options);
+        return internalQueryRef.observable.subscribeToMore(
+        // TODO: The internalQueryRef doesn't have TVariables' type information so we have to cast it here
+        options);
     }, [internalQueryRef]);
     var reset = rehackt__WEBPACK_IMPORTED_MODULE_0__.useCallback(function () {
         setQueryRef(null);
@@ -49059,10 +49069,10 @@ function useMutation(mutation, options) {
                 onCompleted === null || onCompleted === void 0 ? void 0 : onCompleted(response.data, clientOptions);
             }
             return response;
-        })
-            .catch(function (error) {
+        }, function (error) {
             var _a;
-            if (mutationId === ref.current.mutationId && ref.current.isMounted) {
+            if (mutationId === ref.current.mutationId &&
+                ref.current.isMounted) {
                 var result_2 = {
                     loading: false,
                     error: error,
@@ -49649,10 +49659,10 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4047);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(111);
+	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(111);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8481);
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(8481);
 }
 
 
@@ -49679,17 +49689,14 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
  */
 function useQueryRefHandlers(queryRef) {
     var unwrapped = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .unwrapQueryRef */ .Fd)(queryRef);
-    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .wrapHook */ .Y)("useQueryRefHandlers", useQueryRefHandlers_, unwrapped ?
+    var clientOrObsQuery = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__/* .useApolloClient */ .m)(unwrapped ?
+        // passing an `ObservableQuery` is not supported by the types, but it will
+        // return any truthy value that is passed in as an override so we cast the result
         unwrapped["observable"]
-        // in the case of a "transported" queryRef object, we need to use the
-        // client that's available to us at the current position in the React tree
-        // that ApolloClient will then have the job to recreate a real queryRef from
-        // the transported object
-        // This is just a context read - it's fine to do this conditionally.
-        // This hook wrapper also shouldn't be optimized by React Compiler.
-        // eslint-disable-next-line react-compiler/react-compiler
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        : (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)())(queryRef);
+        : undefined);
+    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_3__/* .wrapHook */ .Y)("useQueryRefHandlers", 
+    // eslint-disable-next-line react-compiler/react-compiler
+    useQueryRefHandlers_, clientOrObsQuery)(queryRef);
 }
 function useQueryRefHandlers_(queryRef) {
     (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .assertWrappedQueryRef */ .Ru)(queryRef);
@@ -49719,7 +49726,9 @@ function useQueryRefHandlers_(queryRef) {
     return {
         refetch: refetch,
         fetchMore: fetchMore,
-        subscribeToMore: internalQueryRef.observable.subscribeToMore,
+        // TODO: The internalQueryRef doesn't have TVariables' type information so we have to cast it here
+        subscribeToMore: internalQueryRef.observable
+            .subscribeToMore,
     };
 }
 //# sourceMappingURL=useQueryRefHandlers.js.map
@@ -49785,7 +49794,7 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4047);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8481);
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(8481);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(7737);
@@ -49797,7 +49806,7 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(9770);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(111);
+	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(111);
 }
 
 
@@ -49807,17 +49816,14 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 
 function useReadQuery(queryRef) {
     var unwrapped = (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .unwrapQueryRef */ .Fd)(queryRef);
-    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_2__/* .wrapHook */ .Y)("useReadQuery", useReadQuery_, unwrapped ?
+    var clientOrObsQuery = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__/* .useApolloClient */ .m)(unwrapped ?
+        // passing an `ObservableQuery` is not supported by the types, but it will
+        // return any truthy value that is passed in as an override so we cast the result
         unwrapped["observable"]
-        // in the case of a "transported" queryRef object, we need to use the
-        // client that's available to us at the current position in the React tree
-        // that ApolloClient will then have the job to recreate a real queryRef from
-        // the transported object
-        // This is just a context read - it's fine to do this conditionally.
-        // This hook wrapper also shouldn't be optimized by React Compiler.
-        // eslint-disable-next-line react-compiler/react-compiler
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        : (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_3__/* .useApolloClient */ .m)())(queryRef);
+        : undefined);
+    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_3__/* .wrapHook */ .Y)("useReadQuery", 
+    // eslint-disable-next-line react-compiler/react-compiler
+    useReadQuery_, clientOrObsQuery)(queryRef);
 }
 function useReadQuery_(queryRef) {
     (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .assertWrappedQueryRef */ .Ru)(queryRef);
@@ -50164,6 +50170,84 @@ function createSubscription(client, query, variables, fetchPolicy, errorPolicy, 
 
 /***/ }),
 
+/***/ 6243:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   U: () => (/* binding */ useSuspenseFragment)
+/* harmony export */ });
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1635);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _cache_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6269);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(111);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(9976);
+}
+/* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7243);
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _internal_use_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(7737);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(8481);
+}
+
+
+
+
+
+
+
+var NULL_PLACEHOLDER = (/* runtime-dependent pure expression or super */ /^(250|49|6|748|792|888)$/.test(__webpack_require__.j) ? ([]) : null);
+function useSuspenseFragment(options) {
+    return (0,_internal_index_js__WEBPACK_IMPORTED_MODULE_1__/* .wrapHook */ .Y)("useSuspenseFragment", 
+    // eslint-disable-next-line react-compiler/react-compiler
+    useSuspenseFragment_, (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__/* .useApolloClient */ .m)(typeof options === "object" ? options.client : undefined))(options);
+}
+function useSuspenseFragment_(options) {
+    var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__/* .useApolloClient */ .m)(options.client);
+    var from = options.from, variables = options.variables;
+    var cache = client.cache;
+    var id = (0,rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
+        return typeof from === "string" ? from
+            : from === null ? null
+                : cache.identify(from);
+    }, [cache, from]);
+    var fragmentRef = id === null ? null : ((0,_internal_index_js__WEBPACK_IMPORTED_MODULE_3__/* .getSuspenseCache */ .B)(client).getFragmentRef([id, options.fragment, (0,_cache_index_js__WEBPACK_IMPORTED_MODULE_4__/* .canonicalStringify */ .M)(variables)], client, (0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({}, options), { variables: variables, from: id })));
+    var _a = rehackt__WEBPACK_IMPORTED_MODULE_0__.useState(fragmentRef === null ? NULL_PLACEHOLDER : ([fragmentRef.key, fragmentRef.promise])), current = _a[0], setPromise = _a[1];
+    rehackt__WEBPACK_IMPORTED_MODULE_0__.useEffect(function () {
+        if (fragmentRef === null) {
+            return;
+        }
+        var dispose = fragmentRef.retain();
+        var removeListener = fragmentRef.listen(function (promise) {
+            setPromise([fragmentRef.key, promise]);
+        });
+        return function () {
+            dispose();
+            removeListener();
+        };
+    }, [fragmentRef]);
+    if (fragmentRef === null) {
+        return { data: null };
+    }
+    if (current[0] !== fragmentRef.key) {
+        // eslint-disable-next-line react-compiler/react-compiler
+        current[0] = fragmentRef.key;
+        current[1] = fragmentRef.promise;
+    }
+    var data = (0,_internal_use_js__WEBPACK_IMPORTED_MODULE_6__/* .__use */ .y)(current[1]);
+    return { data: data };
+}
+//# sourceMappingURL=useSuspenseFragment.js.map
+
+/***/ }),
+
 /***/ 5599:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
@@ -50286,7 +50370,9 @@ function useSuspenseQuery_(query, options) {
         setPromise([queryRef.key, queryRef.promise]);
         return promise;
     }, [queryRef]);
-    var subscribeToMore = queryRef.observable.subscribeToMore;
+    // TODO: The internalQueryRef doesn't have TVariables' type information so we have to cast it here
+    var subscribeToMore = queryRef.observable
+        .subscribeToMore;
     return rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
         return {
             client: client,
@@ -50486,6 +50572,7 @@ function checkIfSnapshotChanged(_a) {
 /* harmony export */   K3: () => (/* reexport safe */ _parser_index_js__WEBPACK_IMPORTED_MODULE_5__.K3),
 /* harmony export */   KG: () => (/* reexport safe */ _parser_index_js__WEBPACK_IMPORTED_MODULE_5__.KG),
 /* harmony export */   Rs: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.Rs),
+/* harmony export */   UV: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.UV),
 /* harmony export */   UX: () => (/* reexport safe */ _hooks_index_js__WEBPACK_IMPORTED_MODULE_4__.UX),
 /* harmony export */   XM: () => (/* reexport safe */ _context_index_js__WEBPACK_IMPORTED_MODULE_1__.X),
 /* harmony export */   Xn: () => (/* reexport safe */ _parser_index_js__WEBPACK_IMPORTED_MODULE_5__.Xn),
@@ -50873,29 +50960,180 @@ var InternalQueryReference = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 9134:
+/***/ 1705:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   H: () => (/* binding */ SuspenseCache)
-/* harmony export */ });
-/* harmony import */ var _wry_trie__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2453);
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2619);
-/* harmony import */ var _QueryReference_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4047);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  H: () => (/* binding */ SuspenseCache)
+});
+
+// EXTERNAL MODULE: ./node_modules/@wry/trie/lib/index.js
+var lib = __webpack_require__(2453);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/canUse.js
+var canUse = __webpack_require__(2619);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/react/internal/cache/QueryReference.js
+var QueryReference = __webpack_require__(4047);
+// EXTERNAL MODULE: ./node_modules/tslib/tslib.es6.mjs
+var tslib_es6 = __webpack_require__(1635);
+// EXTERNAL MODULE: ./node_modules/@wry/equality/lib/index.js
+var equality_lib = __webpack_require__(5381);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/promises/decoration.js
+var decoration = __webpack_require__(6697);
+;// ./node_modules/@apollo/client/react/internal/cache/FragmentReference.js
+
+
+
+var FragmentReference = /** @class */ (function () {
+    function FragmentReference(client, watchFragmentOptions, options) {
+        var _this = this;
+        this.key = {};
+        this.listeners = new Set();
+        this.references = 0;
+        this.dispose = this.dispose.bind(this);
+        this.handleNext = this.handleNext.bind(this);
+        this.handleError = this.handleError.bind(this);
+        this.observable = client.watchFragment(watchFragmentOptions);
+        if (options.onDispose) {
+            this.onDispose = options.onDispose;
+        }
+        var diff = this.getDiff(client, watchFragmentOptions);
+        // Start a timer that will automatically dispose of the query if the
+        // suspended resource does not use this fragmentRef in the given time. This
+        // helps prevent memory leaks when a component has unmounted before the
+        // query has finished loading.
+        var startDisposeTimer = function () {
+            var _a;
+            if (!_this.references) {
+                _this.autoDisposeTimeoutId = setTimeout(_this.dispose, (_a = options.autoDisposeTimeoutMs) !== null && _a !== void 0 ? _a : 30000);
+            }
+        };
+        this.promise =
+            diff.complete ?
+                (0,decoration/* createFulfilledPromise */.$D)(diff.result)
+                : this.createPendingPromise();
+        this.subscribeToFragment();
+        this.promise.then(startDisposeTimer, startDisposeTimer);
+    }
+    FragmentReference.prototype.listen = function (listener) {
+        var _this = this;
+        this.listeners.add(listener);
+        return function () {
+            _this.listeners.delete(listener);
+        };
+    };
+    FragmentReference.prototype.retain = function () {
+        var _this = this;
+        this.references++;
+        clearTimeout(this.autoDisposeTimeoutId);
+        var disposed = false;
+        return function () {
+            if (disposed) {
+                return;
+            }
+            disposed = true;
+            _this.references--;
+            setTimeout(function () {
+                if (!_this.references) {
+                    _this.dispose();
+                }
+            });
+        };
+    };
+    FragmentReference.prototype.dispose = function () {
+        this.subscription.unsubscribe();
+        this.onDispose();
+    };
+    FragmentReference.prototype.onDispose = function () {
+        // noop. overridable by options
+    };
+    FragmentReference.prototype.subscribeToFragment = function () {
+        this.subscription = this.observable.subscribe(this.handleNext.bind(this), this.handleError.bind(this));
+    };
+    FragmentReference.prototype.handleNext = function (result) {
+        var _a;
+        switch (this.promise.status) {
+            case "pending": {
+                if (result.complete) {
+                    return (_a = this.resolve) === null || _a === void 0 ? void 0 : _a.call(this, result.data);
+                }
+                this.deliver(this.promise);
+                break;
+            }
+            case "fulfilled": {
+                // This can occur when we already have a result written to the cache and
+                // we subscribe for the first time. We create a fulfilled promise in the
+                // constructor with a value that is the same as the first emitted value
+                // so we want to skip delivering it.
+                if ((0,equality_lib/* equal */.L)(this.promise.value, result.data)) {
+                    return;
+                }
+                this.promise =
+                    result.complete ?
+                        (0,decoration/* createFulfilledPromise */.$D)(result.data)
+                        : this.createPendingPromise();
+                this.deliver(this.promise);
+            }
+        }
+    };
+    FragmentReference.prototype.handleError = function (error) {
+        var _a;
+        (_a = this.reject) === null || _a === void 0 ? void 0 : _a.call(this, error);
+    };
+    FragmentReference.prototype.deliver = function (promise) {
+        this.listeners.forEach(function (listener) { return listener(promise); });
+    };
+    FragmentReference.prototype.createPendingPromise = function () {
+        var _this = this;
+        return (0,decoration/* wrapPromiseWithState */.zq)(new Promise(function (resolve, reject) {
+            _this.resolve = resolve;
+            _this.reject = reject;
+        }));
+    };
+    FragmentReference.prototype.getDiff = function (client, options) {
+        var cache = client.cache;
+        var from = options.from, fragment = options.fragment, fragmentName = options.fragmentName;
+        var diff = cache.diff((0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, options), { query: cache["getFragmentDoc"](fragment, fragmentName), returnPartialData: true, id: from, optimistic: true }));
+        return (0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, diff), { result: client["queryManager"].maskFragment({
+                fragment: fragment,
+                fragmentName: fragmentName,
+                data: diff.result,
+            }) });
+    };
+    return FragmentReference;
+}());
+
+//# sourceMappingURL=FragmentReference.js.map
+;// ./node_modules/@apollo/client/react/internal/cache/SuspenseCache.js
+
 
 
 
 var SuspenseCache = /** @class */ (function () {
     function SuspenseCache(options) {
         if (options === void 0) { options = Object.create(null); }
-        this.queryRefs = new _wry_trie__WEBPACK_IMPORTED_MODULE_0__/* .Trie */ .b(_utilities_index_js__WEBPACK_IMPORTED_MODULE_1__/* .canUseWeakMap */ .et);
+        this.queryRefs = new lib/* Trie */.b(canUse/* canUseWeakMap */.et);
+        this.fragmentRefs = new lib/* Trie */.b(canUse/* canUseWeakMap */.et);
         this.options = options;
     }
     SuspenseCache.prototype.getQueryRef = function (cacheKey, createObservable) {
         var ref = this.queryRefs.lookupArray(cacheKey);
         if (!ref.current) {
-            ref.current = new _QueryReference_js__WEBPACK_IMPORTED_MODULE_2__/* .InternalQueryReference */ .Hp(createObservable(), {
+            ref.current = new QueryReference/* InternalQueryReference */.Hp(createObservable(), {
+                autoDisposeTimeoutMs: this.options.autoDisposeTimeoutMs,
+                onDispose: function () {
+                    delete ref.current;
+                },
+            });
+        }
+        return ref.current;
+    };
+    SuspenseCache.prototype.getFragmentRef = function (cacheKey, client, options) {
+        var ref = this.fragmentRefs.lookupArray(cacheKey);
+        if (!ref.current) {
+            ref.current = new FragmentReference(client, options, {
                 autoDisposeTimeoutMs: this.options.autoDisposeTimeoutMs,
                 onDispose: function () {
                     delete ref.current;
@@ -50923,7 +51161,7 @@ var SuspenseCache = /** @class */ (function () {
 /* harmony export */   B: () => (/* binding */ getSuspenseCache)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _SuspenseCache_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9134);
+	/* harmony import */ var _SuspenseCache_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1705);
 }
 
 var suspenseCacheSymbol = Symbol.for("apollo.suspenseCache");
@@ -54031,7 +54269,7 @@ function wrapPromiseWithState(promise) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.12.8";
+var version = "3.13.1";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
