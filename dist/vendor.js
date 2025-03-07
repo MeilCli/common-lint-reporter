@@ -1434,7 +1434,7 @@ module.exports = DispatcherBase
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.13.1";
+var version = "3.13.2";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
@@ -11364,7 +11364,6 @@ var SuspenseCache = /** @class */ (function () {
 /* harmony export */   kk: () => (/* binding */ getDefaultFetchPolicy),
 /* harmony export */   t_: () => (/* binding */ getObsQueryOptions)
 /* harmony export */ });
-/* unused harmony export lastWatchOptions */
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(1635);
 }
@@ -24208,8 +24207,8 @@ function regExpEscape (s) {
 
 
 
-var QUERY_REFERENCE_SYMBOL = Symbol();
-var PROMISE_SYMBOL = Symbol();
+var QUERY_REFERENCE_SYMBOL = Symbol.for("apollo.internal.queryRef");
+var PROMISE_SYMBOL = Symbol.for("apollo.internal.refPromise");
 function wrapQueryRef(internalQueryRef) {
     var _a;
     var ref = (_a = {
