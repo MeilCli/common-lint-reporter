@@ -1434,7 +1434,7 @@ module.exports = DispatcherBase
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.13.2";
+var version = "3.13.3";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
@@ -7461,6 +7461,14 @@ var ObservableQuery = /** @class */ (function (_super) {
             }
             else {
                 result.partial = true;
+            }
+            // We need to check for both both `error` and `errors` field because there
+            // are cases where sometimes `error` is set, but not `errors` and
+            // vice-versa. This will be updated in the next major version when
+            // `errors` is deprecated in favor of `error`.
+            if (result.networkStatus === core_networkStatus/* NetworkStatus */.pT.ready &&
+                (result.error || result.errors)) {
+                result.networkStatus = core_networkStatus/* NetworkStatus */.pT.error;
             }
             if (globalThis.__DEV__ !== false &&
                 !diff.complete &&
