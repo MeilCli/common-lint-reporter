@@ -1434,7 +1434,7 @@ module.exports = DispatcherBase
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.13.3";
+var version = "3.13.4";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
@@ -41681,7 +41681,7 @@ function useSuspenseFragment_(options) {
     var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_2__/* .useApolloClient */ .m)(options.client);
     var from = options.from, variables = options.variables;
     var cache = client.cache;
-    var id = (0,rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo)(function () {
+    var id = rehackt__WEBPACK_IMPORTED_MODULE_0__.useMemo(function () {
         return typeof from === "string" ? from
             : from === null ? null
                 : cache.identify(from);
