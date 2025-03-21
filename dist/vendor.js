@@ -1434,7 +1434,7 @@ module.exports = DispatcherBase
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.13.4";
+var version = "3.13.5";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
@@ -37485,6 +37485,8 @@ var QueryInfo = /** @class */ (function () {
         }
         if (!(0,lib/* equal */.L)(query.variables, this.variables)) {
             this.lastDiff = void 0;
+            // Ensure we don't continue to receive cache updates for old variables
+            this.cancel();
         }
         Object.assign(this, {
             document: query.document,
@@ -37629,17 +37631,16 @@ var QueryInfo = /** @class */ (function () {
             // Cancel the pending notify timeout
             this.reset();
             this.cancel();
-            // Revert back to the no-op version of cancel inherited from
-            // QueryInfo.prototype.
-            this.cancel = QueryInfo.prototype.cancel;
             var oq = this.observableQuery;
             if (oq)
                 oq.stopPolling();
         }
     };
-    // This method is a no-op by default, until/unless overridden by the
-    // updateWatch method.
-    QueryInfo.prototype.cancel = function () { };
+    QueryInfo.prototype.cancel = function () {
+        var _a;
+        (_a = this.cancelWatch) === null || _a === void 0 ? void 0 : _a.call(this);
+        this.cancelWatch = void 0;
+    };
     QueryInfo.prototype.updateWatch = function (variables) {
         var _this = this;
         if (variables === void 0) { variables = this.variables; }
@@ -37650,7 +37651,7 @@ var QueryInfo = /** @class */ (function () {
         var watchOptions = (0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, this.getDiffOptions(variables)), { watcher: this, callback: function (diff) { return _this.setDiff(diff); } });
         if (!this.lastWatch || !(0,lib/* equal */.L)(watchOptions, this.lastWatch)) {
             this.cancel();
-            this.cancel = this.cache.watch((this.lastWatch = watchOptions));
+            this.cancelWatch = this.cache.watch((this.lastWatch = watchOptions));
         }
     };
     QueryInfo.prototype.resetLastWrite = function () {
