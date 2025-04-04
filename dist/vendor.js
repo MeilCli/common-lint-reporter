@@ -1434,7 +1434,7 @@ module.exports = DispatcherBase
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.13.5";
+var version = "3.13.6";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
@@ -7275,7 +7275,10 @@ var subclassing = __webpack_require__(1291);
 var errors = __webpack_require__(9211);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/core/equalByQuery.js
 var equalByQuery = __webpack_require__(9080);
+// EXTERNAL MODULE: ./node_modules/optimism/lib/index.js + 7 modules
+var optimism_lib = __webpack_require__(1161);
 ;// ./node_modules/@apollo/client/core/ObservableQuery.js
+
 
 
 
@@ -7288,7 +7291,13 @@ var ObservableQuery = /** @class */ (function (_super) {
     (0,tslib_es6/* __extends */.C6)(ObservableQuery, _super);
     function ObservableQuery(_a) {
         var queryManager = _a.queryManager, queryInfo = _a.queryInfo, options = _a.options;
-        var _this = _super.call(this, function (observer) {
+        var _this = this;
+        var startedInactive = ObservableQuery.inactiveOnCreation.getValue();
+        _this = _super.call(this, function (observer) {
+            if (startedInactive) {
+                queryManager["queries"].set(_this.queryId, queryInfo);
+                startedInactive = false;
+            }
             // Zen Observable has its own error function, so in order to log correctly
             // we need to provide a custom error callback.
             try {
@@ -7851,8 +7860,9 @@ var ObservableQuery = /** @class */ (function (_super) {
     ObservableQuery.prototype.fetch = function (options, newNetworkStatus, query) {
         // TODO Make sure we update the networkStatus (and infer fetchVariables)
         // before actually committing to the fetch.
-        this.queryManager.setObservableQuery(this);
-        return this.queryManager["fetchConcastWithInfo"](this.queryId, options, newNetworkStatus, query);
+        var queryInfo = this.queryManager.getOrCreateQuery(this.queryId);
+        queryInfo.setObservableQuery(this);
+        return this.queryManager["fetchConcastWithInfo"](queryInfo, options, newNetworkStatus, query);
     };
     // Turns polling on or off based on this.options.pollInterval.
     ObservableQuery.prototype.updatePolling = function () {
@@ -8087,6 +8097,14 @@ var ObservableQuery = /** @class */ (function (_super) {
                 id: this.queryId,
             }) }) : result;
     };
+    /**
+     * @internal
+     * A slot used by the `useQuery` hook to indicate that `client.watchQuery`
+     * should not register the query immediately, but instead wait for the query to
+     * be started registered with the `QueryManager` when `useSyncExternalStore`
+     * actively subscribes to it.
+     */
+    ObservableQuery.inactiveOnCreation = new optimism_lib/* Slot */.DX();
     return ObservableQuery;
 }(zen_observable_ts_module/* Observable */.c));
 
@@ -11378,19 +11396,22 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 /* harmony import */ var _utilities_globals_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2687);
 /* harmony import */ var rehackt__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7243);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(9770);
+	/* harmony import */ var _useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(9770);
 }
 /* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5381);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(144);
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(144);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _context_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(6741);
+	/* harmony import */ var _context_index_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(6741);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _errors_index_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(9211);
+	/* harmony import */ var _errors_index_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(9211);
 }
-/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(8599);
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(1231);
+}
+/* harmony import */ var _core_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(8599);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _parser_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(5443);
 }
@@ -11398,12 +11419,12 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _useApolloClient_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(111);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(7945);
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(7945);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(3255);
+	/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(3255);
 }
-/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(1469);
+/* harmony import */ var _utilities_index_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(1469);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _internal_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(8481);
 }
@@ -11499,7 +11520,9 @@ function useInternalState(client, query, options, renderPromises, makeWatchQuery
             // to fetch the result set. This is used during SSR.
             (renderPromises &&
                 renderPromises.getSSRObservable(makeWatchQueryOptions())) ||
-                client.watchQuery(getObsQueryOptions(void 0, client, options, makeWatchQueryOptions())),
+                _core_index_js__WEBPACK_IMPORTED_MODULE_7__/* .ObservableQuery */ .U5["inactiveOnCreation"].withValue(!renderPromises, function () {
+                    return client.watchQuery(getObsQueryOptions(void 0, client, options, makeWatchQueryOptions()));
+                }),
             resultData: {
                 // Reuse previousData from previous InternalState (if any) to provide
                 // continuity of previousData even if/when the query or client changes.
@@ -11547,7 +11570,7 @@ function useInternalState(client, query, options, renderPromises, makeWatchQuery
 }
 function useQueryInternals(query, options) {
     var client = (0,_useApolloClient_js__WEBPACK_IMPORTED_MODULE_4__/* .useApolloClient */ .m)(options.client);
-    var renderPromises = rehackt__WEBPACK_IMPORTED_MODULE_1__.useContext((0,_context_index_js__WEBPACK_IMPORTED_MODULE_7__/* .getApolloContext */ .l)()).renderPromises;
+    var renderPromises = rehackt__WEBPACK_IMPORTED_MODULE_1__.useContext((0,_context_index_js__WEBPACK_IMPORTED_MODULE_8__/* .getApolloContext */ .l)()).renderPromises;
     var isSyncSSR = !!renderPromises;
     var disableNetworkFetches = client.disableNetworkFetches;
     var ssrAllowed = options.ssr !== false && !options.skip;
@@ -11609,7 +11632,7 @@ function useObservableSubscriptionResult(resultData, observable, client, options
         return resultOverride &&
             toQueryResult(resultOverride, previousData, observable, client);
     }, [client, observable, resultOverride, previousData]);
-    return (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_8__/* .useSyncExternalStore */ .r)(rehackt__WEBPACK_IMPORTED_MODULE_1__.useCallback(function (handleStoreChange) {
+    return (0,_useSyncExternalStore_js__WEBPACK_IMPORTED_MODULE_9__/* .useSyncExternalStore */ .r)(rehackt__WEBPACK_IMPORTED_MODULE_1__.useCallback(function (handleStoreChange) {
         // reference `disableNetworkFetches` here to ensure that the rules of hooks
         // keep it as a dependency of this effect, even though it's not used
         disableNetworkFetches;
@@ -11647,7 +11670,7 @@ function useObservableSubscriptionResult(resultData, observable, client, options
                         previousResult.data),
                     error: error,
                     loading: false,
-                    networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_9__/* .NetworkStatus */ .pT.error,
+                    networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_10__/* .NetworkStatus */ .pT.error,
                 }, resultData, observable, client, partialRefetch, handleStoreChange, callbackRef.current);
             }
         };
@@ -11778,20 +11801,20 @@ function getObsQueryOptions(observable, client, queryHookOptions, watchQueryOpti
     // (if provided) should be merged, to ensure individual defaulted
     // variables always have values, if not otherwise defined in
     // observable.options or watchQueryOptions.
-    toMerge.push((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_10__/* .compact */ .o)(observable && observable.options, watchQueryOptions));
-    return toMerge.reduce(_utilities_index_js__WEBPACK_IMPORTED_MODULE_11__/* .mergeOptions */ .l);
+    toMerge.push((0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_11__/* .compact */ .o)(observable && observable.options, watchQueryOptions));
+    return toMerge.reduce(_utilities_index_js__WEBPACK_IMPORTED_MODULE_12__/* .mergeOptions */ .l);
 }
 function setResult(nextResult, resultData, observable, client, partialRefetch, forceUpdate, callbacks) {
     var previousResult = resultData.current;
     if (previousResult && previousResult.data) {
         resultData.previousData = previousResult.data;
     }
-    if (!nextResult.error && (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_12__/* .isNonEmptyArray */ .E)(nextResult.errors)) {
+    if (!nextResult.error && (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_13__/* .isNonEmptyArray */ .E)(nextResult.errors)) {
         // Until a set naming convention for networkError and graphQLErrors is
         // decided upon, we map errors (graphQLErrors) to the error options.
         // TODO: Is it possible for both result.error and result.errors to be
         // defined here?
-        nextResult.error = new _errors_index_js__WEBPACK_IMPORTED_MODULE_13__/* .ApolloError */ .K4({ graphQLErrors: nextResult.errors });
+        nextResult.error = new _errors_index_js__WEBPACK_IMPORTED_MODULE_14__/* .ApolloError */ .K4({ graphQLErrors: nextResult.errors });
     }
     resultData.current = toQueryResult(unsafeHandlePartialRefetch(nextResult, observable, partialRefetch), resultData.previousData, observable, client);
     // Calling state.setResult always triggers an update, though some call sites
@@ -11810,7 +11833,7 @@ function handleErrorOrCompleted(result, previousNetworkStatus, callbacks) {
             }
             else if (result.data &&
                 previousNetworkStatus !== result.networkStatus &&
-                result.networkStatus === _core_index_js__WEBPACK_IMPORTED_MODULE_9__/* .NetworkStatus */ .pT.ready) {
+                result.networkStatus === _core_index_js__WEBPACK_IMPORTED_MODULE_10__/* .NetworkStatus */ .pT.ready) {
                 callbacks.onCompleted(result.data);
             }
         })
@@ -11837,8 +11860,8 @@ function getDefaultFetchPolicy(queryHookDefaultOptions, clientDefaultOptions) {
         "cache-first");
 }
 function toApolloError(result) {
-    return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_12__/* .isNonEmptyArray */ .E)(result.errors) ?
-        new _errors_index_js__WEBPACK_IMPORTED_MODULE_13__/* .ApolloError */ .K4({ graphQLErrors: result.errors })
+    return (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_13__/* .isNonEmptyArray */ .E)(result.errors) ?
+        new _errors_index_js__WEBPACK_IMPORTED_MODULE_14__/* .ApolloError */ .K4({ graphQLErrors: result.errors })
         : result.error;
 }
 function toQueryResult(result, previousData, observable, client) {
@@ -11856,21 +11879,21 @@ function unsafeHandlePartialRefetch(result, observable, partialRefetch) {
         (!result.data || Object.keys(result.data).length === 0) &&
         observable.options.fetchPolicy !== "cache-only") {
         observable.refetch();
-        return (0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({}, result), { loading: true, networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_9__/* .NetworkStatus */ .pT.refetch });
+        return (0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)((0,tslib__WEBPACK_IMPORTED_MODULE_5__/* .__assign */ .Cl)({}, result), { loading: true, networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_10__/* .NetworkStatus */ .pT.refetch });
     }
     return result;
 }
-var ssrDisabledResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_14__/* .maybeDeepFreeze */ .G)({
+var ssrDisabledResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_15__/* .maybeDeepFreeze */ .G)({
     loading: true,
     data: void 0,
     error: void 0,
-    networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_9__/* .NetworkStatus */ .pT.loading,
+    networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_10__/* .NetworkStatus */ .pT.loading,
 });
-var skipStandbyResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_14__/* .maybeDeepFreeze */ .G)({
+var skipStandbyResult = (0,_utilities_index_js__WEBPACK_IMPORTED_MODULE_15__/* .maybeDeepFreeze */ .G)({
     loading: false,
     data: void 0,
     error: void 0,
-    networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_9__/* .NetworkStatus */ .pT.ready,
+    networkStatus: _core_index_js__WEBPACK_IMPORTED_MODULE_10__/* .NetworkStatus */ .pT.ready,
 });
 function bindObservableMethods(observable) {
     return {
@@ -38031,8 +38054,7 @@ var QueryManager = /** @class */ (function () {
         return true;
     };
     QueryManager.prototype.fetchQuery = function (queryId, options, networkStatus) {
-        return this.fetchConcastWithInfo(queryId, options, networkStatus).concast
-            .promise;
+        return this.fetchConcastWithInfo(this.getOrCreateQuery(queryId), options, networkStatus).concast.promise;
     };
     QueryManager.prototype.getQueryStore = function () {
         var store = Object.create(null);
@@ -38110,7 +38132,9 @@ var QueryManager = /** @class */ (function () {
             options: options,
         });
         observable["lastQuery"] = query;
-        this.queries.set(observable.queryId, queryInfo);
+        if (!ObservableQuery/* ObservableQuery */.U5["inactiveOnCreation"].getValue()) {
+            this.queries.set(observable.queryId, queryInfo);
+        }
         // We give queryInfo the transformed query to ensure the first cache diff
         // uses the transformed query instead of the raw query
         queryInfo.init({
@@ -38235,7 +38259,7 @@ var QueryManager = /** @class */ (function () {
                 // pre-allocate a new query ID here, using a special prefix to enable
                 // cleaning up these temporary queries later, after fetching.
                 var queryId = (0,makeUniqueId/* makeUniqueId */.v)("legacyOneTimeQuery");
-                var queryInfo = _this.getQuery(queryId).init({
+                var queryInfo = _this.getOrCreateQuery(queryId).init({
                     document: options.query,
                     variables: options.variables,
                 });
@@ -38275,13 +38299,10 @@ var QueryManager = /** @class */ (function () {
                 (fetchPolicy !== "standby" && fetchPolicy !== "cache-only")) {
                 observableQueryPromises.push(observableQuery.refetch());
             }
-            _this.getQuery(queryId).setDiff(null);
+            (_this.queries.get(queryId) || observableQuery["queryInfo"]).setDiff(null);
         });
         this.broadcastQueries();
         return Promise.all(observableQueryPromises);
-    };
-    QueryManager.prototype.setObservableQuery = function (observableQuery) {
-        this.getQuery(observableQuery.queryId).setObservableQuery(observableQuery);
     };
     QueryManager.prototype.startGraphQLSubscription = function (options) {
         var _this = this;
@@ -38348,6 +38369,7 @@ var QueryManager = /** @class */ (function () {
         this.removeQuery(queryId);
     };
     QueryManager.prototype.removeQuery = function (queryId) {
+        var _a;
         // teardown all links
         // Both `QueryManager.fetchRequest` and `QueryManager.query` create separate promises
         // that each add their reject functions to fetchCancelFns.
@@ -38355,7 +38377,7 @@ var QueryManager = /** @class */ (function () {
         // The same queryId could have two rejection fns for two promises
         this.fetchCancelFns.delete(queryId);
         if (this.queries.has(queryId)) {
-            this.getQuery(queryId).stop();
+            (_a = this.queries.get(queryId)) === null || _a === void 0 ? void 0 : _a.stop();
             this.queries.delete(queryId);
         }
     };
@@ -38478,7 +38500,7 @@ var QueryManager = /** @class */ (function () {
             throw error;
         });
     };
-    QueryManager.prototype.fetchConcastWithInfo = function (queryId, options, 
+    QueryManager.prototype.fetchConcastWithInfo = function (queryInfo, options, 
     // The initial networkStatus for this fetch, most often
     // NetworkStatus.loading, but also possibly fetchMore, poll, refetch,
     // or setVariables.
@@ -38487,7 +38509,6 @@ var QueryManager = /** @class */ (function () {
         if (networkStatus === void 0) { networkStatus = core_networkStatus/* NetworkStatus */.pT.loading; }
         if (query === void 0) { query = options.query; }
         var variables = this.getVariables(query, options.variables);
-        var queryInfo = this.getQuery(queryId);
         var defaults = this.defaultOptions.watchQuery;
         var _a = options.fetchPolicy, fetchPolicy = _a === void 0 ? (defaults && defaults.fetchPolicy) || "cache-first" : _a, _b = options.errorPolicy, errorPolicy = _b === void 0 ? (defaults && defaults.errorPolicy) || "none" : _b, _c = options.returnPartialData, returnPartialData = _c === void 0 ? false : _c, _d = options.notifyOnNetworkStatusChange, notifyOnNetworkStatusChange = _d === void 0 ? false : _d, _e = options.context, context = _e === void 0 ? {} : _e;
         var normalized = Object.assign({}, options, {
@@ -38519,8 +38540,8 @@ var QueryManager = /** @class */ (function () {
         };
         // This cancel function needs to be set before the concast is created,
         // in case concast creation synchronously cancels the request.
-        var cleanupCancelFn = function () { return _this.fetchCancelFns.delete(queryId); };
-        this.fetchCancelFns.set(queryId, function (reason) {
+        var cleanupCancelFn = function () { return _this.fetchCancelFns.delete(queryInfo.queryId); };
+        this.fetchCancelFns.set(queryInfo.queryId, function (reason) {
             cleanupCancelFn();
             // This delay ensures the concast variable has been initialized.
             setTimeout(function () { return concast.cancel(reason); });
@@ -38564,7 +38585,7 @@ var QueryManager = /** @class */ (function () {
             this.getObservableQueries(include).forEach(function (oq, queryId) {
                 includedQueriesById.set(queryId, {
                     oq: oq,
-                    lastDiff: _this.getQuery(queryId).getDiff(),
+                    lastDiff: (_this.queries.get(queryId) || oq["queryInfo"]).getDiff(),
                 });
             });
         }
@@ -38830,7 +38851,7 @@ var QueryManager = /** @class */ (function () {
                 return { fromLink: false, sources: [] };
         }
     };
-    QueryManager.prototype.getQuery = function (queryId) {
+    QueryManager.prototype.getOrCreateQuery = function (queryId) {
         if (queryId && !this.queries.has(queryId)) {
             this.queries.set(queryId, new QueryInfo(this, queryId));
         }
