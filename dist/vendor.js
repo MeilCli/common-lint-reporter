@@ -30307,6 +30307,8 @@ var lib = __webpack_require__(1161);
 var equality_lib = __webpack_require__(5381);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/cache/core/cache.js
 var cache = __webpack_require__(7666);
+// EXTERNAL MODULE: ./node_modules/@apollo/client/cache/core/types/common.js
+var common = __webpack_require__(4253);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/DocumentTransform.js
 var DocumentTransform = __webpack_require__(9993);
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/graphql/transform.js
@@ -31015,8 +31017,6 @@ function supportsResultCaching(store) {
 //# sourceMappingURL=entityStore.js.map
 // EXTERNAL MODULE: ./node_modules/@apollo/client/utilities/common/arrays.js
 var arrays = __webpack_require__(3255);
-// EXTERNAL MODULE: ./node_modules/@apollo/client/cache/core/types/common.js
-var common = __webpack_require__(4253);
 ;// ./node_modules/@apollo/client/cache/inmemory/object-canon.js
 
 
@@ -33005,7 +33005,7 @@ var InMemoryCache = /** @class */ (function (_super) {
             return (this.storeReader.diffQueryAgainstStore((0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, options), { store: options.optimistic ? this.optimisticData : this.data, config: this.config, returnPartialData: returnPartialData })).result || null);
         }
         catch (e) {
-            if (e instanceof MissingFieldError) {
+            if (e instanceof common/* MissingFieldError */.Z) {
                 // Swallow MissingFieldError and return null, so callers do not need to
                 // worry about catching "normal" exceptions resulting from incomplete
                 // cache data. Unexpected errors will be re-thrown. If you need more
@@ -33137,7 +33137,7 @@ var InMemoryCache = /** @class */ (function (_super) {
             return this.policies.identify(object)[0];
         }
         catch (e) {
-            globalThis.__DEV__ !== false && invariant.warn(e);
+            globalThis.__DEV__ !== false && globals/* invariant */.V1.warn(e);
         }
     };
     InMemoryCache.prototype.evict = function (options) {
