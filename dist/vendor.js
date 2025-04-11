@@ -1434,7 +1434,7 @@ module.exports = DispatcherBase
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.13.6";
+var version = "3.13.7";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
@@ -7240,9 +7240,8 @@ var cacheSizes = (0,tslib__WEBPACK_IMPORTED_MODULE_1__/* .__assign */ .Cl)({}, _
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  U5: () => (/* binding */ ObservableQuery),
-  yd: () => (/* binding */ logMissingFieldErrors),
-  e8: () => (/* binding */ reobserveCacheFirst)
+  U: () => (/* binding */ ObservableQuery),
+  y: () => (/* binding */ logMissingFieldErrors)
 });
 
 // EXTERNAL MODULE: ./node_modules/tslib/tslib.es6.mjs
@@ -7334,6 +7333,7 @@ var ObservableQuery = /** @class */ (function (_super) {
         }) || this;
         _this.observers = new Set();
         _this.subscriptions = new Set();
+        _this.dirty = false;
         // related classes
         _this.queryInfo = queryInfo;
         _this.queryManager = queryManager;
@@ -7690,7 +7690,7 @@ var ObservableQuery = /** @class */ (function (_super) {
             // the cache, we still want fetchMore to deliver its final loading:false
             // result with the unchanged data.
             if (isCached && !updatedQuerySet.has(_this.query)) {
-                reobserveCacheFirst(_this);
+                _this.reobserveCacheFirst();
             }
         });
     };
@@ -8097,6 +8097,88 @@ var ObservableQuery = /** @class */ (function (_super) {
                 id: this.queryId,
             }) }) : result;
     };
+    /** @internal */
+    ObservableQuery.prototype.resetNotifications = function () {
+        this.cancelNotifyTimeout();
+        this.dirty = false;
+    };
+    ObservableQuery.prototype.cancelNotifyTimeout = function () {
+        if (this.notifyTimeout) {
+            clearTimeout(this.notifyTimeout);
+            this.notifyTimeout = void 0;
+        }
+    };
+    /** @internal */
+    ObservableQuery.prototype.scheduleNotify = function () {
+        var _this = this;
+        if (this.dirty)
+            return;
+        this.dirty = true;
+        if (!this.notifyTimeout) {
+            this.notifyTimeout = setTimeout(function () { return _this.notify(); }, 0);
+        }
+    };
+    /** @internal */
+    ObservableQuery.prototype.notify = function () {
+        this.cancelNotifyTimeout();
+        if (this.dirty) {
+            if (this.options.fetchPolicy == "cache-only" ||
+                this.options.fetchPolicy == "cache-and-network" ||
+                !(0,core_networkStatus/* isNetworkRequestInFlight */.bi)(this.queryInfo.networkStatus)) {
+                var diff = this.queryInfo.getDiff();
+                if (diff.fromOptimisticTransaction) {
+                    // If this diff came from an optimistic transaction, deliver the
+                    // current cache data to the ObservableQuery, but don't perform a
+                    // reobservation, since oq.reobserveCacheFirst might make a network
+                    // request, and we never want to trigger network requests in the
+                    // middle of optimistic updates.
+                    this.observe();
+                }
+                else {
+                    // Otherwise, make the ObservableQuery "reobserve" the latest data
+                    // using a temporary fetch policy of "cache-first", so complete cache
+                    // results have a chance to be delivered without triggering additional
+                    // network requests, even when options.fetchPolicy is "network-only"
+                    // or "cache-and-network". All other fetch policies are preserved by
+                    // this method, and are handled by calling oq.reobserve(). If this
+                    // reobservation is spurious, isDifferentFromLastResult still has a
+                    // chance to catch it before delivery to ObservableQuery subscribers.
+                    this.reobserveCacheFirst();
+                }
+            }
+        }
+        this.dirty = false;
+    };
+    // Reobserve with fetchPolicy effectively set to "cache-first", triggering
+    // delivery of any new data from the cache, possibly falling back to the network
+    // if any cache data are missing. This allows _complete_ cache results to be
+    // delivered without also kicking off unnecessary network requests when
+    // this.options.fetchPolicy is "cache-and-network" or "network-only". When
+    // this.options.fetchPolicy is any other policy ("cache-first", "cache-only",
+    // "standby", or "no-cache"), we call this.reobserve() as usual.
+    ObservableQuery.prototype.reobserveCacheFirst = function () {
+        var _a = this.options, fetchPolicy = _a.fetchPolicy, nextFetchPolicy = _a.nextFetchPolicy;
+        if (fetchPolicy === "cache-and-network" || fetchPolicy === "network-only") {
+            return this.reobserve({
+                fetchPolicy: "cache-first",
+                // Use a temporary nextFetchPolicy function that replaces itself with the
+                // previous nextFetchPolicy value and returns the original fetchPolicy.
+                nextFetchPolicy: function (currentFetchPolicy, context) {
+                    // Replace this nextFetchPolicy function in the options object with the
+                    // original this.options.nextFetchPolicy value.
+                    this.nextFetchPolicy = nextFetchPolicy;
+                    // If the original nextFetchPolicy value was a function, give it a
+                    // chance to decide what happens here.
+                    if (typeof this.nextFetchPolicy === "function") {
+                        return this.nextFetchPolicy(currentFetchPolicy, context);
+                    }
+                    // Otherwise go back to the original this.options.fetchPolicy.
+                    return fetchPolicy;
+                },
+            });
+        }
+        return this.reobserve();
+    };
     /**
      * @internal
      * A slot used by the `useQuery` hook to indicate that `client.watchQuery`
@@ -8111,36 +8193,6 @@ var ObservableQuery = /** @class */ (function (_super) {
 // Necessary because the ObservableQuery constructor has a different
 // signature than the Observable constructor.
 (0,subclassing/* fixObservableSubclass */.r)(ObservableQuery);
-// Reobserve with fetchPolicy effectively set to "cache-first", triggering
-// delivery of any new data from the cache, possibly falling back to the network
-// if any cache data are missing. This allows _complete_ cache results to be
-// delivered without also kicking off unnecessary network requests when
-// this.options.fetchPolicy is "cache-and-network" or "network-only". When
-// this.options.fetchPolicy is any other policy ("cache-first", "cache-only",
-// "standby", or "no-cache"), we call this.reobserve() as usual.
-function reobserveCacheFirst(obsQuery) {
-    var _a = obsQuery.options, fetchPolicy = _a.fetchPolicy, nextFetchPolicy = _a.nextFetchPolicy;
-    if (fetchPolicy === "cache-and-network" || fetchPolicy === "network-only") {
-        return obsQuery.reobserve({
-            fetchPolicy: "cache-first",
-            // Use a temporary nextFetchPolicy function that replaces itself with the
-            // previous nextFetchPolicy value and returns the original fetchPolicy.
-            nextFetchPolicy: function (currentFetchPolicy, context) {
-                // Replace this nextFetchPolicy function in the options object with the
-                // original this.options.nextFetchPolicy value.
-                this.nextFetchPolicy = nextFetchPolicy;
-                // If the original nextFetchPolicy value was a function, give it a
-                // chance to decide what happens here.
-                if (typeof this.nextFetchPolicy === "function") {
-                    return this.nextFetchPolicy(currentFetchPolicy, context);
-                }
-                // Otherwise go back to the original this.options.fetchPolicy.
-                return fetchPolicy;
-            },
-        });
-    }
-    return obsQuery.reobserve();
-}
 function defaultSubscriptionObserverErrorCallback(error) {
     globalThis.__DEV__ !== false && globals/* invariant */.V1.error(25, error.message, error.stack);
 }
@@ -10508,7 +10560,7 @@ function addHook(state, kind, name, hook) {
 /* harmony export */   Sg: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.Sg),
 /* harmony export */   Sl: () => (/* reexport safe */ _link_http_index_js__WEBPACK_IMPORTED_MODULE_12__.Sl),
 /* harmony export */   Sx: () => (/* reexport safe */ _link_utils_index_js__WEBPACK_IMPORTED_MODULE_15__.S),
-/* harmony export */   U5: () => (/* reexport safe */ _ObservableQuery_js__WEBPACK_IMPORTED_MODULE_2__.U5),
+/* harmony export */   U5: () => (/* reexport safe */ _ObservableQuery_js__WEBPACK_IMPORTED_MODULE_2__.U),
 /* harmony export */   UT: () => (/* reexport safe */ _cache_index_js__WEBPACK_IMPORTED_MODULE_10__.UT),
 /* harmony export */   VC: () => (/* reexport safe */ graphql_tag__WEBPACK_IMPORTED_MODULE_21__.enableExperimentalFragmentVariables),
 /* harmony export */   WU: () => (/* reexport safe */ _utilities_index_js__WEBPACK_IMPORTED_MODULE_19__.WU),
@@ -11520,7 +11572,7 @@ function useInternalState(client, query, options, renderPromises, makeWatchQuery
             // to fetch the result set. This is used during SSR.
             (renderPromises &&
                 renderPromises.getSSRObservable(makeWatchQueryOptions())) ||
-                _core_index_js__WEBPACK_IMPORTED_MODULE_7__/* .ObservableQuery */ .U5["inactiveOnCreation"].withValue(!renderPromises, function () {
+                _core_index_js__WEBPACK_IMPORTED_MODULE_7__/* .ObservableQuery */ .U["inactiveOnCreation"].withValue(!renderPromises, function () {
                     return client.watchQuery(getObsQueryOptions(void 0, client, options, makeWatchQueryOptions()));
                 }),
             resultData: {
@@ -37234,7 +37286,6 @@ var canUse = __webpack_require__(2619);
 
 
 
-
 var destructiveMethodCounts = new (canUse/* canUseWeakMap */.et ? WeakMap : Map)();
 function wrapDestructiveCacheMethod(cache, methodName) {
     var original = cache[methodName];
@@ -37250,12 +37301,6 @@ function wrapDestructiveCacheMethod(cache, methodName) {
             // @ts-expect-error this is just too generic to be typed correctly
             return original.apply(this, arguments);
         };
-    }
-}
-function cancelNotifyTimeout(info) {
-    if (info["notifyTimeout"]) {
-        clearTimeout(info["notifyTimeout"]);
-        info["notifyTimeout"] = void 0;
     }
 }
 // A QueryInfo object represents a single query managed by the
@@ -37274,11 +37319,9 @@ var QueryInfo = /** @class */ (function () {
     function QueryInfo(queryManager, queryId) {
         if (queryId === void 0) { queryId = queryManager.generateQueryId(); }
         this.queryId = queryId;
-        this.listeners = new Set();
         this.document = null;
         this.lastRequestId = 1;
         this.stopped = false;
-        this.dirty = false;
         this.observableQuery = null;
         var cache = (this.cache = queryManager.cache);
         // Track how often cache.evict is called, since we want eviction to
@@ -37320,10 +37363,6 @@ var QueryInfo = /** @class */ (function () {
         }
         return this;
     };
-    QueryInfo.prototype.reset = function () {
-        cancelNotifyTimeout(this);
-        this.dirty = false;
-    };
     QueryInfo.prototype.resetDiff = function () {
         this.lastDiff = void 0;
     };
@@ -37362,8 +37401,7 @@ var QueryInfo = /** @class */ (function () {
         };
     };
     QueryInfo.prototype.setDiff = function (diff) {
-        var _this = this;
-        var _a;
+        var _a, _b;
         var oldDiff = this.lastDiff && this.lastDiff.diff;
         // If we are trying to deliver an incomplete cache result, we avoid
         // reporting it if the query has errored, otherwise we let the broadcast try
@@ -37378,75 +37416,24 @@ var QueryInfo = /** @class */ (function () {
             return;
         }
         this.updateLastDiff(diff);
-        if (!this.dirty && !(0,lib/* equal */.L)(oldDiff && oldDiff.result, diff && diff.result)) {
-            this.dirty = true;
-            if (!this.notifyTimeout) {
-                this.notifyTimeout = setTimeout(function () { return _this.notify(); }, 0);
-            }
+        if (!(0,lib/* equal */.L)(oldDiff && oldDiff.result, diff && diff.result)) {
+            (_b = this.observableQuery) === null || _b === void 0 ? void 0 : _b["scheduleNotify"]();
         }
     };
     QueryInfo.prototype.setObservableQuery = function (oq) {
-        var _this = this;
         if (oq === this.observableQuery)
             return;
-        if (this.oqListener) {
-            this.listeners.delete(this.oqListener);
-        }
         this.observableQuery = oq;
         if (oq) {
             oq["queryInfo"] = this;
-            this.listeners.add((this.oqListener = function () {
-                var diff = _this.getDiff();
-                if (diff.fromOptimisticTransaction) {
-                    // If this diff came from an optimistic transaction, deliver the
-                    // current cache data to the ObservableQuery, but don't perform a
-                    // reobservation, since oq.reobserveCacheFirst might make a network
-                    // request, and we never want to trigger network requests in the
-                    // middle of optimistic updates.
-                    oq["observe"]();
-                }
-                else {
-                    // Otherwise, make the ObservableQuery "reobserve" the latest data
-                    // using a temporary fetch policy of "cache-first", so complete cache
-                    // results have a chance to be delivered without triggering additional
-                    // network requests, even when options.fetchPolicy is "network-only"
-                    // or "cache-and-network". All other fetch policies are preserved by
-                    // this method, and are handled by calling oq.reobserve(). If this
-                    // reobservation is spurious, isDifferentFromLastResult still has a
-                    // chance to catch it before delivery to ObservableQuery subscribers.
-                    (0,ObservableQuery/* reobserveCacheFirst */.e8)(oq);
-                }
-            }));
         }
-        else {
-            delete this.oqListener;
-        }
-    };
-    QueryInfo.prototype.notify = function () {
-        var _this = this;
-        cancelNotifyTimeout(this);
-        if (this.shouldNotify()) {
-            this.listeners.forEach(function (listener) { return listener(_this); });
-        }
-        this.dirty = false;
-    };
-    QueryInfo.prototype.shouldNotify = function () {
-        if (!this.dirty || !this.listeners.size) {
-            return false;
-        }
-        if ((0,core_networkStatus/* isNetworkRequestInFlight */.bi)(this.networkStatus) && this.observableQuery) {
-            var fetchPolicy = this.observableQuery.options.fetchPolicy;
-            if (fetchPolicy !== "cache-only" && fetchPolicy !== "cache-and-network") {
-                return false;
-            }
-        }
-        return true;
     };
     QueryInfo.prototype.stop = function () {
+        var _a;
         if (!this.stopped) {
             this.stopped = true;
             // Cancel the pending notify timeout
-            this.reset();
+            (_a = this.observableQuery) === null || _a === void 0 ? void 0 : _a["resetNotifications"]();
             this.cancel();
             var oq = this.observableQuery;
             if (oq)
@@ -37486,11 +37473,12 @@ var QueryInfo = /** @class */ (function () {
     };
     QueryInfo.prototype.markResult = function (result, document, options, cacheWriteBehavior) {
         var _this = this;
+        var _a;
         var merger = new mergeDeep/* DeepMerger */.ZI();
         var graphQLErrors = (0,arrays/* isNonEmptyArray */.E)(result.errors) ? result.errors.slice(0) : [];
         // Cancel the pending notify timeout (if it exists) to prevent extraneous network
         // requests. To allow future notify timeouts, diff and dirty are reset as well.
-        this.reset();
+        (_a = this.observableQuery) === null || _a === void 0 ? void 0 : _a["resetNotifications"]();
         if ("incremental" in result && (0,arrays/* isNonEmptyArray */.E)(result.incremental)) {
             var mergedData = (0,incrementalResult/* mergeIncrementalData */.bd)(this.getDiff().result, result);
             result.data = mergedData;
@@ -37604,9 +37592,10 @@ var QueryInfo = /** @class */ (function () {
         return (this.networkStatus = core_networkStatus/* NetworkStatus */.pT.ready);
     };
     QueryInfo.prototype.markError = function (error) {
+        var _a;
         this.networkStatus = core_networkStatus/* NetworkStatus */.pT.error;
         this.lastWrite = void 0;
-        this.reset();
+        (_a = this.observableQuery) === null || _a === void 0 ? void 0 : _a["resetNotifications"]();
         if (error.graphQLErrors) {
             this.graphQLErrors = error.graphQLErrors;
         }
@@ -38126,13 +38115,13 @@ var QueryManager = /** @class */ (function () {
             options.notifyOnNetworkStatusChange = false;
         }
         var queryInfo = new QueryInfo(this);
-        var observable = new ObservableQuery/* ObservableQuery */.U5({
+        var observable = new ObservableQuery/* ObservableQuery */.U({
             queryManager: this,
             queryInfo: queryInfo,
             options: options,
         });
         observable["lastQuery"] = query;
-        if (!ObservableQuery/* ObservableQuery */.U5["inactiveOnCreation"].getValue()) {
+        if (!ObservableQuery/* ObservableQuery */.U["inactiveOnCreation"].getValue()) {
             this.queries.set(observable.queryId, queryInfo);
         }
         // We give queryInfo the transformed query to ensure the first cache diff
@@ -38263,7 +38252,7 @@ var QueryManager = /** @class */ (function () {
                     document: options.query,
                     variables: options.variables,
                 });
-                var oq = new ObservableQuery/* ObservableQuery */.U5({
+                var oq = new ObservableQuery/* ObservableQuery */.U({
                     queryManager: _this,
                     queryInfo: queryInfo,
                     options: (0,tslib_es6/* __assign */.Cl)((0,tslib_es6/* __assign */.Cl)({}, options), { fetchPolicy: "network-only" }),
@@ -38384,7 +38373,7 @@ var QueryManager = /** @class */ (function () {
     QueryManager.prototype.broadcastQueries = function () {
         if (this.onBroadcast)
             this.onBroadcast();
-        this.queries.forEach(function (info) { return info.notify(); });
+        this.queries.forEach(function (info) { var _a; return (_a = info.observableQuery) === null || _a === void 0 ? void 0 : _a["notify"](); });
     };
     QueryManager.prototype.getLocalState = function () {
         return this.localState;
@@ -38672,9 +38661,7 @@ var QueryManager = /** @class */ (function () {
                 // queries, even the QueryOptions ones.
                 if (onQueryUpdated) {
                     if (!diff) {
-                        var info = oq["queryInfo"];
-                        info.reset(); // Force info.getDiff() to read from cache.
-                        diff = info.getDiff();
+                        diff = _this.cache.diff(oq["queryInfo"]["getDiffOptions"]());
                     }
                     result = onQueryUpdated(oq, diff, lastDiff);
                 }
@@ -38748,7 +38735,7 @@ var QueryManager = /** @class */ (function () {
             if (networkStatus === void 0) { networkStatus = queryInfo.networkStatus || core_networkStatus/* NetworkStatus */.pT.loading; }
             var data = diff.result;
             if (globalThis.__DEV__ !== false && !returnPartialData && !(0,lib/* equal */.L)(data, {})) {
-                (0,ObservableQuery/* logMissingFieldErrors */.yd)(diff.missing);
+                (0,ObservableQuery/* logMissingFieldErrors */.y)(diff.missing);
             }
             var fromData = function (data) {
                 return zen_observable_ts_module/* Observable */.c.of((0,tslib_es6/* __assign */.Cl)({ data: data, loading: (0,core_networkStatus/* isNetworkRequestInFlight */.bi)(networkStatus), networkStatus: networkStatus }, (diff.complete ? null : { partial: true })));
