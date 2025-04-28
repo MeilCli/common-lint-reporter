@@ -28125,10 +28125,7 @@ function visit(root, visitor, visitorKeys = _ast_mjs__WEBPACK_IMPORTED_MODULE_0_
             }
           }
         } else {
-          node = Object.defineProperties(
-            {},
-            Object.getOwnPropertyDescriptors(node),
-          );
+          node = { ...node };
 
           for (const [editKey, editValue] of edits) {
             node[editKey] = editValue;
