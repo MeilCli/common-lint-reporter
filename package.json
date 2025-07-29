@@ -54,7 +54,7 @@
         "jest": "^29.7.0",
         "jest-circus": "^29.6.4",
         "prettier": "^3.6.2",
-        "react": "^19.1.0",
+        "react": "^19.1.1",
         "replace-in-files-cli": "^3.0.0",
         "ts-jest": "^29.4.0",
         "ts-loader": "^9.5.2",
