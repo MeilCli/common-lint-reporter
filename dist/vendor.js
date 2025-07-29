@@ -1434,7 +1434,7 @@ module.exports = DispatcherBase
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   r: () => (/* binding */ version)
 /* harmony export */ });
-var version = "3.13.8";
+var version = "3.13.9";
 //# sourceMappingURL=version.js.map
 
 /***/ }),
@@ -7293,10 +7293,7 @@ var ObservableQuery = /** @class */ (function (_super) {
         var _this = this;
         var startedInactive = ObservableQuery.inactiveOnCreation.getValue();
         _this = _super.call(this, function (observer) {
-            if (startedInactive) {
-                queryManager["queries"].set(_this.queryId, queryInfo);
-                startedInactive = false;
-            }
+            _this._getOrCreateQuery();
             // Zen Observable has its own error function, so in order to log correctly
             // we need to provide a custom error callback.
             try {
@@ -7334,6 +7331,13 @@ var ObservableQuery = /** @class */ (function (_super) {
         _this.observers = new Set();
         _this.subscriptions = new Set();
         _this.dirty = false;
+        _this._getOrCreateQuery = function () {
+            if (startedInactive) {
+                queryManager["queries"].set(_this.queryId, queryInfo);
+                startedInactive = false;
+            }
+            return _this.queryManager.getOrCreateQuery(_this.queryId);
+        };
         // related classes
         _this.queryInfo = queryInfo;
         _this.queryManager = queryManager;
@@ -7860,7 +7864,7 @@ var ObservableQuery = /** @class */ (function (_super) {
     ObservableQuery.prototype.fetch = function (options, newNetworkStatus, query) {
         // TODO Make sure we update the networkStatus (and infer fetchVariables)
         // before actually committing to the fetch.
-        var queryInfo = this.queryManager.getOrCreateQuery(this.queryId);
+        var queryInfo = this._getOrCreateQuery();
         queryInfo.setObservableQuery(this);
         return this.queryManager["fetchConcastWithInfo"](queryInfo, options, newNetworkStatus, query);
     };
@@ -61495,7 +61499,7 @@ exports.useSyncExternalStore = function (
 exports.useTransition = function () {
   return ReactSharedInternals.H.useTransition();
 };
-exports.version = "19.1.0";
+exports.version = "19.1.1";
 
 
 /***/ }),
