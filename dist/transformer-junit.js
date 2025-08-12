@@ -1015,7 +1015,7 @@ module.exports = require("fs");
 /******/ 	
 /******/ 	/* webpack/runtime/get javascript chunk filename */
 /******/ 	(() => {
-/******/ 		// This function allow to reference async chunks and sibling chunks for the entrypoint
+/******/ 		// This function allow to reference async chunks and sibling chunks for the entrypoint and chunks that the entrypoint depends on
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames based on template
 /******/ 			return "" + "vendor" + ".js";
@@ -1082,7 +1082,10 @@ module.exports = require("fs");
 /******/ 			// "1" is the signal for "already loaded"
 /******/ 			if(!installedChunks[chunkId]) {
 /******/ 				if(true) { // all chunks have JS
-/******/ 					installChunk(require("./" + __webpack_require__.u(chunkId)));
+/******/ 					var installedChunk = require("./" + __webpack_require__.u(chunkId));
+/******/ 					if (!installedChunks[chunkId]) {
+/******/ 						installChunk(installedChunk);
+/******/ 					}
 /******/ 				} else installedChunks[chunkId] = 1;
 /******/ 			}
 /******/ 		};
