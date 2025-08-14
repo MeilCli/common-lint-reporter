@@ -595,7 +595,7 @@ module.exports = require("fs");
 /******/ 	
 /******/ 	/* webpack/runtime/get javascript chunk filename */
 /******/ 	(() => {
-/******/ 		// This function allow to reference async chunks and sibling chunks for the entrypoint and chunks that the entrypoint depends on
+/******/ 		// This function allow to reference async chunks and chunks that the entrypoint depends on
 /******/ 		__webpack_require__.u = (chunkId) => {
 /******/ 			// return url for filenames based on template
 /******/ 			return "" + "vendor" + ".js";
