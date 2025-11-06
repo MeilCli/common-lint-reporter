@@ -1903,12 +1903,19 @@ const QueryDocumentKeys = {
   Name: [],
   Document: ['definitions'],
   OperationDefinition: [
+    'description',
     'name',
     'variableDefinitions',
     'directives',
     'selectionSet',
   ],
-  VariableDefinition: ['variable', 'type', 'defaultValue', 'directives'],
+  VariableDefinition: [
+    'description',
+    'variable',
+    'type',
+    'defaultValue',
+    'directives',
+  ],
   Variable: ['name'],
   SelectionSet: ['selections'],
   Field: ['alias', 'name', 'arguments', 'directives', 'selectionSet'],
@@ -1916,6 +1923,7 @@ const QueryDocumentKeys = {
   FragmentSpread: ['name', 'directives'],
   InlineFragment: ['typeCondition', 'directives', 'selectionSet'],
   FragmentDefinition: [
+    'description',
     'name', // Note: fragment variable definitions are deprecated and will removed in v17.0.0
     'variableDefinitions',
     'typeCondition',
@@ -1972,6 +1980,11 @@ const QueryDocumentKeys = {
   UnionTypeExtension: ['name', 'directives', 'types'],
   EnumTypeExtension: ['name', 'directives', 'values'],
   InputObjectTypeExtension: ['name', 'directives', 'fields'],
+  TypeCoordinate: ['name'],
+  MemberCoordinate: ['name', 'memberName'],
+  ArgumentCoordinate: ['name', 'fieldName', 'argumentName'],
+  DirectiveCoordinate: ['name'],
+  DirectiveArgumentCoordinate: ['name', 'argumentName'],
 };
 const kindValues = new Set(Object.keys(QueryDocumentKeys));
 /**
@@ -2019,6 +2032,7 @@ var TokenKind;
   TokenKind['AMP'] = '&';
   TokenKind['PAREN_L'] = '(';
   TokenKind['PAREN_R'] = ')';
+  TokenKind['DOT'] = '.';
   TokenKind['SPREAD'] = '...';
   TokenKind['COLON'] = ':';
   TokenKind['EQUALS'] = '=';
@@ -13406,12 +13420,13 @@ var directiveLocation = __webpack_require__(2369);
 // EXTERNAL MODULE: ./node_modules/graphql/language/kinds.mjs
 var kinds = __webpack_require__(3298);
 // EXTERNAL MODULE: ./node_modules/graphql/language/lexer.mjs
-var lexer = __webpack_require__(5009);
+var language_lexer = __webpack_require__(5009);
 // EXTERNAL MODULE: ./node_modules/graphql/language/source.mjs
 var language_source = __webpack_require__(4954);
 // EXTERNAL MODULE: ./node_modules/graphql/language/tokenKind.mjs
 var tokenKind = __webpack_require__(590);
 ;// ./node_modules/graphql/language/parser.mjs
+
 
 
 
@@ -13485,6 +13500,27 @@ function parseType(source, options) {
   return type;
 }
 /**
+ * Given a string containing a GraphQL Schema Coordinate (ex. `Type.field`),
+ * parse the AST for that schema coordinate.
+ * Throws GraphQLError if a syntax error is encountered.
+ *
+ * Consider providing the results to the utility function:
+ * resolveASTSchemaCoordinate(). Or calling resolveSchemaCoordinate() directly
+ * with an unparsed source.
+ */
+
+function parseSchemaCoordinate(source) {
+  const sourceObj = isSource(source) ? source : new Source(source);
+  const lexer = new SchemaCoordinateLexer(sourceObj);
+  const parser = new Parser(source, {
+    lexer,
+  });
+  parser.expectToken(TokenKind.SOF);
+  const coordinate = parser.parseSchemaCoordinate();
+  parser.expectToken(TokenKind.EOF);
+  return coordinate;
+}
+/**
  * This class is exported only to assist people in implementing their own parsers
  * without duplicating too much code and should be used only as last resort for cases
  * such as experimental syntax or if certain features could not be contributed upstream.
@@ -13498,9 +13534,16 @@ function parseType(source, options) {
 
 class Parser {
   constructor(source, options = {}) {
-    const sourceObj = (0,language_source/* isSource */._)(source) ? source : new language_source/* Source */.k(source);
-    this._lexer = new lexer/* Lexer */.J(sourceObj);
-    this._options = options;
+    const { lexer, ..._options } = options;
+
+    if (lexer) {
+      this._lexer = lexer;
+    } else {
+      const sourceObj = (0,language_source/* isSource */._)(source) ? source : new language_source/* Source */.k(source);
+      this._lexer = new language_lexer/* Lexer */.JG(sourceObj);
+    }
+
+    this._options = _options;
     this._tokenCounter = 0;
   }
 
@@ -13567,6 +13610,14 @@ class Parser {
       ? this._lexer.lookahead()
       : this._lexer.token;
 
+    if (hasDescription && keywordToken.kind === tokenKind/* TokenKind */.Y.BRACE_L) {
+      throw (0,syntaxError/* syntaxError */.I)(
+        this._lexer.source,
+        this._lexer.token.start,
+        'Unexpected description, descriptions are not supported on shorthand queries.',
+      );
+    }
+
     if (keywordToken.kind === tokenKind/* TokenKind */.Y.NAME) {
       switch (keywordToken.value) {
         case 'schema':
@@ -13594,14 +13645,6 @@ class Parser {
           return this.parseDirectiveDefinition();
       }
 
-      if (hasDescription) {
-        throw (0,syntaxError/* syntaxError */.I)(
-          this._lexer.source,
-          this._lexer.token.start,
-          'Unexpected description, descriptions are supported only on type definitions.',
-        );
-      }
-
       switch (keywordToken.value) {
         case 'query':
         case 'mutation':
@@ -13610,7 +13653,17 @@ class Parser {
 
         case 'fragment':
           return this.parseFragmentDefinition();
+      }
 
+      if (hasDescription) {
+        throw (0,syntaxError/* syntaxError */.I)(
+          this._lexer.source,
+          this._lexer.token.start,
+          'Unexpected description, only GraphQL definitions support descriptions.',
+        );
+      }
+
+      switch (keywordToken.value) {
         case 'extend':
           return this.parseTypeSystemExtension();
       }
@@ -13632,6 +13685,7 @@ class Parser {
       return this.node(start, {
         kind: kinds/* Kind */.b.OPERATION_DEFINITION,
         operation: ast/* OperationTypeNode */.cE.QUERY,
+        description: undefined,
         name: undefined,
         variableDefinitions: [],
         directives: [],
@@ -13639,6 +13693,7 @@ class Parser {
       });
     }
 
+    const description = this.parseDescription();
     const operation = this.parseOperationType();
     let name;
 
@@ -13649,6 +13704,7 @@ class Parser {
     return this.node(start, {
       kind: kinds/* Kind */.b.OPERATION_DEFINITION,
       operation,
+      description,
       name,
       variableDefinitions: this.parseVariableDefinitions(),
       directives: this.parseDirectives(false),
@@ -13693,6 +13749,7 @@ class Parser {
   parseVariableDefinition() {
     return this.node(this._lexer.token, {
       kind: kinds/* Kind */.b.VARIABLE_DEFINITION,
+      description: this.parseDescription(),
       variable: this.parseVariable(),
       type: (this.expectToken(tokenKind/* TokenKind */.Y.COLON), this.parseTypeReference()),
       defaultValue: this.expectOptionalToken(tokenKind/* TokenKind */.Y.EQUALS)
@@ -13835,6 +13892,7 @@ class Parser {
 
   parseFragmentDefinition() {
     const start = this._lexer.token;
+    const description = this.parseDescription();
     this.expectKeyword('fragment'); // Legacy support for defining variables within fragments changes
     // the grammar of FragmentDefinition:
     //   - fragment FragmentName VariableDefinitions? on TypeCondition Directives? SelectionSet
@@ -13842,6 +13900,7 @@ class Parser {
     if (this._options.allowLegacyFragmentVariables === true) {
       return this.node(start, {
         kind: kinds/* Kind */.b.FRAGMENT_DEFINITION,
+        description,
         name: this.parseFragmentName(),
         variableDefinitions: this.parseVariableDefinitions(),
         typeCondition: (this.expectKeyword('on'), this.parseNamedType()),
@@ -13852,6 +13911,7 @@ class Parser {
 
     return this.node(start, {
       kind: kinds/* Kind */.b.FRAGMENT_DEFINITION,
+      description,
       name: this.parseFragmentName(),
       typeCondition: (this.expectKeyword('on'), this.parseNamedType()),
       directives: this.parseDirectives(false),
@@ -14737,6 +14797,72 @@ class Parser {
     }
 
     throw this.unexpected(start);
+  } // Schema Coordinates
+
+  /**
+   * SchemaCoordinate :
+   *   - Name
+   *   - Name . Name
+   *   - Name . Name ( Name : )
+   *   - \@ Name
+   *   - \@ Name ( Name : )
+   */
+
+  parseSchemaCoordinate() {
+    const start = this._lexer.token;
+    const ofDirective = this.expectOptionalToken(tokenKind/* TokenKind */.Y.AT);
+    const name = this.parseName();
+    let memberName;
+
+    if (!ofDirective && this.expectOptionalToken(tokenKind/* TokenKind */.Y.DOT)) {
+      memberName = this.parseName();
+    }
+
+    let argumentName;
+
+    if (
+      (ofDirective || memberName) &&
+      this.expectOptionalToken(tokenKind/* TokenKind */.Y.PAREN_L)
+    ) {
+      argumentName = this.parseName();
+      this.expectToken(tokenKind/* TokenKind */.Y.COLON);
+      this.expectToken(tokenKind/* TokenKind */.Y.PAREN_R);
+    }
+
+    if (ofDirective) {
+      if (argumentName) {
+        return this.node(start, {
+          kind: kinds/* Kind */.b.DIRECTIVE_ARGUMENT_COORDINATE,
+          name,
+          argumentName,
+        });
+      }
+
+      return this.node(start, {
+        kind: kinds/* Kind */.b.DIRECTIVE_COORDINATE,
+        name,
+      });
+    } else if (memberName) {
+      if (argumentName) {
+        return this.node(start, {
+          kind: kinds/* Kind */.b.ARGUMENT_COORDINATE,
+          name,
+          fieldName: memberName,
+          argumentName,
+        });
+      }
+
+      return this.node(start, {
+        kind: kinds/* Kind */.b.MEMBER_COORDINATE,
+        name,
+        memberName,
+      });
+    }
+
+    return this.node(start, {
+      kind: kinds/* Kind */.b.TYPE_COORDINATE,
+      name,
+    });
   } // Core parsing utility functions
 
   /**
@@ -14943,7 +15069,7 @@ function getTokenDesc(token) {
  */
 
 function getTokenKindDesc(kind) {
-  return (0,lexer/* isPunctuatorTokenKind */.Z)(kind) ? `"${kind}"` : kind;
+  return (0,language_lexer/* isPunctuatorTokenKind */.Z_)(kind) ? `"${kind}"` : kind;
 }
 
 ;// ./node_modules/graphql-tag/lib/index.js
@@ -15333,22 +15459,27 @@ const printDocASTReducer = {
   },
   OperationDefinition: {
     leave(node) {
-      const varDefs = wrap('(', join(node.variableDefinitions, ', '), ')');
-      const prefix = join(
-        [
-          node.operation,
-          join([node.name, varDefs]),
-          join(node.directives, ' '),
-        ],
-        ' ',
-      ); // Anonymous queries with no directives or variable definitions can use
+      const varDefs = hasMultilineItems(node.variableDefinitions)
+        ? wrap('(\n', join(node.variableDefinitions, '\n'), '\n)')
+        : wrap('(', join(node.variableDefinitions, ', '), ')');
+      const prefix =
+        wrap('', node.description, '\n') +
+        join(
+          [
+            node.operation,
+            join([node.name, varDefs]),
+            join(node.directives, ' '),
+          ],
+          ' ',
+        ); // Anonymous queries with no directives or variable definitions can use
       // the query short form.
 
       return (prefix === 'query' ? '' : prefix + ' ') + node.selectionSet;
     },
   },
   VariableDefinition: {
-    leave: ({ variable, type, defaultValue, directives }) =>
+    leave: ({ variable, type, defaultValue, directives, description }) =>
+      wrap('', description, '\n') +
       variable +
       ': ' +
       type +
@@ -15391,9 +15522,15 @@ const printDocASTReducer = {
       ),
   },
   FragmentDefinition: {
-    leave: (
-      { name, typeCondition, variableDefinitions, directives, selectionSet }, // Note: fragment variable definitions are experimental and may be changed
-    ) =>
+    leave: ({
+      name,
+      typeCondition,
+      variableDefinitions,
+      directives,
+      selectionSet,
+      description,
+    }) =>
+      wrap('', description, '\n') + // Note: fragment variable definitions are experimental and may be changed
       // or removed in the future.
       `fragment ${name}${wrap('(', join(variableDefinitions, ', '), ')')} ` +
       `on ${typeCondition} ${wrap('', join(directives, ' '), ' ')}` +
@@ -15594,6 +15731,24 @@ const printDocASTReducer = {
   InputObjectTypeExtension: {
     leave: ({ name, directives, fields }) =>
       join(['extend input', name, join(directives, ' '), block(fields)], ' '),
+  },
+  // Schema Coordinates
+  TypeCoordinate: {
+    leave: ({ name }) => name,
+  },
+  MemberCoordinate: {
+    leave: ({ name, memberName }) => join([name, wrap('.', memberName)]),
+  },
+  ArgumentCoordinate: {
+    leave: ({ name, fieldName, argumentName }) =>
+      join([name, wrap('.', fieldName), wrap('(', argumentName, ':)')]),
+  },
+  DirectiveCoordinate: {
+    leave: ({ name }) => join(['@', name]),
+  },
+  DirectiveArgumentCoordinate: {
+    leave: ({ name, argumentName }) =>
+      join(['@', name, wrap('(', argumentName, ':)')]),
   },
 };
 /**
@@ -20806,6 +20961,11 @@ var Kind;
   Kind['UNION_TYPE_EXTENSION'] = 'UnionTypeExtension';
   Kind['ENUM_TYPE_EXTENSION'] = 'EnumTypeExtension';
   Kind['INPUT_OBJECT_TYPE_EXTENSION'] = 'InputObjectTypeExtension';
+  Kind['TYPE_COORDINATE'] = 'TypeCoordinate';
+  Kind['MEMBER_COORDINATE'] = 'MemberCoordinate';
+  Kind['ARGUMENT_COORDINATE'] = 'ArgumentCoordinate';
+  Kind['DIRECTIVE_COORDINATE'] = 'DirectiveCoordinate';
+  Kind['DIRECTIVE_ARGUMENT_COORDINATE'] = 'DirectiveArgumentCoordinate';
 })(Kind || (Kind = {}));
 
 
@@ -29222,9 +29382,10 @@ function isSource(source) {
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   J: () => (/* binding */ Lexer),
-/* harmony export */   Z: () => (/* binding */ isPunctuatorTokenKind)
+/* harmony export */   JG: () => (/* binding */ Lexer),
+/* harmony export */   Z_: () => (/* binding */ isPunctuatorTokenKind)
 /* harmony export */ });
+/* unused harmony exports printCodePointAt, createToken, readName */
 /* harmony import */ var _error_syntaxError_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9738);
 /* harmony import */ var _ast_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(475);
 /* harmony import */ var _blockString_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5995);
@@ -29236,6 +29397,13 @@ function isSource(source) {
 
 
 /**
+ * A Lexer interface which provides common properties and methods required for
+ * lexing GraphQL source.
+ *
+ * @internal
+ */
+
+/**
  * Given a Source object, creates a Lexer for that source.
  * A Lexer is a stateful stream generator in that every time
  * it is advanced, it returns the next token in the Source. Assuming the
@@ -29243,7 +29411,6 @@ function isSource(source) {
  * EOF, after which the lexer will repeatedly return the same EOF token
  * whenever called.
  */
-
 class Lexer {
   /**
    * The previously focused non-ignored token.
@@ -29319,6 +29486,7 @@ function isPunctuatorTokenKind(kind) {
     kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__/* .TokenKind */ .Y.AMP ||
     kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__/* .TokenKind */ .Y.PAREN_L ||
     kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__/* .TokenKind */ .Y.PAREN_R ||
+    kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__/* .TokenKind */ .Y.DOT ||
     kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__/* .TokenKind */ .Y.SPREAD ||
     kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__/* .TokenKind */ .Y.COLON ||
     kind === _tokenKind_mjs__WEBPACK_IMPORTED_MODULE_4__/* .TokenKind */ .Y.EQUALS ||
@@ -29373,6 +29541,8 @@ function isTrailingSurrogate(code) {
  *
  * Printable ASCII is printed quoted, while other points are printed in Unicode
  * code point form (ie. U+1234).
+ *
+ * @internal
  */
 
 function printCodePointAt(lexer, location) {
@@ -29390,6 +29560,8 @@ function printCodePointAt(lexer, location) {
 }
 /**
  * Create a token with line and column location information.
+ *
+ * @internal
  */
 
 function createToken(lexer, kind, start, end, value) {
@@ -30107,6 +30279,8 @@ function readBlockString(lexer, start) {
  * Name ::
  *   - NameStart NameContinue* [lookahead != NameContinue]
  * ```
+ *
+ * @internal
  */
 
 function readName(lexer, start) {
@@ -39084,6 +39258,15 @@ function isTypeExtensionNode(node) {
     node.kind === Kind.UNION_TYPE_EXTENSION ||
     node.kind === Kind.ENUM_TYPE_EXTENSION ||
     node.kind === Kind.INPUT_OBJECT_TYPE_EXTENSION
+  );
+}
+function isSchemaCoordinateNode(node) {
+  return (
+    node.kind === Kind.TYPE_COORDINATE ||
+    node.kind === Kind.MEMBER_COORDINATE ||
+    node.kind === Kind.ARGUMENT_COORDINATE ||
+    node.kind === Kind.DIRECTIVE_COORDINATE ||
+    node.kind === Kind.DIRECTIVE_ARGUMENT_COORDINATE
   );
 }
 
