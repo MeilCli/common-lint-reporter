@@ -38,7 +38,7 @@
         "@graphql-codegen/cli": "^5.0.7",
         "@graphql-codegen/typescript": "^4.1.5",
         "@graphql-codegen/typescript-document-nodes": "^4.0.16",
-        "@graphql-codegen/typescript-operations": "^4.6.0",
+        "@graphql-codegen/typescript-operations": "^5.0.6",
         "@graphql-codegen/typescript-resolvers": "^4.5.2",
         "@octokit/graphql-schema": "^15.26.1",
         "@types/he": "^1.2.3",
