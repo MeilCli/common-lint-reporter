@@ -56,7 +56,7 @@
         "prettier": "^3.7.3",
         "react": "^19.2.0",
         "replace-in-files-cli": "^3.0.0",
-        "ts-jest": "^29.4.5",
+        "ts-jest": "^29.4.6",
         "ts-loader": "^9.5.4",
         "typescript": "^5.9.3",
         "webpack": "^5.103.0",
