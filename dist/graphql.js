@@ -3,8 +3,8 @@ exports.id = 630;
 exports.ids = [630];
 exports.modules = {
 
-/***/ 2634:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ 2634
+(__unused_webpack_module, exports, __webpack_require__) {
 
 
 var __importDefault = (this && this.__importDefault) || function (mod) {
@@ -3604,7 +3604,7 @@ exports.UpdateCheckRun = (0, graphql_tag_1.default) `
     `;
 
 
-/***/ })
+/***/ }
 
 };
 ;
