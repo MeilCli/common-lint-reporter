@@ -3,8 +3,8 @@ exports.id = 952;
 exports.ids = [952];
 exports.modules = {
 
-/***/ 2243:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ 2243
+(__unused_webpack_module, exports, __webpack_require__) {
 
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
@@ -132,10 +132,10 @@ function getInputNumberOrNull(key) {
 }
 
 
-/***/ }),
+/***/ },
 
-/***/ 3968:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ 3968
+(__unused_webpack_module, exports, __webpack_require__) {
 
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
@@ -203,10 +203,10 @@ function getInputOrNull(key) {
 }
 
 
-/***/ }),
+/***/ },
 
-/***/ 6088:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ 6088
+(__unused_webpack_module, exports, __webpack_require__) {
 
 
 var __importDefault = (this && this.__importDefault) || function (mod) {
@@ -364,10 +364,10 @@ class GitHubClient {
 exports.GitHubClient = GitHubClient;
 
 
-/***/ }),
+/***/ },
 
-/***/ 6289:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ 6289
+(__unused_webpack_module, exports, __webpack_require__) {
 
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
@@ -469,10 +469,10 @@ class GitHubContext {
 exports.GitHubContext = GitHubContext;
 
 
-/***/ }),
+/***/ },
 
-/***/ 6964:
-/***/ ((__unused_webpack_module, exports) => {
+/***/ 6964
+(__unused_webpack_module, exports) {
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
@@ -559,10 +559,10 @@ async function getPullRequestReviewThreadsWithPaging(client, variables) {
 }
 
 
-/***/ }),
+/***/ },
 
-/***/ 9713:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ 9713
+(__unused_webpack_module, exports, __webpack_require__) {
 
 
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
@@ -681,7 +681,7 @@ class FunctionalOperator extends Operator {
 exports.FunctionalOperator = FunctionalOperator;
 
 
-/***/ })
+/***/ }
 
 };
 ;
