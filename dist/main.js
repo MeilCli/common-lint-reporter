@@ -2,890 +2,6 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 181
-(module) {
-
-module.exports = require("buffer");
-
-/***/ },
-
-/***/ 290
-(module) {
-
-module.exports = require("async_hooks");
-
-/***/ },
-
-/***/ 857
-(module) {
-
-module.exports = require("os");
-
-/***/ },
-
-/***/ 969
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.trimPath = trimPath;
-const path = __importStar(__webpack_require__(6928));
-function trimPath(context, filePath) {
-    return filePath.replace(`${context.workspacePath()}${path.sep}`, "");
-}
-
-
-/***/ },
-
-/***/ 1309
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CommentReporter = void 0;
-const client_1 = __webpack_require__(6088);
-const context_1 = __webpack_require__(6289);
-const paging_1 = __webpack_require__(6964);
-const graphql_1 = __webpack_require__(2634);
-const conclusion_1 = __webpack_require__(9245);
-const comment_1 = __webpack_require__(4775);
-class CommentReporter {
-    async report(option, lintResults) {
-        const client = (0, client_1.githubClient)(option);
-        const context = (0, context_1.githubContext)(option);
-        const repositoryId = (await client.getRepositoryId({ owner: context.owner(), name: context.repository() }))
-            .repository?.id;
-        if (repositoryId == undefined) {
-            throw Error("not found repository");
-        }
-        const statusAndCheckRuns = await (0, paging_1.getCommitStatusAndCheckRunWithPaging)(client, {
-            owner: context.owner(),
-            name: context.repository(),
-            commitSha: context.commitSha(),
-        });
-        const foundSameCheckRun = statusAndCheckRuns.find((x) => x.__typename == "CheckRun" && x.name == option.reportName);
-        if (foundSameCheckRun != undefined) {
-            await client.updateCheckRun({
-                repositoryId: repositoryId,
-                checkRunId: foundSameCheckRun.id,
-                status: graphql_1.RequestableCheckStatusState.InProgress,
-            });
-        }
-        const checkRunId = foundSameCheckRun == undefined
-            ? (await client.createCheckRun({
-                repositoryId: repositoryId,
-                headSha: context.commitSha(),
-                name: option.reportName,
-                startedAt: new Date().toISOString(),
-                status: graphql_1.RequestableCheckStatusState.InProgress,
-            }))?.createCheckRun?.checkRun?.id
-            : foundSameCheckRun.id;
-        if (checkRunId == undefined) {
-            throw Error("cannot create check-run");
-        }
-        const pullRequest = await this.getPullRequest(client, context);
-        const loginUser = await this.getLoginUser(client);
-        await this.reportComment(client, context, option, pullRequest, loginUser, lintResults);
-        await client.updateCheckRun({
-            repositoryId: repositoryId,
-            checkRunId: checkRunId,
-            status: graphql_1.RequestableCheckStatusState.Completed,
-            conclusion: (0, conclusion_1.calculateConclusion)(option, lintResults),
-            completedAt: new Date().toISOString(),
-        });
-    }
-    async getPullRequest(client, context) {
-        const pullRequestNumber = context.pullRequest();
-        if (pullRequestNumber == null) {
-            throw Error("pull_request number is not provided");
-        }
-        const pullRequest = await client.getPullRequest({
-            owner: context.owner(),
-            name: context.repository(),
-            number: pullRequestNumber,
-        });
-        const pullRequestId = pullRequest.repository?.pullRequest?.id;
-        if (pullRequestId == null || pullRequestId == undefined) {
-            throw Error("not found pull request id");
-        }
-        return {
-            number: pullRequestNumber,
-            id: pullRequestId,
-        };
-    }
-    async getLoginUser(client) {
-        // if bot account, including '[bot]'. but author.login will not include it
-        const loginUser = (await client.getLoginUser({})).viewer.login.split("[")[0];
-        return {
-            login: loginUser,
-        };
-    }
-    async reportComment(client, context, option, pullRequest, loginUser, lintResults) {
-        const comments = await (0, paging_1.getPullRequestCommentsWithPaging)(client, {
-            owner: context.owner(),
-            name: context.repository(),
-            pull_request: pullRequest.number,
-        });
-        for (const comment of comments) {
-            if (comment.author?.login != loginUser.login) {
-                continue;
-            }
-            if ((0, comment_1.isLintComment)(comment.body, option.reportName)) {
-                await client.deleteComment({ id: comment.id });
-            }
-        }
-        if (lintResults.length == 0) {
-            return;
-        }
-        await client.addComment({
-            id: pullRequest.id,
-            body: (0, comment_1.createLintComment)((0, comment_1.createComment)(context, lintResults), option.reportName),
-        });
-    }
-}
-exports.CommentReporter = CommentReporter;
-
-
-/***/ },
-
-/***/ 1637
-(module) {
-
-module.exports = require("diagnostics_channel");
-
-/***/ },
-
-/***/ 2203
-(module) {
-
-module.exports = require("stream");
-
-/***/ },
-
-/***/ 2243
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.OutdatedResolver = exports.ReportType = void 0;
-exports.getCommonOption = getCommonOption;
-exports.getOption = getOption;
-const core = __importStar(__webpack_require__(6977));
-function getCommonOption() {
-    return {
-        githubToken: getInput("github_token"),
-        githubServerUrl: getInputOrNull("github_server_url"),
-        githubGraphqlApiUrl: getInputOrNull("github_graphql_api_url"),
-        workspacePath: getInputOrNull("workspace_path"),
-        repository: getInputOrNull("repository"),
-        pullRequest: getInputNumberOrNull("pull_request"),
-        commitSha: getInputOrNull("commit_sha"),
-    };
-}
-var ReportType;
-(function (ReportType) {
-    ReportType[ReportType["CheckRun"] = 0] = "CheckRun";
-    ReportType[ReportType["Comment"] = 1] = "Comment";
-    ReportType[ReportType["InlineComment"] = 2] = "InlineComment";
-})(ReportType || (exports.ReportType = ReportType = {}));
-var OutdatedResolver;
-(function (OutdatedResolver) {
-    OutdatedResolver[OutdatedResolver["ResolveThread"] = 0] = "ResolveThread";
-    OutdatedResolver[OutdatedResolver["ForceResolveThread"] = 1] = "ForceResolveThread";
-    OutdatedResolver[OutdatedResolver["DeleteThread"] = 2] = "DeleteThread";
-    OutdatedResolver[OutdatedResolver["DeleteOrForceResolveThread"] = 3] = "DeleteOrForceResolveThread";
-})(OutdatedResolver || (exports.OutdatedResolver = OutdatedResolver = {}));
-function getOption() {
-    const reportTypeString = getInput("report_type");
-    let reportType = ReportType.CheckRun;
-    switch (reportTypeString) {
-        case "comment":
-            reportType = ReportType.Comment;
-            break;
-        case "inline_comment":
-            reportType = ReportType.InlineComment;
-            break;
-        default:
-            reportType = ReportType.CheckRun;
-            break;
-    }
-    const outdatedResolverString = getInput("outdated_resolver");
-    let outdatedResolver = OutdatedResolver.DeleteOrForceResolveThread;
-    switch (outdatedResolverString) {
-        case "resolve_thread":
-            outdatedResolver = OutdatedResolver.ResolveThread;
-            break;
-        case "force_resolve_thread":
-            outdatedResolver = OutdatedResolver.ForceResolveThread;
-            break;
-        case "delete_thread":
-            outdatedResolver = OutdatedResolver.DeleteThread;
-            break;
-        default:
-            outdatedResolver = OutdatedResolver.DeleteOrForceResolveThread;
-            break;
-    }
-    return {
-        reportFiles: getInput("report_files"),
-        reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
-        reportName: getInput("report_name"),
-        reportType: reportType,
-        reportToSameCheckRun: getInputOrNull("report_to_same_check_run") == "true",
-        conclusionFailureThreshold: parseInt(getInput("conclusion_failure_threshold")),
-        conclusionFailureWeight: parseInt(getInput("conclusion_failure_weight")),
-        conclusionWarningWeight: parseInt(getInput("conclusion_warning_weight")),
-        conclusionNoticeWeight: parseInt(getInput("conclusion_notice_weight")),
-        outdatedResolver: outdatedResolver,
-        ...getCommonOption(),
-    };
-}
-function getInput(key) {
-    return core.getInput(key, { required: true });
-}
-function getInputOrNull(key) {
-    const result = core.getInput(key, { required: false });
-    if (result.length == 0) {
-        return null;
-    }
-    return result;
-}
-function getInputNumberOrNull(key) {
-    const value = getInputOrNull(key);
-    if (value == null) {
-        return null;
-    }
-    return parseInt(value);
-}
-
-
-/***/ },
-
-/***/ 2613
-(module) {
-
-module.exports = require("assert");
-
-/***/ },
-
-/***/ 2757
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.readLintResults = readLintResults;
-exports.writeLintResults = writeLintResults;
-const glob = __importStar(__webpack_require__(631));
-const fs = __importStar(__webpack_require__(9896));
-async function readLintResults(option) {
-    const globber = await glob.create(option.reportFiles, {
-        followSymbolicLinks: option.reportFilesFollowSymbolicLinks,
-    });
-    const result = [];
-    for await (const file of globber.globGenerator()) {
-        const readContents = fs.readFileSync(file, "utf-8");
-        const lintResults = JSON.parse(readContents);
-        result.push(...lintResults);
-    }
-    return result;
-}
-function writeLintResults(path, lintResults) {
-    const text = JSON.stringify(lintResults);
-    fs.writeFileSync(path, text);
-}
-
-
-/***/ },
-
-/***/ 2987
-(module) {
-
-module.exports = require("perf_hooks");
-
-/***/ },
-
-/***/ 3106
-(module) {
-
-module.exports = require("zlib");
-
-/***/ },
-
-/***/ 3193
-(module) {
-
-module.exports = require("string_decoder");
-
-/***/ },
-
-/***/ 3480
-(module) {
-
-module.exports = require("querystring");
-
-/***/ },
-
-/***/ 3557
-(module) {
-
-module.exports = require("timers");
-
-/***/ },
-
-/***/ 3590
-(__unused_webpack_module, exports) {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.countLevel = countLevel;
-function countLevel(lintResults, targetLevel) {
-    let count = 0;
-    for (const lintResult of lintResults) {
-        if (lintResult.level == targetLevel) {
-            count += 1;
-        }
-    }
-    return count;
-}
-
-
-/***/ },
-
-/***/ 3774
-(module) {
-
-module.exports = require("stream/web");
-
-/***/ },
-
-/***/ 4236
-(module) {
-
-module.exports = require("console");
-
-/***/ },
-
-/***/ 4434
-(module) {
-
-module.exports = require("events");
-
-/***/ },
-
-/***/ 4506
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createAnnotation = createAnnotation;
-exports.equalsAnnotation = equalsAnnotation;
-const graphql_1 = __webpack_require__(2634);
-const path_1 = __webpack_require__(969);
-function createAnnotation(context, lintResult) {
-    if (lintResult.startLine == undefined) {
-        // report only at summary
-        return null;
-    }
-    let level;
-    if (lintResult.level == "notice") {
-        level = graphql_1.CheckAnnotationLevel.Notice;
-    }
-    else if (lintResult.level == "warning") {
-        level = graphql_1.CheckAnnotationLevel.Warning;
-    }
-    else {
-        level = graphql_1.CheckAnnotationLevel.Failure;
-    }
-    let startColumn;
-    let endColumn;
-    if (lintResult.startLine == lintResult.endLine) {
-        startColumn = lintResult.startColumn;
-        endColumn = lintResult.endColumn;
-    }
-    else {
-        startColumn = undefined;
-        endColumn = undefined;
-    }
-    return {
-        path: (0, path_1.trimPath)(context, lintResult.path),
-        location: {
-            startLine: lintResult.startLine,
-            endLine: lintResult.endLine ?? lintResult.startLine,
-            startColumn: startColumn,
-            endColumn: endColumn,
-        },
-        annotationLevel: level,
-        title: `Rule: ${lintResult.rule}`,
-        message: lintResult.message,
-    };
-}
-function equalsAnnotation(left, right) {
-    if (left.path !== right.path) {
-        return false;
-    }
-    if (left.message !== right.message) {
-        return false;
-    }
-    if (left.title !== right.title) {
-        return false;
-    }
-    if (left.annotationLevel !== right.annotationLevel) {
-        return false;
-    }
-    if (left.location.start.line != right.location.startLine) {
-        return false;
-    }
-    if (left.location.start.column != right.location.startColumn) {
-        return false;
-    }
-    if (left.location.end.line != right.location.endLine) {
-        return false;
-    }
-    if (left.location.end.column != right.location.endColumn) {
-        return false;
-    }
-    return true;
-}
-
-
-/***/ },
-
-/***/ 4713
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.InlineCommentReporter = void 0;
-const option_1 = __webpack_require__(2243);
-const paging_1 = __webpack_require__(6964);
-const comment_reporter_1 = __webpack_require__(1309);
-const comment_1 = __webpack_require__(9393);
-const path_1 = __webpack_require__(969);
-class InlineCommentReporter extends comment_reporter_1.CommentReporter {
-    async reportComment(client, context, option, pullRequest, loginUser, lintResults) {
-        const inlineLintResults = lintResults.filter((x) => x.startLine != undefined);
-        const notInlineLintResults = lintResults.filter((x) => x.startLine == undefined);
-        const cannotReportedLintResults = await this.reportInlineComment(client, context, option, pullRequest, loginUser, inlineLintResults);
-        notInlineLintResults.push(...cannotReportedLintResults);
-        await super.reportComment(client, context, option, pullRequest, loginUser, notInlineLintResults);
-    }
-    // return cannot reported lint result
-    async reportInlineComment(client, context, option, pullRequest, loginUser, lintResults) {
-        const reviewThreads = await (0, paging_1.getPullRequestReviewThreadsWithPaging)(client, {
-            owner: context.owner(),
-            name: context.repository(),
-            number: pullRequest.number,
-        });
-        const pastReviewThreads = await this.resolveOutdatedThreadsAndFiltered(client, option, loginUser, reviewThreads);
-        const newLintResults = lintResults.filter((x) => pastReviewThreads.filter((y) => (0, comment_1.equalsInlineComment)(y, x, context, option.reportName)).length == 0);
-        const pullRequestReview = await client.addPullRequestReviewDraft({
-            pullRequestId: pullRequest.id,
-            commitSha: context.commitSha(),
-        });
-        const pullRequestReviewId = pullRequestReview?.addPullRequestReview?.pullRequestReview?.id;
-        if (pullRequestReviewId == null || pullRequestReviewId == undefined) {
-            return [];
-        }
-        const reportedLintResults = [];
-        const cannotReportedLintResults = [];
-        for (const lintResult of newLintResults) {
-            const line = lintResult.endLine != undefined ? lintResult.endLine : lintResult.startLine;
-            const startLine = 
-            // cannot create thread if same line
-            lintResult.endLine != undefined && lintResult.endLine != lintResult.startLine
-                ? lintResult.startLine
-                : undefined;
-            if (line == undefined) {
-                continue;
-            }
-            try {
-                const thread = await client.addPullRequestReviewThread({
-                    pullRequestId: pullRequest.id,
-                    pullRequestReviewId: pullRequestReviewId,
-                    body: (0, comment_1.createLintInlineComment)((0, comment_1.createInlineComment)(lintResult), option.reportName),
-                    path: (0, path_1.trimPath)(context, lintResult.path),
-                    line: line,
-                    startLine: startLine,
-                });
-                if (thread?.addPullRequestReviewThread?.thread?.id != null &&
-                    thread.addPullRequestReviewThread.thread.id != undefined) {
-                    reportedLintResults.push(lintResult);
-                }
-                else {
-                    cannotReportedLintResults.push(lintResult);
-                }
-            }
-            catch {
-                cannotReportedLintResults.push(lintResult);
-            }
-        }
-        if (0 < reportedLintResults.length) {
-            await client.submitPullRequestReview({
-                pullRequestId: pullRequest.id,
-                pullRequestReviewId: pullRequestReviewId,
-            });
-        }
-        else {
-            await client.deletePullRequestReview({ pullRequestReviewId: pullRequestReviewId });
-        }
-        return cannotReportedLintResults;
-    }
-    async resolveOutdatedThreadsAndFiltered(client, option, loginUser, reviewThreads) {
-        const result = [];
-        for (const reviewThread of reviewThreads) {
-            if (reviewThread.comments.nodes == null || reviewThread.comments.nodes == undefined) {
-                continue;
-            }
-            if (reviewThread.comments.nodes.length == 0) {
-                continue;
-            }
-            if (reviewThread.comments.nodes[0] == null || reviewThread.comments.nodes[0] == undefined) {
-                continue;
-            }
-            if (reviewThread.comments.nodes[0].author?.login != loginUser.login) {
-                continue;
-            }
-            if ((0, comment_1.isLintInlineComment)(reviewThread.comments.nodes[0].body, option.reportName) == false) {
-                continue;
-            }
-            if (reviewThread.isOutdated) {
-                switch (option.outdatedResolver) {
-                    case option_1.OutdatedResolver.ResolveThread:
-                        if (reviewThread.isResolved == false && reviewThread.comments.pageInfo.hasNextPage == false) {
-                            await client.resolvePullRequestReviewThread({ pullRequestThreadId: reviewThread.id });
-                        }
-                        break;
-                    case option_1.OutdatedResolver.ForceResolveThread:
-                        if (reviewThread.isResolved == false) {
-                            await client.resolvePullRequestReviewThread({ pullRequestThreadId: reviewThread.id });
-                        }
-                        break;
-                    case option_1.OutdatedResolver.DeleteThread:
-                        if (reviewThread.comments.pageInfo.hasNextPage == false) {
-                            await client.deletePullRequestReviewComment({
-                                pullRequestReviewCommentId: reviewThread.comments.nodes[0].id,
-                            });
-                        }
-                        break;
-                    case option_1.OutdatedResolver.DeleteOrForceResolveThread:
-                        if (reviewThread.comments.pageInfo.hasNextPage == false) {
-                            await client.deletePullRequestReviewComment({
-                                pullRequestReviewCommentId: reviewThread.comments.nodes[0].id,
-                            });
-                        }
-                        else {
-                            await client.resolvePullRequestReviewThread({ pullRequestThreadId: reviewThread.id });
-                        }
-                        break;
-                }
-            }
-            else {
-                result.push(reviewThread);
-            }
-        }
-        return result;
-    }
-}
-exports.InlineCommentReporter = InlineCommentReporter;
-
-
-/***/ },
-
-/***/ 4756
-(module) {
-
-module.exports = require("tls");
-
-/***/ },
-
-/***/ 4775
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.isLintComment = isLintComment;
-exports.createLintComment = createLintComment;
-exports.createComment = createComment;
-const level_1 = __webpack_require__(3590);
-const path_1 = __webpack_require__(969);
-function lintCommentIdentifier(reportName) {
-    return `<!-- common-lint-reporter: ${reportName} -->`;
-}
-function isLintComment(body, reportName) {
-    return body.startsWith(lintCommentIdentifier(reportName));
-}
-function createLintComment(body, reportName) {
-    return `${lintCommentIdentifier(reportName)}  \n${body}`;
-}
-function createComment(context, lintResults) {
-    let result = `# ${createTitle(lintResults)}\n`;
-    result += `\n`;
-    if (0 < (0, level_1.countLevel)(lintResults, "failure")) {
-        result += `## Failure\n`;
-        result += createLevelTable(context, lintResults, "failure");
-    }
-    if (0 < (0, level_1.countLevel)(lintResults, "warning")) {
-        result += `## Warning\n`;
-        result += createLevelTable(context, lintResults, "warning");
-    }
-    if (0 < (0, level_1.countLevel)(lintResults, "notice")) {
-        result += `## Notice\n`;
-        result += createLevelTable(context, lintResults, "notice");
-    }
-    return result;
-}
-function createTitle(lintResults) {
-    const noticeCount = (0, level_1.countLevel)(lintResults, "notice");
-    const warningCount = (0, level_1.countLevel)(lintResults, "warning");
-    const failureCount = (0, level_1.countLevel)(lintResults, "failure");
-    const messages = [];
-    if (noticeCount == 1) {
-        messages.push("1 notice");
-    }
-    if (2 <= noticeCount) {
-        messages.push(`${noticeCount} notices`);
-    }
-    if (warningCount == 1) {
-        messages.push("1 warning");
-    }
-    if (2 <= warningCount) {
-        messages.push(`${warningCount} warnings`);
-    }
-    if (failureCount == 1) {
-        messages.push("1 failure");
-    }
-    if (2 <= failureCount) {
-        messages.push(`${failureCount} failures`);
-    }
-    if (messages.length == 0) {
-        return "lint message is empty";
-    }
-    return `${messages.join(" and ")} found`;
-}
-function createLevelTable(context, lintResults, targetLevel) {
-    let result = "|file|message|rule|\n";
-    result += "|:--|:--|:--|\n";
-    for (const lintResult of lintResults) {
-        if (lintResult.level != targetLevel) {
-            continue;
-        }
-        let line = "";
-        if (lintResult.startLine != undefined) {
-            line += `L${lintResult.startLine}`;
-        }
-        if (lintResult.startLine != undefined &&
-            lintResult.endLine != undefined &&
-            lintResult.startLine != lintResult.endLine) {
-            line += `-L${lintResult.endLine}`;
-        }
-        const baseUrl = `${context.serverUrl()}/${context.owner()}/${context.repository()}`;
-        const path = (0, path_1.trimPath)(context, lintResult.path);
-        const message = lintResult.message.replace(/(\r\n)|\r|\n/g, "<br />");
-        const link = `${baseUrl}/blob/${context.commitSha()}/${path}#${line}`;
-        result += `|[${path} ${line}](${link})|${message}|${lintResult.rule}|\n`;
-    }
-    return result;
-}
-
-
-/***/ },
-
-/***/ 4876
-(module) {
-
-module.exports = require("punycode");
-
-/***/ },
-
-/***/ 5317
-(module) {
-
-module.exports = require("child_process");
-
-/***/ },
-
-/***/ 5675
-(module) {
-
-module.exports = require("http2");
-
-/***/ },
-
-/***/ 5692
-(module) {
-
-module.exports = require("https");
-
-/***/ },
-
-/***/ 5736
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createMessage = createMessage;
-const path_1 = __webpack_require__(969);
-const level_1 = __webpack_require__(3590);
-function markdownLevelMessage(context, lintResults, targetLevel) {
-    let result = "";
-    for (const lintResult of lintResults) {
-        if (lintResult.level != targetLevel) {
-            continue;
-        }
-        let line = "";
-        if (lintResult.startLine != undefined) {
-            line += `L${lintResult.startLine}`;
-        }
-        if (lintResult.startLine != undefined &&
-            lintResult.endLine != undefined &&
-            lintResult.startLine != lintResult.endLine) {
-            line += `-L${lintResult.endLine}`;
-        }
-        const baseUrl = `${context.serverUrl()}/${context.owner()}/${context.repository()}`;
-        const link = `${baseUrl}/blob/${context.commitSha()}/${(0, path_1.trimPath)(context, lintResult.path)}#${line}`;
-        result += `### [${(0, path_1.trimPath)(context, lintResult.path)} ${line}](${link})\n`;
-        result += `Rule: ${lintResult.rule}\n`;
-        result += lintResult.message;
-        result += "\n";
-    }
-    return result;
-}
-function createMessage(context, lintResults) {
-    const noticeCount = (0, level_1.countLevel)(lintResults, "notice");
-    const warningCount = (0, level_1.countLevel)(lintResults, "warning");
-    const failureCount = (0, level_1.countLevel)(lintResults, "failure");
-    let result = "";
-    if (0 < failureCount) {
-        if (failureCount == 1) {
-            result += "## 1 Failure\n";
-        }
-        else {
-            result += `## ${failureCount} Failures\n`;
-        }
-        result += markdownLevelMessage(context, lintResults, "failure");
-    }
-    if (0 < warningCount) {
-        if (warningCount == 1) {
-            result += "## 1 Warning\n";
-        }
-        else {
-            result += `## ${warningCount} Warnings\n`;
-        }
-        result += markdownLevelMessage(context, lintResults, "warning");
-    }
-    if (0 < noticeCount) {
-        if (noticeCount == 1) {
-            result += "## 1 Notice\n";
-        }
-        else {
-            result += `## ${noticeCount} Notices\n`;
-        }
-        result += markdownLevelMessage(context, lintResults, "notice");
-    }
-    return result;
-}
-
-
-/***/ },
-
 /***/ 6088
 (__unused_webpack_module, exports, __webpack_require__) {
 
@@ -1152,52 +268,6 @@ exports.GitHubContext = GitHubContext;
 
 /***/ },
 
-/***/ 6735
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createSummary = createSummary;
-const level_1 = __webpack_require__(3590);
-function createSummary(lintResults) {
-    const noticeCount = (0, level_1.countLevel)(lintResults, "notice");
-    const warningCount = (0, level_1.countLevel)(lintResults, "warning");
-    const failureCount = (0, level_1.countLevel)(lintResults, "failure");
-    const messages = [];
-    if (noticeCount == 1) {
-        messages.push("1 notice");
-    }
-    if (2 <= noticeCount) {
-        messages.push(`${noticeCount} notices`);
-    }
-    if (warningCount == 1) {
-        messages.push("1 warning");
-    }
-    if (2 <= warningCount) {
-        messages.push(`${warningCount} warnings`);
-    }
-    if (failureCount == 1) {
-        messages.push("1 failure");
-    }
-    if (2 <= failureCount) {
-        messages.push(`${failureCount} failures`);
-    }
-    if (messages.length == 0) {
-        return "lint message is empty";
-    }
-    return `${messages.join(" and ")} found`;
-}
-
-
-/***/ },
-
-/***/ 6928
-(module) {
-
-module.exports = require("path");
-
-/***/ },
-
 /***/ 6964
 (__unused_webpack_module, exports) {
 
@@ -1288,24 +358,345 @@ async function getPullRequestReviewThreadsWithPaging(client, variables) {
 
 /***/ },
 
-/***/ 6982
-(module) {
+/***/ 2757
+(__unused_webpack_module, exports, __webpack_require__) {
 
-module.exports = require("crypto");
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.readLintResults = readLintResults;
+exports.writeLintResults = writeLintResults;
+const glob = __importStar(__webpack_require__(631));
+const fs = __importStar(__webpack_require__(9896));
+async function readLintResults(option) {
+    const globber = await glob.create(option.reportFiles, {
+        followSymbolicLinks: option.reportFilesFollowSymbolicLinks,
+    });
+    const result = [];
+    for await (const file of globber.globGenerator()) {
+        const readContents = fs.readFileSync(file, "utf-8");
+        const lintResults = JSON.parse(readContents);
+        result.push(...lintResults);
+    }
+    return result;
+}
+function writeLintResults(path, lintResults) {
+    const text = JSON.stringify(lintResults);
+    fs.writeFileSync(path, text);
+}
+
 
 /***/ },
 
-/***/ 7016
-(module) {
+/***/ 7927
+(__unused_webpack_module, exports, __webpack_require__) {
 
-module.exports = require("url");
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const core = __importStar(__webpack_require__(6977));
+const option_1 = __webpack_require__(2243);
+const lint_result_1 = __webpack_require__(2757);
+const check_run_reporter_1 = __webpack_require__(7465);
+const comment_reporter_1 = __webpack_require__(1309);
+const inline_comment_reporter_1 = __webpack_require__(4713);
+async function run() {
+    try {
+        const option = (0, option_1.getOption)();
+        const lintResults = await (0, lint_result_1.readLintResults)(option);
+        let reporter;
+        if (option.reportType == option_1.ReportType.Comment) {
+            reporter = new comment_reporter_1.CommentReporter();
+        }
+        else if (option.reportType == option_1.ReportType.InlineComment) {
+            reporter = new inline_comment_reporter_1.InlineCommentReporter();
+        }
+        else {
+            reporter = new check_run_reporter_1.CheckRunReporter();
+        }
+        await reporter.report(option, lintResults);
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            core.setFailed(error.message);
+        }
+    }
+}
+run();
+
 
 /***/ },
 
-/***/ 7075
-(module) {
+/***/ 2243
+(__unused_webpack_module, exports, __webpack_require__) {
 
-module.exports = require("node:stream");
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OutdatedResolver = exports.ReportType = void 0;
+exports.getCommonOption = getCommonOption;
+exports.getOption = getOption;
+const core = __importStar(__webpack_require__(6977));
+function getCommonOption() {
+    return {
+        githubToken: getInput("github_token"),
+        githubServerUrl: getInputOrNull("github_server_url"),
+        githubGraphqlApiUrl: getInputOrNull("github_graphql_api_url"),
+        workspacePath: getInputOrNull("workspace_path"),
+        repository: getInputOrNull("repository"),
+        pullRequest: getInputNumberOrNull("pull_request"),
+        commitSha: getInputOrNull("commit_sha"),
+    };
+}
+var ReportType;
+(function (ReportType) {
+    ReportType[ReportType["CheckRun"] = 0] = "CheckRun";
+    ReportType[ReportType["Comment"] = 1] = "Comment";
+    ReportType[ReportType["InlineComment"] = 2] = "InlineComment";
+})(ReportType || (exports.ReportType = ReportType = {}));
+var OutdatedResolver;
+(function (OutdatedResolver) {
+    OutdatedResolver[OutdatedResolver["ResolveThread"] = 0] = "ResolveThread";
+    OutdatedResolver[OutdatedResolver["ForceResolveThread"] = 1] = "ForceResolveThread";
+    OutdatedResolver[OutdatedResolver["DeleteThread"] = 2] = "DeleteThread";
+    OutdatedResolver[OutdatedResolver["DeleteOrForceResolveThread"] = 3] = "DeleteOrForceResolveThread";
+})(OutdatedResolver || (exports.OutdatedResolver = OutdatedResolver = {}));
+function getOption() {
+    const reportTypeString = getInput("report_type");
+    let reportType = ReportType.CheckRun;
+    switch (reportTypeString) {
+        case "comment":
+            reportType = ReportType.Comment;
+            break;
+        case "inline_comment":
+            reportType = ReportType.InlineComment;
+            break;
+        default:
+            reportType = ReportType.CheckRun;
+            break;
+    }
+    const outdatedResolverString = getInput("outdated_resolver");
+    let outdatedResolver = OutdatedResolver.DeleteOrForceResolveThread;
+    switch (outdatedResolverString) {
+        case "resolve_thread":
+            outdatedResolver = OutdatedResolver.ResolveThread;
+            break;
+        case "force_resolve_thread":
+            outdatedResolver = OutdatedResolver.ForceResolveThread;
+            break;
+        case "delete_thread":
+            outdatedResolver = OutdatedResolver.DeleteThread;
+            break;
+        default:
+            outdatedResolver = OutdatedResolver.DeleteOrForceResolveThread;
+            break;
+    }
+    return {
+        reportFiles: getInput("report_files"),
+        reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
+        reportName: getInput("report_name"),
+        reportType: reportType,
+        reportToSameCheckRun: getInputOrNull("report_to_same_check_run") == "true",
+        conclusionFailureThreshold: parseInt(getInput("conclusion_failure_threshold")),
+        conclusionFailureWeight: parseInt(getInput("conclusion_failure_weight")),
+        conclusionWarningWeight: parseInt(getInput("conclusion_warning_weight")),
+        conclusionNoticeWeight: parseInt(getInput("conclusion_notice_weight")),
+        outdatedResolver: outdatedResolver,
+        ...getCommonOption(),
+    };
+}
+function getInput(key) {
+    return core.getInput(key, { required: true });
+}
+function getInputOrNull(key) {
+    const result = core.getInput(key, { required: false });
+    if (result.length == 0) {
+        return null;
+    }
+    return result;
+}
+function getInputNumberOrNull(key) {
+    const value = getInputOrNull(key);
+    if (value == null) {
+        return null;
+    }
+    return parseInt(value);
+}
+
+
+/***/ },
+
+/***/ 4506
+(__unused_webpack_module, exports, __webpack_require__) {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.createAnnotation = createAnnotation;
+exports.equalsAnnotation = equalsAnnotation;
+const graphql_1 = __webpack_require__(2634);
+const path_1 = __webpack_require__(969);
+function createAnnotation(context, lintResult) {
+    if (lintResult.startLine == undefined) {
+        // report only at summary
+        return null;
+    }
+    let level;
+    if (lintResult.level == "notice") {
+        level = graphql_1.CheckAnnotationLevel.Notice;
+    }
+    else if (lintResult.level == "warning") {
+        level = graphql_1.CheckAnnotationLevel.Warning;
+    }
+    else {
+        level = graphql_1.CheckAnnotationLevel.Failure;
+    }
+    let startColumn;
+    let endColumn;
+    if (lintResult.startLine == lintResult.endLine) {
+        startColumn = lintResult.startColumn;
+        endColumn = lintResult.endColumn;
+    }
+    else {
+        startColumn = undefined;
+        endColumn = undefined;
+    }
+    return {
+        path: (0, path_1.trimPath)(context, lintResult.path),
+        location: {
+            startLine: lintResult.startLine,
+            endLine: lintResult.endLine ?? lintResult.startLine,
+            startColumn: startColumn,
+            endColumn: endColumn,
+        },
+        annotationLevel: level,
+        title: `Rule: ${lintResult.rule}`,
+        message: lintResult.message,
+    };
+}
+function equalsAnnotation(left, right) {
+    if (left.path !== right.path) {
+        return false;
+    }
+    if (left.message !== right.message) {
+        return false;
+    }
+    if (left.title !== right.title) {
+        return false;
+    }
+    if (left.annotationLevel !== right.annotationLevel) {
+        return false;
+    }
+    if (left.location.start.line != right.location.startLine) {
+        return false;
+    }
+    if (left.location.start.column != right.location.startColumn) {
+        return false;
+    }
+    if (left.location.end.line != right.location.endLine) {
+        return false;
+    }
+    if (left.location.end.column != right.location.endColumn) {
+        return false;
+    }
+    return true;
+}
+
 
 /***/ },
 
@@ -1489,123 +880,315 @@ exports.CheckRunReporter = CheckRunReporter;
 
 /***/ },
 
-/***/ 7598
-(module) {
-
-module.exports = require("node:crypto");
-
-/***/ },
-
-/***/ 7927
+/***/ 5736
 (__unused_webpack_module, exports, __webpack_require__) {
 
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core = __importStar(__webpack_require__(6977));
-const option_1 = __webpack_require__(2243);
-const lint_result_1 = __webpack_require__(2757);
-const check_run_reporter_1 = __webpack_require__(7465);
-const comment_reporter_1 = __webpack_require__(1309);
-const inline_comment_reporter_1 = __webpack_require__(4713);
-async function run() {
-    try {
-        const option = (0, option_1.getOption)();
-        const lintResults = await (0, lint_result_1.readLintResults)(option);
-        let reporter;
-        if (option.reportType == option_1.ReportType.Comment) {
-            reporter = new comment_reporter_1.CommentReporter();
+exports.createMessage = createMessage;
+const path_1 = __webpack_require__(969);
+const level_1 = __webpack_require__(3590);
+function markdownLevelMessage(context, lintResults, targetLevel) {
+    let result = "";
+    for (const lintResult of lintResults) {
+        if (lintResult.level != targetLevel) {
+            continue;
         }
-        else if (option.reportType == option_1.ReportType.InlineComment) {
-            reporter = new inline_comment_reporter_1.InlineCommentReporter();
+        let line = "";
+        if (lintResult.startLine != undefined) {
+            line += `L${lintResult.startLine}`;
+        }
+        if (lintResult.startLine != undefined &&
+            lintResult.endLine != undefined &&
+            lintResult.startLine != lintResult.endLine) {
+            line += `-L${lintResult.endLine}`;
+        }
+        const baseUrl = `${context.serverUrl()}/${context.owner()}/${context.repository()}`;
+        const link = `${baseUrl}/blob/${context.commitSha()}/${(0, path_1.trimPath)(context, lintResult.path)}#${line}`;
+        result += `### [${(0, path_1.trimPath)(context, lintResult.path)} ${line}](${link})\n`;
+        result += `Rule: ${lintResult.rule}\n`;
+        result += lintResult.message;
+        result += "\n";
+    }
+    return result;
+}
+function createMessage(context, lintResults) {
+    const noticeCount = (0, level_1.countLevel)(lintResults, "notice");
+    const warningCount = (0, level_1.countLevel)(lintResults, "warning");
+    const failureCount = (0, level_1.countLevel)(lintResults, "failure");
+    let result = "";
+    if (0 < failureCount) {
+        if (failureCount == 1) {
+            result += "## 1 Failure\n";
         }
         else {
-            reporter = new check_run_reporter_1.CheckRunReporter();
+            result += `## ${failureCount} Failures\n`;
         }
-        await reporter.report(option, lintResults);
+        result += markdownLevelMessage(context, lintResults, "failure");
     }
-    catch (error) {
-        if (error instanceof Error) {
-            core.setFailed(error.message);
+    if (0 < warningCount) {
+        if (warningCount == 1) {
+            result += "## 1 Warning\n";
         }
+        else {
+            result += `## ${warningCount} Warnings\n`;
+        }
+        result += markdownLevelMessage(context, lintResults, "warning");
+    }
+    if (0 < noticeCount) {
+        if (noticeCount == 1) {
+            result += "## 1 Notice\n";
+        }
+        else {
+            result += `## ${noticeCount} Notices\n`;
+        }
+        result += markdownLevelMessage(context, lintResults, "notice");
+    }
+    return result;
+}
+
+
+/***/ },
+
+/***/ 6735
+(__unused_webpack_module, exports, __webpack_require__) {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.createSummary = createSummary;
+const level_1 = __webpack_require__(3590);
+function createSummary(lintResults) {
+    const noticeCount = (0, level_1.countLevel)(lintResults, "notice");
+    const warningCount = (0, level_1.countLevel)(lintResults, "warning");
+    const failureCount = (0, level_1.countLevel)(lintResults, "failure");
+    const messages = [];
+    if (noticeCount == 1) {
+        messages.push("1 notice");
+    }
+    if (2 <= noticeCount) {
+        messages.push(`${noticeCount} notices`);
+    }
+    if (warningCount == 1) {
+        messages.push("1 warning");
+    }
+    if (2 <= warningCount) {
+        messages.push(`${warningCount} warnings`);
+    }
+    if (failureCount == 1) {
+        messages.push("1 failure");
+    }
+    if (2 <= failureCount) {
+        messages.push(`${failureCount} failures`);
+    }
+    if (messages.length == 0) {
+        return "lint message is empty";
+    }
+    return `${messages.join(" and ")} found`;
+}
+
+
+/***/ },
+
+/***/ 1309
+(__unused_webpack_module, exports, __webpack_require__) {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CommentReporter = void 0;
+const client_1 = __webpack_require__(6088);
+const context_1 = __webpack_require__(6289);
+const paging_1 = __webpack_require__(6964);
+const graphql_1 = __webpack_require__(2634);
+const conclusion_1 = __webpack_require__(9245);
+const comment_1 = __webpack_require__(4775);
+class CommentReporter {
+    async report(option, lintResults) {
+        const client = (0, client_1.githubClient)(option);
+        const context = (0, context_1.githubContext)(option);
+        const repositoryId = (await client.getRepositoryId({ owner: context.owner(), name: context.repository() }))
+            .repository?.id;
+        if (repositoryId == undefined) {
+            throw Error("not found repository");
+        }
+        const statusAndCheckRuns = await (0, paging_1.getCommitStatusAndCheckRunWithPaging)(client, {
+            owner: context.owner(),
+            name: context.repository(),
+            commitSha: context.commitSha(),
+        });
+        const foundSameCheckRun = statusAndCheckRuns.find((x) => x.__typename == "CheckRun" && x.name == option.reportName);
+        if (foundSameCheckRun != undefined) {
+            await client.updateCheckRun({
+                repositoryId: repositoryId,
+                checkRunId: foundSameCheckRun.id,
+                status: graphql_1.RequestableCheckStatusState.InProgress,
+            });
+        }
+        const checkRunId = foundSameCheckRun == undefined
+            ? (await client.createCheckRun({
+                repositoryId: repositoryId,
+                headSha: context.commitSha(),
+                name: option.reportName,
+                startedAt: new Date().toISOString(),
+                status: graphql_1.RequestableCheckStatusState.InProgress,
+            }))?.createCheckRun?.checkRun?.id
+            : foundSameCheckRun.id;
+        if (checkRunId == undefined) {
+            throw Error("cannot create check-run");
+        }
+        const pullRequest = await this.getPullRequest(client, context);
+        const loginUser = await this.getLoginUser(client);
+        await this.reportComment(client, context, option, pullRequest, loginUser, lintResults);
+        await client.updateCheckRun({
+            repositoryId: repositoryId,
+            checkRunId: checkRunId,
+            status: graphql_1.RequestableCheckStatusState.Completed,
+            conclusion: (0, conclusion_1.calculateConclusion)(option, lintResults),
+            completedAt: new Date().toISOString(),
+        });
+    }
+    async getPullRequest(client, context) {
+        const pullRequestNumber = context.pullRequest();
+        if (pullRequestNumber == null) {
+            throw Error("pull_request number is not provided");
+        }
+        const pullRequest = await client.getPullRequest({
+            owner: context.owner(),
+            name: context.repository(),
+            number: pullRequestNumber,
+        });
+        const pullRequestId = pullRequest.repository?.pullRequest?.id;
+        if (pullRequestId == null || pullRequestId == undefined) {
+            throw Error("not found pull request id");
+        }
+        return {
+            number: pullRequestNumber,
+            id: pullRequestId,
+        };
+    }
+    async getLoginUser(client) {
+        // if bot account, including '[bot]'. but author.login will not include it
+        const loginUser = (await client.getLoginUser({})).viewer.login.split("[")[0];
+        return {
+            login: loginUser,
+        };
+    }
+    async reportComment(client, context, option, pullRequest, loginUser, lintResults) {
+        const comments = await (0, paging_1.getPullRequestCommentsWithPaging)(client, {
+            owner: context.owner(),
+            name: context.repository(),
+            pull_request: pullRequest.number,
+        });
+        for (const comment of comments) {
+            if (comment.author?.login != loginUser.login) {
+                continue;
+            }
+            if ((0, comment_1.isLintComment)(comment.body, option.reportName)) {
+                await client.deleteComment({ id: comment.id });
+            }
+        }
+        if (lintResults.length == 0) {
+            return;
+        }
+        await client.addComment({
+            id: pullRequest.id,
+            body: (0, comment_1.createLintComment)((0, comment_1.createComment)(context, lintResults), option.reportName),
+        });
     }
 }
-run();
+exports.CommentReporter = CommentReporter;
 
 
 /***/ },
 
-/***/ 7975
-(module) {
+/***/ 4775
+(__unused_webpack_module, exports, __webpack_require__) {
 
-module.exports = require("node:util");
 
-/***/ },
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isLintComment = isLintComment;
+exports.createLintComment = createLintComment;
+exports.createComment = createComment;
+const level_1 = __webpack_require__(3590);
+const path_1 = __webpack_require__(969);
+function lintCommentIdentifier(reportName) {
+    return `<!-- common-lint-reporter: ${reportName} -->`;
+}
+function isLintComment(body, reportName) {
+    return body.startsWith(lintCommentIdentifier(reportName));
+}
+function createLintComment(body, reportName) {
+    return `${lintCommentIdentifier(reportName)}  \n${body}`;
+}
+function createComment(context, lintResults) {
+    let result = `# ${createTitle(lintResults)}\n`;
+    result += `\n`;
+    if (0 < (0, level_1.countLevel)(lintResults, "failure")) {
+        result += `## Failure\n`;
+        result += createLevelTable(context, lintResults, "failure");
+    }
+    if (0 < (0, level_1.countLevel)(lintResults, "warning")) {
+        result += `## Warning\n`;
+        result += createLevelTable(context, lintResults, "warning");
+    }
+    if (0 < (0, level_1.countLevel)(lintResults, "notice")) {
+        result += `## Notice\n`;
+        result += createLevelTable(context, lintResults, "notice");
+    }
+    return result;
+}
+function createTitle(lintResults) {
+    const noticeCount = (0, level_1.countLevel)(lintResults, "notice");
+    const warningCount = (0, level_1.countLevel)(lintResults, "warning");
+    const failureCount = (0, level_1.countLevel)(lintResults, "failure");
+    const messages = [];
+    if (noticeCount == 1) {
+        messages.push("1 notice");
+    }
+    if (2 <= noticeCount) {
+        messages.push(`${noticeCount} notices`);
+    }
+    if (warningCount == 1) {
+        messages.push("1 warning");
+    }
+    if (2 <= warningCount) {
+        messages.push(`${warningCount} warnings`);
+    }
+    if (failureCount == 1) {
+        messages.push("1 failure");
+    }
+    if (2 <= failureCount) {
+        messages.push(`${failureCount} failures`);
+    }
+    if (messages.length == 0) {
+        return "lint message is empty";
+    }
+    return `${messages.join(" and ")} found`;
+}
+function createLevelTable(context, lintResults, targetLevel) {
+    let result = "|file|message|rule|\n";
+    result += "|:--|:--|:--|\n";
+    for (const lintResult of lintResults) {
+        if (lintResult.level != targetLevel) {
+            continue;
+        }
+        let line = "";
+        if (lintResult.startLine != undefined) {
+            line += `L${lintResult.startLine}`;
+        }
+        if (lintResult.startLine != undefined &&
+            lintResult.endLine != undefined &&
+            lintResult.startLine != lintResult.endLine) {
+            line += `-L${lintResult.endLine}`;
+        }
+        const baseUrl = `${context.serverUrl()}/${context.owner()}/${context.repository()}`;
+        const path = (0, path_1.trimPath)(context, lintResult.path);
+        const message = lintResult.message.replace(/(\r\n)|\r|\n/g, "<br />");
+        const link = `${baseUrl}/blob/${context.commitSha()}/${path}#${line}`;
+        result += `|[${path} ${line}](${link})|${message}|${lintResult.rule}|\n`;
+    }
+    return result;
+}
 
-/***/ 8167
-(module) {
-
-module.exports = require("worker_threads");
-
-/***/ },
-
-/***/ 8253
-(module) {
-
-module.exports = require("util/types");
-
-/***/ },
-
-/***/ 8474
-(module) {
-
-module.exports = require("node:events");
-
-/***/ },
-
-/***/ 8611
-(module) {
-
-module.exports = require("http");
-
-/***/ },
-
-/***/ 9023
-(module) {
-
-module.exports = require("util");
 
 /***/ },
 
@@ -1627,13 +1210,6 @@ function calculateConclusion(option, lintResults) {
     return score < option.conclusionFailureThreshold ? graphql_1.CheckConclusionState.Success : graphql_1.CheckConclusionState.Failure;
 }
 
-
-/***/ },
-
-/***/ 9278
-(module) {
-
-module.exports = require("net");
 
 /***/ },
 
@@ -1694,10 +1270,434 @@ function equalsInlineComment(left, right, context, reportName) {
 
 /***/ },
 
+/***/ 4713
+(__unused_webpack_module, exports, __webpack_require__) {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.InlineCommentReporter = void 0;
+const option_1 = __webpack_require__(2243);
+const paging_1 = __webpack_require__(6964);
+const comment_reporter_1 = __webpack_require__(1309);
+const comment_1 = __webpack_require__(9393);
+const path_1 = __webpack_require__(969);
+class InlineCommentReporter extends comment_reporter_1.CommentReporter {
+    async reportComment(client, context, option, pullRequest, loginUser, lintResults) {
+        const inlineLintResults = lintResults.filter((x) => x.startLine != undefined);
+        const notInlineLintResults = lintResults.filter((x) => x.startLine == undefined);
+        const cannotReportedLintResults = await this.reportInlineComment(client, context, option, pullRequest, loginUser, inlineLintResults);
+        notInlineLintResults.push(...cannotReportedLintResults);
+        await super.reportComment(client, context, option, pullRequest, loginUser, notInlineLintResults);
+    }
+    // return cannot reported lint result
+    async reportInlineComment(client, context, option, pullRequest, loginUser, lintResults) {
+        const reviewThreads = await (0, paging_1.getPullRequestReviewThreadsWithPaging)(client, {
+            owner: context.owner(),
+            name: context.repository(),
+            number: pullRequest.number,
+        });
+        const pastReviewThreads = await this.resolveOutdatedThreadsAndFiltered(client, option, loginUser, reviewThreads);
+        const newLintResults = lintResults.filter((x) => pastReviewThreads.filter((y) => (0, comment_1.equalsInlineComment)(y, x, context, option.reportName)).length == 0);
+        const pullRequestReview = await client.addPullRequestReviewDraft({
+            pullRequestId: pullRequest.id,
+            commitSha: context.commitSha(),
+        });
+        const pullRequestReviewId = pullRequestReview?.addPullRequestReview?.pullRequestReview?.id;
+        if (pullRequestReviewId == null || pullRequestReviewId == undefined) {
+            return [];
+        }
+        const reportedLintResults = [];
+        const cannotReportedLintResults = [];
+        for (const lintResult of newLintResults) {
+            const line = lintResult.endLine != undefined ? lintResult.endLine : lintResult.startLine;
+            const startLine = 
+            // cannot create thread if same line
+            lintResult.endLine != undefined && lintResult.endLine != lintResult.startLine
+                ? lintResult.startLine
+                : undefined;
+            if (line == undefined) {
+                continue;
+            }
+            try {
+                const thread = await client.addPullRequestReviewThread({
+                    pullRequestId: pullRequest.id,
+                    pullRequestReviewId: pullRequestReviewId,
+                    body: (0, comment_1.createLintInlineComment)((0, comment_1.createInlineComment)(lintResult), option.reportName),
+                    path: (0, path_1.trimPath)(context, lintResult.path),
+                    line: line,
+                    startLine: startLine,
+                });
+                if (thread?.addPullRequestReviewThread?.thread?.id != null &&
+                    thread.addPullRequestReviewThread.thread.id != undefined) {
+                    reportedLintResults.push(lintResult);
+                }
+                else {
+                    cannotReportedLintResults.push(lintResult);
+                }
+            }
+            catch {
+                cannotReportedLintResults.push(lintResult);
+            }
+        }
+        if (0 < reportedLintResults.length) {
+            await client.submitPullRequestReview({
+                pullRequestId: pullRequest.id,
+                pullRequestReviewId: pullRequestReviewId,
+            });
+        }
+        else {
+            await client.deletePullRequestReview({ pullRequestReviewId: pullRequestReviewId });
+        }
+        return cannotReportedLintResults;
+    }
+    async resolveOutdatedThreadsAndFiltered(client, option, loginUser, reviewThreads) {
+        const result = [];
+        for (const reviewThread of reviewThreads) {
+            if (reviewThread.comments.nodes == null || reviewThread.comments.nodes == undefined) {
+                continue;
+            }
+            if (reviewThread.comments.nodes.length == 0) {
+                continue;
+            }
+            if (reviewThread.comments.nodes[0] == null || reviewThread.comments.nodes[0] == undefined) {
+                continue;
+            }
+            if (reviewThread.comments.nodes[0].author?.login != loginUser.login) {
+                continue;
+            }
+            if ((0, comment_1.isLintInlineComment)(reviewThread.comments.nodes[0].body, option.reportName) == false) {
+                continue;
+            }
+            if (reviewThread.isOutdated) {
+                switch (option.outdatedResolver) {
+                    case option_1.OutdatedResolver.ResolveThread:
+                        if (reviewThread.isResolved == false && reviewThread.comments.pageInfo.hasNextPage == false) {
+                            await client.resolvePullRequestReviewThread({ pullRequestThreadId: reviewThread.id });
+                        }
+                        break;
+                    case option_1.OutdatedResolver.ForceResolveThread:
+                        if (reviewThread.isResolved == false) {
+                            await client.resolvePullRequestReviewThread({ pullRequestThreadId: reviewThread.id });
+                        }
+                        break;
+                    case option_1.OutdatedResolver.DeleteThread:
+                        if (reviewThread.comments.pageInfo.hasNextPage == false) {
+                            await client.deletePullRequestReviewComment({
+                                pullRequestReviewCommentId: reviewThread.comments.nodes[0].id,
+                            });
+                        }
+                        break;
+                    case option_1.OutdatedResolver.DeleteOrForceResolveThread:
+                        if (reviewThread.comments.pageInfo.hasNextPage == false) {
+                            await client.deletePullRequestReviewComment({
+                                pullRequestReviewCommentId: reviewThread.comments.nodes[0].id,
+                            });
+                        }
+                        else {
+                            await client.resolvePullRequestReviewThread({ pullRequestThreadId: reviewThread.id });
+                        }
+                        break;
+                }
+            }
+            else {
+                result.push(reviewThread);
+            }
+        }
+        return result;
+    }
+}
+exports.InlineCommentReporter = InlineCommentReporter;
+
+
+/***/ },
+
+/***/ 3590
+(__unused_webpack_module, exports) {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.countLevel = countLevel;
+function countLevel(lintResults, targetLevel) {
+    let count = 0;
+    for (const lintResult of lintResults) {
+        if (lintResult.level == targetLevel) {
+            count += 1;
+        }
+    }
+    return count;
+}
+
+
+/***/ },
+
+/***/ 969
+(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.trimPath = trimPath;
+const path = __importStar(__webpack_require__(6928));
+function trimPath(context, filePath) {
+    return filePath.replace(`${context.workspacePath()}${path.sep}`, "");
+}
+
+
+/***/ },
+
+/***/ 2613
+(module) {
+
+module.exports = require("assert");
+
+/***/ },
+
+/***/ 290
+(module) {
+
+module.exports = require("async_hooks");
+
+/***/ },
+
+/***/ 181
+(module) {
+
+module.exports = require("buffer");
+
+/***/ },
+
+/***/ 5317
+(module) {
+
+module.exports = require("child_process");
+
+/***/ },
+
+/***/ 4236
+(module) {
+
+module.exports = require("console");
+
+/***/ },
+
+/***/ 6982
+(module) {
+
+module.exports = require("crypto");
+
+/***/ },
+
+/***/ 1637
+(module) {
+
+module.exports = require("diagnostics_channel");
+
+/***/ },
+
+/***/ 4434
+(module) {
+
+module.exports = require("events");
+
+/***/ },
+
 /***/ 9896
 (module) {
 
 module.exports = require("fs");
+
+/***/ },
+
+/***/ 8611
+(module) {
+
+module.exports = require("http");
+
+/***/ },
+
+/***/ 5675
+(module) {
+
+module.exports = require("http2");
+
+/***/ },
+
+/***/ 5692
+(module) {
+
+module.exports = require("https");
+
+/***/ },
+
+/***/ 9278
+(module) {
+
+module.exports = require("net");
+
+/***/ },
+
+/***/ 7598
+(module) {
+
+module.exports = require("node:crypto");
+
+/***/ },
+
+/***/ 8474
+(module) {
+
+module.exports = require("node:events");
+
+/***/ },
+
+/***/ 7075
+(module) {
+
+module.exports = require("node:stream");
+
+/***/ },
+
+/***/ 7975
+(module) {
+
+module.exports = require("node:util");
+
+/***/ },
+
+/***/ 857
+(module) {
+
+module.exports = require("os");
+
+/***/ },
+
+/***/ 6928
+(module) {
+
+module.exports = require("path");
+
+/***/ },
+
+/***/ 2987
+(module) {
+
+module.exports = require("perf_hooks");
+
+/***/ },
+
+/***/ 4876
+(module) {
+
+module.exports = require("punycode");
+
+/***/ },
+
+/***/ 3480
+(module) {
+
+module.exports = require("querystring");
+
+/***/ },
+
+/***/ 2203
+(module) {
+
+module.exports = require("stream");
+
+/***/ },
+
+/***/ 3774
+(module) {
+
+module.exports = require("stream/web");
+
+/***/ },
+
+/***/ 3193
+(module) {
+
+module.exports = require("string_decoder");
+
+/***/ },
+
+/***/ 3557
+(module) {
+
+module.exports = require("timers");
+
+/***/ },
+
+/***/ 4756
+(module) {
+
+module.exports = require("tls");
+
+/***/ },
+
+/***/ 7016
+(module) {
+
+module.exports = require("url");
+
+/***/ },
+
+/***/ 9023
+(module) {
+
+module.exports = require("util");
+
+/***/ },
+
+/***/ 8253
+(module) {
+
+module.exports = require("util/types");
+
+/***/ },
+
+/***/ 8167
+(module) {
+
+module.exports = require("worker_threads");
+
+/***/ },
+
+/***/ 3106
+(module) {
+
+module.exports = require("zlib");
 
 /***/ }
 
