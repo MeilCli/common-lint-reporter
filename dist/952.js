@@ -3,208 +3,6 @@ exports.id = 952;
 exports.ids = [952];
 exports.modules = {
 
-/***/ 2243
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.OutdatedResolver = exports.ReportType = void 0;
-exports.getCommonOption = getCommonOption;
-exports.getOption = getOption;
-const core = __importStar(__webpack_require__(6977));
-function getCommonOption() {
-    return {
-        githubToken: getInput("github_token"),
-        githubServerUrl: getInputOrNull("github_server_url"),
-        githubGraphqlApiUrl: getInputOrNull("github_graphql_api_url"),
-        workspacePath: getInputOrNull("workspace_path"),
-        repository: getInputOrNull("repository"),
-        pullRequest: getInputNumberOrNull("pull_request"),
-        commitSha: getInputOrNull("commit_sha"),
-    };
-}
-var ReportType;
-(function (ReportType) {
-    ReportType[ReportType["CheckRun"] = 0] = "CheckRun";
-    ReportType[ReportType["Comment"] = 1] = "Comment";
-    ReportType[ReportType["InlineComment"] = 2] = "InlineComment";
-})(ReportType || (exports.ReportType = ReportType = {}));
-var OutdatedResolver;
-(function (OutdatedResolver) {
-    OutdatedResolver[OutdatedResolver["ResolveThread"] = 0] = "ResolveThread";
-    OutdatedResolver[OutdatedResolver["ForceResolveThread"] = 1] = "ForceResolveThread";
-    OutdatedResolver[OutdatedResolver["DeleteThread"] = 2] = "DeleteThread";
-    OutdatedResolver[OutdatedResolver["DeleteOrForceResolveThread"] = 3] = "DeleteOrForceResolveThread";
-})(OutdatedResolver || (exports.OutdatedResolver = OutdatedResolver = {}));
-function getOption() {
-    const reportTypeString = getInput("report_type");
-    let reportType = ReportType.CheckRun;
-    switch (reportTypeString) {
-        case "comment":
-            reportType = ReportType.Comment;
-            break;
-        case "inline_comment":
-            reportType = ReportType.InlineComment;
-            break;
-        default:
-            reportType = ReportType.CheckRun;
-            break;
-    }
-    const outdatedResolverString = getInput("outdated_resolver");
-    let outdatedResolver = OutdatedResolver.DeleteOrForceResolveThread;
-    switch (outdatedResolverString) {
-        case "resolve_thread":
-            outdatedResolver = OutdatedResolver.ResolveThread;
-            break;
-        case "force_resolve_thread":
-            outdatedResolver = OutdatedResolver.ForceResolveThread;
-            break;
-        case "delete_thread":
-            outdatedResolver = OutdatedResolver.DeleteThread;
-            break;
-        default:
-            outdatedResolver = OutdatedResolver.DeleteOrForceResolveThread;
-            break;
-    }
-    return {
-        reportFiles: getInput("report_files"),
-        reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
-        reportName: getInput("report_name"),
-        reportType: reportType,
-        reportToSameCheckRun: getInputOrNull("report_to_same_check_run") == "true",
-        conclusionFailureThreshold: parseInt(getInput("conclusion_failure_threshold")),
-        conclusionFailureWeight: parseInt(getInput("conclusion_failure_weight")),
-        conclusionWarningWeight: parseInt(getInput("conclusion_warning_weight")),
-        conclusionNoticeWeight: parseInt(getInput("conclusion_notice_weight")),
-        outdatedResolver: outdatedResolver,
-        ...getCommonOption(),
-    };
-}
-function getInput(key) {
-    return core.getInput(key, { required: true });
-}
-function getInputOrNull(key) {
-    const result = core.getInput(key, { required: false });
-    if (result.length == 0) {
-        return null;
-    }
-    return result;
-}
-function getInputNumberOrNull(key) {
-    const value = getInputOrNull(key);
-    if (value == null) {
-        return null;
-    }
-    return parseInt(value);
-}
-
-
-/***/ },
-
-/***/ 3968
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getOperatorOption = getOperatorOption;
-exports.getFunctionalOption = getFunctionalOption;
-const core = __importStar(__webpack_require__(6977));
-const option_1 = __webpack_require__(2243);
-function getOperatorOption() {
-    return {
-        reportFiles: getInput("report_files"),
-        reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
-        outputPath: getInput("output_path"),
-        useApiContext: getInputOrNull("use_api_context") == "true",
-        ...(0, option_1.getCommonOption)(),
-    };
-}
-function getFunctionalOption() {
-    return {
-        func: getInput("function"),
-        ...getOperatorOption(),
-    };
-}
-function getInput(key) {
-    return core.getInput(key, { required: true });
-}
-function getInputOrNull(key) {
-    const result = core.getInput(key, { required: false });
-    if (result.length == 0) {
-        return null;
-    }
-    return result;
-}
-
-
-/***/ },
-
 /***/ 6088
 (__unused_webpack_module, exports, __webpack_require__) {
 
@@ -679,6 +477,208 @@ class FunctionalOperator extends Operator {
     }
 }
 exports.FunctionalOperator = FunctionalOperator;
+
+
+/***/ },
+
+/***/ 3968
+(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getOperatorOption = getOperatorOption;
+exports.getFunctionalOption = getFunctionalOption;
+const core = __importStar(__webpack_require__(6977));
+const option_1 = __webpack_require__(2243);
+function getOperatorOption() {
+    return {
+        reportFiles: getInput("report_files"),
+        reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
+        outputPath: getInput("output_path"),
+        useApiContext: getInputOrNull("use_api_context") == "true",
+        ...(0, option_1.getCommonOption)(),
+    };
+}
+function getFunctionalOption() {
+    return {
+        func: getInput("function"),
+        ...getOperatorOption(),
+    };
+}
+function getInput(key) {
+    return core.getInput(key, { required: true });
+}
+function getInputOrNull(key) {
+    const result = core.getInput(key, { required: false });
+    if (result.length == 0) {
+        return null;
+    }
+    return result;
+}
+
+
+/***/ },
+
+/***/ 2243
+(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OutdatedResolver = exports.ReportType = void 0;
+exports.getCommonOption = getCommonOption;
+exports.getOption = getOption;
+const core = __importStar(__webpack_require__(6977));
+function getCommonOption() {
+    return {
+        githubToken: getInput("github_token"),
+        githubServerUrl: getInputOrNull("github_server_url"),
+        githubGraphqlApiUrl: getInputOrNull("github_graphql_api_url"),
+        workspacePath: getInputOrNull("workspace_path"),
+        repository: getInputOrNull("repository"),
+        pullRequest: getInputNumberOrNull("pull_request"),
+        commitSha: getInputOrNull("commit_sha"),
+    };
+}
+var ReportType;
+(function (ReportType) {
+    ReportType[ReportType["CheckRun"] = 0] = "CheckRun";
+    ReportType[ReportType["Comment"] = 1] = "Comment";
+    ReportType[ReportType["InlineComment"] = 2] = "InlineComment";
+})(ReportType || (exports.ReportType = ReportType = {}));
+var OutdatedResolver;
+(function (OutdatedResolver) {
+    OutdatedResolver[OutdatedResolver["ResolveThread"] = 0] = "ResolveThread";
+    OutdatedResolver[OutdatedResolver["ForceResolveThread"] = 1] = "ForceResolveThread";
+    OutdatedResolver[OutdatedResolver["DeleteThread"] = 2] = "DeleteThread";
+    OutdatedResolver[OutdatedResolver["DeleteOrForceResolveThread"] = 3] = "DeleteOrForceResolveThread";
+})(OutdatedResolver || (exports.OutdatedResolver = OutdatedResolver = {}));
+function getOption() {
+    const reportTypeString = getInput("report_type");
+    let reportType = ReportType.CheckRun;
+    switch (reportTypeString) {
+        case "comment":
+            reportType = ReportType.Comment;
+            break;
+        case "inline_comment":
+            reportType = ReportType.InlineComment;
+            break;
+        default:
+            reportType = ReportType.CheckRun;
+            break;
+    }
+    const outdatedResolverString = getInput("outdated_resolver");
+    let outdatedResolver = OutdatedResolver.DeleteOrForceResolveThread;
+    switch (outdatedResolverString) {
+        case "resolve_thread":
+            outdatedResolver = OutdatedResolver.ResolveThread;
+            break;
+        case "force_resolve_thread":
+            outdatedResolver = OutdatedResolver.ForceResolveThread;
+            break;
+        case "delete_thread":
+            outdatedResolver = OutdatedResolver.DeleteThread;
+            break;
+        default:
+            outdatedResolver = OutdatedResolver.DeleteOrForceResolveThread;
+            break;
+    }
+    return {
+        reportFiles: getInput("report_files"),
+        reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
+        reportName: getInput("report_name"),
+        reportType: reportType,
+        reportToSameCheckRun: getInputOrNull("report_to_same_check_run") == "true",
+        conclusionFailureThreshold: parseInt(getInput("conclusion_failure_threshold")),
+        conclusionFailureWeight: parseInt(getInput("conclusion_failure_weight")),
+        conclusionWarningWeight: parseInt(getInput("conclusion_warning_weight")),
+        conclusionNoticeWeight: parseInt(getInput("conclusion_notice_weight")),
+        outdatedResolver: outdatedResolver,
+        ...getCommonOption(),
+    };
+}
+function getInput(key) {
+    return core.getInput(key, { required: true });
+}
+function getInputOrNull(key) {
+    const result = core.getInput(key, { required: false });
+    if (result.length == 0) {
+        return null;
+    }
+    return result;
+}
+function getInputNumberOrNull(key) {
+    const value = getInputOrNull(key);
+    if (value == null) {
+        return null;
+    }
+    return parseInt(value);
+}
 
 
 /***/ }

@@ -2,133 +2,7 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 181
-(module) {
-
-module.exports = require("buffer");
-
-/***/ },
-
-/***/ 290
-(module) {
-
-module.exports = require("async_hooks");
-
-/***/ },
-
-/***/ 857
-(module) {
-
-module.exports = require("os");
-
-/***/ },
-
-/***/ 1637
-(module) {
-
-module.exports = require("diagnostics_channel");
-
-/***/ },
-
-/***/ 2203
-(module) {
-
-module.exports = require("stream");
-
-/***/ },
-
-/***/ 2613
-(module) {
-
-module.exports = require("assert");
-
-/***/ },
-
-/***/ 2987
-(module) {
-
-module.exports = require("perf_hooks");
-
-/***/ },
-
-/***/ 3106
-(module) {
-
-module.exports = require("zlib");
-
-/***/ },
-
-/***/ 3193
-(module) {
-
-module.exports = require("string_decoder");
-
-/***/ },
-
-/***/ 3480
-(module) {
-
-module.exports = require("querystring");
-
-/***/ },
-
-/***/ 3557
-(module) {
-
-module.exports = require("timers");
-
-/***/ },
-
-/***/ 3774
-(module) {
-
-module.exports = require("stream/web");
-
-/***/ },
-
-/***/ 4236
-(module) {
-
-module.exports = require("console");
-
-/***/ },
-
-/***/ 4434
-(module) {
-
-module.exports = require("events");
-
-/***/ },
-
-/***/ 4756
-(module) {
-
-module.exports = require("tls");
-
-/***/ },
-
-/***/ 5317
-(module) {
-
-module.exports = require("child_process");
-
-/***/ },
-
-/***/ 5675
-(module) {
-
-module.exports = require("http2");
-
-/***/ },
-
-/***/ 5692
-(module) {
-
-module.exports = require("https");
-
-/***/ },
-
-/***/ 6435
+/***/ 8851
 (__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -166,34 +40,26 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Transformer = void 0;
-const fs = __importStar(__webpack_require__(9896));
-const glob = __importStar(__webpack_require__(631));
-class Transformer {
-    async transform(option) {
-        const globber = await glob.create(option.reportFiles, {
-            followSymbolicLinks: option.reportFilesFollowSymbolicLinks,
-        });
-        const result = [];
-        for await (const path of globber.globGenerator()) {
-            const lintResults = this.parse(fs.readFileSync(path, "utf-8"));
-            result.push(...lintResults);
-        }
-        this.writeFile(option.outputPath, result);
-    }
-    writeFile(path, lintResults) {
-        fs.writeFileSync(path, JSON.stringify(lintResults));
-    }
+exports.getOption = getOption;
+const core = __importStar(__webpack_require__(6977));
+function getOption() {
+    return {
+        reportFiles: getInput("report_files"),
+        reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
+        outputPath: getInput("output_path"),
+    };
 }
-exports.Transformer = Transformer;
+function getInput(key) {
+    return core.getInput(key, { required: true });
+}
+function getInputOrNull(key) {
+    const result = core.getInput(key, { required: false });
+    if (result.length == 0) {
+        return null;
+    }
+    return result;
+}
 
-
-/***/ },
-
-/***/ 6928
-(module) {
-
-module.exports = require("path");
 
 /***/ },
 
@@ -281,70 +147,7 @@ if (true) {
 
 /***/ },
 
-/***/ 6982
-(module) {
-
-module.exports = require("crypto");
-
-/***/ },
-
-/***/ 7016
-(module) {
-
-module.exports = require("url");
-
-/***/ },
-
-/***/ 7075
-(module) {
-
-module.exports = require("node:stream");
-
-/***/ },
-
-/***/ 7598
-(module) {
-
-module.exports = require("node:crypto");
-
-/***/ },
-
-/***/ 7975
-(module) {
-
-module.exports = require("node:util");
-
-/***/ },
-
-/***/ 8167
-(module) {
-
-module.exports = require("worker_threads");
-
-/***/ },
-
-/***/ 8253
-(module) {
-
-module.exports = require("util/types");
-
-/***/ },
-
-/***/ 8474
-(module) {
-
-module.exports = require("node:events");
-
-/***/ },
-
-/***/ 8611
-(module) {
-
-module.exports = require("http");
-
-/***/ },
-
-/***/ 8851
+/***/ 6435
 (__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -382,33 +185,111 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getOption = getOption;
-const core = __importStar(__webpack_require__(6977));
-function getOption() {
-    return {
-        reportFiles: getInput("report_files"),
-        reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
-        outputPath: getInput("output_path"),
-    };
-}
-function getInput(key) {
-    return core.getInput(key, { required: true });
-}
-function getInputOrNull(key) {
-    const result = core.getInput(key, { required: false });
-    if (result.length == 0) {
-        return null;
+exports.Transformer = void 0;
+const fs = __importStar(__webpack_require__(9896));
+const glob = __importStar(__webpack_require__(631));
+class Transformer {
+    async transform(option) {
+        const globber = await glob.create(option.reportFiles, {
+            followSymbolicLinks: option.reportFilesFollowSymbolicLinks,
+        });
+        const result = [];
+        for await (const path of globber.globGenerator()) {
+            const lintResults = this.parse(fs.readFileSync(path, "utf-8"));
+            result.push(...lintResults);
+        }
+        this.writeFile(option.outputPath, result);
     }
-    return result;
+    writeFile(path, lintResults) {
+        fs.writeFileSync(path, JSON.stringify(lintResults));
+    }
 }
+exports.Transformer = Transformer;
 
 
 /***/ },
 
-/***/ 9023
+/***/ 2613
 (module) {
 
-module.exports = require("util");
+module.exports = require("assert");
+
+/***/ },
+
+/***/ 290
+(module) {
+
+module.exports = require("async_hooks");
+
+/***/ },
+
+/***/ 181
+(module) {
+
+module.exports = require("buffer");
+
+/***/ },
+
+/***/ 5317
+(module) {
+
+module.exports = require("child_process");
+
+/***/ },
+
+/***/ 4236
+(module) {
+
+module.exports = require("console");
+
+/***/ },
+
+/***/ 6982
+(module) {
+
+module.exports = require("crypto");
+
+/***/ },
+
+/***/ 1637
+(module) {
+
+module.exports = require("diagnostics_channel");
+
+/***/ },
+
+/***/ 4434
+(module) {
+
+module.exports = require("events");
+
+/***/ },
+
+/***/ 9896
+(module) {
+
+module.exports = require("fs");
+
+/***/ },
+
+/***/ 8611
+(module) {
+
+module.exports = require("http");
+
+/***/ },
+
+/***/ 5675
+(module) {
+
+module.exports = require("http2");
+
+/***/ },
+
+/***/ 5692
+(module) {
+
+module.exports = require("https");
 
 /***/ },
 
@@ -419,10 +300,129 @@ module.exports = require("net");
 
 /***/ },
 
-/***/ 9896
+/***/ 7598
 (module) {
 
-module.exports = require("fs");
+module.exports = require("node:crypto");
+
+/***/ },
+
+/***/ 8474
+(module) {
+
+module.exports = require("node:events");
+
+/***/ },
+
+/***/ 7075
+(module) {
+
+module.exports = require("node:stream");
+
+/***/ },
+
+/***/ 7975
+(module) {
+
+module.exports = require("node:util");
+
+/***/ },
+
+/***/ 857
+(module) {
+
+module.exports = require("os");
+
+/***/ },
+
+/***/ 6928
+(module) {
+
+module.exports = require("path");
+
+/***/ },
+
+/***/ 2987
+(module) {
+
+module.exports = require("perf_hooks");
+
+/***/ },
+
+/***/ 3480
+(module) {
+
+module.exports = require("querystring");
+
+/***/ },
+
+/***/ 2203
+(module) {
+
+module.exports = require("stream");
+
+/***/ },
+
+/***/ 3774
+(module) {
+
+module.exports = require("stream/web");
+
+/***/ },
+
+/***/ 3193
+(module) {
+
+module.exports = require("string_decoder");
+
+/***/ },
+
+/***/ 3557
+(module) {
+
+module.exports = require("timers");
+
+/***/ },
+
+/***/ 4756
+(module) {
+
+module.exports = require("tls");
+
+/***/ },
+
+/***/ 7016
+(module) {
+
+module.exports = require("url");
+
+/***/ },
+
+/***/ 9023
+(module) {
+
+module.exports = require("util");
+
+/***/ },
+
+/***/ 8253
+(module) {
+
+module.exports = require("util/types");
+
+/***/ },
+
+/***/ 8167
+(module) {
+
+module.exports = require("worker_threads");
+
+/***/ },
+
+/***/ 3106
+(module) {
+
+module.exports = require("zlib");
 
 /***/ }
 
