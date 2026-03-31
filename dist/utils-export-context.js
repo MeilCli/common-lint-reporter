@@ -22,7 +22,7 @@ var core = __webpack_require__(18370);
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __webpack_require__(44421);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@9.0.0/node_modules/@actions/github/lib/github.js + 13 modules
-var github = __webpack_require__(98479);
+var github = __webpack_require__(43861);
 ;// ./src/github/context.ts
 
 function githubContext(option) {
