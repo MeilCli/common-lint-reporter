@@ -138,7 +138,7 @@ const external_vm_namespaceObject = require("vm");
 // EXTERNAL MODULE: external "path"
 var external_path_ = __webpack_require__(16928);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@9.0.0/node_modules/@actions/github/lib/github.js + 13 modules
-var github = __webpack_require__(98479);
+var github = __webpack_require__(43861);
 ;// ./src/github/context.ts
 
 function githubContext(option) {
@@ -204,12 +204,12 @@ class GitHubContext {
 // EXTERNAL MODULE: ./node_modules/.pnpm/cross-fetch@4.1.0/node_modules/cross-fetch/dist/node-ponyfill.js
 var node_ponyfill = __webpack_require__(45745);
 var node_ponyfill_default = /*#__PURE__*/__webpack_require__.n(node_ponyfill);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.6_graphq_1bc491a3335fad0006699078570c8daf/node_modules/@apollo/client/core/ApolloClient.js + 3 modules
-var ApolloClient = __webpack_require__(10547);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.6_graphq_1bc491a3335fad0006699078570c8daf/node_modules/@apollo/client/link/http/HttpLink.js + 9 modules
-var HttpLink = __webpack_require__(11328);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.6_graphq_1bc491a3335fad0006699078570c8daf/node_modules/@apollo/client/cache/inmemory/inMemoryCache.js + 6 modules
-var inMemoryCache = __webpack_require__(29161);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.6_graphql-ws@6.0.7_graphql@16.13.2_ws@8.20.0__graphql@16.13.2_react@19.2.4_rxjs@7.8.2/node_modules/@apollo/client/core/ApolloClient.js + 3 modules
+var ApolloClient = __webpack_require__(85914);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.6_graphql-ws@6.0.7_graphql@16.13.2_ws@8.20.0__graphql@16.13.2_react@19.2.4_rxjs@7.8.2/node_modules/@apollo/client/link/http/HttpLink.js + 9 modules
+var HttpLink = __webpack_require__(31387);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.6_graphql-ws@6.0.7_graphql@16.13.2_ws@8.20.0__graphql@16.13.2_react@19.2.4_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/inMemoryCache.js + 6 modules
+var inMemoryCache = __webpack_require__(47146);
 // EXTERNAL MODULE: ./graphql/graphql.ts
 var graphql = __webpack_require__(15850);
 ;// ./src/github/client.ts
