@@ -1,9 +1,9 @@
 import * as core from "@actions/core";
 import * as xml from "fast-xml-parser";
-import * as he from "he";
-import { getOption } from "./option";
-import { LintResult } from "../lint-result";
-import { Transformer } from "./transformer";
+import he from "he";
+import { getOption } from "./option.js";
+import { LintResult } from "../lint-result.js";
+import { Transformer } from "./transformer.js";
 
 interface AndroidLint {
     issues: AndroidLintIssues[];

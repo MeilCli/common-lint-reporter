@@ -1,7 +1,7 @@
 import * as core from "@actions/core";
-import { getOption } from "./option";
-import { LintResult } from "../lint-result";
-import { Transformer } from "./transformer";
+import { getOption } from "./option.js";
+import { LintResult } from "../lint-result.js";
+import { Transformer } from "./transformer.js";
 
 export class MarkdownLintTransformer extends Transformer {
     parse(body: string): LintResult[] {

@@ -1,6 +1,6 @@
 import { DotnetFormatTransformer } from "../../src/transformer/dotnetformat";
-import { LintResult } from "../../src/lint-result";
 import * as fs from "fs";
+import { test, expect } from "@jest/globals";
 
 test("transform", async () => {
     const text = fs.readFileSync("data/dotnetformat.json", "utf-8");
@@ -17,7 +17,7 @@ test("transform", async () => {
         startColumn: 12,
         endColumn: undefined,
         level: "warning",
-    } as LintResult);
+    });
     expect(result[1]).toMatchObject({
         path: "Project/Program.cs",
         rule: "WHITESPACE",
@@ -27,7 +27,7 @@ test("transform", async () => {
         startColumn: 13,
         endColumn: undefined,
         level: "warning",
-    } as LintResult);
+    });
     expect(result[2]).toMatchObject({
         path: "Project/Program.cs",
         rule: "CS0219",
@@ -37,5 +37,5 @@ test("transform", async () => {
         startColumn: 8,
         endColumn: undefined,
         level: "warning",
-    } as LintResult);
+    });
 });

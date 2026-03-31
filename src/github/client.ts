@@ -1,7 +1,7 @@
 import fetch from "cross-fetch";
-import { ApolloClient, HttpLink, InMemoryCache, NormalizedCacheObject } from "@apollo/client";
-import { githubContext } from "./context";
-import { CommonOption } from "../option";
+import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
+import { githubContext } from "./context.js";
+import { CommonOption } from "../option.js";
 import {
     CreateCheckRun,
     CreateCheckRunMutation,
@@ -57,7 +57,7 @@ import {
     GetPullRequestReviewThreads,
     GetPullRequestReviewThreadsQuery,
     GetPullRequestReviewThreadsQueryVariables,
-} from "../../graphql/graphql";
+} from "../../graphql/graphql.js";
 
 export function githubClient(option: CommonOption): GitHubClient {
     const context = githubContext(option);
@@ -74,7 +74,7 @@ export function githubClient(option: CommonOption): GitHubClient {
 }
 
 export class GitHubClient {
-    constructor(private readonly client: ApolloClient<NormalizedCacheObject>) {}
+    constructor(private readonly client: ApolloClient) {}
 
     async createCheckRun(
         variables: CreateCheckRunMutationVariables,
@@ -88,7 +88,7 @@ export class GitHubClient {
 
     async getPullRequestChangedFile(
         variables: GetPullRequestChangedFileQueryVariables,
-    ): Promise<GetPullRequestChangedFileQuery> {
+    ): Promise<GetPullRequestChangedFileQuery | undefined> {
         const result = await this.client.query<GetPullRequestChangedFileQuery>({
             query: GetPullRequestChangedFile,
             variables: variables,
@@ -96,7 +96,7 @@ export class GitHubClient {
         return result.data;
     }
 
-    async getRepositoryId(variables: GetRepositoryIdQueryVariables): Promise<GetRepositoryIdQuery> {
+    async getRepositoryId(variables: GetRepositoryIdQueryVariables): Promise<GetRepositoryIdQuery | undefined> {
         const result = await this.client.query<GetRepositoryIdQuery>({
             query: GetRepositoryId,
             variables: variables,
@@ -116,7 +116,7 @@ export class GitHubClient {
 
     async getCommitStatusAndCheckRun(
         variables: GetCommitStatusAndCheckRunQueryVariables,
-    ): Promise<GetCommitStatusAndCheckRunQuery> {
+    ): Promise<GetCommitStatusAndCheckRunQuery | undefined> {
         const result = await this.client.query<GetCommitStatusAndCheckRunQuery>({
             query: GetCommitStatusAndCheckRun,
             variables: variables,
@@ -126,7 +126,7 @@ export class GitHubClient {
 
     async getCheckRunAnnotations(
         variables: GetCheckRunAnnotationsQueryVariables,
-    ): Promise<GetCheckRunAnnotationsQuery> {
+    ): Promise<GetCheckRunAnnotationsQuery | undefined> {
         const result = await this.client.query<GetCheckRunAnnotationsQuery>({
             query: GetCheckRunAnnotations,
             variables: variables,
@@ -134,7 +134,7 @@ export class GitHubClient {
         return result.data;
     }
 
-    async getPullRequest(variables: GetPullRequestQueryVariables): Promise<GetPullRequestQuery> {
+    async getPullRequest(variables: GetPullRequestQueryVariables): Promise<GetPullRequestQuery | undefined> {
         const result = await this.client.query<GetPullRequestQuery>({
             query: GetPullRequest,
             variables: variables,
@@ -142,7 +142,9 @@ export class GitHubClient {
         return result.data;
     }
 
-    async getPullRequestComments(variables: GetPullRequestCommentQueryVariables): Promise<GetPullRequestCommentQuery> {
+    async getPullRequestComments(
+        variables: GetPullRequestCommentQueryVariables,
+    ): Promise<GetPullRequestCommentQuery | undefined> {
         const result = await this.client.query<GetPullRequestCommentQuery>({
             query: GetPullRequestComment,
             variables: variables,
@@ -166,7 +168,7 @@ export class GitHubClient {
         return result.data;
     }
 
-    async getLoginUser(variables: GetLoginUserQueryVariables): Promise<GetLoginUserQuery> {
+    async getLoginUser(variables: GetLoginUserQueryVariables): Promise<GetLoginUserQuery | undefined> {
         const result = await this.client.query<GetLoginUserQuery>({
             query: GetLoginUser,
             variables: variables,
@@ -236,7 +238,7 @@ export class GitHubClient {
 
     async getPullRequestReviewThreads(
         variables: GetPullRequestReviewThreadsQueryVariables,
-    ): Promise<GetPullRequestReviewThreadsQuery> {
+    ): Promise<GetPullRequestReviewThreadsQuery | undefined> {
         const result = await this.client.query<GetPullRequestReviewThreadsQuery>({
             query: GetPullRequestReviewThreads,
             variables: variables,

@@ -1,6 +1,6 @@
 import { StyleLintTransformer } from "../../src/transformer/stylelint";
-import { LintResult } from "../../src/lint-result";
 import * as fs from "fs";
+import { test, expect } from "@jest/globals";
 
 test("transform", async () => {
     const text = fs.readFileSync("data/stylelint.json", "utf-8");
@@ -17,7 +17,7 @@ test("transform", async () => {
         startColumn: undefined,
         endColumn: undefined,
         level: "failure",
-    } as LintResult);
+    });
     expect(result[1]).toMatchObject({
         path: "test/test.css",
         rule: "no-missing-end-of-source-newline",
@@ -27,7 +27,7 @@ test("transform", async () => {
         startColumn: undefined,
         endColumn: undefined,
         level: "failure",
-    } as LintResult);
+    });
     expect(result[2]).toMatchObject({
         path: "test/test.css",
         rule: "indentation",
@@ -37,5 +37,5 @@ test("transform", async () => {
         startColumn: undefined,
         endColumn: undefined,
         level: "failure",
-    } as LintResult);
+    });
 });

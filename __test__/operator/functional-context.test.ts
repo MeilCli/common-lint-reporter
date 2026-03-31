@@ -1,5 +1,6 @@
 import { FunctionalOperator } from "../../src/operator/operator";
 import { createOption } from "./functional-option.test";
+import { test, expect } from "@jest/globals";
 
 class TestFunctionalOperator extends FunctionalOperator {
     createScript(method: string): string {
@@ -11,7 +12,7 @@ test("testGitHubContext-workspacePath", async () => {
     const operator = new TestFunctionalOperator();
     const result = await operator.execute(
         [],
-        createOption("() => github.workspacePath == 'test/' ? 'workspacePath' : ''")
+        createOption("() => github.workspacePath == 'test/' ? 'workspacePath' : ''"),
     );
 
     expect(result.length).toBe(1);
@@ -30,7 +31,7 @@ test("testGitHubContext-repository", async () => {
     const operator = new TestFunctionalOperator();
     const result = await operator.execute(
         [],
-        createOption("() => github.repository == 'common-lint-reporter' ? 'repository' : ''")
+        createOption("() => github.repository == 'common-lint-reporter' ? 'repository' : ''"),
     );
 
     expect(result.length).toBe(1);

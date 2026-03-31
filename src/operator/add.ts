@@ -1,6 +1,6 @@
 import * as core from "@actions/core";
-import { getFunctionalOption } from "./option";
-import { FunctionalOperator } from "./operator";
+import { getFunctionalOption } from "./option.js";
+import { FunctionalOperator } from "./operator.js";
 
 export class AddOperator extends FunctionalOperator {
     createScript(method: string): string {

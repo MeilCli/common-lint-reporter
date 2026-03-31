@@ -1,8 +1,8 @@
-import { CheckAnnotationData, CheckAnnotationLevel } from "../../../graphql/graphql";
-import { GetCheckRunAnnotationsQueryCheckRunAnnotationsNode } from "../../github/types";
-import { LintResult } from "../../lint-result";
-import { GitHubContext } from "../../github/context";
-import { trimPath } from "../path";
+import { CheckAnnotationData, CheckAnnotationLevel } from "../../../graphql/graphql.js";
+import { GetCheckRunAnnotationsQueryCheckRunAnnotationsNode } from "../../github/types.js";
+import { LintResult } from "../../lint-result.js";
+import { GitHubContext } from "../../github/context.js";
+import { trimPath } from "../path.js";
 
 export function createAnnotation(context: GitHubContext, lintResult: LintResult): CheckAnnotationData | null {
     if (lintResult.startLine == undefined) {

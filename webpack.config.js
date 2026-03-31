@@ -1,6 +1,9 @@
-const path = require("path");
+import * as path from "path";
+import { fileURLToPath } from "url";
 
-module.exports = {
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export default {
     mode: "production",
     target: "node",
     entry: {
@@ -55,6 +58,9 @@ module.exports = {
     },
     resolve: {
         extensions: [".ts", ".js"],
+        extensionAlias: {
+            ".js": [".ts", ".js"],
+        },
         modules: [path.resolve(__dirname, "src"), "node_modules"],
     },
 };

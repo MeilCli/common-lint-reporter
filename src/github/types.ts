@@ -4,7 +4,7 @@ import {
     GetCheckRunAnnotationsQuery,
     GetPullRequestCommentQuery,
     GetPullRequestReviewThreadsQuery,
-} from "../../graphql/graphql";
+} from "../../graphql/graphql.js";
 
 export type GetPullRequestChangedFileQueryRepository = Exclude<
     GetPullRequestChangedFileQuery["repository"],

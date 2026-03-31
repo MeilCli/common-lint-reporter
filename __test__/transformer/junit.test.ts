@@ -1,6 +1,6 @@
 import { JunitTransformer } from "../../src/transformer/junit";
-import { LintResult } from "../../src/lint-result";
 import * as fs from "fs";
+import { test, expect } from "@jest/globals";
 
 test("transformEmpty", async () => {
     const text = fs.readFileSync("data/junit_empty.xml", "utf-8");
@@ -25,7 +25,7 @@ test("transformEslint", async () => {
         startColumn: undefined,
         endColumn: undefined,
         level: "warning",
-    } as LintResult);
+    });
     expect(result[1]).toMatchObject({
         path: "filepath.txt",
         rule: "prettier/prettier",
@@ -35,7 +35,7 @@ test("transformEslint", async () => {
         startColumn: undefined,
         endColumn: undefined,
         level: "warning",
-    } as LintResult);
+    });
     expect(result[2]).toMatchObject({
         path: "filepath.txt",
         rule: "@typescript-eslint/no-unused-vars",
@@ -45,7 +45,7 @@ test("transformEslint", async () => {
         startColumn: undefined,
         endColumn: undefined,
         level: "warning",
-    } as LintResult);
+    });
 });
 
 test("transformTextlint", async () => {
@@ -63,7 +63,7 @@ test("transformTextlint", async () => {
         startColumn: undefined,
         endColumn: undefined,
         level: "warning",
-    } as LintResult);
+    });
     expect(result[1]).toMatchObject({
         path: "test/filepath.md",
         rule: "no-todo",
@@ -73,7 +73,7 @@ test("transformTextlint", async () => {
         startColumn: undefined,
         endColumn: undefined,
         level: "warning",
-    } as LintResult);
+    });
 });
 
 test("transformCpplint", async () => {
@@ -91,7 +91,7 @@ test("transformCpplint", async () => {
         startColumn: undefined,
         endColumn: undefined,
         level: "failure",
-    } as LintResult);
+    });
     expect(result[1]).toMatchObject({
         path: "data/cpplint/test.cpp",
         rule: "whitespace/braces",
@@ -101,7 +101,7 @@ test("transformCpplint", async () => {
         startColumn: undefined,
         endColumn: undefined,
         level: "failure",
-    } as LintResult);
+    });
     expect(result[2]).toMatchObject({
         path: "data/cpplint/test.cpp",
         rule: "whitespace/ending_newline",
@@ -111,7 +111,7 @@ test("transformCpplint", async () => {
         startColumn: undefined,
         endColumn: undefined,
         level: "failure",
-    } as LintResult);
+    });
 });
 
 test("transformRubocop", async () => {
@@ -129,7 +129,7 @@ test("transformRubocop", async () => {
         startColumn: undefined,
         endColumn: undefined,
         level: "warning",
-    } as LintResult);
+    });
     expect(result[1]).toMatchObject({
         path: "data/rubocop/test.rb",
         rule: "Layout/SpaceAroundOperators",
@@ -139,7 +139,7 @@ test("transformRubocop", async () => {
         startColumn: undefined,
         endColumn: undefined,
         level: "warning",
-    } as LintResult);
+    });
     expect(result[2]).toMatchObject({
         path: "data/rubocop/test.rb",
         rule: "Layout/TrailingEmptyLines",
@@ -149,7 +149,7 @@ test("transformRubocop", async () => {
         startColumn: undefined,
         endColumn: undefined,
         level: "warning",
-    } as LintResult);
+    });
     expect(result[3]).toMatchObject({
         path: "data/rubocop/test.rb",
         rule: "Style/FrozenStringLiteralComment",
@@ -159,7 +159,7 @@ test("transformRubocop", async () => {
         startColumn: undefined,
         endColumn: undefined,
         level: "warning",
-    } as LintResult);
+    });
     expect(result[4]).toMatchObject({
         path: "data/rubocop/test.rb",
         rule: "Style/StringLiterals",
@@ -169,5 +169,5 @@ test("transformRubocop", async () => {
         startColumn: undefined,
         endColumn: undefined,
         level: "warning",
-    } as LintResult);
+    });
 });

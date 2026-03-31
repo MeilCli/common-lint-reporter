@@ -1,5 +1,5 @@
-import { MockedResponse, MockLink } from "@apollo/client/testing";
-import { ApolloClient, InMemoryCache, NormalizedCacheObject } from "@apollo/client";
+import { MockLink } from "@apollo/client/testing";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
 import {
     CheckAnnotationLevel,
     GetCheckRunAnnotations,
@@ -8,16 +8,17 @@ import {
 } from "../../graphql/graphql";
 import { GitHubClient } from "../../src/github/client";
 import { getCheckRunAnnotationsWithPaging } from "../../src/github/paging";
+import { test, expect } from "@jest/globals";
 
-function createMockClient(mocks: ReadonlyArray<MockedResponse>): ApolloClient<NormalizedCacheObject> {
+function createMockClient(mocks: ReadonlyArray<MockLink.MockedResponse>): ApolloClient {
     return new ApolloClient({
-        cache: new InMemoryCache({ addTypename: true }),
-        link: new MockLink(mocks, true),
+        cache: new InMemoryCache(),
+        link: new MockLink(mocks),
     });
 }
 
 test("getPullRequestChangedFileWithPaging", async () => {
-    const mocks: MockedResponse[] = [
+    const mocks: MockLink.MockedResponse[] = [
         {
             request: {
                 query: GetCheckRunAnnotations,
@@ -153,7 +154,7 @@ test("getPullRequestChangedFileWithPaging", async () => {
 });
 
 test("getPullRequestChangedFileWithPagingInfinityLoop", async () => {
-    const mocks: MockedResponse[] = [
+    const mocks: MockLink.MockedResponse[] = [
         {
             request: {
                 query: GetCheckRunAnnotations,
@@ -250,6 +251,6 @@ test("getPullRequestChangedFileWithPagingInfinityLoop", async () => {
     await expect(
         getCheckRunAnnotationsWithPaging(client, {
             checkRunId: "check-run-1",
-        })
+        }),
     ).rejects.toThrow();
 });

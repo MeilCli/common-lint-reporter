@@ -1,6 +1,6 @@
 import { RubocopTransformer } from "../../src/transformer/rubocop";
-import { LintResult } from "../../src/lint-result";
 import * as fs from "fs";
+import { test, expect } from "@jest/globals";
 
 test("transform", async () => {
     const text = fs.readFileSync("data/rubocop.json", "utf-8");
@@ -17,7 +17,7 @@ test("transform", async () => {
         startColumn: 1,
         endColumn: 1,
         level: "warning",
-    } as LintResult);
+    });
     expect(result[1]).toMatchObject({
         path: "data/rubocop/test.rb",
         rule: "Layout/SpaceAroundOperators",
@@ -27,7 +27,7 @@ test("transform", async () => {
         startColumn: 6,
         endColumn: 6,
         level: "warning",
-    } as LintResult);
+    });
     expect(result[2]).toMatchObject({
         path: "data/rubocop/test.rb",
         rule: "Style/StringLiterals",
@@ -37,7 +37,7 @@ test("transform", async () => {
         startColumn: 7,
         endColumn: 13,
         level: "warning",
-    } as LintResult);
+    });
     expect(result[3]).toMatchObject({
         path: "data/rubocop/test.rb",
         rule: "Layout/EndOfLine",
@@ -47,7 +47,7 @@ test("transform", async () => {
         startColumn: 1,
         endColumn: 9,
         level: "warning",
-    } as LintResult);
+    });
     expect(result[4]).toMatchObject({
         path: "data/rubocop/test.rb",
         rule: "Layout/TrailingEmptyLines",
@@ -57,5 +57,5 @@ test("transform", async () => {
         startColumn: 9,
         endColumn: 10,
         level: "warning",
-    } as LintResult);
+    });
 });

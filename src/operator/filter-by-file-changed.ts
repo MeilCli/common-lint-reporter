@@ -1,7 +1,7 @@
 import * as core from "@actions/core";
-import { getOperatorOption, OperatorOption } from "./option";
-import { Operator } from "./operator";
-import { LintResult } from "../lint-result";
+import { getOperatorOption, OperatorOption } from "./option.js";
+import { Operator } from "./operator.js";
+import { LintResult } from "../lint-result.js";
 
 export class FilterByFileChangedOperator extends Operator<OperatorOption> {
     async execute(lintResults: LintResult[], option: OperatorOption): Promise<LintResult[]> {

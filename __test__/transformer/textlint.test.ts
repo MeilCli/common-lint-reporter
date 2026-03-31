@@ -1,6 +1,6 @@
 import { TextLintTransformer } from "../../src/transformer/textlint";
-import { LintResult } from "../../src/lint-result";
 import * as fs from "fs";
+import { test, expect } from "@jest/globals";
 
 test("transform", async () => {
     const text = fs.readFileSync("data/textlint.json", "utf-8");
@@ -17,7 +17,7 @@ test("transform", async () => {
         startColumn: 3,
         endColumn: undefined,
         level: "failure",
-    } as LintResult);
+    });
     expect(result[1]).toMatchObject({
         path: "test/filepath.md",
         rule: "no-todo",
@@ -27,5 +27,5 @@ test("transform", async () => {
         startColumn: 3,
         endColumn: undefined,
         level: "failure",
-    } as LintResult);
+    });
 });

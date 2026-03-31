@@ -1,6 +1,6 @@
 import * as glob from "@actions/glob";
 import * as fs from "fs";
-import { Option } from "./option";
+import { Option } from "./option.js";
 
 export type LintResultLevel = "notice" | "warning" | "failure";
 

@@ -1,7 +1,7 @@
 import * as core from "@actions/core";
-import { getOption } from "./option";
-import { LintResult, LintResultLevel } from "../lint-result";
-import { Transformer } from "./transformer";
+import { getOption } from "./option.js";
+import { LintResult, LintResultLevel } from "../lint-result.js";
+import { Transformer } from "./transformer.js";
 
 interface TextLintReport {
     filePath: string;

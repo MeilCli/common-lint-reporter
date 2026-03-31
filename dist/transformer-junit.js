@@ -2,220 +2,191 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 468
-(__unused_webpack_module, exports, __webpack_require__) {
+/***/ 79403
+(__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) {
 
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
+// UNUSED EXPORTS: JunitTransformer
+
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+core@3.0.0/node_modules/@actions/core/lib/core.js + 13 modules
+var core = __webpack_require__(18370);
+// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.5.9/node_modules/fast-xml-parser/src/xmlparser/XMLParser.js
+var XMLParser = __webpack_require__(92679);
+// EXTERNAL MODULE: ./node_modules/.pnpm/he@1.2.0/node_modules/he/he.js
+var he = __webpack_require__(12953);
+var he_default = /*#__PURE__*/__webpack_require__.n(he);
+;// ./src/transformer/option.ts
+
+function getOption() {
+    return {
+        reportFiles: getInput("report_files"),
+        reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
+        outputPath: getInput("output_path"),
     };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.JunitTransformer = void 0;
-const core = __importStar(__webpack_require__(6977));
-const xml = __importStar(__webpack_require__(4603));
-const he = __importStar(__webpack_require__(6067));
-const option_1 = __webpack_require__(8851);
-const transformer_1 = __webpack_require__(6435);
-const convert_1 = __webpack_require__(6908);
-class JunitTransformer extends transformer_1.Transformer {
-    parse(body) {
-        const junitResult = new xml.XMLParser({
-            isArray: (tagName, jPath, isLeafNode, isAttribute) => isAttribute != true,
-            ignoreAttributes: false,
-            attributeNamePrefix: "",
-            parseAttributeValue: true,
-            attributeValueProcessor: (_, value) => he.decode(value),
-        }).parse(body);
-        const junitTestSuites = [];
-        if (junitResult.testsuites != undefined) {
-            for (const testSuites of junitResult.testsuites) {
-                junitTestSuites.push(...this.parseTestSuites(testSuites.testsuite));
-            }
-        }
-        else {
-            // for cpplint
-            const testSuites = junitResult;
-            if (testSuites.testsuite != undefined) {
-                junitTestSuites.push(...this.parseTestSuites(testSuites.testsuite));
-            }
-        }
-        return (0, convert_1.convertJunitToLintResult)(junitTestSuites);
+}
+function getInput(key) {
+    return core/* getInput */.V4(key, { required: true });
+}
+function getInputOrNull(key) {
+    const result = core/* getInput */.V4(key, { required: false });
+    if (result.length == 0) {
+        return null;
     }
-    parseTestSuites(testSuites) {
-        if (testSuites == undefined) {
-            return [];
-        }
+    return result;
+}
+
+// EXTERNAL MODULE: external "fs"
+var external_fs_ = __webpack_require__(79896);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+glob@0.6.1/node_modules/@actions/glob/lib/glob.js + 8 modules
+var glob = __webpack_require__(31754);
+;// ./src/transformer/transformer.ts
+
+
+class Transformer {
+    async transform(option) {
+        const globber = await glob/* create */.v(option.reportFiles, {
+            followSymbolicLinks: option.reportFilesFollowSymbolicLinks,
+        });
         const result = [];
+        for await (const path of globber.globGenerator()) {
+            const lintResults = this.parse(external_fs_.readFileSync(path, "utf-8"));
+            result.push(...lintResults);
+        }
+        this.writeFile(option.outputPath, result);
+    }
+    writeFile(path, lintResults) {
+        external_fs_.writeFileSync(path, JSON.stringify(lintResults));
+    }
+}
+
+;// ./src/transformer/junit/junit-handler-default.ts
+class DefaultJunitHandler {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    match(testSuites) {
+        return true;
+    }
+    handle(testSuites) {
+        const result = [];
+        this.handleTestSuites(result, testSuites);
+        return result;
+    }
+    handleTestSuites(result, testSuites) {
         for (const testSuite of testSuites) {
-            result.push({
-                name: testSuite.name,
-                package: testSuite.package,
-                testCases: this.parseTestCases(testSuite.testcase),
-                testSuites: this.parseTestSuites(testSuite.testsuite),
-            });
+            this.handleTestSuite(result, testSuite);
         }
-        return result;
     }
-    parseTestCases(testCases) {
-        if (testCases == undefined) {
-            return [];
-        }
-        const result = [];
+    handleTestSuite(result, testSuite) {
+        this.handleTestCases(result, testSuite.testCases);
+        this.handleTestSuites(result, testSuite.testSuites);
+    }
+    handleTestCases(result, testCases) {
         for (const testCase of testCases) {
+            this.handleTestCase(result, testCase);
+        }
+    }
+    handleTestCase(result, testCase) {
+        for (const failure of testCase.failures) {
             result.push({
-                name: testCase.name,
-                className: testCase.classname,
-                failures: this.parseTestMessages(testCase.failure),
-                errors: this.parseTestMessages(testCase.error),
+                path: testCase.className,
+                message: failure.message,
+                level: "failure",
+                rule: testCase.name,
+                startLine: undefined,
+                startColumn: undefined,
+                endLine: undefined,
+                endColumn: undefined,
             });
         }
-        return result;
+        for (const error of testCase.errors) {
+            result.push({
+                path: testCase.className,
+                message: error.message,
+                level: "warning",
+                rule: testCase.name,
+                startLine: undefined,
+                startColumn: undefined,
+                endLine: undefined,
+                endColumn: undefined,
+            });
+        }
     }
-    parseTestMessages(testMessages) {
-        if (testMessages == undefined) {
-            return [];
+}
+
+;// ./src/transformer/junit/junit-handler-eslint.ts
+class EslintJunitHandler {
+    match(testSuites) {
+        if (testSuites.length == 0) {
+            return false;
         }
-        if (typeof testMessages == "string") {
-            return [{ message: testMessages, body: testMessages }];
-        }
+        return testSuites[0].package == "org.eslint";
+    }
+    handle(testSuites) {
         const result = [];
-        for (const testMessage of testMessages) {
-            if (typeof testMessage == "string") {
-                result.push({
-                    message: testMessage,
-                    body: testMessage,
-                });
-                continue;
-            }
-            if (testMessage["#text"] == undefined) {
-                continue;
-            }
+        this.handleTestSuites(result, testSuites);
+        return result;
+    }
+    handleTestSuites(result, testSuites) {
+        for (const testSuite of testSuites) {
+            this.handleTestSuite(result, testSuite);
+        }
+    }
+    handleTestSuite(result, testSuite) {
+        this.handleTestCases(result, testSuite.testCases, testSuite);
+        this.handleTestSuites(result, testSuite.testSuites);
+    }
+    handleTestCases(result, testCases, testSuite) {
+        for (const testCase of testCases) {
+            this.handleTestCase(result, testCase, testSuite);
+        }
+    }
+    handleTestCase(result, testCase, testSuite) {
+        // ref: https://github.com/eslint/eslint/blob/master/lib/cli-engine/formatters/junit.js
+        for (const failure of testCase.failures) {
             result.push({
-                message: testMessage.message,
-                body: he.decode(testMessage["#text"].toString()),
+                path: testSuite.name,
+                message: failure.message,
+                level: "warning",
+                rule: testCase.name.slice("org.eslint.".length),
+                startLine: this.findLine(failure),
+                startColumn: undefined,
+                endLine: undefined,
+                endColumn: undefined,
             });
         }
-        return result;
-    }
-}
-exports.JunitTransformer = JunitTransformer;
-async function run() {
-    try {
-        const option = (0, option_1.getOption)();
-        const transformer = new JunitTransformer();
-        await transformer.transform(option);
-    }
-    catch (error) {
-        if (error instanceof Error) {
-            core.setFailed(error.message);
+        for (const error of testCase.errors) {
+            result.push({
+                path: testSuite.name,
+                message: error.message,
+                level: "failure",
+                rule: testCase.name.slice("org.eslint.".length),
+                startLine: this.findLine(error),
+                startColumn: undefined,
+                endLine: undefined,
+                endColumn: undefined,
+            });
         }
     }
-}
-if (true) {
-    run();
-}
-
-
-/***/ },
-
-/***/ 6908
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.convertJunitToLintResult = convertJunitToLintResult;
-const junit_handler_default_1 = __webpack_require__(2510);
-const junit_handler_eslint_1 = __webpack_require__(8162);
-const junit_handler_cpplint_1 = __webpack_require__(1359);
-const junit_handler_rubocop_1 = __webpack_require__(95);
-const handlers = [
-    new junit_handler_eslint_1.EslintJunitHandler(),
-    new junit_handler_cpplint_1.CpplintJunitHandler(),
-    new junit_handler_rubocop_1.RubocopJunitHandler(),
-    new junit_handler_default_1.DefaultJunitHandler(),
-];
-function convertJunitToLintResult(testSuites) {
-    for (const handler of handlers) {
-        if (handler.match(testSuites)) {
-            return handler.handle(testSuites);
+    findLine(message) {
+        const targetLength = "line ".length;
+        const index = message.body.indexOf("line ");
+        if (index < 0) {
+            return 0;
         }
+        const lastIndex = message.body.indexOf(" ", index + targetLength);
+        if (lastIndex < 0) {
+            return 0;
+        }
+        const lineText = message.body.slice(index + targetLength, lastIndex);
+        const line = parseInt(lineText);
+        if (Number.isInteger(line)) {
+            return line;
+        }
+        return 0;
     }
-    return [];
 }
 
+;// ./src/transformer/junit/junit-handler-cpplint.ts
 
-/***/ },
-
-/***/ 1359
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CpplintJunitHandler = void 0;
-const he = __importStar(__webpack_require__(6067));
 class CpplintJunitHandler {
     match(testSuites) {
         if (testSuites.length == 0) {
@@ -289,8 +260,8 @@ class CpplintJunitHandler {
                 continue;
             }
             const startLine = parseInt(rawStartLine);
-            const message = he.decode(rawMessage);
-            const rule = he.decode(rawRule);
+            const message = he_default().decode(rawMessage);
+            const rule = he_default().decode(rawRule);
             const confidence = parseInt(rawConfidence);
             if (Number.isInteger(startLine) == false || Number.isInteger(confidence) == false) {
                 continue;
@@ -300,161 +271,8 @@ class CpplintJunitHandler {
         return result;
     }
 }
-exports.CpplintJunitHandler = CpplintJunitHandler;
 
-
-/***/ },
-
-/***/ 2510
-(__unused_webpack_module, exports) {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.DefaultJunitHandler = void 0;
-class DefaultJunitHandler {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    match(testSuites) {
-        return true;
-    }
-    handle(testSuites) {
-        const result = [];
-        this.handleTestSuites(result, testSuites);
-        return result;
-    }
-    handleTestSuites(result, testSuites) {
-        for (const testSuite of testSuites) {
-            this.handleTestSuite(result, testSuite);
-        }
-    }
-    handleTestSuite(result, testSuite) {
-        this.handleTestCases(result, testSuite.testCases);
-        this.handleTestSuites(result, testSuite.testSuites);
-    }
-    handleTestCases(result, testCases) {
-        for (const testCase of testCases) {
-            this.handleTestCase(result, testCase);
-        }
-    }
-    handleTestCase(result, testCase) {
-        for (const failure of testCase.failures) {
-            result.push({
-                path: testCase.className,
-                message: failure.message,
-                level: "failure",
-                rule: testCase.name,
-                startLine: undefined,
-                startColumn: undefined,
-                endLine: undefined,
-                endColumn: undefined,
-            });
-        }
-        for (const error of testCase.errors) {
-            result.push({
-                path: testCase.className,
-                message: error.message,
-                level: "warning",
-                rule: testCase.name,
-                startLine: undefined,
-                startColumn: undefined,
-                endLine: undefined,
-                endColumn: undefined,
-            });
-        }
-    }
-}
-exports.DefaultJunitHandler = DefaultJunitHandler;
-
-
-/***/ },
-
-/***/ 8162
-(__unused_webpack_module, exports) {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.EslintJunitHandler = void 0;
-class EslintJunitHandler {
-    match(testSuites) {
-        if (testSuites.length == 0) {
-            return false;
-        }
-        return testSuites[0].package == "org.eslint";
-    }
-    handle(testSuites) {
-        const result = [];
-        this.handleTestSuites(result, testSuites);
-        return result;
-    }
-    handleTestSuites(result, testSuites) {
-        for (const testSuite of testSuites) {
-            this.handleTestSuite(result, testSuite);
-        }
-    }
-    handleTestSuite(result, testSuite) {
-        this.handleTestCases(result, testSuite.testCases, testSuite);
-        this.handleTestSuites(result, testSuite.testSuites);
-    }
-    handleTestCases(result, testCases, testSuite) {
-        for (const testCase of testCases) {
-            this.handleTestCase(result, testCase, testSuite);
-        }
-    }
-    handleTestCase(result, testCase, testSuite) {
-        // ref: https://github.com/eslint/eslint/blob/master/lib/cli-engine/formatters/junit.js
-        for (const failure of testCase.failures) {
-            result.push({
-                path: testSuite.name,
-                message: failure.message,
-                level: "warning",
-                rule: testCase.name.slice("org.eslint.".length),
-                startLine: this.findLine(failure),
-                startColumn: undefined,
-                endLine: undefined,
-                endColumn: undefined,
-            });
-        }
-        for (const error of testCase.errors) {
-            result.push({
-                path: testSuite.name,
-                message: error.message,
-                level: "failure",
-                rule: testCase.name.slice("org.eslint.".length),
-                startLine: this.findLine(error),
-                startColumn: undefined,
-                endLine: undefined,
-                endColumn: undefined,
-            });
-        }
-    }
-    findLine(message) {
-        const targetLength = "line ".length;
-        const index = message.body.indexOf("line ");
-        if (index < 0) {
-            return 0;
-        }
-        const lastIndex = message.body.indexOf(" ", index + targetLength);
-        if (lastIndex < 0) {
-            return 0;
-        }
-        const lineText = message.body.slice(index + targetLength, lastIndex);
-        const line = parseInt(lineText);
-        if (Number.isInteger(line)) {
-            return line;
-        }
-        return 0;
-    }
-}
-exports.EslintJunitHandler = EslintJunitHandler;
-
-
-/***/ },
-
-/***/ 95
-(__unused_webpack_module, exports) {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.RubocopJunitHandler = void 0;
+;// ./src/transformer/junit/junit-handler-rubocop.ts
 class RubocopJunitHandler {
     match(testSuites) {
         if (testSuites.length == 0) {
@@ -527,278 +345,341 @@ class RubocopJunitHandler {
         return [path, 1];
     }
 }
-exports.RubocopJunitHandler = RubocopJunitHandler;
+
+;// ./src/transformer/junit/convert.ts
 
 
-/***/ },
-
-/***/ 8851
-(__unused_webpack_module, exports, __webpack_require__) {
 
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getOption = getOption;
-const core = __importStar(__webpack_require__(6977));
-function getOption() {
-    return {
-        reportFiles: getInput("report_files"),
-        reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
-        outputPath: getInput("output_path"),
-    };
-}
-function getInput(key) {
-    return core.getInput(key, { required: true });
-}
-function getInputOrNull(key) {
-    const result = core.getInput(key, { required: false });
-    if (result.length == 0) {
-        return null;
-    }
-    return result;
-}
-
-
-/***/ },
-
-/***/ 6435
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Transformer = void 0;
-const fs = __importStar(__webpack_require__(9896));
-const glob = __importStar(__webpack_require__(631));
-class Transformer {
-    async transform(option) {
-        const globber = await glob.create(option.reportFiles, {
-            followSymbolicLinks: option.reportFilesFollowSymbolicLinks,
-        });
-        const result = [];
-        for await (const path of globber.globGenerator()) {
-            const lintResults = this.parse(fs.readFileSync(path, "utf-8"));
-            result.push(...lintResults);
+const handlers = [
+    new EslintJunitHandler(),
+    new CpplintJunitHandler(),
+    new RubocopJunitHandler(),
+    new DefaultJunitHandler(),
+];
+function convertJunitToLintResult(testSuites) {
+    for (const handler of handlers) {
+        if (handler.match(testSuites)) {
+            return handler.handle(testSuites);
         }
-        this.writeFile(option.outputPath, result);
     }
-    writeFile(path, lintResults) {
-        fs.writeFileSync(path, JSON.stringify(lintResults));
+    return [];
+}
+
+;// ./src/transformer/junit.ts
+
+
+
+
+
+
+class JunitTransformer extends Transformer {
+    parse(body) {
+        const junitResult = new XMLParser/* default */.A({
+            isArray: (tagName, jPath, isLeafNode, isAttribute) => isAttribute != true,
+            ignoreAttributes: false,
+            attributeNamePrefix: "",
+            parseAttributeValue: true,
+            attributeValueProcessor: (_, value) => he_default().decode(value),
+        }).parse(body);
+        const junitTestSuites = [];
+        if (junitResult.testsuites != undefined) {
+            for (const testSuites of junitResult.testsuites) {
+                junitTestSuites.push(...this.parseTestSuites(testSuites.testsuite));
+            }
+        }
+        else {
+            // for cpplint
+            const testSuites = junitResult;
+            if (testSuites.testsuite != undefined) {
+                junitTestSuites.push(...this.parseTestSuites(testSuites.testsuite));
+            }
+        }
+        return convertJunitToLintResult(junitTestSuites);
+    }
+    parseTestSuites(testSuites) {
+        if (testSuites == undefined) {
+            return [];
+        }
+        const result = [];
+        for (const testSuite of testSuites) {
+            result.push({
+                name: testSuite.name,
+                package: testSuite.package,
+                testCases: this.parseTestCases(testSuite.testcase),
+                testSuites: this.parseTestSuites(testSuite.testsuite),
+            });
+        }
+        return result;
+    }
+    parseTestCases(testCases) {
+        if (testCases == undefined) {
+            return [];
+        }
+        const result = [];
+        for (const testCase of testCases) {
+            result.push({
+                name: testCase.name,
+                className: testCase.classname,
+                failures: this.parseTestMessages(testCase.failure),
+                errors: this.parseTestMessages(testCase.error),
+            });
+        }
+        return result;
+    }
+    parseTestMessages(testMessages) {
+        if (testMessages == undefined) {
+            return [];
+        }
+        if (typeof testMessages == "string") {
+            return [{ message: testMessages, body: testMessages }];
+        }
+        const result = [];
+        for (const testMessage of testMessages) {
+            if (typeof testMessage == "string") {
+                result.push({
+                    message: testMessage,
+                    body: testMessage,
+                });
+                continue;
+            }
+            if (testMessage["#text"] == undefined) {
+                continue;
+            }
+            result.push({
+                message: testMessage.message,
+                body: he_default().decode(testMessage["#text"].toString()),
+            });
+        }
+        return result;
     }
 }
-exports.Transformer = Transformer;
+async function run() {
+    try {
+        const option = getOption();
+        const transformer = new JunitTransformer();
+        await transformer.transform(option);
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            core/* setFailed */.C1(error.message);
+        }
+    }
+}
+if (true) {
+    run();
+}
 
 
 /***/ },
 
-/***/ 2613
+/***/ 42613
 (module) {
 
 module.exports = require("assert");
 
 /***/ },
 
-/***/ 290
-(module) {
-
-module.exports = require("async_hooks");
-
-/***/ },
-
-/***/ 181
-(module) {
-
-module.exports = require("buffer");
-
-/***/ },
-
-/***/ 5317
+/***/ 35317
 (module) {
 
 module.exports = require("child_process");
 
 /***/ },
 
-/***/ 4236
-(module) {
-
-module.exports = require("console");
-
-/***/ },
-
-/***/ 6982
+/***/ 76982
 (module) {
 
 module.exports = require("crypto");
 
 /***/ },
 
-/***/ 1637
-(module) {
-
-module.exports = require("diagnostics_channel");
-
-/***/ },
-
-/***/ 4434
+/***/ 24434
 (module) {
 
 module.exports = require("events");
 
 /***/ },
 
-/***/ 9896
+/***/ 79896
 (module) {
 
 module.exports = require("fs");
 
 /***/ },
 
-/***/ 8611
+/***/ 58611
 (module) {
 
 module.exports = require("http");
 
 /***/ },
 
-/***/ 5675
-(module) {
-
-module.exports = require("http2");
-
-/***/ },
-
-/***/ 5692
+/***/ 65692
 (module) {
 
 module.exports = require("https");
 
 /***/ },
 
-/***/ 9278
+/***/ 69278
 (module) {
 
 module.exports = require("net");
 
 /***/ },
 
-/***/ 7598
+/***/ 34589
+(module) {
+
+module.exports = require("node:assert");
+
+/***/ },
+
+/***/ 16698
+(module) {
+
+module.exports = require("node:async_hooks");
+
+/***/ },
+
+/***/ 4573
+(module) {
+
+module.exports = require("node:buffer");
+
+/***/ },
+
+/***/ 37540
+(module) {
+
+module.exports = require("node:console");
+
+/***/ },
+
+/***/ 77598
 (module) {
 
 module.exports = require("node:crypto");
 
 /***/ },
 
-/***/ 8474
+/***/ 53053
+(module) {
+
+module.exports = require("node:diagnostics_channel");
+
+/***/ },
+
+/***/ 40610
+(module) {
+
+module.exports = require("node:dns");
+
+/***/ },
+
+/***/ 78474
 (module) {
 
 module.exports = require("node:events");
 
 /***/ },
 
-/***/ 7075
+/***/ 37067
+(module) {
+
+module.exports = require("node:http");
+
+/***/ },
+
+/***/ 32467
+(module) {
+
+module.exports = require("node:http2");
+
+/***/ },
+
+/***/ 77030
+(module) {
+
+module.exports = require("node:net");
+
+/***/ },
+
+/***/ 643
+(module) {
+
+module.exports = require("node:perf_hooks");
+
+/***/ },
+
+/***/ 41792
+(module) {
+
+module.exports = require("node:querystring");
+
+/***/ },
+
+/***/ 57075
 (module) {
 
 module.exports = require("node:stream");
 
 /***/ },
 
-/***/ 7975
+/***/ 41692
+(module) {
+
+module.exports = require("node:tls");
+
+/***/ },
+
+/***/ 73136
+(module) {
+
+module.exports = require("node:url");
+
+/***/ },
+
+/***/ 57975
 (module) {
 
 module.exports = require("node:util");
 
 /***/ },
 
-/***/ 857
+/***/ 73429
+(module) {
+
+module.exports = require("node:util/types");
+
+/***/ },
+
+/***/ 75919
+(module) {
+
+module.exports = require("node:worker_threads");
+
+/***/ },
+
+/***/ 38522
+(module) {
+
+module.exports = require("node:zlib");
+
+/***/ },
+
+/***/ 70857
 (module) {
 
 module.exports = require("os");
 
 /***/ },
 
-/***/ 6928
+/***/ 16928
 (module) {
 
 module.exports = require("path");
-
-/***/ },
-
-/***/ 2987
-(module) {
-
-module.exports = require("perf_hooks");
-
-/***/ },
-
-/***/ 3480
-(module) {
-
-module.exports = require("querystring");
 
 /***/ },
 
@@ -809,66 +690,31 @@ module.exports = require("stream");
 
 /***/ },
 
-/***/ 3774
-(module) {
-
-module.exports = require("stream/web");
-
-/***/ },
-
-/***/ 3193
+/***/ 13193
 (module) {
 
 module.exports = require("string_decoder");
 
 /***/ },
 
-/***/ 3557
+/***/ 53557
 (module) {
 
 module.exports = require("timers");
 
 /***/ },
 
-/***/ 4756
+/***/ 64756
 (module) {
 
 module.exports = require("tls");
 
 /***/ },
 
-/***/ 7016
-(module) {
-
-module.exports = require("url");
-
-/***/ },
-
-/***/ 9023
+/***/ 39023
 (module) {
 
 module.exports = require("util");
-
-/***/ },
-
-/***/ 8253
-(module) {
-
-module.exports = require("util/types");
-
-/***/ },
-
-/***/ 8167
-(module) {
-
-module.exports = require("worker_threads");
-
-/***/ },
-
-/***/ 3106
-(module) {
-
-module.exports = require("zlib");
 
 /***/ }
 
@@ -908,7 +754,7 @@ module.exports = require("zlib");
 /******/ 	__webpack_require__.x = () => {
 /******/ 		// Load entry module and return exports
 /******/ 		// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 		var __webpack_exports__ = __webpack_require__.O(undefined, [121], () => (__webpack_require__(468)))
+/******/ 		var __webpack_exports__ = __webpack_require__.O(undefined, [121], () => (__webpack_require__(79403)))
 /******/ 		__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 		return __webpack_exports__;
 /******/ 	};
@@ -955,36 +801,6 @@ module.exports = require("zlib");
 /******/ 				() => (module);
 /******/ 			__webpack_require__.d(getter, { a: getter });
 /******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/create fake namespace object */
-/******/ 	(() => {
-/******/ 		var getProto = Object.getPrototypeOf ? (obj) => (Object.getPrototypeOf(obj)) : (obj) => (obj.__proto__);
-/******/ 		var leafPrototypes;
-/******/ 		// create a fake namespace object
-/******/ 		// mode & 1: value is a module id, require it
-/******/ 		// mode & 2: merge all properties of value into the ns
-/******/ 		// mode & 4: return value when already ns object
-/******/ 		// mode & 16: return value when it's Promise-like
-/******/ 		// mode & 8|1: behave like require
-/******/ 		__webpack_require__.t = function(value, mode) {
-/******/ 			if(mode & 1) value = this(value);
-/******/ 			if(mode & 8) return value;
-/******/ 			if(typeof value === 'object' && value) {
-/******/ 				if((mode & 4) && value.__esModule) return value;
-/******/ 				if((mode & 16) && typeof value.then === 'function') return value;
-/******/ 			}
-/******/ 			var ns = Object.create(null);
-/******/ 			__webpack_require__.r(ns);
-/******/ 			var def = {};
-/******/ 			leafPrototypes = leafPrototypes || [null, getProto({}), getProto([]), getProto(getProto)];
-/******/ 			for(var current = mode & 2 && value; (typeof current == 'object' || typeof current == 'function') && !~leafPrototypes.indexOf(current); current = getProto(current)) {
-/******/ 				Object.getOwnPropertyNames(current).forEach((key) => (def[key] = () => (value[key])));
-/******/ 			}
-/******/ 			def['default'] = () => (value);
-/******/ 			__webpack_require__.d(ns, def);
-/******/ 			return ns;
 /******/ 		};
 /******/ 	})();
 /******/ 	

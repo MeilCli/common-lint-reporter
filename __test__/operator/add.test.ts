@@ -1,6 +1,7 @@
 import { AddOperator } from "../../src/operator/add";
 import { LintResult } from "../../src/lint-result";
 import { createOption } from "./functional-option.test";
+import { test, expect } from "@jest/globals";
 
 function expectResult(result: LintResult[]) {
     expect(result.length).toBe(1);
@@ -13,7 +14,7 @@ function expectResult(result: LintResult[]) {
         endLine: 1,
         endColumn: 20,
         level: "failure",
-    } as LintResult);
+    });
 }
 
 test("executeAsFunctionStyle", async () => {
@@ -33,7 +34,7 @@ test("executeAsFunctionStyle", async () => {
                     level: "failure",
                 })
             }
-        `)
+        `),
     );
 
     expectResult(result);
@@ -56,7 +57,7 @@ test("executeAsNoNameFunctionStyle", async () => {
                     level: "failure",
                 })
             }
-        `)
+        `),
     );
 
     expectResult(result);
@@ -76,7 +77,7 @@ test("executeAsArrowStyle", async () => {
                     endColumn: 20,
                     level: "failure",
                 })
-        `)
+        `),
     );
 
     expectResult(result);

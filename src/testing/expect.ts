@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as core from "@actions/core";
 import * as glob from "@actions/glob";
-import { LintResult } from "../lint-result";
+import { LintResult } from "../lint-result.js";
 
 interface Option {
     reportFiles: string;

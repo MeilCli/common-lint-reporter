@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as core from "@actions/core";
-import { LintResult } from "../lint-result";
+import { LintResult } from "../lint-result.js";
 
 export interface Option {
     outputPath: string;

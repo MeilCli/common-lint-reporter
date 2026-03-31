@@ -1,6 +1,7 @@
 import { MapOperator } from "../../src/operator/map";
 import { LintResult } from "../../src/lint-result";
 import { createOption } from "./functional-option.test";
+import { test, expect } from "@jest/globals";
 
 function createSource(): LintResult[] {
     return [
@@ -38,7 +39,7 @@ function expectSource(source: LintResult[]) {
         endLine: 1,
         endColumn: 20,
         level: "warning",
-    } as LintResult);
+    });
     expect(source[1]).toMatchObject({
         path: "test/file.txt",
         message: "test message",
@@ -48,7 +49,7 @@ function expectSource(source: LintResult[]) {
         endLine: 1,
         endColumn: 20,
         level: "warning",
-    } as LintResult);
+    });
 }
 
 function expectResult(result: LintResult[]) {
@@ -62,7 +63,7 @@ function expectResult(result: LintResult[]) {
         endLine: 1,
         endColumn: 20,
         level: "warning",
-    } as LintResult);
+    });
     expect(result[1]).toMatchObject({
         path: "test/file.txt",
         message: "[test_rule_2] test message",
@@ -72,7 +73,7 @@ function expectResult(result: LintResult[]) {
         endLine: 1,
         endColumn: 20,
         level: "warning",
-    } as LintResult);
+    });
 }
 
 test("executeAsFunctionStyle", async () => {
@@ -80,7 +81,7 @@ test("executeAsFunctionStyle", async () => {
     const source = createSource();
     const result = await operator.execute(
         source,
-        createOption("function map(x) { return { ...x, message: `[${x.rule}] ${x.message}` } }")
+        createOption("function map(x) { return { ...x, message: `[${x.rule}] ${x.message}` } }"),
     );
 
     expectSource(source);
@@ -92,7 +93,7 @@ test("executeAsNoNameFunctionStyle", async () => {
     const source = createSource();
     const result = await operator.execute(
         source,
-        createOption("function (x) { return { ...x, message: `[${x.rule}] ${x.message}` } }")
+        createOption("function (x) { return { ...x, message: `[${x.rule}] ${x.message}` } }"),
     );
 
     expectSource(source);
@@ -104,7 +105,7 @@ test("executeAsArrowStyle", async () => {
     const source = createSource();
     const result = await operator.execute(
         source,
-        createOption("x => Object.assign(x, { message: `[${x.rule}] ${x.message}` })")
+        createOption("x => Object.assign(x, { message: `[${x.rule}] ${x.message}` })"),
     );
 
     expectSource(source);

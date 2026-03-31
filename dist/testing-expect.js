@@ -2,47 +2,16 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 4794
-(__unused_webpack_module, exports, __webpack_require__) {
+/***/ 84954
+(__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) {
+
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(79896);
+/* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(fs__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(18370);
+/* harmony import */ var _actions_glob__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(31754);
 
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const fs = __importStar(__webpack_require__(9896));
-const core = __importStar(__webpack_require__(6977));
-const glob = __importStar(__webpack_require__(631));
+
 function getOption() {
     return {
         reportFiles: getInput("report_files"),
@@ -51,10 +20,10 @@ function getOption() {
     };
 }
 function getInput(key) {
-    return core.getInput(key, { required: true });
+    return _actions_core__WEBPACK_IMPORTED_MODULE_1__/* .getInput */ .V4(key, { required: true });
 }
 function getInputOrNull(key) {
-    const result = core.getInput(key, { required: false });
+    const result = _actions_core__WEBPACK_IMPORTED_MODULE_1__/* .getInput */ .V4(key, { required: false });
     if (result.length == 0) {
         return null;
     }
@@ -63,59 +32,59 @@ function getInputOrNull(key) {
 async function run() {
     try {
         const option = getOption();
-        const globber = await glob.create(option.reportFiles, {
+        const globber = await _actions_glob__WEBPACK_IMPORTED_MODULE_2__/* .create */ .v(option.reportFiles, {
             followSymbolicLinks: option.reportFilesFollowSymbolicLinks,
         });
         const source = [];
         for await (const path of globber.globGenerator()) {
-            const lintResults = JSON.parse(fs.readFileSync(path, "utf-8"));
+            const lintResults = JSON.parse(fs__WEBPACK_IMPORTED_MODULE_0__.readFileSync(path, "utf-8"));
             source.push(...lintResults);
         }
         const expect = JSON.parse(option.expectDataJson);
         if (expect.length != source.length) {
-            core.setFailed(`source length(${source.length}) is not match expect length(${expect.length})`);
+            _actions_core__WEBPACK_IMPORTED_MODULE_1__/* .setFailed */ .C1(`source length(${source.length}) is not match expect length(${expect.length})`);
             return;
         }
         for (let i = 0; i < expect.length; i++) {
             const s = source[i];
             const e = expect[i];
             if (s.path !== e.path) {
-                core.setFailed(`source path(${s.path}) is not match expect path(${e.path}) at index ${i}`);
+                _actions_core__WEBPACK_IMPORTED_MODULE_1__/* .setFailed */ .C1(`source path(${s.path}) is not match expect path(${e.path}) at index ${i}`);
                 return;
             }
             if (s.rule !== e.rule) {
-                core.setFailed(`source rule(${s.rule}) is not match expect rule(${e.rule}) at index ${i}`);
+                _actions_core__WEBPACK_IMPORTED_MODULE_1__/* .setFailed */ .C1(`source rule(${s.rule}) is not match expect rule(${e.rule}) at index ${i}`);
                 return;
             }
             if (s.message !== e.message) {
-                core.setFailed(`source message(${s.message}) is not match expect message(${e.message}) at index ${i}`);
+                _actions_core__WEBPACK_IMPORTED_MODULE_1__/* .setFailed */ .C1(`source message(${s.message}) is not match expect message(${e.message}) at index ${i}`);
                 return;
             }
             if (s.level !== e.level) {
-                core.setFailed(`source level(${s.level}) is not match expect level(${e.level}) at index ${i}`);
+                _actions_core__WEBPACK_IMPORTED_MODULE_1__/* .setFailed */ .C1(`source level(${s.level}) is not match expect level(${e.level}) at index ${i}`);
                 return;
             }
             if (s.startLine !== e.startLine) {
-                core.setFailed(`source startLine(${s.startLine}) is not match expect startLine(${e.startLine}) at index ${i}`);
+                _actions_core__WEBPACK_IMPORTED_MODULE_1__/* .setFailed */ .C1(`source startLine(${s.startLine}) is not match expect startLine(${e.startLine}) at index ${i}`);
                 return;
             }
             if (s.endLine !== e.endLine) {
-                core.setFailed(`source endLine(${s.endLine}) is not match expect endLine(${e.endLine}) at index ${i}`);
+                _actions_core__WEBPACK_IMPORTED_MODULE_1__/* .setFailed */ .C1(`source endLine(${s.endLine}) is not match expect endLine(${e.endLine}) at index ${i}`);
                 return;
             }
             if (s.startColumn !== e.startColumn) {
-                core.setFailed(`source startColumn(${s.startColumn}) is not match expect startColumn(${e.startColumn}) at index ${i}`);
+                _actions_core__WEBPACK_IMPORTED_MODULE_1__/* .setFailed */ .C1(`source startColumn(${s.startColumn}) is not match expect startColumn(${e.startColumn}) at index ${i}`);
                 return;
             }
             if (s.endColumn !== e.endColumn) {
-                core.setFailed(`source endColumn(${s.endColumn}) is not match expect endColumn(${e.endColumn}) at index ${i}`);
+                _actions_core__WEBPACK_IMPORTED_MODULE_1__/* .setFailed */ .C1(`source endColumn(${s.endColumn}) is not match expect endColumn(${e.endColumn}) at index ${i}`);
                 return;
             }
         }
     }
     catch (error) {
         if (error instanceof Error) {
-            core.setFailed(error.message);
+            _actions_core__WEBPACK_IMPORTED_MODULE_1__/* .setFailed */ .C1(error.message);
         }
     }
 }
@@ -124,150 +93,213 @@ run();
 
 /***/ },
 
-/***/ 2613
+/***/ 42613
 (module) {
 
 module.exports = require("assert");
 
 /***/ },
 
-/***/ 290
-(module) {
-
-module.exports = require("async_hooks");
-
-/***/ },
-
-/***/ 181
-(module) {
-
-module.exports = require("buffer");
-
-/***/ },
-
-/***/ 5317
+/***/ 35317
 (module) {
 
 module.exports = require("child_process");
 
 /***/ },
 
-/***/ 4236
-(module) {
-
-module.exports = require("console");
-
-/***/ },
-
-/***/ 6982
+/***/ 76982
 (module) {
 
 module.exports = require("crypto");
 
 /***/ },
 
-/***/ 1637
-(module) {
-
-module.exports = require("diagnostics_channel");
-
-/***/ },
-
-/***/ 4434
+/***/ 24434
 (module) {
 
 module.exports = require("events");
 
 /***/ },
 
-/***/ 9896
+/***/ 79896
 (module) {
 
 module.exports = require("fs");
 
 /***/ },
 
-/***/ 8611
+/***/ 58611
 (module) {
 
 module.exports = require("http");
 
 /***/ },
 
-/***/ 5675
-(module) {
-
-module.exports = require("http2");
-
-/***/ },
-
-/***/ 5692
+/***/ 65692
 (module) {
 
 module.exports = require("https");
 
 /***/ },
 
-/***/ 9278
+/***/ 69278
 (module) {
 
 module.exports = require("net");
 
 /***/ },
 
-/***/ 7598
+/***/ 34589
+(module) {
+
+module.exports = require("node:assert");
+
+/***/ },
+
+/***/ 16698
+(module) {
+
+module.exports = require("node:async_hooks");
+
+/***/ },
+
+/***/ 4573
+(module) {
+
+module.exports = require("node:buffer");
+
+/***/ },
+
+/***/ 37540
+(module) {
+
+module.exports = require("node:console");
+
+/***/ },
+
+/***/ 77598
 (module) {
 
 module.exports = require("node:crypto");
 
 /***/ },
 
-/***/ 8474
+/***/ 53053
+(module) {
+
+module.exports = require("node:diagnostics_channel");
+
+/***/ },
+
+/***/ 40610
+(module) {
+
+module.exports = require("node:dns");
+
+/***/ },
+
+/***/ 78474
 (module) {
 
 module.exports = require("node:events");
 
 /***/ },
 
-/***/ 7075
+/***/ 37067
+(module) {
+
+module.exports = require("node:http");
+
+/***/ },
+
+/***/ 32467
+(module) {
+
+module.exports = require("node:http2");
+
+/***/ },
+
+/***/ 77030
+(module) {
+
+module.exports = require("node:net");
+
+/***/ },
+
+/***/ 643
+(module) {
+
+module.exports = require("node:perf_hooks");
+
+/***/ },
+
+/***/ 41792
+(module) {
+
+module.exports = require("node:querystring");
+
+/***/ },
+
+/***/ 57075
 (module) {
 
 module.exports = require("node:stream");
 
 /***/ },
 
-/***/ 7975
+/***/ 41692
+(module) {
+
+module.exports = require("node:tls");
+
+/***/ },
+
+/***/ 73136
+(module) {
+
+module.exports = require("node:url");
+
+/***/ },
+
+/***/ 57975
 (module) {
 
 module.exports = require("node:util");
 
 /***/ },
 
-/***/ 857
+/***/ 73429
+(module) {
+
+module.exports = require("node:util/types");
+
+/***/ },
+
+/***/ 75919
+(module) {
+
+module.exports = require("node:worker_threads");
+
+/***/ },
+
+/***/ 38522
+(module) {
+
+module.exports = require("node:zlib");
+
+/***/ },
+
+/***/ 70857
 (module) {
 
 module.exports = require("os");
 
 /***/ },
 
-/***/ 6928
+/***/ 16928
 (module) {
 
 module.exports = require("path");
-
-/***/ },
-
-/***/ 2987
-(module) {
-
-module.exports = require("perf_hooks");
-
-/***/ },
-
-/***/ 3480
-(module) {
-
-module.exports = require("querystring");
 
 /***/ },
 
@@ -278,66 +310,31 @@ module.exports = require("stream");
 
 /***/ },
 
-/***/ 3774
-(module) {
-
-module.exports = require("stream/web");
-
-/***/ },
-
-/***/ 3193
+/***/ 13193
 (module) {
 
 module.exports = require("string_decoder");
 
 /***/ },
 
-/***/ 3557
+/***/ 53557
 (module) {
 
 module.exports = require("timers");
 
 /***/ },
 
-/***/ 4756
+/***/ 64756
 (module) {
 
 module.exports = require("tls");
 
 /***/ },
 
-/***/ 7016
-(module) {
-
-module.exports = require("url");
-
-/***/ },
-
-/***/ 9023
+/***/ 39023
 (module) {
 
 module.exports = require("util");
-
-/***/ },
-
-/***/ 8253
-(module) {
-
-module.exports = require("util/types");
-
-/***/ },
-
-/***/ 8167
-(module) {
-
-module.exports = require("worker_threads");
-
-/***/ },
-
-/***/ 3106
-(module) {
-
-module.exports = require("zlib");
 
 /***/ }
 
@@ -377,7 +374,7 @@ module.exports = require("zlib");
 /******/ 	__webpack_require__.x = () => {
 /******/ 		// Load entry module and return exports
 /******/ 		// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 		var __webpack_exports__ = __webpack_require__.O(undefined, [121], () => (__webpack_require__(4794)))
+/******/ 		var __webpack_exports__ = __webpack_require__.O(undefined, [121], () => (__webpack_require__(84954)))
 /******/ 		__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 		return __webpack_exports__;
 /******/ 	};
@@ -424,36 +421,6 @@ module.exports = require("zlib");
 /******/ 				() => (module);
 /******/ 			__webpack_require__.d(getter, { a: getter });
 /******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/create fake namespace object */
-/******/ 	(() => {
-/******/ 		var getProto = Object.getPrototypeOf ? (obj) => (Object.getPrototypeOf(obj)) : (obj) => (obj.__proto__);
-/******/ 		var leafPrototypes;
-/******/ 		// create a fake namespace object
-/******/ 		// mode & 1: value is a module id, require it
-/******/ 		// mode & 2: merge all properties of value into the ns
-/******/ 		// mode & 4: return value when already ns object
-/******/ 		// mode & 16: return value when it's Promise-like
-/******/ 		// mode & 8|1: behave like require
-/******/ 		__webpack_require__.t = function(value, mode) {
-/******/ 			if(mode & 1) value = this(value);
-/******/ 			if(mode & 8) return value;
-/******/ 			if(typeof value === 'object' && value) {
-/******/ 				if((mode & 4) && value.__esModule) return value;
-/******/ 				if((mode & 16) && typeof value.then === 'function') return value;
-/******/ 			}
-/******/ 			var ns = Object.create(null);
-/******/ 			__webpack_require__.r(ns);
-/******/ 			var def = {};
-/******/ 			leafPrototypes = leafPrototypes || [null, getProto({}), getProto([]), getProto(getProto)];
-/******/ 			for(var current = mode & 2 && value; (typeof current == 'object' || typeof current == 'function') && !~leafPrototypes.indexOf(current); current = getProto(current)) {
-/******/ 				Object.getOwnPropertyNames(current).forEach((key) => (def[key] = () => (value[key])));
-/******/ 			}
-/******/ 			def['default'] = () => (value);
-/******/ 			__webpack_require__.d(ns, def);
-/******/ 			return ns;
 /******/ 		};
 /******/ 	})();
 /******/ 	

@@ -1,6 +1,6 @@
-import { JunitTestSuite, JunitTestCase, JunitTestMessage } from "./entity";
-import { LintResult } from "../../lint-result";
-import { JunitHandler } from "./junit-handler";
+import { JunitTestSuite, JunitTestCase, JunitTestMessage } from "./entity.js";
+import { LintResult } from "../../lint-result.js";
+import { JunitHandler } from "./junit-handler.js";
 
 export class RubocopJunitHandler implements JunitHandler {
     match(testSuites: JunitTestSuite[]): boolean {

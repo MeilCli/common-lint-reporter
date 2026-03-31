@@ -1,7 +1,7 @@
-import { LintResult, LintResultLevel } from "../../lint-result";
-import { GitHubContext } from "../../github/context";
-import { trimPath } from "../path";
-import { countLevel } from "../level";
+import { LintResult, LintResultLevel } from "../../lint-result.js";
+import { GitHubContext } from "../../github/context.js";
+import { trimPath } from "../path.js";
+import { countLevel } from "../level.js";
 
 function markdownLevelMessage(context: GitHubContext, lintResults: LintResult[], targetLevel: LintResultLevel): string {
     let result = "";

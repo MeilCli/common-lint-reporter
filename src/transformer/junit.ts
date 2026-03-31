@@ -1,11 +1,11 @@
 import * as core from "@actions/core";
 import * as xml from "fast-xml-parser";
-import * as he from "he";
-import { getOption } from "./option";
-import { LintResult } from "../lint-result";
-import { Transformer } from "./transformer";
-import { JunitTestSuite, JunitTestCase, JunitTestMessage } from "./junit/entity";
-import { convertJunitToLintResult } from "./junit/convert";
+import he from "he";
+import { getOption } from "./option.js";
+import { LintResult } from "../lint-result.js";
+import { Transformer } from "./transformer.js";
+import { JunitTestSuite, JunitTestCase, JunitTestMessage } from "./junit/entity.js";
+import { convertJunitToLintResult } from "./junit/convert.js";
 
 interface JunitResult {
     testsuites: TestSuites[] | undefined;

@@ -10,8 +10,8 @@ import {
     GetPullRequestReviewThreadsQuery,
     GetPullRequestReviewThreadsQueryVariables,
     Maybe,
-} from "../graphql";
-import { GitHubClient } from "./client";
+} from "../../graphql/graphql.js";
+import { GitHubClient } from "./client.js";
 import {
     GetPullRequestChangedFileQueryPullRequestFilePageInfo,
     GetPullRequestChangedFileQueryPullRequestFileNodes,
@@ -28,7 +28,7 @@ import {
     GetPullRequestReviewThreadsQueryPullRequestReviewThreadsPageInfo,
     GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNodes,
     GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNode,
-} from "./types";
+} from "./types.js";
 
 // gurad for infinity loop
 const maxLoop = 100;
@@ -41,13 +41,16 @@ async function getResponseWithPaging<
     TNodes extends Array<TNode | null | undefined>,
 >(
     variables: TVariables,
-    getResponse: (variables: TVariables) => Promise<TResponse>,
+    getResponse: (variables: TVariables) => Promise<TResponse | undefined>,
     selectorPageInfo: (response: TResponse) => TPageInfo | null | undefined,
     selectorNodes: (response: TResponse) => TNodes | null | undefined,
 ): Promise<TNode[]> {
     const result: TNode[] = [];
 
     let response = await getResponse(variables);
+    if (response == undefined) {
+        return result;
+    }
     let pageInfo = selectorPageInfo(response);
     let nodes = selectorNodes(response);
     if (nodes == null || nodes == undefined) {
@@ -70,6 +73,9 @@ async function getResponseWithPaging<
     ) {
         loopCount += 1;
         response = await getResponse({ ...variables, after: pageInfo.endCursor });
+        if (response == undefined) {
+            return result;
+        }
         pageInfo = selectorPageInfo(response);
         nodes = selectorNodes(response);
 

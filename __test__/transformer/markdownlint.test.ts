@@ -1,6 +1,6 @@
 import { MarkdownLintTransformer } from "../../src/transformer/markdownlint";
-import { LintResult } from "../../src/lint-result";
 import * as fs from "fs";
+import { test, expect } from "@jest/globals";
 
 test("transform", async () => {
     const text = fs.readFileSync("data/markdownlint.txt", "utf-8");
@@ -17,7 +17,7 @@ test("transform", async () => {
         startColumn: undefined,
         endColumn: undefined,
         level: "warning",
-    } as LintResult);
+    });
     expect(result[1]).toMatchObject({
         path: "data/markdownlint/test.md",
         rule: "MD041/first-line-heading/first-line-h1",
@@ -27,7 +27,7 @@ test("transform", async () => {
         startColumn: undefined,
         endColumn: undefined,
         level: "warning",
-    } as LintResult);
+    });
     expect(result[2]).toMatchObject({
         path: "data/markdownlint/test.md",
         rule: "MD047/single-trailing-newline",
@@ -37,5 +37,5 @@ test("transform", async () => {
         startColumn: undefined,
         endColumn: undefined,
         level: "warning",
-    } as LintResult);
+    });
 });

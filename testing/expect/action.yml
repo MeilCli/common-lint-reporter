@@ -15,5 +15,5 @@ inputs:
     description: 'expect lint results, json array'
     required: true
 runs:
-  using: 'node20'
+  using: 'node24'
   main: '../../dist/testing-expect.js'

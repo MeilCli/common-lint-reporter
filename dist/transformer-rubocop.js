@@ -2,46 +2,16 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 8851
-(__unused_webpack_module, exports, __webpack_require__) {
+/***/ 99294
+(__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) {
 
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getOption = getOption;
-const core = __importStar(__webpack_require__(6977));
+// UNUSED EXPORTS: RubocopTransformer
+
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+core@3.0.0/node_modules/@actions/core/lib/core.js + 13 modules
+var core = __webpack_require__(18370);
+;// ./src/transformer/option.ts
+
 function getOption() {
     return {
         reportFiles: getInput("report_files"),
@@ -50,67 +20,51 @@ function getOption() {
     };
 }
 function getInput(key) {
-    return core.getInput(key, { required: true });
+    return core/* getInput */.V4(key, { required: true });
 }
 function getInputOrNull(key) {
-    const result = core.getInput(key, { required: false });
+    const result = core/* getInput */.V4(key, { required: false });
     if (result.length == 0) {
         return null;
     }
     return result;
 }
 
+// EXTERNAL MODULE: external "fs"
+var external_fs_ = __webpack_require__(79896);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+glob@0.6.1/node_modules/@actions/glob/lib/glob.js + 8 modules
+var glob = __webpack_require__(31754);
+;// ./src/transformer/transformer.ts
 
-/***/ },
 
-/***/ 1280
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
+class Transformer {
+    async transform(option) {
+        const globber = await glob/* create */.v(option.reportFiles, {
+            followSymbolicLinks: option.reportFilesFollowSymbolicLinks,
+        });
+        const result = [];
+        for await (const path of globber.globGenerator()) {
+            const lintResults = this.parse(external_fs_.readFileSync(path, "utf-8"));
+            result.push(...lintResults);
+        }
+        this.writeFile(option.outputPath, result);
     }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.RubocopTransformer = void 0;
-const core = __importStar(__webpack_require__(6977));
-const option_1 = __webpack_require__(8851);
-const transformer_1 = __webpack_require__(6435);
-class RubocopTransformer extends transformer_1.Transformer {
+    writeFile(path, lintResults) {
+        external_fs_.writeFileSync(path, JSON.stringify(lintResults));
+    }
+}
+
+;// ./src/transformer/rubocop.ts
+
+
+
+class RubocopTransformer extends Transformer {
     parse(body) {
         const lintResults = [];
         const rubocopReport = JSON.parse(body);
         for (const rubocopFile of rubocopReport.files) {
             for (const message of rubocopFile.offenses) {
+                // eslint-disable-next-line no-useless-assignment
                 let level = "notice";
                 switch (message.severity) {
                     case "convention":
@@ -153,16 +107,15 @@ class RubocopTransformer extends transformer_1.Transformer {
         return lintResults;
     }
 }
-exports.RubocopTransformer = RubocopTransformer;
 async function run() {
     try {
-        const option = (0, option_1.getOption)();
+        const option = getOption();
         const transformer = new RubocopTransformer();
         await transformer.transform(option);
     }
     catch (error) {
         if (error instanceof Error) {
-            core.setFailed(error.message);
+            core/* setFailed */.C1(error.message);
         }
     }
 }
@@ -173,212 +126,213 @@ if (true) {
 
 /***/ },
 
-/***/ 6435
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Transformer = void 0;
-const fs = __importStar(__webpack_require__(9896));
-const glob = __importStar(__webpack_require__(631));
-class Transformer {
-    async transform(option) {
-        const globber = await glob.create(option.reportFiles, {
-            followSymbolicLinks: option.reportFilesFollowSymbolicLinks,
-        });
-        const result = [];
-        for await (const path of globber.globGenerator()) {
-            const lintResults = this.parse(fs.readFileSync(path, "utf-8"));
-            result.push(...lintResults);
-        }
-        this.writeFile(option.outputPath, result);
-    }
-    writeFile(path, lintResults) {
-        fs.writeFileSync(path, JSON.stringify(lintResults));
-    }
-}
-exports.Transformer = Transformer;
-
-
-/***/ },
-
-/***/ 2613
+/***/ 42613
 (module) {
 
 module.exports = require("assert");
 
 /***/ },
 
-/***/ 290
-(module) {
-
-module.exports = require("async_hooks");
-
-/***/ },
-
-/***/ 181
-(module) {
-
-module.exports = require("buffer");
-
-/***/ },
-
-/***/ 5317
+/***/ 35317
 (module) {
 
 module.exports = require("child_process");
 
 /***/ },
 
-/***/ 4236
-(module) {
-
-module.exports = require("console");
-
-/***/ },
-
-/***/ 6982
+/***/ 76982
 (module) {
 
 module.exports = require("crypto");
 
 /***/ },
 
-/***/ 1637
-(module) {
-
-module.exports = require("diagnostics_channel");
-
-/***/ },
-
-/***/ 4434
+/***/ 24434
 (module) {
 
 module.exports = require("events");
 
 /***/ },
 
-/***/ 9896
+/***/ 79896
 (module) {
 
 module.exports = require("fs");
 
 /***/ },
 
-/***/ 8611
+/***/ 58611
 (module) {
 
 module.exports = require("http");
 
 /***/ },
 
-/***/ 5675
-(module) {
-
-module.exports = require("http2");
-
-/***/ },
-
-/***/ 5692
+/***/ 65692
 (module) {
 
 module.exports = require("https");
 
 /***/ },
 
-/***/ 9278
+/***/ 69278
 (module) {
 
 module.exports = require("net");
 
 /***/ },
 
-/***/ 7598
+/***/ 34589
+(module) {
+
+module.exports = require("node:assert");
+
+/***/ },
+
+/***/ 16698
+(module) {
+
+module.exports = require("node:async_hooks");
+
+/***/ },
+
+/***/ 4573
+(module) {
+
+module.exports = require("node:buffer");
+
+/***/ },
+
+/***/ 37540
+(module) {
+
+module.exports = require("node:console");
+
+/***/ },
+
+/***/ 77598
 (module) {
 
 module.exports = require("node:crypto");
 
 /***/ },
 
-/***/ 8474
+/***/ 53053
+(module) {
+
+module.exports = require("node:diagnostics_channel");
+
+/***/ },
+
+/***/ 40610
+(module) {
+
+module.exports = require("node:dns");
+
+/***/ },
+
+/***/ 78474
 (module) {
 
 module.exports = require("node:events");
 
 /***/ },
 
-/***/ 7075
+/***/ 37067
+(module) {
+
+module.exports = require("node:http");
+
+/***/ },
+
+/***/ 32467
+(module) {
+
+module.exports = require("node:http2");
+
+/***/ },
+
+/***/ 77030
+(module) {
+
+module.exports = require("node:net");
+
+/***/ },
+
+/***/ 643
+(module) {
+
+module.exports = require("node:perf_hooks");
+
+/***/ },
+
+/***/ 41792
+(module) {
+
+module.exports = require("node:querystring");
+
+/***/ },
+
+/***/ 57075
 (module) {
 
 module.exports = require("node:stream");
 
 /***/ },
 
-/***/ 7975
+/***/ 41692
+(module) {
+
+module.exports = require("node:tls");
+
+/***/ },
+
+/***/ 73136
+(module) {
+
+module.exports = require("node:url");
+
+/***/ },
+
+/***/ 57975
 (module) {
 
 module.exports = require("node:util");
 
 /***/ },
 
-/***/ 857
+/***/ 73429
+(module) {
+
+module.exports = require("node:util/types");
+
+/***/ },
+
+/***/ 75919
+(module) {
+
+module.exports = require("node:worker_threads");
+
+/***/ },
+
+/***/ 38522
+(module) {
+
+module.exports = require("node:zlib");
+
+/***/ },
+
+/***/ 70857
 (module) {
 
 module.exports = require("os");
 
 /***/ },
 
-/***/ 6928
+/***/ 16928
 (module) {
 
 module.exports = require("path");
-
-/***/ },
-
-/***/ 2987
-(module) {
-
-module.exports = require("perf_hooks");
-
-/***/ },
-
-/***/ 3480
-(module) {
-
-module.exports = require("querystring");
 
 /***/ },
 
@@ -389,66 +343,31 @@ module.exports = require("stream");
 
 /***/ },
 
-/***/ 3774
-(module) {
-
-module.exports = require("stream/web");
-
-/***/ },
-
-/***/ 3193
+/***/ 13193
 (module) {
 
 module.exports = require("string_decoder");
 
 /***/ },
 
-/***/ 3557
+/***/ 53557
 (module) {
 
 module.exports = require("timers");
 
 /***/ },
 
-/***/ 4756
+/***/ 64756
 (module) {
 
 module.exports = require("tls");
 
 /***/ },
 
-/***/ 7016
-(module) {
-
-module.exports = require("url");
-
-/***/ },
-
-/***/ 9023
+/***/ 39023
 (module) {
 
 module.exports = require("util");
-
-/***/ },
-
-/***/ 8253
-(module) {
-
-module.exports = require("util/types");
-
-/***/ },
-
-/***/ 8167
-(module) {
-
-module.exports = require("worker_threads");
-
-/***/ },
-
-/***/ 3106
-(module) {
-
-module.exports = require("zlib");
 
 /***/ }
 
@@ -488,7 +407,7 @@ module.exports = require("zlib");
 /******/ 	__webpack_require__.x = () => {
 /******/ 		// Load entry module and return exports
 /******/ 		// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 		var __webpack_exports__ = __webpack_require__.O(undefined, [121], () => (__webpack_require__(1280)))
+/******/ 		var __webpack_exports__ = __webpack_require__.O(undefined, [121], () => (__webpack_require__(99294)))
 /******/ 		__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 		return __webpack_exports__;
 /******/ 	};
@@ -523,48 +442,6 @@ module.exports = require("zlib");
 /******/ 				}
 /******/ 			}
 /******/ 			return result;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__webpack_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__webpack_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/create fake namespace object */
-/******/ 	(() => {
-/******/ 		var getProto = Object.getPrototypeOf ? (obj) => (Object.getPrototypeOf(obj)) : (obj) => (obj.__proto__);
-/******/ 		var leafPrototypes;
-/******/ 		// create a fake namespace object
-/******/ 		// mode & 1: value is a module id, require it
-/******/ 		// mode & 2: merge all properties of value into the ns
-/******/ 		// mode & 4: return value when already ns object
-/******/ 		// mode & 16: return value when it's Promise-like
-/******/ 		// mode & 8|1: behave like require
-/******/ 		__webpack_require__.t = function(value, mode) {
-/******/ 			if(mode & 1) value = this(value);
-/******/ 			if(mode & 8) return value;
-/******/ 			if(typeof value === 'object' && value) {
-/******/ 				if((mode & 4) && value.__esModule) return value;
-/******/ 				if((mode & 16) && typeof value.then === 'function') return value;
-/******/ 			}
-/******/ 			var ns = Object.create(null);
-/******/ 			__webpack_require__.r(ns);
-/******/ 			var def = {};
-/******/ 			leafPrototypes = leafPrototypes || [null, getProto({}), getProto([]), getProto(getProto)];
-/******/ 			for(var current = mode & 2 && value; (typeof current == 'object' || typeof current == 'function') && !~leafPrototypes.indexOf(current); current = getProto(current)) {
-/******/ 				Object.getOwnPropertyNames(current).forEach((key) => (def[key] = () => (value[key])));
-/******/ 			}
-/******/ 			def['default'] = () => (value);
-/******/ 			__webpack_require__.d(ns, def);
-/******/ 			return ns;
 /******/ 		};
 /******/ 	})();
 /******/ 	

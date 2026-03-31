@@ -1,6 +1,6 @@
 import * as core from "@actions/core";
 import * as fs from "fs";
-import { Context } from "./context";
+import { Context } from "./context.js";
 
 function getInput(key: string): string {
     return core.getInput(key, { required: true });

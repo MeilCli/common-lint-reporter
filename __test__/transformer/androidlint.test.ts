@@ -1,6 +1,6 @@
 import { AndroidLintTransformer } from "../../src/transformer/androidlint";
-import { LintResult } from "../../src/lint-result";
 import * as fs from "fs";
+import { test, expect } from "@jest/globals";
 
 test("transform", async () => {
     const text = fs.readFileSync("data/androidlint.xml", "utf-8");
@@ -18,7 +18,7 @@ test("transform", async () => {
         startColumn: 5,
         endColumn: undefined,
         level: "warning",
-    } as LintResult);
+    });
     expect(result[1]).toMatchObject({
         path: "filepath.xml",
         rule: "Performance.Overdraw",
@@ -29,7 +29,7 @@ test("transform", async () => {
         startColumn: 5,
         endColumn: undefined,
         level: "warning",
-    } as LintResult);
+    });
     expect(result[2]).toMatchObject({
         path: "filepath.xml",
         rule: "Performance.Overdraw",
@@ -40,7 +40,7 @@ test("transform", async () => {
         startColumn: 5,
         endColumn: undefined,
         level: "warning",
-    } as LintResult);
+    });
 });
 
 test("transformEmpty", async () => {

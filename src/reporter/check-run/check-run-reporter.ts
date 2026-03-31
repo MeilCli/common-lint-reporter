@@ -1,16 +1,16 @@
 import * as core from "@actions/core";
-import { LintResult } from "../../lint-result";
-import { Option } from "../../option";
-import { Reporter } from "../../reporter";
-import { githubClient, GitHubClient } from "../../github/client";
-import { githubContext, GitHubContext } from "../../github/context";
-import { getCommitStatusAndCheckRunWithPaging, getCheckRunAnnotationsWithPaging } from "../../github/paging";
-import { GetCheckRunAnnotationsQueryCheckRunAnnotationsNode } from "../../github/types";
-import { RequestableCheckStatusState, CheckAnnotationData, CheckConclusionState } from "../../../graphql/graphql";
-import { calculateConclusion } from "../conclusion";
-import { createSummary } from "./summary";
-import { createMessage } from "./message";
-import { createAnnotation, equalsAnnotation } from "./annotation";
+import { LintResult } from "../../lint-result.js";
+import { Option } from "../../option.js";
+import { Reporter } from "../../reporter.js";
+import { githubClient, GitHubClient } from "../../github/client.js";
+import { githubContext, GitHubContext } from "../../github/context.js";
+import { getCommitStatusAndCheckRunWithPaging, getCheckRunAnnotationsWithPaging } from "../../github/paging.js";
+import { GetCheckRunAnnotationsQueryCheckRunAnnotationsNode } from "../../github/types.js";
+import { RequestableCheckStatusState, CheckAnnotationData, CheckConclusionState } from "../../../graphql/graphql.js";
+import { calculateConclusion } from "../conclusion.js";
+import { createSummary } from "./summary.js";
+import { createMessage } from "./message.js";
+import { createAnnotation, equalsAnnotation } from "./annotation.js";
 
 export class CheckRunReporter implements Reporter {
     async report(option: Option, lintResults: LintResult[]): Promise<void> {
@@ -63,7 +63,7 @@ export class CheckRunReporter implements Reporter {
         const context = githubContext(option);
 
         const repositoryId = (await client.getRepositoryId({ owner: context.owner(), name: context.repository() }))
-            .repository?.id;
+            ?.repository?.id;
         if (repositoryId == undefined) {
             throw Error("not found repository");
         }

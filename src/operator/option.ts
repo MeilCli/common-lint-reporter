@@ -1,5 +1,5 @@
 import * as core from "@actions/core";
-import { CommonOption, getCommonOption } from "../option";
+import { CommonOption, getCommonOption } from "../option.js";
 
 export interface OperatorOption extends CommonOption {
     reportFiles: string;

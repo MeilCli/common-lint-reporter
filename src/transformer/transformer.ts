@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as glob from "@actions/glob";
-import { Option } from "./option";
-import { LintResult } from "../lint-result";
+import { Option } from "./option.js";
+import { LintResult } from "../lint-result.js";
 
 export abstract class Transformer {
     async transform(option: Option): Promise<void> {

@@ -1,5 +1,5 @@
 import * as github from "@actions/github";
-import { CommonOption } from "../option";
+import { CommonOption } from "../option.js";
 
 export function githubContext(option: CommonOption | null): GitHubContext {
     return new GitHubContext(option);

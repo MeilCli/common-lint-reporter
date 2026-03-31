@@ -1,7 +1,7 @@
-import { LintResult, LintResultLevel } from "../../lint-result";
-import { countLevel } from "../level";
-import { GitHubContext } from "../../github/context";
-import { trimPath } from "../path";
+import { LintResult, LintResultLevel } from "../../lint-result.js";
+import { countLevel } from "../level.js";
+import { GitHubContext } from "../../github/context.js";
+import { trimPath } from "../path.js";
 
 function lintCommentIdentifier(reportName: string): string {
     return `<!-- common-lint-reporter: ${reportName} -->`;

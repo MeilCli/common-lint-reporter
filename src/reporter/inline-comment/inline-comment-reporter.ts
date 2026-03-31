@@ -1,12 +1,12 @@
-import { LintResult } from "../../lint-result";
-import { Option, OutdatedResolver } from "../../option";
-import { GitHubClient } from "../../github/client";
-import { GitHubContext } from "../../github/context";
-import { getPullRequestReviewThreadsWithPaging } from "../../github/paging";
-import { GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNode } from "../../github/types";
-import { CommentReporter, PullRequest, LoginUser } from "../comment/comment-reporter";
-import { isLintInlineComment, createLintInlineComment, createInlineComment, equalsInlineComment } from "./comment";
-import { trimPath } from "../path";
+import { LintResult } from "../../lint-result.js";
+import { Option, OutdatedResolver } from "../../option.js";
+import { GitHubClient } from "../../github/client.js";
+import { GitHubContext } from "../../github/context.js";
+import { getPullRequestReviewThreadsWithPaging } from "../../github/paging.js";
+import { GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNode } from "../../github/types.js";
+import { CommentReporter, PullRequest, LoginUser } from "../comment/comment-reporter.js";
+import { isLintInlineComment, createLintInlineComment, createInlineComment, equalsInlineComment } from "./comment.js";
+import { trimPath } from "../path.js";
 
 export class InlineCommentReporter extends CommentReporter {
     protected async reportComment(

@@ -1,7 +1,7 @@
 import * as core from "@actions/core";
 import * as fs from "fs";
-import { githubContext } from "../github/context";
-import { Context } from "./context";
+import { githubContext } from "../github/context.js";
+import { Context } from "./context.js";
 
 function getInput(key: string): string {
     return core.getInput(key, { required: true });

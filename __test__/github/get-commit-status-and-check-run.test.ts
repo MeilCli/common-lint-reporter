@@ -1,5 +1,5 @@
-import { MockedResponse, MockLink } from "@apollo/client/testing";
-import { ApolloClient, InMemoryCache, NormalizedCacheObject } from "@apollo/client";
+import { MockLink } from "@apollo/client/testing";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
 import {
     GetCommitStatusAndCheckRun,
     GetCommitStatusAndCheckRunQuery,
@@ -8,17 +8,17 @@ import {
 } from "../../graphql/graphql";
 import { GitHubClient } from "../../src/github/client";
 import { getCommitStatusAndCheckRunWithPaging } from "../../src/github/paging";
-import { GetCommitStatusAndCheckRunQueryCommitStatusCheckRollupContextsNode } from "../../src/github/types";
+import { test, expect } from "@jest/globals";
 
-function createMockClient(mocks: ReadonlyArray<MockedResponse>): ApolloClient<NormalizedCacheObject> {
+function createMockClient(mocks: ReadonlyArray<MockLink.MockedResponse>): ApolloClient {
     return new ApolloClient({
-        cache: new InMemoryCache({ addTypename: true }),
-        link: new MockLink(mocks, true),
+        cache: new InMemoryCache(),
+        link: new MockLink(mocks),
     });
 }
 
 test("getCommitStatusAndCheckRunWithPaging", async () => {
-    const mocks: MockedResponse[] = [
+    const mocks: MockLink.MockedResponse[] = [
         {
             request: {
                 query: GetCommitStatusAndCheckRun,
@@ -116,17 +116,17 @@ test("getCommitStatusAndCheckRunWithPaging", async () => {
         context: "context1",
         state: StatusState.Success,
         id: "id1",
-    } as GetCommitStatusAndCheckRunQueryCommitStatusCheckRollupContextsNode);
+    });
     expect(result[1]).toMatchObject({
         __typename: "StatusContext",
         context: "context2",
         state: StatusState.Success,
         id: "id2",
-    } as GetCommitStatusAndCheckRunQueryCommitStatusCheckRollupContextsNode);
+    });
 });
 
 test("getCommitStatusAndCheckRunWithPagingInfinityLoop", async () => {
-    const mocks: MockedResponse[] = [
+    const mocks: MockLink.MockedResponse[] = [
         {
             request: {
                 query: GetCommitStatusAndCheckRun,
@@ -209,6 +209,47 @@ test("getCommitStatusAndCheckRunWithPagingInfinityLoop", async () => {
                 } as GetCommitStatusAndCheckRunQuery,
             },
         },
+        {
+            request: {
+                query: GetCommitStatusAndCheckRun,
+                variables: {
+                    owner: "MeilCli",
+                    name: "common-lint-reporter",
+                    commitSha: "sha-1",
+                    after: "2",
+                } as GetCommitStatusAndCheckRunQueryVariables,
+            },
+            result: {
+                data: {
+                    __typename: "Query",
+                    repository: {
+                        __typename: "Repository",
+                        object: {
+                            __typename: "Commit",
+                            statusCheckRollup: {
+                                __typename: "StatusCheckRollup",
+                                contexts: {
+                                    __typename: "StatusCheckRollupContextConnection",
+                                    pageInfo: {
+                                        __typename: "PageInfo",
+                                        hasNextPage: true,
+                                        endCursor: "2",
+                                    },
+                                    nodes: [
+                                        {
+                                            __typename: "StatusContext",
+                                            state: StatusState.Success,
+                                            id: "id2",
+                                            context: "context2",
+                                        },
+                                    ],
+                                },
+                            },
+                        },
+                    },
+                } as GetCommitStatusAndCheckRunQuery,
+            },
+        },
     ];
 
     const client = new GitHubClient(createMockClient(mocks));
@@ -218,6 +259,6 @@ test("getCommitStatusAndCheckRunWithPagingInfinityLoop", async () => {
             owner: "MeilCli",
             name: "common-lint-reporter",
             commitSha: "sha-1",
-        })
+        }),
     ).rejects.toThrow();
 });

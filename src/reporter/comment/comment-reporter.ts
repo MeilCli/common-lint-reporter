@@ -1,12 +1,12 @@
-import { LintResult } from "../../lint-result";
-import { Option } from "../../option";
-import { Reporter } from "../../reporter";
-import { githubClient, GitHubClient } from "../../github/client";
-import { githubContext, GitHubContext } from "../../github/context";
-import { getCommitStatusAndCheckRunWithPaging, getPullRequestCommentsWithPaging } from "../../github/paging";
-import { RequestableCheckStatusState } from "../../../graphql/graphql";
-import { calculateConclusion } from "../conclusion";
-import { isLintComment, createLintComment, createComment } from "./comment";
+import { LintResult } from "../../lint-result.js";
+import { Option } from "../../option.js";
+import { Reporter } from "../../reporter.js";
+import { githubClient, GitHubClient } from "../../github/client.js";
+import { githubContext, GitHubContext } from "../../github/context.js";
+import { getCommitStatusAndCheckRunWithPaging, getPullRequestCommentsWithPaging } from "../../github/paging.js";
+import { RequestableCheckStatusState } from "../../../graphql/graphql.js";
+import { calculateConclusion } from "../conclusion.js";
+import { isLintComment, createLintComment, createComment } from "./comment.js";
 
 export interface PullRequest {
     number: number;
@@ -22,7 +22,7 @@ export class CommentReporter implements Reporter {
         const context = githubContext(option);
 
         const repositoryId = (await client.getRepositoryId({ owner: context.owner(), name: context.repository() }))
-            .repository?.id;
+            ?.repository?.id;
         if (repositoryId == undefined) {
             throw Error("not found repository");
         }
@@ -62,6 +62,9 @@ export class CommentReporter implements Reporter {
 
         const pullRequest = await this.getPullRequest(client, context);
         const loginUser = await this.getLoginUser(client);
+        if (loginUser == undefined) {
+            throw Error("cannot found login user");
+        }
         await this.reportComment(client, context, option, pullRequest, loginUser, lintResults);
 
         await client.updateCheckRun({
@@ -85,7 +88,7 @@ export class CommentReporter implements Reporter {
             number: pullRequestNumber,
         });
 
-        const pullRequestId = pullRequest.repository?.pullRequest?.id;
+        const pullRequestId = pullRequest?.repository?.pullRequest?.id;
         if (pullRequestId == null || pullRequestId == undefined) {
             throw Error("not found pull request id");
         }
@@ -96,9 +99,13 @@ export class CommentReporter implements Reporter {
         };
     }
 
-    private async getLoginUser(client: GitHubClient): Promise<LoginUser> {
+    private async getLoginUser(client: GitHubClient): Promise<LoginUser | undefined> {
         // if bot account, including '[bot]'. but author.login will not include it
-        const loginUser = (await client.getLoginUser({})).viewer.login.split("[")[0];
+        const response = await client.getLoginUser({});
+        if (response == undefined) {
+            return undefined;
+        }
+        const loginUser = response.viewer.login.split("[")[0];
         return {
             login: loginUser,
         };

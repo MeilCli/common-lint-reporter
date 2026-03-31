@@ -2,208 +2,140 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 6088
-(__unused_webpack_module, exports, __webpack_require__) {
+/***/ 90338
+(__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) {
 
 
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.GitHubClient = void 0;
-exports.githubClient = githubClient;
-const cross_fetch_1 = __importDefault(__webpack_require__(5221));
-const client_1 = __webpack_require__(2091);
-const context_1 = __webpack_require__(6289);
-const graphql_1 = __webpack_require__(2634);
-function githubClient(option) {
-    const context = (0, context_1.githubContext)(option);
-    return new GitHubClient(new client_1.ApolloClient({
-        link: new client_1.HttpLink({
-            uri: context.graphqlApiUrl(),
-            headers: { authorization: `token ${option.githubToken}` },
-            fetch: cross_fetch_1.default,
-        }),
-        cache: new client_1.InMemoryCache(),
-    }));
-}
-class GitHubClient {
-    constructor(client) {
-        this.client = client;
-    }
-    async createCheckRun(variables) {
-        const result = await this.client.mutate({
-            mutation: graphql_1.CreateCheckRun,
-            variables: variables,
-        });
-        return result.data;
-    }
-    async getPullRequestChangedFile(variables) {
-        const result = await this.client.query({
-            query: graphql_1.GetPullRequestChangedFile,
-            variables: variables,
-        });
-        return result.data;
-    }
-    async getRepositoryId(variables) {
-        const result = await this.client.query({
-            query: graphql_1.GetRepositoryId,
-            variables: variables,
-        });
-        return result.data;
-    }
-    async updateCheckRun(variables) {
-        const result = await this.client.mutate({
-            mutation: graphql_1.UpdateCheckRun,
-            variables: variables,
-        });
-        return result.data;
-    }
-    async getCommitStatusAndCheckRun(variables) {
-        const result = await this.client.query({
-            query: graphql_1.GetCommitStatusAndCheckRun,
-            variables: variables,
-        });
-        return result.data;
-    }
-    async getCheckRunAnnotations(variables) {
-        const result = await this.client.query({
-            query: graphql_1.GetCheckRunAnnotations,
-            variables: variables,
-        });
-        return result.data;
-    }
-    async getPullRequest(variables) {
-        const result = await this.client.query({
-            query: graphql_1.GetPullRequest,
-            variables: variables,
-        });
-        return result.data;
-    }
-    async getPullRequestComments(variables) {
-        const result = await this.client.query({
-            query: graphql_1.GetPullRequestComment,
-            variables: variables,
-        });
-        return result.data;
-    }
-    async addComment(variables) {
-        const result = await this.client.mutate({
-            mutation: graphql_1.AddComment,
-            variables: variables,
-        });
-        return result.data;
-    }
-    async deleteComment(variables) {
-        const result = await this.client.mutate({
-            mutation: graphql_1.DeleteComment,
-            variables: variables,
-        });
-        return result.data;
-    }
-    async getLoginUser(variables) {
-        const result = await this.client.query({
-            query: graphql_1.GetLoginUser,
-            variables: variables,
-        });
-        return result.data;
-    }
-    async addPullRequestReviewDraft(variables) {
-        const result = await this.client.mutate({
-            mutation: graphql_1.AddPullRequestReviewDraft,
-            variables: variables,
-        });
-        return result.data;
-    }
-    async submitPullRequestReview(variables) {
-        const result = await this.client.mutate({
-            mutation: graphql_1.SubmitPullRequestReview,
-            variables: variables,
-        });
-        return result.data;
-    }
-    async deletePullRequestReview(variables) {
-        const result = await this.client.mutate({
-            mutation: graphql_1.DeletePullRequestReview,
-            variables: variables,
-        });
-        return result.data;
-    }
-    async addPullRequestReviewThread(variables) {
-        const result = await this.client.mutate({
-            mutation: graphql_1.AddPullRequestReviewThread,
-            variables: variables,
-        });
-        return result.data;
-    }
-    async deletePullRequestReviewComment(variables) {
-        const result = await this.client.mutate({
-            mutation: graphql_1.DeletePullRequestReviewComment,
-            variables: variables,
-        });
-        return result.data;
-    }
-    async resolvePullRequestReviewThread(variables) {
-        const result = await this.client.mutate({
-            mutation: graphql_1.ResolvePullRequestReviewThread,
-            variables: variables,
-        });
-        return result.data;
-    }
-    async getPullRequestReviewThreads(variables) {
-        const result = await this.client.query({
-            query: graphql_1.GetPullRequestReviewThreads,
-            variables: variables,
-        });
-        return result.data;
-    }
-}
-exports.GitHubClient = GitHubClient;
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+core@3.0.0/node_modules/@actions/core/lib/core.js + 13 modules
+var core = __webpack_require__(18370);
+;// ./src/option.ts
 
-
-/***/ },
-
-/***/ 6289
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
+function getCommonOption() {
+    return {
+        githubToken: getInput("github_token"),
+        githubServerUrl: getInputOrNull("github_server_url"),
+        githubGraphqlApiUrl: getInputOrNull("github_graphql_api_url"),
+        workspacePath: getInputOrNull("workspace_path"),
+        repository: getInputOrNull("repository"),
+        pullRequest: getInputNumberOrNull("pull_request"),
+        commitSha: getInputOrNull("commit_sha"),
     };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
+}
+var ReportType;
+(function (ReportType) {
+    ReportType[ReportType["CheckRun"] = 0] = "CheckRun";
+    ReportType[ReportType["Comment"] = 1] = "Comment";
+    ReportType[ReportType["InlineComment"] = 2] = "InlineComment";
+})(ReportType || (ReportType = {}));
+var OutdatedResolver;
+(function (OutdatedResolver) {
+    OutdatedResolver[OutdatedResolver["ResolveThread"] = 0] = "ResolveThread";
+    OutdatedResolver[OutdatedResolver["ForceResolveThread"] = 1] = "ForceResolveThread";
+    OutdatedResolver[OutdatedResolver["DeleteThread"] = 2] = "DeleteThread";
+    OutdatedResolver[OutdatedResolver["DeleteOrForceResolveThread"] = 3] = "DeleteOrForceResolveThread";
+})(OutdatedResolver || (OutdatedResolver = {}));
+function getOption() {
+    const reportTypeString = getInput("report_type");
+    // eslint-disable-next-line no-useless-assignment
+    let reportType = ReportType.CheckRun;
+    switch (reportTypeString) {
+        case "comment":
+            reportType = ReportType.Comment;
+            break;
+        case "inline_comment":
+            reportType = ReportType.InlineComment;
+            break;
+        default:
+            reportType = ReportType.CheckRun;
+            break;
+    }
+    const outdatedResolverString = getInput("outdated_resolver");
+    // eslint-disable-next-line no-useless-assignment
+    let outdatedResolver = OutdatedResolver.DeleteOrForceResolveThread;
+    switch (outdatedResolverString) {
+        case "resolve_thread":
+            outdatedResolver = OutdatedResolver.ResolveThread;
+            break;
+        case "force_resolve_thread":
+            outdatedResolver = OutdatedResolver.ForceResolveThread;
+            break;
+        case "delete_thread":
+            outdatedResolver = OutdatedResolver.DeleteThread;
+            break;
+        default:
+            outdatedResolver = OutdatedResolver.DeleteOrForceResolveThread;
+            break;
+    }
+    return {
+        reportFiles: getInput("report_files"),
+        reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
+        reportName: getInput("report_name"),
+        reportType: reportType,
+        reportToSameCheckRun: getInputOrNull("report_to_same_check_run") == "true",
+        conclusionFailureThreshold: parseInt(getInput("conclusion_failure_threshold")),
+        conclusionFailureWeight: parseInt(getInput("conclusion_failure_weight")),
+        conclusionWarningWeight: parseInt(getInput("conclusion_warning_weight")),
+        conclusionNoticeWeight: parseInt(getInput("conclusion_notice_weight")),
+        outdatedResolver: outdatedResolver,
+        ...getCommonOption(),
     };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.GitHubContext = void 0;
-exports.githubContext = githubContext;
-const github = __importStar(__webpack_require__(4834));
+}
+function getInput(key) {
+    return core/* getInput */.V4(key, { required: true });
+}
+function getInputOrNull(key) {
+    const result = core/* getInput */.V4(key, { required: false });
+    if (result.length == 0) {
+        return null;
+    }
+    return result;
+}
+function getInputNumberOrNull(key) {
+    const value = getInputOrNull(key);
+    if (value == null) {
+        return null;
+    }
+    return parseInt(value);
+}
+
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+glob@0.6.1/node_modules/@actions/glob/lib/glob.js + 8 modules
+var glob = __webpack_require__(31754);
+// EXTERNAL MODULE: external "fs"
+var external_fs_ = __webpack_require__(79896);
+;// ./src/lint-result.ts
+/* unused harmony import specifier */ var fs;
+
+
+async function readLintResults(option) {
+    const globber = await glob/* create */.v(option.reportFiles, {
+        followSymbolicLinks: option.reportFilesFollowSymbolicLinks,
+    });
+    const result = [];
+    for await (const file of globber.globGenerator()) {
+        const readContents = external_fs_.readFileSync(file, "utf-8");
+        const lintResults = JSON.parse(readContents);
+        result.push(...lintResults);
+    }
+    return result;
+}
+function writeLintResults(path, lintResults) {
+    const text = JSON.stringify(lintResults);
+    fs.writeFileSync(path, text);
+}
+
+// EXTERNAL MODULE: ./node_modules/.pnpm/cross-fetch@4.1.0/node_modules/cross-fetch/dist/node-ponyfill.js
+var node_ponyfill = __webpack_require__(45745);
+var node_ponyfill_default = /*#__PURE__*/__webpack_require__.n(node_ponyfill);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.6_graphq_1bc491a3335fad0006699078570c8daf/node_modules/@apollo/client/core/ApolloClient.js + 3 modules
+var ApolloClient = __webpack_require__(10547);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.6_graphq_1bc491a3335fad0006699078570c8daf/node_modules/@apollo/client/link/http/HttpLink.js + 9 modules
+var HttpLink = __webpack_require__(11328);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.6_graphq_1bc491a3335fad0006699078570c8daf/node_modules/@apollo/client/cache/inmemory/inMemoryCache.js + 6 modules
+var inMemoryCache = __webpack_require__(29161);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@9.0.0/node_modules/@actions/github/lib/github.js + 13 modules
+var github = __webpack_require__(98479);
+;// ./src/github/context.ts
+
 function githubContext(option) {
     return new GitHubContext(option);
 }
@@ -221,32 +153,32 @@ class GitHubContext {
         if (this.option?.repository != null) {
             return this.option.repository.split("/")[0];
         }
-        return github.context.repo.owner;
+        return github/* context */._.repo.owner;
     }
     repository() {
         if (this.option?.repository != null) {
             return this.option.repository.split("/")[1];
         }
-        return github.context.repo.repo;
+        return github/* context */._.repo.repo;
     }
     serverUrl() {
         if (this.option?.githubServerUrl != null) {
             return this.option.githubServerUrl;
         }
-        return github.context.serverUrl;
+        return github/* context */._.serverUrl;
     }
     graphqlApiUrl() {
         if (this.option?.githubGraphqlApiUrl != null) {
             return this.option.githubGraphqlApiUrl;
         }
-        return github.context.graphqlUrl;
+        return github/* context */._.graphqlUrl;
     }
     pullRequest() {
         if (this.option?.pullRequest != null) {
             return this.option.pullRequest;
         }
-        if (github.context.payload.pull_request != undefined) {
-            return github.context.payload.pull_request.number;
+        if (github/* context */._.payload.pull_request != undefined) {
+            return github/* context */._.payload.pull_request.number;
         }
         return null;
     }
@@ -254,35 +186,175 @@ class GitHubContext {
         if (this.option?.commitSha != null) {
             return this.option.commitSha;
         }
-        if (github.context.payload.pull_request != undefined) {
-            return github.context.payload.pull_request.head.sha;
+        if (github/* context */._.payload.pull_request != undefined) {
+            return github/* context */._.payload.pull_request.head.sha;
         }
-        if (github.context.payload.workflow_run != undefined) {
-            return github.context.payload.workflow_run.head_sha;
+        if (github/* context */._.payload.workflow_run != undefined) {
+            return github/* context */._.payload.workflow_run.head_sha;
         }
-        return github.context.sha;
+        return github/* context */._.sha;
     }
 }
-exports.GitHubContext = GitHubContext;
+
+// EXTERNAL MODULE: ./graphql/graphql.ts
+var graphql = __webpack_require__(15850);
+;// ./src/github/client.ts
 
 
-/***/ },
-
-/***/ 6964
-(__unused_webpack_module, exports) {
 
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getPullRequestChangedFileWithPaging = getPullRequestChangedFileWithPaging;
-exports.getCommitStatusAndCheckRunWithPaging = getCommitStatusAndCheckRunWithPaging;
-exports.getCheckRunAnnotationsWithPaging = getCheckRunAnnotationsWithPaging;
-exports.getPullRequestCommentsWithPaging = getPullRequestCommentsWithPaging;
-exports.getPullRequestReviewThreadsWithPaging = getPullRequestReviewThreadsWithPaging;
+function githubClient(option) {
+    const context = githubContext(option);
+    return new GitHubClient(new ApolloClient/* ApolloClient */.R({
+        link: new HttpLink/* HttpLink */.P({
+            uri: context.graphqlApiUrl(),
+            headers: { authorization: `token ${option.githubToken}` },
+            fetch: (node_ponyfill_default()),
+        }),
+        cache: new inMemoryCache/* InMemoryCache */.D(),
+    }));
+}
+class GitHubClient {
+    constructor(client) {
+        this.client = client;
+    }
+    async createCheckRun(variables) {
+        const result = await this.client.mutate({
+            mutation: graphql/* CreateCheckRun */.yO2,
+            variables: variables,
+        });
+        return result.data;
+    }
+    async getPullRequestChangedFile(variables) {
+        const result = await this.client.query({
+            query: graphql/* GetPullRequestChangedFile */.RGe,
+            variables: variables,
+        });
+        return result.data;
+    }
+    async getRepositoryId(variables) {
+        const result = await this.client.query({
+            query: graphql/* GetRepositoryId */.Uwd,
+            variables: variables,
+        });
+        return result.data;
+    }
+    async updateCheckRun(variables) {
+        const result = await this.client.mutate({
+            mutation: graphql/* UpdateCheckRun */.Z0m,
+            variables: variables,
+        });
+        return result.data;
+    }
+    async getCommitStatusAndCheckRun(variables) {
+        const result = await this.client.query({
+            query: graphql/* GetCommitStatusAndCheckRun */.wLJ,
+            variables: variables,
+        });
+        return result.data;
+    }
+    async getCheckRunAnnotations(variables) {
+        const result = await this.client.query({
+            query: graphql/* GetCheckRunAnnotations */.ob7,
+            variables: variables,
+        });
+        return result.data;
+    }
+    async getPullRequest(variables) {
+        const result = await this.client.query({
+            query: graphql/* GetPullRequest */.vrW,
+            variables: variables,
+        });
+        return result.data;
+    }
+    async getPullRequestComments(variables) {
+        const result = await this.client.query({
+            query: graphql/* GetPullRequestComment */.sAo,
+            variables: variables,
+        });
+        return result.data;
+    }
+    async addComment(variables) {
+        const result = await this.client.mutate({
+            mutation: graphql/* AddComment */.HZX,
+            variables: variables,
+        });
+        return result.data;
+    }
+    async deleteComment(variables) {
+        const result = await this.client.mutate({
+            mutation: graphql/* DeleteComment */.LWV,
+            variables: variables,
+        });
+        return result.data;
+    }
+    async getLoginUser(variables) {
+        const result = await this.client.query({
+            query: graphql/* GetLoginUser */.vSx,
+            variables: variables,
+        });
+        return result.data;
+    }
+    async addPullRequestReviewDraft(variables) {
+        const result = await this.client.mutate({
+            mutation: graphql/* AddPullRequestReviewDraft */.ZL4,
+            variables: variables,
+        });
+        return result.data;
+    }
+    async submitPullRequestReview(variables) {
+        const result = await this.client.mutate({
+            mutation: graphql/* SubmitPullRequestReview */.B5f,
+            variables: variables,
+        });
+        return result.data;
+    }
+    async deletePullRequestReview(variables) {
+        const result = await this.client.mutate({
+            mutation: graphql/* DeletePullRequestReview */.GFG,
+            variables: variables,
+        });
+        return result.data;
+    }
+    async addPullRequestReviewThread(variables) {
+        const result = await this.client.mutate({
+            mutation: graphql/* AddPullRequestReviewThread */.cHL,
+            variables: variables,
+        });
+        return result.data;
+    }
+    async deletePullRequestReviewComment(variables) {
+        const result = await this.client.mutate({
+            mutation: graphql/* DeletePullRequestReviewComment */.ZPu,
+            variables: variables,
+        });
+        return result.data;
+    }
+    async resolvePullRequestReviewThread(variables) {
+        const result = await this.client.mutate({
+            mutation: graphql/* ResolvePullRequestReviewThread */.FaX,
+            variables: variables,
+        });
+        return result.data;
+    }
+    async getPullRequestReviewThreads(variables) {
+        const result = await this.client.query({
+            query: graphql/* GetPullRequestReviewThreads */.QKw,
+            variables: variables,
+        });
+        return result.data;
+    }
+}
+
+;// ./src/github/paging.ts
 // gurad for infinity loop
 const maxLoop = 100;
 async function getResponseWithPaging(variables, getResponse, selectorPageInfo, selectorNodes) {
     const result = [];
     let response = await getResponse(variables);
+    if (response == undefined) {
+        return result;
+    }
     let pageInfo = selectorPageInfo(response);
     let nodes = selectorNodes(response);
     if (nodes == null || nodes == undefined) {
@@ -302,6 +374,9 @@ async function getResponseWithPaging(variables, getResponse, selectorPageInfo, s
         pageInfo.endCursor != undefined) {
         loopCount += 1;
         response = await getResponse({ ...variables, after: pageInfo.endCursor });
+        if (response == undefined) {
+            return result;
+        }
         pageInfo = selectorPageInfo(response);
         nodes = selectorNodes(response);
         if (nodes == null || nodes == undefined) {
@@ -355,282 +430,134 @@ async function getPullRequestReviewThreadsWithPaging(client, variables) {
     return getResponseWithPaging(variables, (variables) => client.getPullRequestReviewThreads(variables), (response) => response.repository?.pullRequest?.reviewThreads.pageInfo, (response) => response.repository?.pullRequest?.reviewThreads.nodes);
 }
 
-
-/***/ },
-
-/***/ 2757
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
+;// ./src/reporter/level.ts
+function countLevel(lintResults, targetLevel) {
+    let count = 0;
+    for (const lintResult of lintResults) {
+        if (lintResult.level == targetLevel) {
+            count += 1;
+        }
     }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.readLintResults = readLintResults;
-exports.writeLintResults = writeLintResults;
-const glob = __importStar(__webpack_require__(631));
-const fs = __importStar(__webpack_require__(9896));
-async function readLintResults(option) {
-    const globber = await glob.create(option.reportFiles, {
-        followSymbolicLinks: option.reportFilesFollowSymbolicLinks,
-    });
-    const result = [];
-    for await (const file of globber.globGenerator()) {
-        const readContents = fs.readFileSync(file, "utf-8");
-        const lintResults = JSON.parse(readContents);
-        result.push(...lintResults);
+    return count;
+}
+
+;// ./src/reporter/conclusion.ts
+
+
+function calculateConclusion(option, lintResults) {
+    const noticeCount = countLevel(lintResults, "notice");
+    const warningCount = countLevel(lintResults, "warning");
+    const failureCount = countLevel(lintResults, "failure");
+    const score = noticeCount * option.conclusionNoticeWeight +
+        warningCount * option.conclusionWarningWeight +
+        failureCount * option.conclusionFailureWeight;
+    return score < option.conclusionFailureThreshold ? graphql/* CheckConclusionState */.zd6.Success : graphql/* CheckConclusionState */.zd6.Failure;
+}
+
+;// ./src/reporter/check-run/summary.ts
+
+function createSummary(lintResults) {
+    const noticeCount = countLevel(lintResults, "notice");
+    const warningCount = countLevel(lintResults, "warning");
+    const failureCount = countLevel(lintResults, "failure");
+    const messages = [];
+    if (noticeCount == 1) {
+        messages.push("1 notice");
+    }
+    if (2 <= noticeCount) {
+        messages.push(`${noticeCount} notices`);
+    }
+    if (warningCount == 1) {
+        messages.push("1 warning");
+    }
+    if (2 <= warningCount) {
+        messages.push(`${warningCount} warnings`);
+    }
+    if (failureCount == 1) {
+        messages.push("1 failure");
+    }
+    if (2 <= failureCount) {
+        messages.push(`${failureCount} failures`);
+    }
+    if (messages.length == 0) {
+        return "lint message is empty";
+    }
+    return `${messages.join(" and ")} found`;
+}
+
+// EXTERNAL MODULE: external "path"
+var external_path_ = __webpack_require__(16928);
+;// ./src/reporter/path.ts
+
+function trimPath(context, filePath) {
+    return filePath.replace(`${context.workspacePath()}${external_path_.sep}`, "");
+}
+
+;// ./src/reporter/check-run/message.ts
+
+
+function markdownLevelMessage(context, lintResults, targetLevel) {
+    let result = "";
+    for (const lintResult of lintResults) {
+        if (lintResult.level != targetLevel) {
+            continue;
+        }
+        let line = "";
+        if (lintResult.startLine != undefined) {
+            line += `L${lintResult.startLine}`;
+        }
+        if (lintResult.startLine != undefined &&
+            lintResult.endLine != undefined &&
+            lintResult.startLine != lintResult.endLine) {
+            line += `-L${lintResult.endLine}`;
+        }
+        const baseUrl = `${context.serverUrl()}/${context.owner()}/${context.repository()}`;
+        const link = `${baseUrl}/blob/${context.commitSha()}/${trimPath(context, lintResult.path)}#${line}`;
+        result += `### [${trimPath(context, lintResult.path)} ${line}](${link})\n`;
+        result += `Rule: ${lintResult.rule}\n`;
+        result += lintResult.message;
+        result += "\n";
     }
     return result;
 }
-function writeLintResults(path, lintResults) {
-    const text = JSON.stringify(lintResults);
-    fs.writeFileSync(path, text);
-}
-
-
-/***/ },
-
-/***/ 7927
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core = __importStar(__webpack_require__(6977));
-const option_1 = __webpack_require__(2243);
-const lint_result_1 = __webpack_require__(2757);
-const check_run_reporter_1 = __webpack_require__(7465);
-const comment_reporter_1 = __webpack_require__(1309);
-const inline_comment_reporter_1 = __webpack_require__(4713);
-async function run() {
-    try {
-        const option = (0, option_1.getOption)();
-        const lintResults = await (0, lint_result_1.readLintResults)(option);
-        let reporter;
-        if (option.reportType == option_1.ReportType.Comment) {
-            reporter = new comment_reporter_1.CommentReporter();
-        }
-        else if (option.reportType == option_1.ReportType.InlineComment) {
-            reporter = new inline_comment_reporter_1.InlineCommentReporter();
+function createMessage(context, lintResults) {
+    const noticeCount = countLevel(lintResults, "notice");
+    const warningCount = countLevel(lintResults, "warning");
+    const failureCount = countLevel(lintResults, "failure");
+    let result = "";
+    if (0 < failureCount) {
+        if (failureCount == 1) {
+            result += "## 1 Failure\n";
         }
         else {
-            reporter = new check_run_reporter_1.CheckRunReporter();
+            result += `## ${failureCount} Failures\n`;
         }
-        await reporter.report(option, lintResults);
+        result += markdownLevelMessage(context, lintResults, "failure");
     }
-    catch (error) {
-        if (error instanceof Error) {
-            core.setFailed(error.message);
+    if (0 < warningCount) {
+        if (warningCount == 1) {
+            result += "## 1 Warning\n";
         }
+        else {
+            result += `## ${warningCount} Warnings\n`;
+        }
+        result += markdownLevelMessage(context, lintResults, "warning");
     }
-}
-run();
-
-
-/***/ },
-
-/***/ 2243
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.OutdatedResolver = exports.ReportType = void 0;
-exports.getCommonOption = getCommonOption;
-exports.getOption = getOption;
-const core = __importStar(__webpack_require__(6977));
-function getCommonOption() {
-    return {
-        githubToken: getInput("github_token"),
-        githubServerUrl: getInputOrNull("github_server_url"),
-        githubGraphqlApiUrl: getInputOrNull("github_graphql_api_url"),
-        workspacePath: getInputOrNull("workspace_path"),
-        repository: getInputOrNull("repository"),
-        pullRequest: getInputNumberOrNull("pull_request"),
-        commitSha: getInputOrNull("commit_sha"),
-    };
-}
-var ReportType;
-(function (ReportType) {
-    ReportType[ReportType["CheckRun"] = 0] = "CheckRun";
-    ReportType[ReportType["Comment"] = 1] = "Comment";
-    ReportType[ReportType["InlineComment"] = 2] = "InlineComment";
-})(ReportType || (exports.ReportType = ReportType = {}));
-var OutdatedResolver;
-(function (OutdatedResolver) {
-    OutdatedResolver[OutdatedResolver["ResolveThread"] = 0] = "ResolveThread";
-    OutdatedResolver[OutdatedResolver["ForceResolveThread"] = 1] = "ForceResolveThread";
-    OutdatedResolver[OutdatedResolver["DeleteThread"] = 2] = "DeleteThread";
-    OutdatedResolver[OutdatedResolver["DeleteOrForceResolveThread"] = 3] = "DeleteOrForceResolveThread";
-})(OutdatedResolver || (exports.OutdatedResolver = OutdatedResolver = {}));
-function getOption() {
-    const reportTypeString = getInput("report_type");
-    let reportType = ReportType.CheckRun;
-    switch (reportTypeString) {
-        case "comment":
-            reportType = ReportType.Comment;
-            break;
-        case "inline_comment":
-            reportType = ReportType.InlineComment;
-            break;
-        default:
-            reportType = ReportType.CheckRun;
-            break;
-    }
-    const outdatedResolverString = getInput("outdated_resolver");
-    let outdatedResolver = OutdatedResolver.DeleteOrForceResolveThread;
-    switch (outdatedResolverString) {
-        case "resolve_thread":
-            outdatedResolver = OutdatedResolver.ResolveThread;
-            break;
-        case "force_resolve_thread":
-            outdatedResolver = OutdatedResolver.ForceResolveThread;
-            break;
-        case "delete_thread":
-            outdatedResolver = OutdatedResolver.DeleteThread;
-            break;
-        default:
-            outdatedResolver = OutdatedResolver.DeleteOrForceResolveThread;
-            break;
-    }
-    return {
-        reportFiles: getInput("report_files"),
-        reportFilesFollowSymbolicLinks: getInputOrNull("report_files_follow_symbolic_links") == "true",
-        reportName: getInput("report_name"),
-        reportType: reportType,
-        reportToSameCheckRun: getInputOrNull("report_to_same_check_run") == "true",
-        conclusionFailureThreshold: parseInt(getInput("conclusion_failure_threshold")),
-        conclusionFailureWeight: parseInt(getInput("conclusion_failure_weight")),
-        conclusionWarningWeight: parseInt(getInput("conclusion_warning_weight")),
-        conclusionNoticeWeight: parseInt(getInput("conclusion_notice_weight")),
-        outdatedResolver: outdatedResolver,
-        ...getCommonOption(),
-    };
-}
-function getInput(key) {
-    return core.getInput(key, { required: true });
-}
-function getInputOrNull(key) {
-    const result = core.getInput(key, { required: false });
-    if (result.length == 0) {
-        return null;
+    if (0 < noticeCount) {
+        if (noticeCount == 1) {
+            result += "## 1 Notice\n";
+        }
+        else {
+            result += `## ${noticeCount} Notices\n`;
+        }
+        result += markdownLevelMessage(context, lintResults, "notice");
     }
     return result;
 }
-function getInputNumberOrNull(key) {
-    const value = getInputOrNull(key);
-    if (value == null) {
-        return null;
-    }
-    return parseInt(value);
-}
+
+;// ./src/reporter/check-run/annotation.ts
 
 
-/***/ },
-
-/***/ 4506
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createAnnotation = createAnnotation;
-exports.equalsAnnotation = equalsAnnotation;
-const graphql_1 = __webpack_require__(2634);
-const path_1 = __webpack_require__(969);
 function createAnnotation(context, lintResult) {
     if (lintResult.startLine == undefined) {
         // report only at summary
@@ -638,13 +565,13 @@ function createAnnotation(context, lintResult) {
     }
     let level;
     if (lintResult.level == "notice") {
-        level = graphql_1.CheckAnnotationLevel.Notice;
+        level = graphql/* CheckAnnotationLevel */.Cue.Notice;
     }
     else if (lintResult.level == "warning") {
-        level = graphql_1.CheckAnnotationLevel.Warning;
+        level = graphql/* CheckAnnotationLevel */.Cue.Warning;
     }
     else {
-        level = graphql_1.CheckAnnotationLevel.Failure;
+        level = graphql/* CheckAnnotationLevel */.Cue.Failure;
     }
     let startColumn;
     let endColumn;
@@ -657,7 +584,7 @@ function createAnnotation(context, lintResult) {
         endColumn = undefined;
     }
     return {
-        path: (0, path_1.trimPath)(context, lintResult.path),
+        path: trimPath(context, lintResult.path),
         location: {
             startLine: lintResult.startLine,
             endLine: lintResult.endLine ?? lintResult.startLine,
@@ -697,57 +624,16 @@ function equalsAnnotation(left, right) {
     return true;
 }
 
-
-/***/ },
-
-/***/ 7465
-(__unused_webpack_module, exports, __webpack_require__) {
+;// ./src/reporter/check-run/check-run-reporter.ts
 
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CheckRunReporter = void 0;
-const core = __importStar(__webpack_require__(6977));
-const client_1 = __webpack_require__(6088);
-const context_1 = __webpack_require__(6289);
-const paging_1 = __webpack_require__(6964);
-const graphql_1 = __webpack_require__(2634);
-const conclusion_1 = __webpack_require__(9245);
-const summary_1 = __webpack_require__(6735);
-const message_1 = __webpack_require__(5736);
-const annotation_1 = __webpack_require__(4506);
+
+
+
+
+
+
+
 class CheckRunReporter {
     async report(option, lintResults) {
         if (option.reportToSameCheckRun) {
@@ -758,9 +644,9 @@ class CheckRunReporter {
         }
     }
     async reportToSameCheckRun(option, lintResults) {
-        const context = (0, context_1.githubContext)(option);
+        const context = githubContext(option);
         for (const lintResult of lintResults) {
-            const annotation = (0, annotation_1.createAnnotation)(context, lintResult);
+            const annotation = createAnnotation(context, lintResult);
             if (annotation == null) {
                 continue;
             }
@@ -773,32 +659,32 @@ class CheckRunReporter {
                 endColumn: annotation.location.endColumn ?? undefined,
             };
             if (lintResult.level == "notice") {
-                core.notice(annotation.message, annotationProperties);
+                core/* notice */.lm(annotation.message, annotationProperties);
             }
             if (lintResult.level == "warning") {
-                core.warning(annotation.message, annotationProperties);
+                core/* warning */.$e(annotation.message, annotationProperties);
             }
             if (lintResult.level == "failure") {
-                core.error(annotation.message, annotationProperties);
+                core/* error */.z3(annotation.message, annotationProperties);
             }
         }
-        core.summary.addRaw((0, summary_1.createSummary)(lintResults), true);
-        core.summary.addRaw((0, message_1.createMessage)(context, lintResults), true);
-        core.summary.write();
-        const conclusion = (0, conclusion_1.calculateConclusion)(option, lintResults);
-        if (conclusion == graphql_1.CheckConclusionState.Failure) {
-            core.setFailed("conclusion is failure");
+        core/* summary */.z.addRaw(createSummary(lintResults), true);
+        core/* summary */.z.addRaw(createMessage(context, lintResults), true);
+        core/* summary */.z.write();
+        const conclusion = calculateConclusion(option, lintResults);
+        if (conclusion == graphql/* CheckConclusionState */.zd6.Failure) {
+            core/* setFailed */.C1("conclusion is failure");
         }
     }
     async reportToNewCheckRun(option, lintResults) {
-        const client = (0, client_1.githubClient)(option);
-        const context = (0, context_1.githubContext)(option);
+        const client = githubClient(option);
+        const context = githubContext(option);
         const repositoryId = (await client.getRepositoryId({ owner: context.owner(), name: context.repository() }))
-            .repository?.id;
+            ?.repository?.id;
         if (repositoryId == undefined) {
             throw Error("not found repository");
         }
-        const statusAndCheckRuns = await (0, paging_1.getCommitStatusAndCheckRunWithPaging)(client, {
+        const statusAndCheckRuns = await getCommitStatusAndCheckRunWithPaging(client, {
             owner: context.owner(),
             name: context.repository(),
             commitSha: context.commitSha(),
@@ -808,7 +694,7 @@ class CheckRunReporter {
             await client.updateCheckRun({
                 repositoryId: repositoryId,
                 checkRunId: foundSameCheckRun.id,
-                status: graphql_1.RequestableCheckStatusState.InProgress,
+                status: graphql/* RequestableCheckStatusState */.pKD.InProgress,
             });
         }
         const checkRunId = foundSameCheckRun == undefined
@@ -817,7 +703,7 @@ class CheckRunReporter {
                 headSha: context.commitSha(),
                 name: option.reportName,
                 startedAt: new Date().toISOString(),
-                status: graphql_1.RequestableCheckStatusState.InProgress,
+                status: graphql/* RequestableCheckStatusState */.pKD.InProgress,
             }))?.createCheckRun?.checkRun?.id
             : foundSameCheckRun.id;
         if (checkRunId == undefined) {
@@ -825,22 +711,22 @@ class CheckRunReporter {
         }
         const pastAnnotations = foundSameCheckRun == undefined
             ? []
-            : await (0, paging_1.getCheckRunAnnotationsWithPaging)(client, { checkRunId: foundSameCheckRun.id });
+            : await getCheckRunAnnotationsWithPaging(client, { checkRunId: foundSameCheckRun.id });
         await this.uploadResult(client, context, option, repositoryId, checkRunId, lintResults, pastAnnotations);
     }
     async uploadResult(client, context, option, repositoryId, checkRunId, lintResults, pastAnnotations) {
         const batchSize = 50;
         let currentIndex = 0;
         const rawAnnotations = this.convertToCheckAnnotationData(context, lintResults);
-        const newAnnotations = rawAnnotations.filter((x) => pastAnnotations.filter((y) => (0, annotation_1.equalsAnnotation)(y, x)).length == 0);
+        const newAnnotations = rawAnnotations.filter((x) => pastAnnotations.filter((y) => equalsAnnotation(y, x)).length == 0);
         while (currentIndex + batchSize < newAnnotations.length) {
             const batchNumber = `${currentIndex / batchSize + 1}/${Math.ceil(newAnnotations.length / batchSize)}`;
-            const surmmary = `${(0, summary_1.createSummary)(lintResults)}, while batch ${batchNumber}`;
+            const surmmary = `${createSummary(lintResults)}, while batch ${batchNumber}`;
             const batchedAnnotations = newAnnotations.slice(currentIndex, currentIndex + batchSize);
             await client.updateCheckRun({
                 repositoryId: repositoryId,
                 checkRunId: checkRunId,
-                status: graphql_1.RequestableCheckStatusState.InProgress,
+                status: graphql/* RequestableCheckStatusState */.pKD.InProgress,
                 output: {
                     title: option.reportName,
                     summary: surmmary,
@@ -853,13 +739,13 @@ class CheckRunReporter {
         await client.updateCheckRun({
             repositoryId: repositoryId,
             checkRunId: checkRunId,
-            status: graphql_1.RequestableCheckStatusState.Completed,
-            conclusion: (0, conclusion_1.calculateConclusion)(option, lintResults),
+            status: graphql/* RequestableCheckStatusState */.pKD.Completed,
+            conclusion: calculateConclusion(option, lintResults),
             completedAt: new Date().toISOString(),
             output: {
                 title: option.reportName,
-                summary: (0, summary_1.createSummary)(lintResults),
-                text: (0, message_1.createMessage)(context, lintResults),
+                summary: createSummary(lintResults),
+                text: createMessage(context, lintResults),
                 annotations: annotations,
             },
         });
@@ -867,7 +753,7 @@ class CheckRunReporter {
     convertToCheckAnnotationData(context, lintResults) {
         const result = [];
         for (const lintResult of lintResults) {
-            const annotation = (0, annotation_1.createAnnotation)(context, lintResult);
+            const annotation = createAnnotation(context, lintResult);
             if (annotation != null) {
                 result.push(annotation);
             }
@@ -875,241 +761,10 @@ class CheckRunReporter {
         return result;
     }
 }
-exports.CheckRunReporter = CheckRunReporter;
+
+;// ./src/reporter/comment/comment.ts
 
 
-/***/ },
-
-/***/ 5736
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createMessage = createMessage;
-const path_1 = __webpack_require__(969);
-const level_1 = __webpack_require__(3590);
-function markdownLevelMessage(context, lintResults, targetLevel) {
-    let result = "";
-    for (const lintResult of lintResults) {
-        if (lintResult.level != targetLevel) {
-            continue;
-        }
-        let line = "";
-        if (lintResult.startLine != undefined) {
-            line += `L${lintResult.startLine}`;
-        }
-        if (lintResult.startLine != undefined &&
-            lintResult.endLine != undefined &&
-            lintResult.startLine != lintResult.endLine) {
-            line += `-L${lintResult.endLine}`;
-        }
-        const baseUrl = `${context.serverUrl()}/${context.owner()}/${context.repository()}`;
-        const link = `${baseUrl}/blob/${context.commitSha()}/${(0, path_1.trimPath)(context, lintResult.path)}#${line}`;
-        result += `### [${(0, path_1.trimPath)(context, lintResult.path)} ${line}](${link})\n`;
-        result += `Rule: ${lintResult.rule}\n`;
-        result += lintResult.message;
-        result += "\n";
-    }
-    return result;
-}
-function createMessage(context, lintResults) {
-    const noticeCount = (0, level_1.countLevel)(lintResults, "notice");
-    const warningCount = (0, level_1.countLevel)(lintResults, "warning");
-    const failureCount = (0, level_1.countLevel)(lintResults, "failure");
-    let result = "";
-    if (0 < failureCount) {
-        if (failureCount == 1) {
-            result += "## 1 Failure\n";
-        }
-        else {
-            result += `## ${failureCount} Failures\n`;
-        }
-        result += markdownLevelMessage(context, lintResults, "failure");
-    }
-    if (0 < warningCount) {
-        if (warningCount == 1) {
-            result += "## 1 Warning\n";
-        }
-        else {
-            result += `## ${warningCount} Warnings\n`;
-        }
-        result += markdownLevelMessage(context, lintResults, "warning");
-    }
-    if (0 < noticeCount) {
-        if (noticeCount == 1) {
-            result += "## 1 Notice\n";
-        }
-        else {
-            result += `## ${noticeCount} Notices\n`;
-        }
-        result += markdownLevelMessage(context, lintResults, "notice");
-    }
-    return result;
-}
-
-
-/***/ },
-
-/***/ 6735
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.createSummary = createSummary;
-const level_1 = __webpack_require__(3590);
-function createSummary(lintResults) {
-    const noticeCount = (0, level_1.countLevel)(lintResults, "notice");
-    const warningCount = (0, level_1.countLevel)(lintResults, "warning");
-    const failureCount = (0, level_1.countLevel)(lintResults, "failure");
-    const messages = [];
-    if (noticeCount == 1) {
-        messages.push("1 notice");
-    }
-    if (2 <= noticeCount) {
-        messages.push(`${noticeCount} notices`);
-    }
-    if (warningCount == 1) {
-        messages.push("1 warning");
-    }
-    if (2 <= warningCount) {
-        messages.push(`${warningCount} warnings`);
-    }
-    if (failureCount == 1) {
-        messages.push("1 failure");
-    }
-    if (2 <= failureCount) {
-        messages.push(`${failureCount} failures`);
-    }
-    if (messages.length == 0) {
-        return "lint message is empty";
-    }
-    return `${messages.join(" and ")} found`;
-}
-
-
-/***/ },
-
-/***/ 1309
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CommentReporter = void 0;
-const client_1 = __webpack_require__(6088);
-const context_1 = __webpack_require__(6289);
-const paging_1 = __webpack_require__(6964);
-const graphql_1 = __webpack_require__(2634);
-const conclusion_1 = __webpack_require__(9245);
-const comment_1 = __webpack_require__(4775);
-class CommentReporter {
-    async report(option, lintResults) {
-        const client = (0, client_1.githubClient)(option);
-        const context = (0, context_1.githubContext)(option);
-        const repositoryId = (await client.getRepositoryId({ owner: context.owner(), name: context.repository() }))
-            .repository?.id;
-        if (repositoryId == undefined) {
-            throw Error("not found repository");
-        }
-        const statusAndCheckRuns = await (0, paging_1.getCommitStatusAndCheckRunWithPaging)(client, {
-            owner: context.owner(),
-            name: context.repository(),
-            commitSha: context.commitSha(),
-        });
-        const foundSameCheckRun = statusAndCheckRuns.find((x) => x.__typename == "CheckRun" && x.name == option.reportName);
-        if (foundSameCheckRun != undefined) {
-            await client.updateCheckRun({
-                repositoryId: repositoryId,
-                checkRunId: foundSameCheckRun.id,
-                status: graphql_1.RequestableCheckStatusState.InProgress,
-            });
-        }
-        const checkRunId = foundSameCheckRun == undefined
-            ? (await client.createCheckRun({
-                repositoryId: repositoryId,
-                headSha: context.commitSha(),
-                name: option.reportName,
-                startedAt: new Date().toISOString(),
-                status: graphql_1.RequestableCheckStatusState.InProgress,
-            }))?.createCheckRun?.checkRun?.id
-            : foundSameCheckRun.id;
-        if (checkRunId == undefined) {
-            throw Error("cannot create check-run");
-        }
-        const pullRequest = await this.getPullRequest(client, context);
-        const loginUser = await this.getLoginUser(client);
-        await this.reportComment(client, context, option, pullRequest, loginUser, lintResults);
-        await client.updateCheckRun({
-            repositoryId: repositoryId,
-            checkRunId: checkRunId,
-            status: graphql_1.RequestableCheckStatusState.Completed,
-            conclusion: (0, conclusion_1.calculateConclusion)(option, lintResults),
-            completedAt: new Date().toISOString(),
-        });
-    }
-    async getPullRequest(client, context) {
-        const pullRequestNumber = context.pullRequest();
-        if (pullRequestNumber == null) {
-            throw Error("pull_request number is not provided");
-        }
-        const pullRequest = await client.getPullRequest({
-            owner: context.owner(),
-            name: context.repository(),
-            number: pullRequestNumber,
-        });
-        const pullRequestId = pullRequest.repository?.pullRequest?.id;
-        if (pullRequestId == null || pullRequestId == undefined) {
-            throw Error("not found pull request id");
-        }
-        return {
-            number: pullRequestNumber,
-            id: pullRequestId,
-        };
-    }
-    async getLoginUser(client) {
-        // if bot account, including '[bot]'. but author.login will not include it
-        const loginUser = (await client.getLoginUser({})).viewer.login.split("[")[0];
-        return {
-            login: loginUser,
-        };
-    }
-    async reportComment(client, context, option, pullRequest, loginUser, lintResults) {
-        const comments = await (0, paging_1.getPullRequestCommentsWithPaging)(client, {
-            owner: context.owner(),
-            name: context.repository(),
-            pull_request: pullRequest.number,
-        });
-        for (const comment of comments) {
-            if (comment.author?.login != loginUser.login) {
-                continue;
-            }
-            if ((0, comment_1.isLintComment)(comment.body, option.reportName)) {
-                await client.deleteComment({ id: comment.id });
-            }
-        }
-        if (lintResults.length == 0) {
-            return;
-        }
-        await client.addComment({
-            id: pullRequest.id,
-            body: (0, comment_1.createLintComment)((0, comment_1.createComment)(context, lintResults), option.reportName),
-        });
-    }
-}
-exports.CommentReporter = CommentReporter;
-
-
-/***/ },
-
-/***/ 4775
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.isLintComment = isLintComment;
-exports.createLintComment = createLintComment;
-exports.createComment = createComment;
-const level_1 = __webpack_require__(3590);
-const path_1 = __webpack_require__(969);
 function lintCommentIdentifier(reportName) {
     return `<!-- common-lint-reporter: ${reportName} -->`;
 }
@@ -1122,24 +777,24 @@ function createLintComment(body, reportName) {
 function createComment(context, lintResults) {
     let result = `# ${createTitle(lintResults)}\n`;
     result += `\n`;
-    if (0 < (0, level_1.countLevel)(lintResults, "failure")) {
+    if (0 < countLevel(lintResults, "failure")) {
         result += `## Failure\n`;
         result += createLevelTable(context, lintResults, "failure");
     }
-    if (0 < (0, level_1.countLevel)(lintResults, "warning")) {
+    if (0 < countLevel(lintResults, "warning")) {
         result += `## Warning\n`;
         result += createLevelTable(context, lintResults, "warning");
     }
-    if (0 < (0, level_1.countLevel)(lintResults, "notice")) {
+    if (0 < countLevel(lintResults, "notice")) {
         result += `## Notice\n`;
         result += createLevelTable(context, lintResults, "notice");
     }
     return result;
 }
 function createTitle(lintResults) {
-    const noticeCount = (0, level_1.countLevel)(lintResults, "notice");
-    const warningCount = (0, level_1.countLevel)(lintResults, "warning");
-    const failureCount = (0, level_1.countLevel)(lintResults, "failure");
+    const noticeCount = countLevel(lintResults, "notice");
+    const warningCount = countLevel(lintResults, "warning");
+    const failureCount = countLevel(lintResults, "failure");
     const messages = [];
     if (noticeCount == 1) {
         messages.push("1 notice");
@@ -1181,7 +836,7 @@ function createLevelTable(context, lintResults, targetLevel) {
             line += `-L${lintResult.endLine}`;
         }
         const baseUrl = `${context.serverUrl()}/${context.owner()}/${context.repository()}`;
-        const path = (0, path_1.trimPath)(context, lintResult.path);
+        const path = trimPath(context, lintResult.path);
         const message = lintResult.message.replace(/(\r\n)|\r|\n/g, "<br />");
         const link = `${baseUrl}/blob/${context.commitSha()}/${path}#${line}`;
         result += `|[${path} ${line}](${link})|${message}|${lintResult.rule}|\n`;
@@ -1189,40 +844,117 @@ function createLevelTable(context, lintResults, targetLevel) {
     return result;
 }
 
-
-/***/ },
-
-/***/ 9245
-(__unused_webpack_module, exports, __webpack_require__) {
+;// ./src/reporter/comment/comment-reporter.ts
 
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.calculateConclusion = calculateConclusion;
-const graphql_1 = __webpack_require__(2634);
-const level_1 = __webpack_require__(3590);
-function calculateConclusion(option, lintResults) {
-    const noticeCount = (0, level_1.countLevel)(lintResults, "notice");
-    const warningCount = (0, level_1.countLevel)(lintResults, "warning");
-    const failureCount = (0, level_1.countLevel)(lintResults, "failure");
-    const score = noticeCount * option.conclusionNoticeWeight +
-        warningCount * option.conclusionWarningWeight +
-        failureCount * option.conclusionFailureWeight;
-    return score < option.conclusionFailureThreshold ? graphql_1.CheckConclusionState.Success : graphql_1.CheckConclusionState.Failure;
+
+
+
+
+class CommentReporter {
+    async report(option, lintResults) {
+        const client = githubClient(option);
+        const context = githubContext(option);
+        const repositoryId = (await client.getRepositoryId({ owner: context.owner(), name: context.repository() }))
+            ?.repository?.id;
+        if (repositoryId == undefined) {
+            throw Error("not found repository");
+        }
+        const statusAndCheckRuns = await getCommitStatusAndCheckRunWithPaging(client, {
+            owner: context.owner(),
+            name: context.repository(),
+            commitSha: context.commitSha(),
+        });
+        const foundSameCheckRun = statusAndCheckRuns.find((x) => x.__typename == "CheckRun" && x.name == option.reportName);
+        if (foundSameCheckRun != undefined) {
+            await client.updateCheckRun({
+                repositoryId: repositoryId,
+                checkRunId: foundSameCheckRun.id,
+                status: graphql/* RequestableCheckStatusState */.pKD.InProgress,
+            });
+        }
+        const checkRunId = foundSameCheckRun == undefined
+            ? (await client.createCheckRun({
+                repositoryId: repositoryId,
+                headSha: context.commitSha(),
+                name: option.reportName,
+                startedAt: new Date().toISOString(),
+                status: graphql/* RequestableCheckStatusState */.pKD.InProgress,
+            }))?.createCheckRun?.checkRun?.id
+            : foundSameCheckRun.id;
+        if (checkRunId == undefined) {
+            throw Error("cannot create check-run");
+        }
+        const pullRequest = await this.getPullRequest(client, context);
+        const loginUser = await this.getLoginUser(client);
+        if (loginUser == undefined) {
+            throw Error("cannot found login user");
+        }
+        await this.reportComment(client, context, option, pullRequest, loginUser, lintResults);
+        await client.updateCheckRun({
+            repositoryId: repositoryId,
+            checkRunId: checkRunId,
+            status: graphql/* RequestableCheckStatusState */.pKD.Completed,
+            conclusion: calculateConclusion(option, lintResults),
+            completedAt: new Date().toISOString(),
+        });
+    }
+    async getPullRequest(client, context) {
+        const pullRequestNumber = context.pullRequest();
+        if (pullRequestNumber == null) {
+            throw Error("pull_request number is not provided");
+        }
+        const pullRequest = await client.getPullRequest({
+            owner: context.owner(),
+            name: context.repository(),
+            number: pullRequestNumber,
+        });
+        const pullRequestId = pullRequest?.repository?.pullRequest?.id;
+        if (pullRequestId == null || pullRequestId == undefined) {
+            throw Error("not found pull request id");
+        }
+        return {
+            number: pullRequestNumber,
+            id: pullRequestId,
+        };
+    }
+    async getLoginUser(client) {
+        // if bot account, including '[bot]'. but author.login will not include it
+        const response = await client.getLoginUser({});
+        if (response == undefined) {
+            return undefined;
+        }
+        const loginUser = response.viewer.login.split("[")[0];
+        return {
+            login: loginUser,
+        };
+    }
+    async reportComment(client, context, option, pullRequest, loginUser, lintResults) {
+        const comments = await getPullRequestCommentsWithPaging(client, {
+            owner: context.owner(),
+            name: context.repository(),
+            pull_request: pullRequest.number,
+        });
+        for (const comment of comments) {
+            if (comment.author?.login != loginUser.login) {
+                continue;
+            }
+            if (isLintComment(comment.body, option.reportName)) {
+                await client.deleteComment({ id: comment.id });
+            }
+        }
+        if (lintResults.length == 0) {
+            return;
+        }
+        await client.addComment({
+            id: pullRequest.id,
+            body: createLintComment(createComment(context, lintResults), option.reportName),
+        });
+    }
 }
 
+;// ./src/reporter/inline-comment/comment.ts
 
-/***/ },
-
-/***/ 9393
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.isLintInlineComment = isLintInlineComment;
-exports.createLintInlineComment = createLintInlineComment;
-exports.createInlineComment = createInlineComment;
-exports.equalsInlineComment = equalsInlineComment;
-const path_1 = __webpack_require__(969);
 function lintInlineCommentIdentifier(reportName) {
     return `<!-- common-lint-reporter: ${reportName} -->`;
 }
@@ -1245,7 +977,7 @@ function equalsInlineComment(left, right, context, reportName) {
     if (left.comments.nodes[0] == null || left.comments.nodes[0] == undefined) {
         return false;
     }
-    if (left.path != (0, path_1.trimPath)(context, right.path)) {
+    if (left.path != trimPath(context, right.path)) {
         return false;
     }
     if (left.startLine) {
@@ -1267,21 +999,13 @@ function equalsInlineComment(left, right, context, reportName) {
     return true;
 }
 
-
-/***/ },
-
-/***/ 4713
-(__unused_webpack_module, exports, __webpack_require__) {
+;// ./src/reporter/inline-comment/inline-comment-reporter.ts
 
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.InlineCommentReporter = void 0;
-const option_1 = __webpack_require__(2243);
-const paging_1 = __webpack_require__(6964);
-const comment_reporter_1 = __webpack_require__(1309);
-const comment_1 = __webpack_require__(9393);
-const path_1 = __webpack_require__(969);
-class InlineCommentReporter extends comment_reporter_1.CommentReporter {
+
+
+
+class InlineCommentReporter extends CommentReporter {
     async reportComment(client, context, option, pullRequest, loginUser, lintResults) {
         const inlineLintResults = lintResults.filter((x) => x.startLine != undefined);
         const notInlineLintResults = lintResults.filter((x) => x.startLine == undefined);
@@ -1291,13 +1015,13 @@ class InlineCommentReporter extends comment_reporter_1.CommentReporter {
     }
     // return cannot reported lint result
     async reportInlineComment(client, context, option, pullRequest, loginUser, lintResults) {
-        const reviewThreads = await (0, paging_1.getPullRequestReviewThreadsWithPaging)(client, {
+        const reviewThreads = await getPullRequestReviewThreadsWithPaging(client, {
             owner: context.owner(),
             name: context.repository(),
             number: pullRequest.number,
         });
         const pastReviewThreads = await this.resolveOutdatedThreadsAndFiltered(client, option, loginUser, reviewThreads);
-        const newLintResults = lintResults.filter((x) => pastReviewThreads.filter((y) => (0, comment_1.equalsInlineComment)(y, x, context, option.reportName)).length == 0);
+        const newLintResults = lintResults.filter((x) => pastReviewThreads.filter((y) => equalsInlineComment(y, x, context, option.reportName)).length == 0);
         const pullRequestReview = await client.addPullRequestReviewDraft({
             pullRequestId: pullRequest.id,
             commitSha: context.commitSha(),
@@ -1322,8 +1046,8 @@ class InlineCommentReporter extends comment_reporter_1.CommentReporter {
                 const thread = await client.addPullRequestReviewThread({
                     pullRequestId: pullRequest.id,
                     pullRequestReviewId: pullRequestReviewId,
-                    body: (0, comment_1.createLintInlineComment)((0, comment_1.createInlineComment)(lintResult), option.reportName),
-                    path: (0, path_1.trimPath)(context, lintResult.path),
+                    body: createLintInlineComment(createInlineComment(lintResult), option.reportName),
+                    path: trimPath(context, lintResult.path),
                     line: line,
                     startLine: startLine,
                 });
@@ -1365,29 +1089,29 @@ class InlineCommentReporter extends comment_reporter_1.CommentReporter {
             if (reviewThread.comments.nodes[0].author?.login != loginUser.login) {
                 continue;
             }
-            if ((0, comment_1.isLintInlineComment)(reviewThread.comments.nodes[0].body, option.reportName) == false) {
+            if (isLintInlineComment(reviewThread.comments.nodes[0].body, option.reportName) == false) {
                 continue;
             }
             if (reviewThread.isOutdated) {
                 switch (option.outdatedResolver) {
-                    case option_1.OutdatedResolver.ResolveThread:
+                    case OutdatedResolver.ResolveThread:
                         if (reviewThread.isResolved == false && reviewThread.comments.pageInfo.hasNextPage == false) {
                             await client.resolvePullRequestReviewThread({ pullRequestThreadId: reviewThread.id });
                         }
                         break;
-                    case option_1.OutdatedResolver.ForceResolveThread:
+                    case OutdatedResolver.ForceResolveThread:
                         if (reviewThread.isResolved == false) {
                             await client.resolvePullRequestReviewThread({ pullRequestThreadId: reviewThread.id });
                         }
                         break;
-                    case option_1.OutdatedResolver.DeleteThread:
+                    case OutdatedResolver.DeleteThread:
                         if (reviewThread.comments.pageInfo.hasNextPage == false) {
                             await client.deletePullRequestReviewComment({
                                 pullRequestReviewCommentId: reviewThread.comments.nodes[0].id,
                             });
                         }
                         break;
-                    case option_1.OutdatedResolver.DeleteOrForceResolveThread:
+                    case OutdatedResolver.DeleteOrForceResolveThread:
                         if (reviewThread.comments.pageInfo.hasNextPage == false) {
                             await client.deletePullRequestReviewComment({
                                 pullRequestReviewCommentId: reviewThread.comments.nodes[0].id,
@@ -1406,228 +1130,255 @@ class InlineCommentReporter extends comment_reporter_1.CommentReporter {
         return result;
     }
 }
-exports.InlineCommentReporter = InlineCommentReporter;
+
+;// ./src/main.ts
 
 
-/***/ },
-
-/***/ 3590
-(__unused_webpack_module, exports) {
 
 
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.countLevel = countLevel;
-function countLevel(lintResults, targetLevel) {
-    let count = 0;
-    for (const lintResult of lintResults) {
-        if (lintResult.level == targetLevel) {
-            count += 1;
+
+
+async function run() {
+    try {
+        const option = getOption();
+        const lintResults = await readLintResults(option);
+        let reporter;
+        if (option.reportType == ReportType.Comment) {
+            reporter = new CommentReporter();
+        }
+        else if (option.reportType == ReportType.InlineComment) {
+            reporter = new InlineCommentReporter();
+        }
+        else {
+            reporter = new CheckRunReporter();
+        }
+        await reporter.report(option, lintResults);
+    }
+    catch (error) {
+        if (error instanceof Error) {
+            core/* setFailed */.C1(error.message);
         }
     }
-    return count;
 }
+run();
 
 
 /***/ },
 
-/***/ 969
-(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.trimPath = trimPath;
-const path = __importStar(__webpack_require__(6928));
-function trimPath(context, filePath) {
-    return filePath.replace(`${context.workspacePath()}${path.sep}`, "");
-}
-
-
-/***/ },
-
-/***/ 2613
+/***/ 42613
 (module) {
 
 module.exports = require("assert");
 
 /***/ },
 
-/***/ 290
-(module) {
-
-module.exports = require("async_hooks");
-
-/***/ },
-
-/***/ 181
-(module) {
-
-module.exports = require("buffer");
-
-/***/ },
-
-/***/ 5317
+/***/ 35317
 (module) {
 
 module.exports = require("child_process");
 
 /***/ },
 
-/***/ 4236
-(module) {
-
-module.exports = require("console");
-
-/***/ },
-
-/***/ 6982
+/***/ 76982
 (module) {
 
 module.exports = require("crypto");
 
 /***/ },
 
-/***/ 1637
-(module) {
-
-module.exports = require("diagnostics_channel");
-
-/***/ },
-
-/***/ 4434
+/***/ 24434
 (module) {
 
 module.exports = require("events");
 
 /***/ },
 
-/***/ 9896
+/***/ 79896
 (module) {
 
 module.exports = require("fs");
 
 /***/ },
 
-/***/ 8611
+/***/ 58611
 (module) {
 
 module.exports = require("http");
 
 /***/ },
 
-/***/ 5675
-(module) {
-
-module.exports = require("http2");
-
-/***/ },
-
-/***/ 5692
+/***/ 65692
 (module) {
 
 module.exports = require("https");
 
 /***/ },
 
-/***/ 9278
+/***/ 69278
 (module) {
 
 module.exports = require("net");
 
 /***/ },
 
-/***/ 7598
+/***/ 34589
+(module) {
+
+module.exports = require("node:assert");
+
+/***/ },
+
+/***/ 16698
+(module) {
+
+module.exports = require("node:async_hooks");
+
+/***/ },
+
+/***/ 4573
+(module) {
+
+module.exports = require("node:buffer");
+
+/***/ },
+
+/***/ 37540
+(module) {
+
+module.exports = require("node:console");
+
+/***/ },
+
+/***/ 77598
 (module) {
 
 module.exports = require("node:crypto");
 
 /***/ },
 
-/***/ 8474
+/***/ 53053
+(module) {
+
+module.exports = require("node:diagnostics_channel");
+
+/***/ },
+
+/***/ 40610
+(module) {
+
+module.exports = require("node:dns");
+
+/***/ },
+
+/***/ 78474
 (module) {
 
 module.exports = require("node:events");
 
 /***/ },
 
-/***/ 7075
+/***/ 37067
+(module) {
+
+module.exports = require("node:http");
+
+/***/ },
+
+/***/ 32467
+(module) {
+
+module.exports = require("node:http2");
+
+/***/ },
+
+/***/ 77030
+(module) {
+
+module.exports = require("node:net");
+
+/***/ },
+
+/***/ 643
+(module) {
+
+module.exports = require("node:perf_hooks");
+
+/***/ },
+
+/***/ 41792
+(module) {
+
+module.exports = require("node:querystring");
+
+/***/ },
+
+/***/ 57075
 (module) {
 
 module.exports = require("node:stream");
 
 /***/ },
 
-/***/ 7975
+/***/ 41692
+(module) {
+
+module.exports = require("node:tls");
+
+/***/ },
+
+/***/ 73136
+(module) {
+
+module.exports = require("node:url");
+
+/***/ },
+
+/***/ 57975
 (module) {
 
 module.exports = require("node:util");
 
 /***/ },
 
-/***/ 857
+/***/ 73429
+(module) {
+
+module.exports = require("node:util/types");
+
+/***/ },
+
+/***/ 75919
+(module) {
+
+module.exports = require("node:worker_threads");
+
+/***/ },
+
+/***/ 38522
+(module) {
+
+module.exports = require("node:zlib");
+
+/***/ },
+
+/***/ 70857
 (module) {
 
 module.exports = require("os");
 
 /***/ },
 
-/***/ 6928
+/***/ 16928
 (module) {
 
 module.exports = require("path");
 
 /***/ },
 
-/***/ 2987
-(module) {
-
-module.exports = require("perf_hooks");
-
-/***/ },
-
-/***/ 4876
+/***/ 24876
 (module) {
 
 module.exports = require("punycode");
-
-/***/ },
-
-/***/ 3480
-(module) {
-
-module.exports = require("querystring");
 
 /***/ },
 
@@ -1638,63 +1389,42 @@ module.exports = require("stream");
 
 /***/ },
 
-/***/ 3774
-(module) {
-
-module.exports = require("stream/web");
-
-/***/ },
-
-/***/ 3193
+/***/ 13193
 (module) {
 
 module.exports = require("string_decoder");
 
 /***/ },
 
-/***/ 3557
+/***/ 53557
 (module) {
 
 module.exports = require("timers");
 
 /***/ },
 
-/***/ 4756
+/***/ 64756
 (module) {
 
 module.exports = require("tls");
 
 /***/ },
 
-/***/ 7016
+/***/ 87016
 (module) {
 
 module.exports = require("url");
 
 /***/ },
 
-/***/ 9023
+/***/ 39023
 (module) {
 
 module.exports = require("util");
 
 /***/ },
 
-/***/ 8253
-(module) {
-
-module.exports = require("util/types");
-
-/***/ },
-
-/***/ 8167
-(module) {
-
-module.exports = require("worker_threads");
-
-/***/ },
-
-/***/ 3106
+/***/ 43106
 (module) {
 
 module.exports = require("zlib");
@@ -1737,7 +1467,7 @@ module.exports = require("zlib");
 /******/ 	__webpack_require__.x = () => {
 /******/ 		// Load entry module and return exports
 /******/ 		// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 		var __webpack_exports__ = __webpack_require__.O(undefined, [121,630], () => (__webpack_require__(7927)))
+/******/ 		var __webpack_exports__ = __webpack_require__.O(undefined, [121,630], () => (__webpack_require__(90338)))
 /******/ 		__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 		return __webpack_exports__;
 /******/ 	};
@@ -1784,36 +1514,6 @@ module.exports = require("zlib");
 /******/ 				() => (module);
 /******/ 			__webpack_require__.d(getter, { a: getter });
 /******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/create fake namespace object */
-/******/ 	(() => {
-/******/ 		var getProto = Object.getPrototypeOf ? (obj) => (Object.getPrototypeOf(obj)) : (obj) => (obj.__proto__);
-/******/ 		var leafPrototypes;
-/******/ 		// create a fake namespace object
-/******/ 		// mode & 1: value is a module id, require it
-/******/ 		// mode & 2: merge all properties of value into the ns
-/******/ 		// mode & 4: return value when already ns object
-/******/ 		// mode & 16: return value when it's Promise-like
-/******/ 		// mode & 8|1: behave like require
-/******/ 		__webpack_require__.t = function(value, mode) {
-/******/ 			if(mode & 1) value = this(value);
-/******/ 			if(mode & 8) return value;
-/******/ 			if(typeof value === 'object' && value) {
-/******/ 				if((mode & 4) && value.__esModule) return value;
-/******/ 				if((mode & 16) && typeof value.then === 'function') return value;
-/******/ 			}
-/******/ 			var ns = Object.create(null);
-/******/ 			__webpack_require__.r(ns);
-/******/ 			var def = {};
-/******/ 			leafPrototypes = leafPrototypes || [null, getProto({}), getProto([]), getProto(getProto)];
-/******/ 			for(var current = mode & 2 && value; (typeof current == 'object' || typeof current == 'function') && !~leafPrototypes.indexOf(current); current = getProto(current)) {
-/******/ 				Object.getOwnPropertyNames(current).forEach((key) => (def[key] = () => (value[key])));
-/******/ 			}
-/******/ 			def['default'] = () => (value);
-/******/ 			__webpack_require__.d(ns, def);
-/******/ 			return ns;
 /******/ 		};
 /******/ 	})();
 /******/ 	

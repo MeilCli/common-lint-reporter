@@ -56,6 +56,7 @@ export enum OutdatedResolver {
 
 export function getOption(): Option {
     const reportTypeString = getInput("report_type");
+    // eslint-disable-next-line no-useless-assignment
     let reportType: ReportType = ReportType.CheckRun;
     switch (reportTypeString) {
         case "comment":
@@ -70,6 +71,7 @@ export function getOption(): Option {
     }
 
     const outdatedResolverString = getInput("outdated_resolver");
+    // eslint-disable-next-line no-useless-assignment
     let outdatedResolver: OutdatedResolver = OutdatedResolver.DeleteOrForceResolveThread;
     switch (outdatedResolverString) {
         case "resolve_thread":

@@ -1,7 +1,7 @@
 import * as core from "@actions/core";
-import { getOption } from "./option";
-import { LintResult, LintResultLevel } from "../lint-result";
-import { Transformer } from "./transformer";
+import { getOption } from "./option.js";
+import { LintResult, LintResultLevel } from "../lint-result.js";
+import { Transformer } from "./transformer.js";
 
 interface RubocopReport {
     files: RubocopFile[];
@@ -32,6 +32,7 @@ export class RubocopTransformer extends Transformer {
         const rubocopReport = JSON.parse(body) as RubocopReport;
         for (const rubocopFile of rubocopReport.files) {
             for (const message of rubocopFile.offenses) {
+                // eslint-disable-next-line no-useless-assignment
                 let level: LintResultLevel = "notice";
                 switch (message.severity) {
                     case "convention":

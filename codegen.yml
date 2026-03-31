@@ -2,8 +2,11 @@ overwrite: true
 schema: './node_modules/@octokit/graphql-schema/schema.graphql'
 documents:
   - graphql/*.graphql
+emitLegacyCommonJSImports: false
 generates:
   graphql/graphql.ts:
+    config:
+      documentMode: documentNode
     plugins:
       - 'typescript'
       - 'typescript-resolvers'

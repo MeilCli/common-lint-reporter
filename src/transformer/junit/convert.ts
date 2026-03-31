@@ -1,10 +1,10 @@
-import { LintResult } from "../../lint-result";
-import { JunitTestSuite } from "./entity";
-import { JunitHandler } from "./junit-handler";
-import { DefaultJunitHandler } from "./junit-handler-default";
-import { EslintJunitHandler } from "./junit-handler-eslint";
-import { CpplintJunitHandler } from "./junit-handler-cpplint";
-import { RubocopJunitHandler } from "./junit-handler-rubocop";
+import { LintResult } from "../../lint-result.js";
+import { JunitTestSuite } from "./entity.js";
+import { JunitHandler } from "./junit-handler.js";
+import { DefaultJunitHandler } from "./junit-handler-default.js";
+import { EslintJunitHandler } from "./junit-handler-eslint.js";
+import { CpplintJunitHandler } from "./junit-handler-cpplint.js";
+import { RubocopJunitHandler } from "./junit-handler-rubocop.js";
 
 const handlers: JunitHandler[] = [
     new EslintJunitHandler(),

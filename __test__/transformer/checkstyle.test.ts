@@ -1,6 +1,6 @@
 import { CheckstyleTransformer } from "../../src/transformer/checkstyle";
-import { LintResult } from "../../src/lint-result";
 import * as fs from "fs";
+import { test, expect } from "@jest/globals";
 
 test("transform", async () => {
     const text = fs.readFileSync("data/checkstyle.xml", "utf-8");
@@ -17,7 +17,7 @@ test("transform", async () => {
         startColumn: 10,
         endColumn: undefined,
         level: "failure",
-    } as LintResult);
+    });
     expect(result[1]).toMatchObject({
         path: "filepath.txt",
         rule: "eslint.rules.prettier/prettier",
@@ -27,7 +27,7 @@ test("transform", async () => {
         startColumn: 18,
         endColumn: undefined,
         level: "failure",
-    } as LintResult);
+    });
     expect(result[2]).toMatchObject({
         path: "filepath.txt",
         rule: "eslint.rules.@typescript-eslint/no-unused-vars",
@@ -37,7 +37,7 @@ test("transform", async () => {
         startColumn: 11,
         endColumn: undefined,
         level: "failure",
-    } as LintResult);
+    });
 });
 
 test("transformEmpty", async () => {

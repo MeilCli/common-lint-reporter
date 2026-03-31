@@ -1,7 +1,7 @@
-import { Option } from "../option";
-import { LintResult } from "../lint-result";
-import { CheckConclusionState } from "../../graphql/graphql";
-import { countLevel } from "./level";
+import { Option } from "../option.js";
+import { LintResult } from "../lint-result.js";
+import { CheckConclusionState } from "../../graphql/graphql.js";
+import { countLevel } from "./level.js";
 
 export function calculateConclusion(option: Option, lintResults: LintResult[]): CheckConclusionState {
     const noticeCount = countLevel(lintResults, "notice");

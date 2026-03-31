@@ -1,7 +1,7 @@
-import { GitHubContext } from "../../github/context";
-import { GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNode } from "../../github/types";
-import { LintResult } from "../../lint-result";
-import { trimPath } from "../path";
+import { GitHubContext } from "../../github/context.js";
+import { GetPullRequestReviewThreadsQueryPullRequestReviewThreadsNode } from "../../github/types.js";
+import { LintResult } from "../../lint-result.js";
+import { trimPath } from "../path.js";
 
 function lintInlineCommentIdentifier(reportName: string): string {
     return `<!-- common-lint-reporter: ${reportName} -->`;

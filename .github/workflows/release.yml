@@ -24,16 +24,18 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
-          node-version: 20
-      - run: npm install
-      - run: npm run build
-      - run: npm run pack
-      - run: npm run test
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install
+      - run: pnpm run build
+      - run: pnpm run pack
+      - run: pnpm run test
       - uses: MeilCli/bump-release-action@master
         with:
           config_path: '.github/bump.yml'

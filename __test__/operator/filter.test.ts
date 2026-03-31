@@ -1,6 +1,7 @@
 import { FilterOperator } from "../../src/operator/filter";
 import { LintResult } from "../../src/lint-result";
 import { createOption } from "./functional-option.test";
+import { test, expect } from "@jest/globals";
 
 function createSource(): LintResult[] {
     return [
@@ -38,7 +39,7 @@ function expectSource(source: LintResult[]) {
         endLine: 1,
         endColumn: 20,
         level: "failure",
-    } as LintResult);
+    });
     expect(source[1]).toMatchObject({
         path: "test/file.txt",
         message: "test message",
@@ -48,7 +49,7 @@ function expectSource(source: LintResult[]) {
         endLine: 1,
         endColumn: 20,
         level: "warning",
-    } as LintResult);
+    });
 }
 
 function expectResult(result: LintResult[]) {
@@ -62,7 +63,7 @@ function expectResult(result: LintResult[]) {
         endLine: 1,
         endColumn: 20,
         level: "failure",
-    } as LintResult);
+    });
 }
 
 test("executeAsFunctionStyle", async () => {

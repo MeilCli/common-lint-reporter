@@ -1,4 +1,5 @@
 import { FunctionalOption } from "../../src/operator/option";
+import { test } from "@jest/globals";
 
 export function createOption(func: string): FunctionalOption {
     return {

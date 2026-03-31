@@ -1,7 +1,7 @@
-import { JunitTestSuite, JunitTestCase } from "./entity";
-import { LintResult } from "../../lint-result";
-import { JunitHandler } from "./junit-handler";
-import * as he from "he";
+import { JunitTestSuite, JunitTestCase } from "./entity.js";
+import { LintResult } from "../../lint-result.js";
+import { JunitHandler } from "./junit-handler.js";
+import he from "he";
 
 export class CpplintJunitHandler implements JunitHandler {
     match(testSuites: JunitTestSuite[]): boolean {

@@ -2,11 +2,11 @@ import * as fs from "fs";
 import * as glob from "@actions/glob";
 import * as vm from "vm";
 import * as path from "path";
-import { OperatorOption, FunctionalOption } from "./option";
-import { LintResult } from "../lint-result";
-import { githubContext } from "../github/context";
-import { githubClient } from "../github/client";
-import { getPullRequestChangedFileWithPaging } from "../github/paging";
+import { OperatorOption, FunctionalOption } from "./option.js";
+import { LintResult } from "../lint-result.js";
+import { githubContext } from "../github/context.js";
+import { githubClient } from "../github/client.js";
+import { getPullRequestChangedFileWithPaging } from "../github/paging.js";
 
 interface Context {
     source: LintResult[];
