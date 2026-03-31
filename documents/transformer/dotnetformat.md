@@ -1,6 +1,6 @@
 # Transformer of dotnet format
 ```yml
-- uses: MeilCli/common-lint-reporter/transformer/dotnetformat@v1
+- uses: MeilCli/common-lint-reporter/transformer/dotnetformat@v2
   with:
     report_files: |
       eslint_report.json

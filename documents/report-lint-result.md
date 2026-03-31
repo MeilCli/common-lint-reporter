@@ -2,7 +2,7 @@
 common-lint-reporter's final step, it's report lint result to GitHub
 
 ```yml
-- uses: MeilCli/common-lint-reporter@v1
+- uses: MeilCli/common-lint-reporter@v2
   with:
     report_type: 'check_run'
     report_to_same_check_run: 'true'

@@ -44,21 +44,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6.0.2
+      - uses: actions/setup-node@v6.3.0
         with:
           node-version: 20
       - run: npm install
       - run: npm run build
       - run: npm run lint
         continue-on-error: true
-      - uses: MeilCli/common-lint-reporter/transformer/eslint@1
+      - uses: MeilCli/common-lint-reporter/transformer/eslint@2
         with:
           # your output path
           report_files: |
             eslint_report.json
-      - uses: MeilCli/common-lint-reporter/operator/filter-by-file-changed@v1
-      - uses: MeilCli/common-lint-reporter@v1
+      - uses: MeilCli/common-lint-reporter/operator/filter-by-file-changed@v2
+      - uses: MeilCli/common-lint-reporter@v2
         with:
           report_type: 'check_run'
           report_to_same_check_run: 'true'

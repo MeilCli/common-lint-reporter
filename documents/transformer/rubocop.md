@@ -1,6 +1,6 @@
 # Transformer of RuboCop
 ```yml
-- uses: MeilCli/common-lint-reporter/transformer/rubocop@v1
+- uses: MeilCli/common-lint-reporter/transformer/rubocop@v2
   with:
     report_files: |
       rubocop_report.json

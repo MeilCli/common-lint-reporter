@@ -1,6 +1,6 @@
 # Transformer of junit
 ```yml
-- uses: MeilCli/common-lint-reporter/transformer/junit@v1
+- uses: MeilCli/common-lint-reporter/transformer/junit@v2
   with:
     report_files: |
       junit_report.xml
