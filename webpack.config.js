@@ -30,6 +30,12 @@ export default {
     output: {
         path: path.resolve(__dirname, "dist"),
         filename: "[name].js",
+        library: {
+            type: "module",
+        },
+    },
+    experiments: {
+        outputModule: true,
     },
     devtool: false,
     optimization: {
