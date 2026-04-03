@@ -223,12 +223,12 @@ class GitHubContext {
 // EXTERNAL MODULE: ./node_modules/.pnpm/cross-fetch@4.1.0/node_modules/cross-fetch/dist/node-ponyfill.js
 var node_ponyfill = __webpack_require__(45745);
 var node_ponyfill_default = /*#__PURE__*/__webpack_require__.n(node_ponyfill);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.6_graphql-ws@6.0.7_graphql@16.13.2_ws@8.20.0__graphql@16.13.2_react@19.2.4_rxjs@7.8.2/node_modules/@apollo/client/core/ApolloClient.js + 3 modules
-var ApolloClient = __webpack_require__(85914);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.6_graphql-ws@6.0.7_graphql@16.13.2_ws@8.20.0__graphql@16.13.2_react@19.2.4_rxjs@7.8.2/node_modules/@apollo/client/link/http/HttpLink.js + 9 modules
-var HttpLink = __webpack_require__(31387);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.6_graphql-ws@6.0.7_graphql@16.13.2_ws@8.20.0__graphql@16.13.2_react@19.2.4_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/inMemoryCache.js + 6 modules
-var inMemoryCache = __webpack_require__(47146);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.6_graphql-ws@6.0.8_graphql@16.13.2_ws@8.20.0__graphql@16.13.2_react@19.2.4_rxjs@7.8.2/node_modules/@apollo/client/core/ApolloClient.js + 3 modules
+var ApolloClient = __webpack_require__(38495);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.6_graphql-ws@6.0.8_graphql@16.13.2_ws@8.20.0__graphql@16.13.2_react@19.2.4_rxjs@7.8.2/node_modules/@apollo/client/link/http/HttpLink.js + 9 modules
+var HttpLink = __webpack_require__(34796);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.6_graphql-ws@6.0.8_graphql@16.13.2_ws@8.20.0__graphql@16.13.2_react@19.2.4_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/inMemoryCache.js + 6 modules
+var inMemoryCache = __webpack_require__(47773);
 // EXTERNAL MODULE: ./graphql/graphql.ts
 var graphql = __webpack_require__(15850);
 ;// ./src/github/client.ts
