@@ -33,7 +33,7 @@
         "cross-fetch": "4.1.0",
         "fast-xml-parser": "5.5.9",
         "graphql": "16.13.2",
-        "graphql-ws": "6.0.7",
+        "graphql-ws": "6.0.8",
         "he": "1.2.0"
     },
     "devDependencies": {
