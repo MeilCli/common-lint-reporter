@@ -4,6 +4,7 @@ on:
 jobs:
   merge:
     runs-on: ubuntu-latest
+    permissions: {}
     if: github.event_name == 'pull_request' && github.actor == 'MeilCli'
     steps:
       - run: sleep 10s
