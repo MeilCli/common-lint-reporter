@@ -914,7 +914,7 @@ function range(a, b, str) {
 
 /***/ },
 
-/***/ 38946
+/***/ 43791
 (module, __unused_webpack_exports, __webpack_require__) {
 
 var concatMap = __webpack_require__(80486);
@@ -1070,7 +1070,7 @@ function expand(str, isTop) {
     var y = numeric(n[1]);
     var width = Math.max(n[0].length, n[1].length)
     var incr = n.length == 3
-      ? Math.abs(numeric(n[2]))
+      ? Math.max(Math.abs(numeric(n[2])), 1)
       : 1;
     var test = lte;
     var reverse = y < x;
@@ -1117,7 +1117,6 @@ function expand(str, isTop) {
 
   return expansions;
 }
-
 
 
 /***/ },
@@ -1526,7 +1525,7 @@ var path = (function () { try { return __webpack_require__(16928) } catch (e) {}
 minimatch.sep = path.sep
 
 var GLOBSTAR = minimatch.GLOBSTAR = Minimatch.GLOBSTAR = {}
-var expand = __webpack_require__(38946)
+var expand = __webpack_require__(43791)
 
 var plTypes = {
   '!': { open: '(?:(?!(?:', close: '))[^/]*?)'},
