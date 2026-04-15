@@ -13,7 +13,7 @@ import { createRequire as __WEBPACK_EXTERNAL_createRequire } from "node:module";
 const __WEBPACK_EXTERNAL_createRequire_require = __WEBPACK_EXTERNAL_createRequire(import.meta.url);
 /******/ var __webpack_modules__ = ({
 
-/***/ 52387
+/***/ 94691
 (__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) {
 
 
@@ -21,8 +21,8 @@ const __WEBPACK_EXTERNAL_createRequire_require = __WEBPACK_EXTERNAL_createRequir
 var core = __webpack_require__(18370);
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __webpack_require__(44421);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@9.0.0/node_modules/@actions/github/lib/github.js + 13 modules
-var github = __webpack_require__(43861);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@9.0.0/node_modules/@actions/github/lib/github.js + 14 modules
+var github = __webpack_require__(70388);
 ;// ./src/github/context.ts
 
 function githubContext(option) {
@@ -592,6 +592,6 @@ module.exports = __WEBPACK_EXTERNAL_createRequire_require("util");
 /******/ // startup
 /******/ // Load entry module and return exports
 /******/ // This entry module depends on other loaded chunks and execution need to be delayed
-/******/ var __webpack_exports__ = __webpack_require__.O(undefined, [121], () => (__webpack_require__(52387)))
+/******/ var __webpack_exports__ = __webpack_require__.O(undefined, [121], () => (__webpack_require__(94691)))
 /******/ __webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 
