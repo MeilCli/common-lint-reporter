@@ -21,8 +21,8 @@ const __WEBPACK_EXTERNAL_createRequire_require = __WEBPACK_EXTERNAL_createRequir
 var core = __webpack_require__(18370);
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __webpack_require__(44421);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@9.0.0/node_modules/@actions/github/lib/github.js + 14 modules
-var github = __webpack_require__(70388);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@9.1.0/node_modules/@actions/github/lib/github.js + 14 modules
+var github = __webpack_require__(49865);
 ;// ./src/github/context.ts
 
 function githubContext(option) {
