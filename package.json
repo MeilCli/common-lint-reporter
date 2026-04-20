@@ -39,7 +39,7 @@
     "devDependencies": {
         "@eslint/eslintrc": "3.3.5",
         "@eslint/js": "10.0.1",
-        "@graphql-codegen/cli": "6.2.1",
+        "@graphql-codegen/cli": "6.3.0",
         "@graphql-codegen/typescript": "5.0.10",
         "@graphql-codegen/typescript-document-nodes": "5.0.9",
         "@graphql-codegen/typescript-operations": "5.1.0",
