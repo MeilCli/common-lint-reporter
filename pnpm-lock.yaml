@@ -119,16 +119,16 @@ importers:
         version: 29.4.9(@babel/core@7.29.0)(@jest/transform@30.3.0)(@jest/types@30.3.0)(babel-jest@30.3.0(@babel/core@7.29.0))(jest-util@30.3.0)(jest@30.3.0(@types/node@25.6.0))(typescript@6.0.2)
       ts-loader:
         specifier: 9.5.7
-        version: 9.5.7(typescript@6.0.2)(webpack@5.106.1)
+        version: 9.5.7(typescript@6.0.2)(webpack@5.106.2)
       typescript:
         specifier: 6.0.2
         version: 6.0.2
       webpack:
-        specifier: 5.106.1
-        version: 5.106.1(webpack-cli@7.0.2)
+        specifier: 5.106.2
+        version: 5.106.2(webpack-cli@7.0.2)
       webpack-cli:
         specifier: 7.0.2
-        version: 7.0.2(webpack@5.106.1)
+        version: 7.0.2(webpack@5.106.2)
 
 packages:
 
@@ -1442,8 +1442,8 @@ packages:
     resolution: {integrity: sha512-BLrgEcRTwX2o6gGxGOCNyMvGSp35YofuYzw9h1IMTRmKqttAZZVU67bdb9Pr2vUHA8+j3i2tJfjO6C6+4myGTA==}
     engines: {node: 18 || 20 || >=22}
 
-  baseline-browser-mapping@2.10.17:
-    resolution: {integrity: sha512-HdrkN8eVG2CXxeifv/VdJ4A4RSra1DTW8dc/hdxzhGHN8QePs6gKaWM9pHPcpCoxYZJuOZ8drHmbdpLHjCYjLA==}
+  baseline-browser-mapping@2.10.19:
+    resolution: {integrity: sha512-qCkNLi2sfBOn8XhZQ0FXsT1Ki/Yo5P90hrkRamVFRS7/KV9hpfA4HkoWNU152+8w0zPjnxo5psx5NL3PSGgv5g==}
     engines: {node: '>=6.0.0'}
     hasBin: true
 
@@ -1494,8 +1494,8 @@ packages:
     resolution: {integrity: sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==}
     engines: {node: '>=10'}
 
-  caniuse-lite@1.0.30001787:
-    resolution: {integrity: sha512-mNcrMN9KeI68u7muanUpEejSLghOKlVhRqS/Za2IeyGllJ9I9otGpR9g3nsw7n4W378TE/LyIteA0+/FOZm4Kg==}
+  caniuse-lite@1.0.30001788:
+    resolution: {integrity: sha512-6q8HFp+lOQtcf7wBK+uEenxymVWkGKkjFpCvw5W25cmMwEDU45p1xQFBQv8JDlMMry7eNxyBaR+qxgmTUZkIRQ==}
 
   capital-case@1.0.4:
     resolution: {integrity: sha512-ds37W8CytHgwnhGGTi88pcPyR15qoNkOpYwmMMfnWqqWgESapLqvDx6huFjQ5vqWSn2Z06173XNA7LtMOeUh1A==}
@@ -1676,8 +1676,8 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
-  electron-to-chromium@1.5.334:
-    resolution: {integrity: sha512-mgjZAz7Jyx1SRCwEpy9wefDS7GvNPazLthHg8eQMJ76wBdGQQDW33TCrUTvQ4wzpmOrv2zrFoD3oNufMdyMpog==}
+  electron-to-chromium@1.5.336:
+    resolution: {integrity: sha512-AbH9q9J455r/nLmdNZes0G0ZKcRX73FicwowalLs6ijwOmCJSRRrLX63lcAlzy9ux3dWK1w1+1nsBJEWN11hcQ==}
 
   emittery@0.13.1:
     resolution: {integrity: sha512-DeWwawk6r5yR9jFgnDKYt4sLS0LmHJJi3ZOnb5/JdbYwj3nW+FxQnHIjhBKz8YLC7oRNPVM9NQ47I3CVx34eqQ==}
@@ -2493,12 +2493,8 @@ packages:
     resolution: {integrity: sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==}
     engines: {node: '>=8.6'}
 
-  mime-db@1.52.0:
-    resolution: {integrity: sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==}
-    engines: {node: '>= 0.6'}
-
-  mime-types@2.1.35:
-    resolution: {integrity: sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==}
+  mime-db@1.54.0:
+    resolution: {integrity: sha512-aU5EJuIN2WDemCcAp2vFBfp/m4EAhWJnUNSSw0ixs7/kXbd6Pg64EmwJkNdFhB8aWt1sH2CTXrLxo/iAGV3oPQ==}
     engines: {node: '>= 0.6'}
 
   mimic-fn@2.1.0:
@@ -3161,8 +3157,8 @@ packages:
     resolution: {integrity: sha512-7tP1PdV4vF+lYPnkMR0jMY5/la2ub5Fc/8VQrrU+lXkiM6C4TjVfGw7iKfyhnTQOsD+6Q/iKw0eFciziRgD58Q==}
     engines: {node: '>=10.13.0'}
 
-  webpack@5.106.1:
-    resolution: {integrity: sha512-EW8af29ak8Oaf4T8k8YsajjrDBDYgnKZ5er6ljWFJsXABfTNowQfvHLftwcepVgdz+IoLSdEAbBiM9DFXoll9w==}
+  webpack@5.106.2:
+    resolution: {integrity: sha512-wGN3qcrBQIFmQ/c0AiOAQBvrZ5lmY8vbbMv4Mxfgzqd/B6+9pXtLo73WuS1dSGXM5QYY3hZnIbvx+K1xxe6FyA==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     peerDependencies:
@@ -4931,7 +4927,7 @@ snapshots:
 
   balanced-match@4.0.4: {}
 
-  baseline-browser-mapping@2.10.17: {}
+  baseline-browser-mapping@2.10.19: {}
 
   before-after-hook@4.0.0: {}
 
@@ -4954,9 +4950,9 @@ snapshots:
 
   browserslist@4.28.2:
     dependencies:
-      baseline-browser-mapping: 2.10.17
-      caniuse-lite: 1.0.30001787
-      electron-to-chromium: 1.5.334
+      baseline-browser-mapping: 2.10.19
+      caniuse-lite: 1.0.30001788
+      electron-to-chromium: 1.5.336
       node-releases: 2.0.37
       update-browserslist-db: 1.2.3(browserslist@4.28.2)
 
@@ -4981,7 +4977,7 @@ snapshots:
 
   camelcase@6.3.0: {}
 
-  caniuse-lite@1.0.30001787: {}
+  caniuse-lite@1.0.30001788: {}
 
   capital-case@1.0.4:
     dependencies:
@@ -5155,7 +5151,7 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
-  electron-to-chromium@1.5.334: {}
+  electron-to-chromium@1.5.336: {}
 
   emittery@0.13.1: {}
 
@@ -6118,11 +6114,7 @@ snapshots:
       braces: 3.0.3
       picomatch: 2.3.2
 
-  mime-db@1.52.0: {}
-
-  mime-types@2.1.35:
-    dependencies:
-      mime-db: 1.52.0
+  mime-db@1.54.0: {}
 
   mimic-fn@2.1.0: {}
 
@@ -6529,13 +6521,13 @@ snapshots:
 
   tapable@2.3.2: {}
 
-  terser-webpack-plugin@5.4.0(webpack@5.106.1):
+  terser-webpack-plugin@5.4.0(webpack@5.106.2):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
       schema-utils: 4.3.3
       terser: 5.46.1
-      webpack: 5.106.1(webpack-cli@7.0.2)
+      webpack: 5.106.2(webpack-cli@7.0.2)
 
   terser@5.46.1:
     dependencies:
@@ -6593,7 +6585,7 @@ snapshots:
       babel-jest: 30.3.0(@babel/core@7.29.0)
       jest-util: 30.3.0
 
-  ts-loader@9.5.7(typescript@6.0.2)(webpack@5.106.1):
+  ts-loader@9.5.7(typescript@6.0.2)(webpack@5.106.2):
     dependencies:
       chalk: 4.1.2
       enhanced-resolve: 5.20.1
@@ -6601,7 +6593,7 @@ snapshots:
       semver: 7.7.4
       source-map: 0.7.6
       typescript: 6.0.2
-      webpack: 5.106.1(webpack-cli@7.0.2)
+      webpack: 5.106.2(webpack-cli@7.0.2)
 
   ts-log@2.2.7: {}
 
@@ -6701,7 +6693,7 @@ snapshots:
 
   webidl-conversions@3.0.1: {}
 
-  webpack-cli@7.0.2(webpack@5.106.1):
+  webpack-cli@7.0.2(webpack@5.106.2):
     dependencies:
       '@discoveryjs/json-ext': 1.0.0
       commander: 14.0.3
@@ -6711,7 +6703,7 @@ snapshots:
       import-local: 3.2.0
       interpret: 3.1.1
       rechoir: 0.8.0
-      webpack: 5.106.1(webpack-cli@7.0.2)
+      webpack: 5.106.2(webpack-cli@7.0.2)
       webpack-merge: 6.0.1
 
   webpack-merge@6.0.1:
@@ -6722,7 +6714,7 @@ snapshots:
 
   webpack-sources@3.3.4: {}
 
-  webpack@5.106.1(webpack-cli@7.0.2):
+  webpack@5.106.2(webpack-cli@7.0.2):
     dependencies:
       '@types/eslint-scope': 3.7.7
       '@types/estree': 1.0.8
@@ -6740,17 +6732,16 @@ snapshots:
       events: 3.3.0
       glob-to-regexp: 0.4.1
       graceful-fs: 4.2.11
-      json-parse-even-better-errors: 2.3.1
       loader-runner: 4.3.1
-      mime-types: 2.1.35
+      mime-db: 1.54.0
       neo-async: 2.6.2
       schema-utils: 4.3.3
       tapable: 2.3.2
-      terser-webpack-plugin: 5.4.0(webpack@5.106.1)
+      terser-webpack-plugin: 5.4.0(webpack@5.106.2)
       watchpack: 2.5.1
       webpack-sources: 3.3.4
     optionalDependencies:
-      webpack-cli: 7.0.2(webpack@5.106.1)
+      webpack-cli: 7.0.2(webpack@5.106.2)
     transitivePeerDependencies:
       - '@swc/core'
       - esbuild
