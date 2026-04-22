@@ -61988,6 +61988,524 @@ const build = "esm";
 
 /***/ },
 
+/***/ 50546
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Ay: () => (/* binding */ EntityReplacer)
+/* harmony export */ });
+/* unused harmony exports DEFAULT_XML_ENTITIES, AMP_ENTITY */
+// ---------------------------------------------------------------------------
+// Built-in entity tables
+// ---------------------------------------------------------------------------
+
+/**
+ * Standard XML entities — always processed after external/system so they
+ * cannot be overridden by DOCTYPE, and &amp; is deferred to its own final pass.
+ *
+ * Each entry: { regex: RegExp, val: string }
+ */
+const DEFAULT_XML_ENTITIES = {
+  apos: { regex: /&(apos|#0*39|#x0*27);/g, val: "'" },
+  gt: { regex: /&(gt|#0*62|#x0*3[Ee]);/g, val: '>' },
+  lt: { regex: /&(lt|#0*60|#x0*3[Cc]);/g, val: '<' },
+  quot: { regex: /&(quot|#0*34|#x0*22);/g, val: '"' },
+};
+
+/** &amp; — always expanded last to avoid double-expansion. */
+const AMP_ENTITY = { regex: /&(amp|#0*38|#x0*26);/g, val: '&' };
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+const SPECIAL_CHARS = new Set('!?\\\\/[]$%{}^&*()<>|+');
+
+/**
+ * Validate that an entity name contains no regex-special or otherwise
+ * dangerous characters.
+ * @param {string} name
+ * @returns {string} the name, unchanged
+ * @throws {Error} on invalid characters
+ */
+function validateEntityName(name) {
+  for (const ch of name) {
+    if (SPECIAL_CHARS.has(ch)) {
+      throw new Error(`[EntityReplacer] Invalid character '${ch}' in entity name: "${name}"`);
+    }
+  }
+  return name;
+}
+
+/**
+ * Escape a string for use inside a RegExp character class / alternation.
+ */
+function escapeForRegex(str) {
+  return str.replace(/[.\-+*:]/g, '\\$&');
+}
+
+/**
+ * Resolve a constructor option to an entity table (plain object) or null.
+ */
+function resolveTable(option, builtIn, enabledByDefault = false) {
+  if (option === false || option === null) return null;
+  if (option === true) return builtIn;
+  if (option === undefined) return enabledByDefault ? builtIn : null;
+  if (typeof option === 'object') return option;
+  return null;
+}
+
+/**
+ * Convert a category name or array of names into a Set<string>.
+ */
+function resolveApplyLimitsTo(spec) {
+  if (spec === 'all') return 'all';
+  if (typeof spec === 'string') return new Set([spec]);
+  if (Array.isArray(spec)) return new Set(spec);
+  return new Set(['external']);
+}
+
+/**
+ * Build an entries array from a raw map of name → string|{regex,val}.
+ * Skips string values that contain '&' (recursive expansion risk).
+ * Normalises DocTypeReader's `regx` spelling to `regex`.
+ *
+ * @param {object} map
+ * @returns {Array<[string, {regex: RegExp, val: string}]>}
+ */
+function buildEntries(map) {
+  const entries = [];
+  for (const key of Object.keys(map)) {
+    const raw = map[key];
+    if (typeof raw === 'object' && raw !== null && (raw.val !== undefined)) {
+      // Accept pre-built { regex, val } or DocTypeReader's { regx, val }
+      entries.push([key, { regex: raw.regex ?? raw.regx, val: raw.val }]);
+    } else if (typeof raw === 'string') {
+      if (raw.indexOf('&') !== -1) continue; // skip — would cause recursive expansion
+      validateEntityName(key);
+      entries.push([key, {
+        regex: new RegExp('&' + escapeForRegex(key) + ';', 'g'),
+        val: raw,
+      }]);
+    }
+  }
+  return entries;
+}
+
+// ---------------------------------------------------------------------------
+// EntityReplacer
+// ---------------------------------------------------------------------------
+
+/**
+ * Standalone, zero-dependency entity replacer for XML/HTML content.
+ *
+ * Entity categories:
+ *  - **persistent external** — configured once, survive across documents.
+ *    Set via `setExternalEntities()` or built up via `addExternalEntity()`.
+ *  - **input / runtime** — DOCTYPE entities for the *current* document only.
+ *    Injected via `addInputEntities()`. Wiped on every `getInstance()` call
+ *    so they never leak between documents.
+ *
+ * Replacement order (fixed):
+ *   1. persistent external
+ *   2. input / runtime  (DOCTYPE)
+ *   3. system           (named entity groups)
+ *   4. default          (lt / gt / apos / quot)
+ *   5. amp              (&amp; final pass)
+ *
+ * @example
+ * const replacer = new EntityReplacer({ default: true, system: COMMON_HTML });
+ * replacer.setExternalEntities({ brand: 'Acme' });
+ *
+ * // Builder factory calls getInstance() before each document:
+ * const instance = replacer.getInstance();
+ * // Builder calls addInputEntities() if DOCTYPE entities are present:
+ * instance.addInputEntities({ version: '1.0' });
+ * instance.replace('&brand; v&version; &lt;'); // 'Acme v1.0 <'
+ */
+class EntityReplacer {
+  /**
+   * @param {object} [options]
+   * @param {boolean|object|null} [options.default=true]
+   * @param {boolean|object|null} [options.amp=true]
+   * @param {boolean|object|null} [options.system=false]
+   * @param {number}              [options.maxTotalExpansions=0]
+   * @param {number}              [options.maxExpandedLength=0]
+   * @param {'external'|'all'|string[]} [options.applyLimitsTo='external']
+   * @param {((resolved: string, original: string) => string)|null} [options.postCheck=null]
+   */
+  constructor(options = {}) {
+    // Immutable config resolved at construction
+    this._defaultTable = resolveTable(options.default, DEFAULT_XML_ENTITIES, true);
+    this._systemTable = resolveTable(options.system, null, false);
+    this._ampEnabled = options.amp !== false && options.amp !== null;
+
+    this._maxTotalExpansions = options.maxTotalExpansions || 0;
+    this._maxExpandedLength = options.maxExpandedLength || 0;
+    this._applyLimitsTo = resolveApplyLimitsTo(options.applyLimitsTo ?? 'external');
+    this._postCheck = typeof options.postCheck === 'function' ? options.postCheck : r => r;
+
+    // Pre-computed category limit flags
+    this._limitExternal = this._applyLimitsTo === 'all' || (this._applyLimitsTo instanceof Set && this._applyLimitsTo.has('external'));
+    this._limitSystem = this._applyLimitsTo === 'all' || (this._applyLimitsTo instanceof Set && this._applyLimitsTo.has('system'));
+    this._limitDefault = this._applyLimitsTo === 'all' || (this._applyLimitsTo instanceof Set && this._applyLimitsTo.has('default'));
+
+    // Frozen immutable entry arrays
+    this._defaultEntries = this._defaultTable ? Object.entries(this._defaultTable) : [];
+    this._systemEntries = this._systemTable ? Object.entries(this._systemTable) : [];
+
+    // Persistent external entities — survive across documents
+    /** @type {Array<[string, {regex: RegExp, val: string}]>} */
+    this._persistentEntries = [];
+
+    // Input / runtime entities — current document only, reset per getInstance()
+    /** @type {Array<[string, {regex: RegExp, val: string}]>} */
+    this._inputEntries = [];
+
+    // Per-document counters — reset in getInstance()
+    this._totalExpansions = 0;
+    this._expandedLength = 0;
+  }
+
+  // -------------------------------------------------------------------------
+  // Persistent external entity registration (survives across documents)
+  // -------------------------------------------------------------------------
+
+  /**
+   * Replace the full set of persistent external entities.
+   * These are never wiped between documents.
+   *
+   * @param {Record<string, string | { regex: RegExp, val: string | Function }>} map
+   */
+  setExternalEntities(map) {
+    this._persistentEntries = buildEntries(map);
+  }
+
+  /**
+   * Add a single persistent external entity without disturbing existing ones.
+   *
+   * @param {string} key   — bare entity name, e.g. `'copy'`
+   * @param {string} value — replacement string, e.g. `'©'`
+   */
+  addExternalEntity(key, value) {
+    validateEntityName(key);
+    if (typeof value === 'string' && value.indexOf('&') === -1) {
+      this._persistentEntries.push([key, {
+        regex: new RegExp('&' + escapeForRegex(key) + ';', 'g'),
+        val: value,
+      }]);
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Input / runtime entity registration (per document)
+  // -------------------------------------------------------------------------
+
+  /**
+   * Inject DOCTYPE (input/runtime) entities for the current document.
+   * These are stored separately from persistent entities and wiped on the
+   * next `getInstance()` call so they never leak into subsequent documents.
+   *
+   * Also resets per-document expansion counters.
+   *
+   * @param {Record<string, string | { regx?: RegExp, regex?: RegExp, val: string | Function }>} map
+   */
+  addInputEntities(map) {
+    this._totalExpansions = 0;
+    this._expandedLength = 0;
+    this._inputEntries = buildEntries(map);
+  }
+
+  // -------------------------------------------------------------------------
+  // getInstance — builder factory integration point
+  // -------------------------------------------------------------------------
+
+  /**
+   * Reset all per-document state (input entities + expansion counters) and
+   * return `this`.
+   *
+   * The builder factory calls this each time it creates a new builder instance
+   * so DOCTYPE entities from a previous document are never carried over.
+   *
+   */
+  reset() {
+    this._inputEntries = [];
+    this._totalExpansions = 0;
+    this._expandedLength = 0;
+  }
+
+  // -------------------------------------------------------------------------
+  // Primary API
+  // -------------------------------------------------------------------------
+
+  /**
+   * Replace all entity references in `str`.
+   *
+   * Processing order:
+   *   1. persistent external
+   *   2. input / runtime  (DOCTYPE)
+   *   3. system
+   *   4. default (lt/gt/apos/quot)
+   *   5. amp
+   *   6. postCheck hook
+   *
+   * @param {string} str
+   * @returns {string}
+   */
+  replace(str) {
+    if (typeof str !== 'string' || str.length === 0) return str;
+    if (str.indexOf('&') === -1) return str; // fast path
+
+    const original = str;
+
+
+    // 1. Persistent external entities
+    if (this._persistentEntries.length > 0) {
+      str = this._applyEntries(str, this._persistentEntries, this._limitExternal);
+    }
+
+    // 2. Input / runtime entities (DOCTYPE)
+    if (this._inputEntries.length > 0 && str.indexOf('&') !== -1) {
+      str = this._applyEntries(str, this._inputEntries, this._limitExternal);
+    }
+
+    // 3. Default XML entities (lt / gt / apos / quot)
+    if (this._defaultEntries.length > 0 && str.indexOf('&') !== -1) {
+      str = this._applyEntries(str, this._defaultEntries, this._limitDefault);
+    }
+
+    // 4. System (named groups)
+    if (this._systemEntries.length > 0 && str.indexOf('&') !== -1) {
+      str = this._applyEntries(str, this._systemEntries, this._limitSystem);
+    }
+
+    // 5. &amp; — always last
+    if (this._ampEnabled && str.indexOf('&') !== -1) {
+      str = str.replace(AMP_ENTITY.regex, AMP_ENTITY.val);
+    }
+
+    // 6. postCheck
+    str = this._postCheck(str, original);
+
+    return str;
+  }
+
+
+  /**
+   * 
+   * @param {string} val 
+   * @returns 
+   */
+  parse(val) {
+    return this.replace(val);
+  }
+  // -------------------------------------------------------------------------
+  // Private helpers
+  // -------------------------------------------------------------------------
+
+  _applyEntries(str, entries, track) {
+    const limitExpansions = track && this._maxTotalExpansions > 0;
+    const limitLength = track && this._maxExpandedLength > 0;
+    const trackAny = limitExpansions || limitLength;
+
+    for (let i = 0; i < entries.length; i++) {
+      if (str.indexOf('&') === -1) break;
+
+      const entity = entries[i][1];
+
+      if (!trackAny) {
+        str = str.replace(entity.regex, entity.val);
+        continue;
+      }
+
+      if (limitExpansions && !limitLength) {
+        let count = 0;
+        str = str.replace(entity.regex, (...args) => {
+          count++;
+          return typeof entity.val === 'function' ? entity.val(...args) : entity.val;
+        });
+        if (count > 0) {
+          this._totalExpansions += count;
+          if (this._totalExpansions > this._maxTotalExpansions) {
+            throw new Error(
+              `[EntityReplacer] Entity expansion count limit exceeded: ` +
+              `${this._totalExpansions} > ${this._maxTotalExpansions}`
+            );
+          }
+        }
+      } else if (limitLength && !limitExpansions) {
+        const before = str.length;
+        str = str.replace(entity.regex, entity.val);
+        const delta = str.length - before;
+        if (delta > 0) {
+          this._expandedLength += delta;
+          if (this._expandedLength > this._maxExpandedLength) {
+            throw new Error(
+              `[EntityReplacer] Expanded content length limit exceeded: ` +
+              `${this._expandedLength} > ${this._maxExpandedLength}`
+            );
+          }
+        }
+      } else {
+        const before = str.length;
+        let count = 0;
+        str = str.replace(entity.regex, (...args) => {
+          count++;
+          return typeof entity.val === 'function' ? entity.val(...args) : entity.val;
+        });
+        if (count > 0) {
+          this._totalExpansions += count;
+          if (this._totalExpansions > this._maxTotalExpansions) {
+            throw new Error(
+              `[EntityReplacer] Entity expansion count limit exceeded: ` +
+              `${this._totalExpansions} > ${this._maxTotalExpansions}`
+            );
+          }
+        }
+        const delta = str.length - before;
+        if (delta > 0) {
+          this._expandedLength += delta;
+          if (this._expandedLength > this._maxExpandedLength) {
+            throw new Error(
+              `[EntityReplacer] Expanded content length limit exceeded: ` +
+              `${this._expandedLength} > ${this._maxExpandedLength}`
+            );
+          }
+        }
+      }
+    }
+    return str;
+  }
+}
+
+// Re-export the built-in tables for advanced users who want to extend them
+
+
+
+/***/ },
+
+/***/ 18539
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   EW: () => (/* binding */ NUMERIC_ENTITIES),
+/* harmony export */   KS: () => (/* binding */ COMMON_HTML),
+/* harmony export */   iC: () => (/* binding */ CURRENCY_ENTITIES)
+/* harmony export */ });
+/* unused harmony exports MATH_ENTITIES, ARROW_ENTITIES */
+// ---------------------------------------------------------------------------
+// Named entity groups — importable separately and freely composable.
+// All groups are plain objects; no magic, no classes.
+// ---------------------------------------------------------------------------
+
+/**
+ * ~20 most commonly needed HTML named entities.
+ * @type {Record<string, { regex: RegExp, val: string | ((m: string, s: string) => string) }>}
+ */
+const COMMON_HTML = {
+  nbsp: { regex: /&(nbsp|#0*160|#x0*[Aa]0);/g, val: '\u00a0' },
+  copy: { regex: /&(copy|#0*169|#x0*[Aa]9);/g, val: '\u00a9' },
+  reg: { regex: /&(reg|#0*174|#x0*[Aa][Ee]);/g, val: '\u00ae' },
+  trade: { regex: /&(trade|#0*8482|#x0*2122);/g, val: '\u2122' },
+  mdash: { regex: /&(mdash|#0*8212|#x0*2014);/g, val: '\u2014' },
+  ndash: { regex: /&(ndash|#0*8211|#x0*2013);/g, val: '\u2013' },
+  hellip: { regex: /&(hellip|#0*8230|#x0*2026);/g, val: '\u2026' },
+  laquo: { regex: /&(laquo|#0*171|#x0*[Aa][Bb]);/g, val: '\u00ab' },
+  raquo: { regex: /&(raquo|#0*187|#x0*[Bb][Bb]);/g, val: '\u00bb' },
+  lsquo: { regex: /&(lsquo|#0*8216|#x0*2018);/g, val: '\u2018' },
+  rsquo: { regex: /&(rsquo|#0*8217|#x0*2019);/g, val: '\u2019' },
+  ldquo: { regex: /&(ldquo|#0*8220|#x0*201[Cc]);/g, val: '\u201c' },
+  rdquo: { regex: /&(rdquo|#0*8221|#x0*201[Dd]);/g, val: '\u201d' },
+  bull: { regex: /&(bull|#0*8226|#x0*2022);/g, val: '\u2022' },
+  para: { regex: /&(para|#0*182|#x0*[Bb]6);/g, val: '\u00b6' },
+  sect: { regex: /&(sect|#0*167|#x0*[Aa]7);/g, val: '\u00a7' },
+  deg: { regex: /&(deg|#0*176|#x0*[Bb]0);/g, val: '\u00b0' },
+  frac12: { regex: /&(frac12|#0*189|#x0*[Bb][Dd]);/g, val: '\u00bd' },
+  frac14: { regex: /&(frac14|#0*188|#x0*[Bb][Cc]);/g, val: '\u00bc' },
+  frac34: { regex: /&(frac34|#0*190|#x0*[Bb][Ee]);/g, val: '\u00be' },
+  inr: { regex: /&(inr|#0*8377);/g, val: "₹" },
+};
+
+/**
+ * Currency symbol entities.
+ */
+const CURRENCY_ENTITIES = {
+  cent: { regex: /&(cent|#0*162|#x0*[Aa]2);/g, val: '\u00a2' },
+  pound: { regex: /&(pound|#0*163|#x0*[Aa]3);/g, val: '\u00a3' },
+  yen: { regex: /&(yen|#0*165|#x0*[Aa]5);/g, val: '\u00a5' },
+  euro: { regex: /&(euro|#0*8364|#x0*20[Aa][Cc]);/g, val: '\u20ac' },
+  inr: { regex: /&(inr|#0*8377|#x0*20[Bb]9);/g, val: '\u20b9' },
+  curren: { regex: /&(curren|#0*164|#x0*[Aa]4);/g, val: '\u00a4' },
+  fnof: { regex: /&(fnof|#0*402|#x0*192);/g, val: '\u0192' },
+};
+
+/**
+ * Mathematical operator entities.
+ */
+const MATH_ENTITIES = {
+  times: { regex: /&(times|#0*215|#x0*[Dd]7);/g, val: '\u00d7' },
+  divide: { regex: /&(divide|#0*247|#x0*[Ff]7);/g, val: '\u00f7' },
+  plusmn: { regex: /&(plusmn|#0*177|#x0*[Bb]1);/g, val: '\u00b1' },
+  minus: { regex: /&(minus|#0*8722|#x0*2212);/g, val: '\u2212' },
+  sup2: { regex: /&(sup2|#0*178|#x0*[Bb]2);/g, val: '\u00b2' },
+  sup3: { regex: /&(sup3|#0*179|#x0*[Bb]3);/g, val: '\u00b3' },
+  sup1: { regex: /&(sup1|#0*185|#x0*[Bb]9);/g, val: '\u00b9' },
+  frac12: { regex: /&(frac12|#0*189|#x0*[Bb][Dd]);/g, val: '\u00bd' },
+  frac14: { regex: /&(frac14|#0*188|#x0*[Bb][Cc]);/g, val: '\u00bc' },
+  frac34: { regex: /&(frac34|#0*190|#x0*[Bb][Ee]);/g, val: '\u00be' },
+  permil: { regex: /&(permil|#0*8240|#x0*2030);/g, val: '\u2030' },
+  infin: { regex: /&(infin|#0*8734|#x0*221[Ee]);/g, val: '\u221e' },
+  sum: { regex: /&(sum|#0*8721|#x0*2211);/g, val: '\u2211' },
+  prod: { regex: /&(prod|#0*8719|#x0*220[Ff]);/g, val: '\u220f' },
+  radic: { regex: /&(radic|#0*8730|#x0*221[Aa]);/g, val: '\u221a' },
+  ne: { regex: /&(ne|#0*8800|#x0*2260);/g, val: '\u2260' },
+  le: { regex: /&(le|#0*8804|#x0*2264);/g, val: '\u2264' },
+  ge: { regex: /&(ge|#0*8805|#x0*2265);/g, val: '\u2265' },
+};
+
+/**
+ * Arrow entities.
+ */
+const ARROW_ENTITIES = {
+  larr: { regex: /&(larr|#0*8592|#x0*2190);/g, val: '\u2190' },
+  uarr: { regex: /&(uarr|#0*8593|#x0*2191);/g, val: '\u2191' },
+  rarr: { regex: /&(rarr|#0*8594|#x0*2192);/g, val: '\u2192' },
+  darr: { regex: /&(darr|#0*8595|#x0*2193);/g, val: '\u2193' },
+  harr: { regex: /&(harr|#0*8596|#x0*2194);/g, val: '\u2194' },
+  lArr: { regex: /&(lArr|#0*8656|#x0*21[Dd]0);/g, val: '\u21d0' },
+  uArr: { regex: /&(uArr|#0*8657|#x0*21[Dd]1);/g, val: '\u21d1' },
+  rArr: { regex: /&(rArr|#0*8658|#x0*21[Dd]2);/g, val: '\u21d2' },
+  dArr: { regex: /&(dArr|#0*8659|#x0*21[Dd]3);/g, val: '\u21d3' },
+  hArr: { regex: /&(hArr|#0*8660|#x0*21[Dd]4);/g, val: '\u21d4' },
+};
+
+/**
+ * Numeric character references — decimal &#NNN; and hex &#xHH;
+ * These are function-replacers; they expand any valid code point.
+ */
+const NUMERIC_ENTITIES = {
+  num_dec: {
+    regex: /&#0*([0-9]{1,7});/g,
+    val: (_, s) => fromCodePoint(s, 10, "&#"),
+  },
+  num_hex: {
+    regex: /&#x0*([0-9a-fA-F]{1,6});/g,
+    val: (_, s) => fromCodePoint(s, 16, "&#x"),
+  },
+};
+
+function fromCodePoint(str, base, prefix) {
+  const codePoint = Number.parseInt(str, base);
+
+  if (codePoint >= 0 && codePoint <= 0x10FFFF) {
+    return String.fromCodePoint(codePoint);
+  } else {
+    return prefix + str + ";";
+  }
+}
+
+/***/ },
+
 /***/ 56306
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
@@ -63556,7 +64074,7 @@ function isObjRef(value) {
 
 /***/ },
 
-/***/ 89561
+/***/ 29227
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -63583,7 +64101,7 @@ function getIgnoreAttributesFn(ignoreAttributes) {
 
 /***/ },
 
-/***/ 83794
+/***/ 95952
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -63658,14 +64176,14 @@ const criticalProperties = (/* runtime-dependent pure expression or super */ /^(
 
 /***/ },
 
-/***/ 78786
+/***/ 23776
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   t: () => (/* binding */ validate)
 /* harmony export */ });
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(83794);
+	/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(95952);
 }
 
 
@@ -64096,14 +64614,14 @@ function getPositionFromMatch(match) {
 
 /***/ },
 
-/***/ 39388
+/***/ 67302
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   A: () => (/* binding */ DocTypeReader)
 /* harmony export */ });
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(83794);
+	/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(95952);
 }
 
 
@@ -64518,14 +65036,14 @@ function validateEntityName(name) {
 
 /***/ },
 
-/***/ 59728
+/***/ 74374
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   D: () => (/* binding */ buildOptions)
 /* harmony export */ });
 /* unused harmony export defaultOptions */
-/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(83794);
+/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(95952);
 
 
 const defaultOnDangerousProperty = (name) => {
@@ -64688,7 +65206,7 @@ const buildOptions = function (options) {
 
 /***/ },
 
-/***/ 70643
+/***/ 80761
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 
@@ -64697,12 +65215,12 @@ __webpack_require__.d(__webpack_exports__, {
   A: () => (/* binding */ OrderedObjParser)
 });
 
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.5.12/node_modules/fast-xml-parser/src/util.js
-var util = __webpack_require__(83794);
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.5.12/node_modules/fast-xml-parser/src/xmlparser/xmlNode.js
-var xmlNode = __webpack_require__(84356);
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.5.12/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js
-var DocTypeReader = __webpack_require__(39388);
+// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.6.0/node_modules/fast-xml-parser/src/util.js
+var util = __webpack_require__(95952);
+// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.6.0/node_modules/fast-xml-parser/src/xmlparser/xmlNode.js
+var xmlNode = __webpack_require__(33862);
+// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.6.0/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js
+var DocTypeReader = __webpack_require__(67302);
 ;// ./node_modules/.pnpm/strnum@2.2.3/node_modules/strnum/strnum.js
 const hexRegex = /^[-+]?0x[a-fA-F0-9]+$/;
 const numRegex = /^([\-\+])?(0*)([0-9]*(\.[0-9]*)?)$/;
@@ -64865,17 +65383,22 @@ function handleInfinity(str, num, options) {
             return str; // Return original string like "1e1000"
     }
 }
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.5.12/node_modules/fast-xml-parser/src/ignoreAttributes.js
-var ignoreAttributes = __webpack_require__(89561);
+// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.6.0/node_modules/fast-xml-parser/src/ignoreAttributes.js
+var ignoreAttributes = __webpack_require__(29227);
 // EXTERNAL MODULE: ./node_modules/.pnpm/path-expression-matcher@1.5.0/node_modules/path-expression-matcher/src/Matcher.js
 var Matcher = __webpack_require__(28173);
 // EXTERNAL MODULE: ./node_modules/.pnpm/path-expression-matcher@1.5.0/node_modules/path-expression-matcher/src/Expression.js
 var Expression = __webpack_require__(18277);
 // EXTERNAL MODULE: ./node_modules/.pnpm/path-expression-matcher@1.5.0/node_modules/path-expression-matcher/src/ExpressionSet.js
 var ExpressionSet = __webpack_require__(99597);
-;// ./node_modules/.pnpm/fast-xml-parser@5.5.12/node_modules/fast-xml-parser/src/xmlparser/OrderedObjParser.js
+// EXTERNAL MODULE: ./node_modules/.pnpm/@nodable+entities@1.1.0/node_modules/@nodable/entities/src/EntityReplacer.js
+var EntityReplacer = __webpack_require__(50546);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@nodable+entities@1.1.0/node_modules/@nodable/entities/src/groups.js
+var groups = __webpack_require__(18539);
+;// ./node_modules/.pnpm/fast-xml-parser@5.6.0/node_modules/fast-xml-parser/src/xmlparser/OrderedObjParser.js
 
 ///@ts-check
+
 
 
 
@@ -64948,32 +65471,6 @@ class OrderedObjParser {
     this.options = options;
     this.currentNode = null;
     this.tagsNodeStack = [];
-    this.docTypeEntities = {};
-    this.lastEntities = {
-      "apos": { regex: /&(apos|#39|#x27);/g, val: "'" },
-      "gt": { regex: /&(gt|#62|#x3E);/g, val: ">" },
-      "lt": { regex: /&(lt|#60|#x3C);/g, val: "<" },
-      "quot": { regex: /&(quot|#34|#x22);/g, val: "\"" },
-    };
-    this.ampEntity = { regex: /&(amp|#38|#x26);/g, val: "&" };
-    this.htmlEntities = {
-      "space": { regex: /&(nbsp|#160);/g, val: " " },
-      // "lt" : { regex: /&(lt|#60);/g, val: "<" },
-      // "gt" : { regex: /&(gt|#62);/g, val: ">" },
-      // "amp" : { regex: /&(amp|#38);/g, val: "&" },
-      // "quot" : { regex: /&(quot|#34);/g, val: "\"" },
-      // "apos" : { regex: /&(apos|#39);/g, val: "'" },
-      "cent": { regex: /&(cent|#162);/g, val: "¢" },
-      "pound": { regex: /&(pound|#163);/g, val: "£" },
-      "yen": { regex: /&(yen|#165);/g, val: "¥" },
-      "euro": { regex: /&(euro|#8364);/g, val: "€" },
-      "copyright": { regex: /&(copy|#169);/g, val: "©" },
-      "reg": { regex: /&(reg|#174);/g, val: "®" },
-      "inr": { regex: /&(inr|#8377);/g, val: "₹" },
-      "num_dec": { regex: /&#([0-9]{1,7});/g, val: (_, str) => fromCodePoint(str, 10, "&#") },
-      "num_hex": { regex: /&#x([0-9a-fA-F]{1,6});/g, val: (_, str) => fromCodePoint(str, 16, "&#x") },
-    };
-    this.addExternalEntities = addExternalEntities;
     this.parseXml = parseXml;
     this.parseTextData = parseTextData;
     this.resolveNameSpace = resolveNameSpace;
@@ -64986,6 +65483,16 @@ class OrderedObjParser {
     this.ignoreAttributesFn = (0,ignoreAttributes/* default */.A)(this.options.ignoreAttributes)
     this.entityExpansionCount = 0;
     this.currentExpandedLength = 0;
+
+    this.entityReplacer = new EntityReplacer/* default */.Ay({
+      default: true,
+      // amp:     true,
+      system: this.options.htmlEntities ? { ...groups/* COMMON_HTML */.KS, ...groups/* NUMERIC_ENTITIES */.EW, ...groups/* CURRENCY_ENTITIES */.iC } : {},
+      maxTotalExpansions: this.options.processEntities.maxTotalExpansions,
+      maxExpandedLength: this.options.processEntities.maxExpandedLength,
+      applyLimitsTo: "all",
+      //postCheck: resolved => resolved
+    });
 
     // Initialize path matcher for path-expression-matcher
     this.matcher = new Matcher/* default */.A();
@@ -65017,17 +65524,6 @@ class OrderedObjParser {
 
 }
 
-function addExternalEntities(externalEntities) {
-  const entKeys = Object.keys(externalEntities);
-  for (let i = 0; i < entKeys.length; i++) {
-    const ent = entKeys[i];
-    const escaped = ent.replace(/[.\-+*:]/g, '\\.');
-    this.lastEntities[ent] = {
-      regex: new RegExp("&" + escaped + ";", "g"),
-      val: externalEntities[ent]
-    }
-  }
-}
 
 /**
  * @param {string} val
@@ -65184,9 +65680,6 @@ const parseXml = function (xmlData) {
   // Reset entity expansion counters for this document
   this.entityExpansionCount = 0;
   this.currentExpandedLength = 0;
-  this.docTypeEntitiesKeys = [];
-  this.lastEntitiesKeys = Object.keys(this.lastEntities);
-  this.htmlEntitiesKeys = this.options.htmlEntities ? Object.keys(this.htmlEntities) : [];
   const options = this.options;
   const docTypeReader = new DocTypeReader/* default */.A(options.processEntities);
   const xmlLen = xmlData.length;
@@ -65266,8 +65759,7 @@ const parseXml = function (xmlData) {
       } else if (c1 === 33
         && xmlData.charCodeAt(i + 2) === 68) { //'!D'
         const result = docTypeReader.readDocType(xmlData, i);
-        this.docTypeEntities = result.entities;
-        this.docTypeEntitiesKeys = Object.keys(this.docTypeEntities) || []
+        this.entityReplacer.addInputEntities(result.entities);
         i = result.i;
       } else if (c1 === 33
         && xmlData.charCodeAt(i + 2) === 91) { // '!['
@@ -65508,78 +66000,7 @@ function replaceEntitiesValue(val, tagName, jPath) {
     }
   }
 
-  // Replace DOCTYPE entities
-  for (const entityName of this.docTypeEntitiesKeys) {
-    const entity = this.docTypeEntities[entityName];
-    const matches = val.match(entity.regx);
-
-    if (matches) {
-      // Track expansions
-      this.entityExpansionCount += matches.length;
-
-      // Check expansion limit
-      if (entityConfig.maxTotalExpansions &&
-        this.entityExpansionCount > entityConfig.maxTotalExpansions) {
-        throw new Error(
-          `Entity expansion limit exceeded: ${this.entityExpansionCount} > ${entityConfig.maxTotalExpansions}`
-        );
-      }
-
-      // Store length before replacement
-      const lengthBefore = val.length;
-      val = val.replace(entity.regx, entity.val);
-
-      // Check expanded length immediately after replacement
-      if (entityConfig.maxExpandedLength) {
-        this.currentExpandedLength += (val.length - lengthBefore);
-
-        if (this.currentExpandedLength > entityConfig.maxExpandedLength) {
-          throw new Error(
-            `Total expanded content size exceeded: ${this.currentExpandedLength} > ${entityConfig.maxExpandedLength}`
-          );
-        }
-      }
-    }
-  }
-  if (val.indexOf('&') === -1) return val;
-  // Replace standard entities
-  for (const entityName of this.lastEntitiesKeys) {
-    const entity = this.lastEntities[entityName];
-    const matches = val.match(entity.regex);
-    if (matches) {
-      this.entityExpansionCount += matches.length;
-      if (entityConfig.maxTotalExpansions &&
-        this.entityExpansionCount > entityConfig.maxTotalExpansions) {
-        throw new Error(
-          `Entity expansion limit exceeded: ${this.entityExpansionCount} > ${entityConfig.maxTotalExpansions}`
-        );
-      }
-    }
-    val = val.replace(entity.regex, entity.val);
-  }
-  if (val.indexOf('&') === -1) return val;
-
-  // Replace HTML entities if enabled
-  for (const entityName of this.htmlEntitiesKeys) {
-    const entity = this.htmlEntities[entityName];
-    const matches = val.match(entity.regex);
-    if (matches) {
-      //console.log(matches);
-      this.entityExpansionCount += matches.length;
-      if (entityConfig.maxTotalExpansions &&
-        this.entityExpansionCount > entityConfig.maxTotalExpansions) {
-        throw new Error(
-          `Entity expansion limit exceeded: ${this.entityExpansionCount} > ${entityConfig.maxTotalExpansions}`
-        );
-      }
-    }
-    val = val.replace(entity.regex, entity.val);
-  }
-
-  // Replace ampersand entity last
-  val = val.replace(this.ampEntity.regex, this.ampEntity.val);
-
-  return val;
+  return this.entityReplacer.replace(val);
 }
 
 
@@ -65799,26 +66220,26 @@ function sanitizeName(name, options) {
 
 /***/ },
 
-/***/ 3983
+/***/ 9405
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   A: () => (/* binding */ XMLParser)
 /* harmony export */ });
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _OptionsBuilder_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(59728);
+	/* harmony import */ var _OptionsBuilder_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(74374);
 }
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _OrderedObjParser_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(70643);
+	/* harmony import */ var _OrderedObjParser_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(80761);
 }
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _node2json_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(89);
+	/* harmony import */ var _node2json_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(54215);
 }
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _validator_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(78786);
+	/* harmony import */ var _validator_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(23776);
 }
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _xmlNode_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(84356);
+	/* harmony import */ var _xmlNode_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(33862);
 }
 
 
@@ -65854,7 +66275,7 @@ class XMLParser {
             }
         }
         const orderedObjParser = new _OrderedObjParser_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A(this.options);
-        orderedObjParser.addExternalEntities(this.externalEntities);
+        orderedObjParser.entityReplacer.setExternalEntities(this.externalEntities);
         const orderedResult = orderedObjParser.parseXml(xmlData);
         if (this.options.preserveOrder || orderedResult === undefined) return orderedResult;
         else return (0,_node2json_js__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A)(orderedResult, this.options, orderedObjParser.matcher, orderedObjParser.readonlyMatcher);
@@ -65894,13 +66315,13 @@ class XMLParser {
 
 /***/ },
 
-/***/ 89
+/***/ 54215
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   A: () => (/* binding */ prettify)
 /* harmony export */ });
-/* harmony import */ var _xmlNode_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(84356);
+/* harmony import */ var _xmlNode_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(33862);
 
 
 
@@ -66077,7 +66498,7 @@ function isLeafTag(obj, options) {
 
 /***/ },
 
-/***/ 84356
+/***/ 33862
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
