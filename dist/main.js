@@ -113,8 +113,8 @@ function getInputNumberOrNull(key) {
     return parseInt(value);
 }
 
-// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+glob@0.6.1/node_modules/@actions/glob/lib/glob.js + 8 modules
-var glob = __webpack_require__(31754);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+glob@0.7.0/node_modules/@actions/glob/lib/glob.js + 15 modules
+var glob = __webpack_require__(86633);
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __webpack_require__(44421);
 ;// ./src/lint-result.ts
@@ -1517,13 +1517,6 @@ module.exports = __WEBPACK_EXTERNAL_createRequire_require("node:worker_threads")
 (module) {
 
 module.exports = __WEBPACK_EXTERNAL_createRequire_require("node:zlib");
-
-/***/ },
-
-/***/ 16928
-(module) {
-
-module.exports = __WEBPACK_EXTERNAL_createRequire_require("path");
 
 /***/ },
 
