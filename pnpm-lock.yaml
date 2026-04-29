@@ -15,8 +15,8 @@ importers:
         specifier: 9.1.0
         version: 9.1.0
       '@actions/glob':
-        specifier: 0.6.1
-        version: 0.6.1
+        specifier: 0.7.0
+        version: 0.7.0
       '@apollo/client':
         specifier: 4.1.7
         version: 4.1.7(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.20.0))(graphql@16.13.2)(react@19.2.5)(rxjs@7.8.2)
@@ -141,8 +141,8 @@ packages:
   '@actions/github@9.1.0':
     resolution: {integrity: sha512-u0hDGQeCS+7VNoLA8hYG65RLdPLMaPGfka0sZ0up7P0AiShqfX6xcuXNteGkQ7X7Tod7AMNwHd4p7DS63i8zzA==}
 
-  '@actions/glob@0.6.1':
-    resolution: {integrity: sha512-K4+2Ac5ILcf2ySdJCha+Pop9NcKjxqCL4xL4zI50dgB2PbXgC0+AcP011xfH4Of6b4QEJJg8dyZYv7zl4byTsw==}
+  '@actions/glob@0.7.0':
+    resolution: {integrity: sha512-+7s3wM+cXapDLmLL1NVWHawqcJOZzXZy2df/VhNn8DnZtS/x83iTCKaUn9F0llur4h3CII0AilvKKH4CMPL8Gw==}
 
   '@actions/http-client@3.0.2':
     resolution: {integrity: sha512-JP38FYYpyqvUsz+Igqlc/JG6YO9PaKuvqjM3iGvaLqFnJ7TFmcLyy2IDrY0bI0qCQug8E9K+elv5ZNfw62ZJzA==}
@@ -3284,10 +3284,10 @@ snapshots:
       '@octokit/request-error': 7.1.0
       undici: 6.24.1
 
-  '@actions/glob@0.6.1':
+  '@actions/glob@0.7.0':
     dependencies:
       '@actions/core': 3.0.0
-      minimatch: 3.1.5
+      minimatch: 10.2.5
 
   '@actions/http-client@3.0.2':
     dependencies:
