@@ -24,8 +24,8 @@ __webpack_require__.d(__webpack_exports__, {
   Q: () => (/* binding */ JunitTransformer)
 });
 
-// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+core@3.0.0/node_modules/@actions/core/lib/core.js + 13 modules
-var core = __webpack_require__(18370);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+core@3.0.1/node_modules/@actions/core/lib/core.js + 13 modules
+var core = __webpack_require__(22989);
 // EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.7.1/node_modules/fast-xml-parser/src/xmlparser/XMLParser.js
 var XMLParser = __webpack_require__(66001);
 // EXTERNAL MODULE: ./node_modules/.pnpm/he@1.2.0/node_modules/he/he.js
