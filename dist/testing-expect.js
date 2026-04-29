@@ -20,7 +20,7 @@ const __WEBPACK_EXTERNAL_createRequire_require = __WEBPACK_EXTERNAL_createRequir
 
 /* harmony import */ var fs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(44421);
 /* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(18370);
-/* harmony import */ var _actions_glob__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(31754);
+/* harmony import */ var _actions_glob__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(86633);
 
 
 
@@ -420,13 +420,6 @@ module.exports = __WEBPACK_EXTERNAL_createRequire_require("node:worker_threads")
 (module) {
 
 module.exports = __WEBPACK_EXTERNAL_createRequire_require("node:zlib");
-
-/***/ },
-
-/***/ 16928
-(module) {
-
-module.exports = __WEBPACK_EXTERNAL_createRequire_require("path");
 
 /***/ },
 
