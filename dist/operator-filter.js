@@ -156,8 +156,8 @@ var glob = __webpack_require__(86633);
 
 // EXTERNAL MODULE: external "path"
 var external_path_ = __webpack_require__(12521);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@9.1.0/node_modules/@actions/github/lib/github.js + 14 modules
-var github = __webpack_require__(49865);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@9.1.1/node_modules/@actions/github/lib/github.js + 14 modules
+var github = __webpack_require__(70888);
 ;// ./src/github/context.ts
 
 function githubContext(option) {

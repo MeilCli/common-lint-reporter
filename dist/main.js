@@ -147,8 +147,8 @@ var ApolloClient = __webpack_require__(63993);
 var HttpLink = __webpack_require__(50238);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.7_graphql-ws@6.0.8_graphql@16.13.2_ws@8.20.0__graphql@16.13.2_react@19.2.5_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/inMemoryCache.js + 6 modules
 var inMemoryCache = __webpack_require__(44719);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@9.1.0/node_modules/@actions/github/lib/github.js + 14 modules
-var github = __webpack_require__(49865);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@9.1.1/node_modules/@actions/github/lib/github.js + 14 modules
+var github = __webpack_require__(70888);
 ;// ./src/github/context.ts
 
 function githubContext(option) {
