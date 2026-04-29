@@ -17,8 +17,8 @@ const __WEBPACK_EXTERNAL_createRequire_require = __WEBPACK_EXTERNAL_createRequir
 (__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) {
 
 
-// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+core@3.0.0/node_modules/@actions/core/lib/core.js + 13 modules
-var core = __webpack_require__(18370);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+core@3.0.1/node_modules/@actions/core/lib/core.js + 13 modules
+var core = __webpack_require__(22989);
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __webpack_require__(44421);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@9.1.1/node_modules/@actions/github/lib/github.js + 14 modules
