@@ -52,7 +52,7 @@
         "@typescript-eslint/eslint-plugin": "8.59.1",
         "@typescript-eslint/parser": "8.59.1",
         "cross-env": "10.1.0",
-        "eslint": "10.2.1",
+        "eslint": "10.3.0",
         "eslint-config-prettier": "10.1.8",
         "eslint-formatter-checkstyle": "9.0.1",
         "eslint-formatter-junit": "9.0.1",
