@@ -46392,7 +46392,7 @@ function getOctokit(token, options, ...additionalPlugins) {
 
 /***/ },
 
-/***/ 86633
+/***/ 94108
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 
@@ -46707,7 +46707,7 @@ function internal_pattern_helper_partialMatch(patterns, itemPath) {
 var external_os_ = __webpack_require__(8116);
 // EXTERNAL MODULE: ./node_modules/.pnpm/balanced-match@4.0.4/node_modules/balanced-match/dist/esm/index.js
 var esm = __webpack_require__(26681);
-;// ./node_modules/.pnpm/brace-expansion@5.0.5/node_modules/brace-expansion/dist/esm/index.js
+;// ./node_modules/.pnpm/brace-expansion@5.0.6/node_modules/brace-expansion/dist/esm/index.js
 
 const escSlash = '\0SLASH' + Math.random() + '\0';
 const escOpen = '\0OPEN' + Math.random() + '\0';
@@ -46861,7 +46861,7 @@ function expand_(str, max, isTop) {
             }
             const pad = n.some(isPadded);
             N = [];
-            for (let i = x; test(i, y); i += incr) {
+            for (let i = x; test(i, y) && N.length < max; i += incr) {
                 let c;
                 if (isAlphaSequence) {
                     c = String.fromCharCode(i);
