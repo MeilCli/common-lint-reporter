@@ -48,7 +48,7 @@
         "@octokit/graphql-schema": "15.26.1",
         "@types/he": "1.2.3",
         "@types/jest": "30.0.0",
-        "@types/node": "25.8.0",
+        "@types/node": "25.9.0",
         "@typescript-eslint/eslint-plugin": "8.59.3",
         "@typescript-eslint/parser": "8.59.4",
         "cross-env": "10.1.0",
