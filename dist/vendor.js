@@ -42660,9 +42660,9 @@ const getLinuxInfo = () => platform_awaiter(void 0, void 0, void 0, function* ()
 });
 const platform = external_os_["default"].platform();
 const arch = external_os_["default"].arch();
-const isWindows = platform === 'win32';
-const isMacOS = platform === 'darwin';
-const isLinux = platform === 'linux';
+const isWindows = (/* unused pure expression or super */ null && (platform === 'win32'));
+const isMacOS = (/* unused pure expression or super */ null && (platform === 'darwin'));
+const isLinux = (/* unused pure expression or super */ null && (platform === 'linux'));
 function getDetails() {
     return platform_awaiter(this, void 0, void 0, function* () {
         return Object.assign(Object.assign({}, (yield (isWindows
@@ -43051,7 +43051,7 @@ function toCommandProperties(annotationProperties) {
 
 /***/ },
 
-/***/ 70888
+/***/ 4503
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 
@@ -43178,104 +43178,12 @@ function getUserAgentWithOrchestrationId(baseUserAgent) {
 //# sourceMappingURL=utils.js.map
 // EXTERNAL MODULE: ./node_modules/.pnpm/universal-user-agent@7.0.3/node_modules/universal-user-agent/index.js
 var universal_user_agent = __webpack_require__(96556);
-;// ./node_modules/.pnpm/before-after-hook@4.0.0/node_modules/before-after-hook/lib/register.js
-// @ts-check
-
-function register(state, name, method, options) {
-  if (typeof method !== "function") {
-    throw new Error("method for before hook must be a function");
-  }
-
-  if (!options) {
-    options = {};
-  }
-
-  if (Array.isArray(name)) {
-    return name.reverse().reduce((callback, name) => {
-      return register.bind(null, state, name, callback, options);
-    }, method)();
-  }
-
-  return Promise.resolve().then(() => {
-    if (!state.registry[name]) {
-      return method(options);
-    }
-
-    return state.registry[name].reduce((method, registered) => {
-      return registered.hook.bind(null, method, options);
-    }, method)();
-  });
-}
-
-;// ./node_modules/.pnpm/before-after-hook@4.0.0/node_modules/before-after-hook/lib/add.js
-// @ts-check
-
-function addHook(state, kind, name, hook) {
-  const orig = hook;
-  if (!state.registry[name]) {
-    state.registry[name] = [];
-  }
-
-  if (kind === "before") {
-    hook = (method, options) => {
-      return Promise.resolve()
-        .then(orig.bind(null, options))
-        .then(method.bind(null, options));
-    };
-  }
-
-  if (kind === "after") {
-    hook = (method, options) => {
-      let result;
-      return Promise.resolve()
-        .then(method.bind(null, options))
-        .then((result_) => {
-          result = result_;
-          return orig(result, options);
-        })
-        .then(() => {
-          return result;
-        });
-    };
-  }
-
-  if (kind === "error") {
-    hook = (method, options) => {
-      return Promise.resolve()
-        .then(method.bind(null, options))
-        .catch((error) => {
-          return orig(error, options);
-        });
-    };
-  }
-
-  state.registry[name].push({
-    hook: hook,
-    orig: orig,
-  });
-}
-
-;// ./node_modules/.pnpm/before-after-hook@4.0.0/node_modules/before-after-hook/lib/remove.js
-// @ts-check
-
-function removeHook(state, name, method) {
-  if (!state.registry[name]) {
-    return;
-  }
-
-  const index = state.registry[name]
-    .map((registered) => {
-      return registered.orig;
-    })
-    .indexOf(method);
-
-  if (index === -1) {
-    return;
-  }
-
-  state.registry[name].splice(index, 1);
-}
-
+// EXTERNAL MODULE: ./node_modules/.pnpm/before-after-hook@4.0.0/node_modules/before-after-hook/lib/register.js
+var register = __webpack_require__(43347);
+// EXTERNAL MODULE: ./node_modules/.pnpm/before-after-hook@4.0.0/node_modules/before-after-hook/lib/add.js
+var add = __webpack_require__(85471);
+// EXTERNAL MODULE: ./node_modules/.pnpm/before-after-hook@4.0.0/node_modules/before-after-hook/lib/remove.js
+var remove = __webpack_require__(51794);
 ;// ./node_modules/.pnpm/before-after-hook@4.0.0/node_modules/before-after-hook/index.js
 // @ts-check
 
@@ -43288,7 +43196,7 @@ const bind = Function.bind;
 const bindable = bind.bind(bind);
 
 function bindApi(hook, state, name) {
-  const removeHookRef = bindable(removeHook, null).apply(
+  const removeHookRef = bindable(remove/* removeHook */.S, null).apply(
     null,
     name ? [state, name] : [state]
   );
@@ -43296,7 +43204,7 @@ function bindApi(hook, state, name) {
   hook.remove = removeHookRef;
   ["before", "error", "after", "wrap"].forEach((kind) => {
     const args = name ? [state, kind, name] : [state, kind];
-    hook[kind] = hook.api[kind] = bindable(addHook, null).apply(null, args);
+    hook[kind] = hook.api[kind] = bindable(add/* addHook */.$, null).apply(null, args);
   });
 }
 
@@ -43305,7 +43213,7 @@ function Singular() {
   const singularHookState = {
     registry: {},
   };
-  const singularHook = register.bind(null, singularHookState, singularHookName);
+  const singularHook = register/* register */.k.bind(null, singularHookState, singularHookName);
   bindApi(singularHook, singularHookState, singularHookName);
   return singularHook;
 }
@@ -43315,7 +43223,7 @@ function Collection() {
     registry: {},
   };
 
-  const hook = register.bind(null, state);
+  const hook = register/* register */.k.bind(null, state);
   bindApi(hook, state);
 
   return hook;
@@ -50569,10 +50477,10 @@ function defaultDataIdFromObject({ __typename, id, _id }, context) {
         }
     }
 }
-const defaultConfig = {
+const defaultConfig = (/* runtime-dependent pure expression or super */ /^(250|49|6|748|792|888)$/.test(__webpack_require__.j) ? ({
     dataIdFromObject: defaultDataIdFromObject,
     resultCaching: true,
-};
+}) : null);
 function normalizeConfig(config) {
     return (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_1__/* .compact */ .o)(defaultConfig, config);
 }
@@ -50653,8 +50561,8 @@ var transform = __webpack_require__(80143);
 var sizes = __webpack_require__(79033);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.9_graphql-ws@6.0.8_graphql@16.14.0_ws@8.20.0__graphql@16.14.0_react@19.2.6_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/canonicalStringify.js
 var canonicalStringify = __webpack_require__(37988);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.9_graphql-ws@6.0.8_graphql@16.14.0_ws@8.20.0__graphql@16.14.0_react@19.2.6_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/print.js + 3 modules
-var print = __webpack_require__(18759);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.9_graphql-ws@6.0.8_graphql@16.14.0_ws@8.20.0__graphql@16.14.0_react@19.2.6_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/print.js + 1 modules
+var print = __webpack_require__(62260);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.9_graphql-ws@6.0.8_graphql@16.14.0_ws@8.20.0__graphql@16.14.0_react@19.2.6_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/storeUtils.js
 var storeUtils = __webpack_require__(88297);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.9_graphql-ws@6.0.8_graphql@16.14.0_ws@8.20.0__graphql@16.14.0_react@19.2.6_rxjs@7.8.2/node_modules/@apollo/client/utilities/environment/index.production.js
@@ -52687,7 +52595,7 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 
 
 // Mapping from JSON-encoded KeySpecifier strings to associated information.
-const specifierInfoCache = {};
+const specifierInfoCache = (/* runtime-dependent pure expression or super */ /^(250|49|6|748|792|888)$/.test(__webpack_require__.j) ? ({}) : null);
 function lookupSpecifierInfo(spec) {
     // It's safe to encode KeySpecifier arrays with JSON.stringify, since they're
     // just arrays of strings or nested KeySpecifier arrays, and the order of the
@@ -53771,8 +53679,8 @@ var maskOperation = __webpack_require__(34956);
 var maskFragment = __webpack_require__(8493);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.9_graphql-ws@6.0.8_graphql@16.14.0_ws@8.20.0__graphql@16.14.0_react@19.2.6_rxjs@7.8.2/node_modules/@apollo/client/utilities/caching/sizes.js
 var sizes = __webpack_require__(79033);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.9_graphql-ws@6.0.8_graphql@16.14.0_ws@8.20.0__graphql@16.14.0_react@19.2.6_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/print.js + 3 modules
-var print = __webpack_require__(18759);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.9_graphql-ws@6.0.8_graphql@16.14.0_ws@8.20.0__graphql@16.14.0_react@19.2.6_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/print.js + 1 modules
+var print = __webpack_require__(62260);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.9_graphql-ws@6.0.8_graphql@16.14.0_ws@8.20.0__graphql@16.14.0_react@19.2.6_rxjs@7.8.2/node_modules/@apollo/client/utilities/isNetworkRequestInFlight.js
 var isNetworkRequestInFlight = __webpack_require__(5359);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.9_graphql-ws@6.0.8_graphql@16.14.0_ws@8.20.0__graphql@16.14.0_react@19.2.6_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getOperationName.js
@@ -56969,7 +56877,7 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 
 
 
-const IGNORE = {};
+const IGNORE = (/* runtime-dependent pure expression or super */ /^(250|49|6|748|792|888)$/.test(__webpack_require__.j) ? ({}) : null);
 const destructiveMethodCounts = new WeakMap();
 function wrapDestructiveCacheMethod(cache, methodName) {
     const original = cache[methodName];
@@ -57680,7 +57588,7 @@ function registerLinkError(error) {
  * }
  * ```
  */
-const LinkError = {
+const LinkError = (/* unused pure expression or super */ null && ({
     /**
      * A method that determines whether an error originated from the link chain.
      * `is` does not provide any type narrowing.
@@ -57695,7 +57603,7 @@ const LinkError = {
      * ```
      */
     is: (error) => registry.has(error),
-};
+}));
 //# sourceMappingURL=LinkError.js.map
 
 
@@ -58792,8 +58700,8 @@ function rewriteURIForGET(chosenURI, body) {
     return { newURI };
 }
 //# sourceMappingURL=rewriteURIForGET.js.map
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.9_graphql-ws@6.0.8_graphql@16.14.0_ws@8.20.0__graphql@16.14.0_react@19.2.6_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/print.js + 3 modules
-var print = __webpack_require__(18759);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.9_graphql-ws@6.0.8_graphql@16.14.0_ws@8.20.0__graphql@16.14.0_react@19.2.6_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/print.js + 1 modules
+var print = __webpack_require__(62260);
 ;// ./node_modules/.pnpm/@apollo+client@4.1.9_graphql-ws@6.0.8_graphql@16.14.0_ws@8.20.0__graphql@16.14.0_react@19.2.6_rxjs@7.8.2/node_modules/@apollo/client/link/http/selectHttpOptionsAndBody.js
 
 const defaultHttpOptions = {
@@ -59756,7 +59664,7 @@ class DocumentTransform {
 
 /***/ },
 
-/***/ 18759
+/***/ 62260
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 
@@ -59765,367 +59673,10 @@ __webpack_require__.d(__webpack_exports__, {
   y: () => (/* binding */ print_print)
 });
 
-// EXTERNAL MODULE: ./node_modules/.pnpm/graphql@16.14.0/node_modules/graphql/language/characterClasses.mjs
-var characterClasses = __webpack_require__(48139);
-;// ./node_modules/.pnpm/graphql@16.14.0/node_modules/graphql/language/blockString.mjs
-/* unused harmony import specifier */ var isWhiteSpace;
-
-/**
- * Produces the value of a block string from its parsed raw value, similar to
- * CoffeeScript's block string, Python's docstring trim or Ruby's strip_heredoc.
- *
- * This implements the GraphQL spec's BlockStringValue() static algorithm.
- *
- * @internal
- */
-
-function dedentBlockStringLines(lines) {
-  var _firstNonEmptyLine2;
-
-  let commonIndent = Number.MAX_SAFE_INTEGER;
-  let firstNonEmptyLine = null;
-  let lastNonEmptyLine = -1;
-
-  for (let i = 0; i < lines.length; ++i) {
-    var _firstNonEmptyLine;
-
-    const line = lines[i];
-    const indent = leadingWhitespace(line);
-
-    if (indent === line.length) {
-      continue; // skip empty lines
-    }
-
-    firstNonEmptyLine =
-      (_firstNonEmptyLine = firstNonEmptyLine) !== null &&
-      _firstNonEmptyLine !== void 0
-        ? _firstNonEmptyLine
-        : i;
-    lastNonEmptyLine = i;
-
-    if (i !== 0 && indent < commonIndent) {
-      commonIndent = indent;
-    }
-  }
-
-  return lines // Remove common indentation from all lines but first.
-    .map((line, i) => (i === 0 ? line : line.slice(commonIndent))) // Remove leading and trailing blank lines.
-    .slice(
-      (_firstNonEmptyLine2 = firstNonEmptyLine) !== null &&
-        _firstNonEmptyLine2 !== void 0
-        ? _firstNonEmptyLine2
-        : 0,
-      lastNonEmptyLine + 1,
-    );
-}
-
-function leadingWhitespace(str) {
-  let i = 0;
-
-  while (i < str.length && isWhiteSpace(str.charCodeAt(i))) {
-    ++i;
-  }
-
-  return i;
-}
-/**
- * @internal
- */
-
-function isPrintableAsBlockString(value) {
-  if (value === '') {
-    return true; // empty string is printable
-  }
-
-  let isEmptyLine = true;
-  let hasIndent = false;
-  let hasCommonIndent = true;
-  let seenNonEmptyLine = false;
-
-  for (let i = 0; i < value.length; ++i) {
-    switch (value.codePointAt(i)) {
-      case 0x0000:
-      case 0x0001:
-      case 0x0002:
-      case 0x0003:
-      case 0x0004:
-      case 0x0005:
-      case 0x0006:
-      case 0x0007:
-      case 0x0008:
-      case 0x000b:
-      case 0x000c:
-      case 0x000e:
-      case 0x000f:
-        return false;
-      // Has non-printable characters
-
-      case 0x000d:
-        //  \r
-        return false;
-      // Has \r or \r\n which will be replaced as \n
-
-      case 10:
-        //  \n
-        if (isEmptyLine && !seenNonEmptyLine) {
-          return false; // Has leading new line
-        }
-
-        seenNonEmptyLine = true;
-        isEmptyLine = true;
-        hasIndent = false;
-        break;
-
-      case 9: //   \t
-
-      case 32:
-        //  <space>
-        hasIndent || (hasIndent = isEmptyLine);
-        break;
-
-      default:
-        hasCommonIndent && (hasCommonIndent = hasIndent);
-        isEmptyLine = false;
-    }
-  }
-
-  if (isEmptyLine) {
-    return false; // Has trailing empty lines
-  }
-
-  if (hasCommonIndent && seenNonEmptyLine) {
-    return false; // Has internal indent
-  }
-
-  return true;
-}
-/**
- * Print a block string in the indented block form by adding a leading and
- * trailing blank line. However, if a block string starts with whitespace and is
- * a single-line, adding a leading blank line would strip that whitespace.
- *
- * @internal
- */
-
-function printBlockString(value, options) {
-  const escapedValue = value.replace(/"""/g, '\\"""'); // Expand a block string's raw value into independent lines.
-
-  const lines = escapedValue.split(/\r\n|[\n\r]/g);
-  const isSingleLine = lines.length === 1; // If common indentation is found we can fix some of those cases by adding leading new line
-
-  const forceLeadingNewLine =
-    lines.length > 1 &&
-    lines
-      .slice(1)
-      .every((line) => line.length === 0 || (0,characterClasses/* isWhiteSpace */.i0)(line.charCodeAt(0))); // Trailing triple quotes just looks confusing but doesn't force trailing new line
-
-  const hasTrailingTripleQuotes = escapedValue.endsWith('\\"""'); // Trailing quote (single or double) or slash forces trailing new line
-
-  const hasTrailingQuote = value.endsWith('"') && !hasTrailingTripleQuotes;
-  const hasTrailingSlash = value.endsWith('\\');
-  const forceTrailingNewline = hasTrailingQuote || hasTrailingSlash;
-  const printAsMultipleLines =
-    !(options !== null && options !== void 0 && options.minimize) && // add leading and trailing new lines only if it improves readability
-    (!isSingleLine ||
-      value.length > 70 ||
-      forceTrailingNewline ||
-      forceLeadingNewLine ||
-      hasTrailingTripleQuotes);
-  let result = ''; // Format a multi-line block quote to account for leading space.
-
-  const skipLeadingNewLine = isSingleLine && (0,characterClasses/* isWhiteSpace */.i0)(value.charCodeAt(0));
-
-  if ((printAsMultipleLines && !skipLeadingNewLine) || forceLeadingNewLine) {
-    result += '\n';
-  }
-
-  result += escapedValue;
-
-  if (printAsMultipleLines || forceTrailingNewline) {
-    result += '\n';
-  }
-
-  return '"""' + result + '"""';
-}
-
-;// ./node_modules/.pnpm/graphql@16.14.0/node_modules/graphql/language/printString.mjs
-/**
- * Prints a string as a GraphQL StringValue literal. Replaces control characters
- * and excluded characters (" U+0022 and \\ U+005C) with escape sequences.
- */
-function printString(str) {
-  return `"${str.replace(escapedRegExp, escapedReplacer)}"`;
-} // eslint-disable-next-line no-control-regex
-
-const escapedRegExp = /[\x00-\x1f\x22\x5c\x7f-\x9f]/g;
-
-function escapedReplacer(str) {
-  return escapeSequences[str.charCodeAt(0)];
-} // prettier-ignore
-
-const escapeSequences = [
-  '\\u0000',
-  '\\u0001',
-  '\\u0002',
-  '\\u0003',
-  '\\u0004',
-  '\\u0005',
-  '\\u0006',
-  '\\u0007',
-  '\\b',
-  '\\t',
-  '\\n',
-  '\\u000B',
-  '\\f',
-  '\\r',
-  '\\u000E',
-  '\\u000F',
-  '\\u0010',
-  '\\u0011',
-  '\\u0012',
-  '\\u0013',
-  '\\u0014',
-  '\\u0015',
-  '\\u0016',
-  '\\u0017',
-  '\\u0018',
-  '\\u0019',
-  '\\u001A',
-  '\\u001B',
-  '\\u001C',
-  '\\u001D',
-  '\\u001E',
-  '\\u001F',
-  '',
-  '',
-  '\\"',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '', // 2F
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '', // 3F
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '', // 4F
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '\\\\',
-  '',
-  '',
-  '', // 5F
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '', // 6F
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '\\u007F',
-  '\\u0080',
-  '\\u0081',
-  '\\u0082',
-  '\\u0083',
-  '\\u0084',
-  '\\u0085',
-  '\\u0086',
-  '\\u0087',
-  '\\u0088',
-  '\\u0089',
-  '\\u008A',
-  '\\u008B',
-  '\\u008C',
-  '\\u008D',
-  '\\u008E',
-  '\\u008F',
-  '\\u0090',
-  '\\u0091',
-  '\\u0092',
-  '\\u0093',
-  '\\u0094',
-  '\\u0095',
-  '\\u0096',
-  '\\u0097',
-  '\\u0098',
-  '\\u0099',
-  '\\u009A',
-  '\\u009B',
-  '\\u009C',
-  '\\u009D',
-  '\\u009E',
-  '\\u009F',
-];
-
+// EXTERNAL MODULE: ./node_modules/.pnpm/graphql@16.14.0/node_modules/graphql/language/blockString.mjs
+var blockString = __webpack_require__(68440);
+// EXTERNAL MODULE: ./node_modules/.pnpm/graphql@16.14.0/node_modules/graphql/language/printString.mjs
+var printString = __webpack_require__(42430);
 // EXTERNAL MODULE: ./node_modules/.pnpm/graphql@16.14.0/node_modules/graphql/language/visitor.mjs
 var visitor = __webpack_require__(37862);
 ;// ./node_modules/.pnpm/graphql@16.14.0/node_modules/graphql/language/printer.mjs
@@ -60240,7 +59791,7 @@ const printDocASTReducer = {
   },
   StringValue: {
     leave: ({ value, block: isBlockString }) =>
-      isBlockString ? printBlockString(value) : printString(value),
+      isBlockString ? (0,blockString/* printBlockString */.yo)(value) : (0,printString/* printString */.T)(value),
   },
   BooleanValue: {
     leave: ({ value }) => (value ? 'true' : 'false'),
@@ -61649,7 +61200,7 @@ function getMainDefinition(queryDoc) {
 /* unused harmony import specifier */ var cacheSizes;
 
 
-const globalCaches = {};
+const globalCaches = (/* runtime-dependent pure expression or super */ /^(250|49|6|748|792|888)$/.test(__webpack_require__.j) ? ({}) : null);
 function registerGlobalCache(name, getSize) {
     globalCaches[name] = getSize;
 }
@@ -64833,14 +64384,14 @@ const ALL_ENTITIES = {
   ...MISC_SYMBOLS,
 };
 
-const XML = {
+const XML = (/* runtime-dependent pure expression or super */ /^(245|367|390)$/.test(__webpack_require__.j) ? ({
   amp: "&",
   apos: "'",
   gt: ">",
   lt: "<",
   quot: "\""
-}
-const COMMON_HTML = {
+}) : null)
+const COMMON_HTML = (/* runtime-dependent pure expression or super */ /^(245|367|390)$/.test(__webpack_require__.j) ? ({
   nbsp: '\u00a0',
   copy: '\u00a9',
   reg: '\u00ae',
@@ -64861,7 +64412,7 @@ const COMMON_HTML = {
   frac12: '\u00bd',
   frac14: '\u00bc',
   frac34: '\u00be',
-}
+}) : null)
 // ---------------------------------------------------------------------------
 // Note: NUMERIC_ENTITIES (&#NNN; / &#xHH;) are handled by the scanner directly
 // via String.fromCodePoint() without any map lookup.
@@ -65996,20 +65547,20 @@ class StrongCache {
 /* harmony export */ });
 function noop() { }
 const defaultDispose = (/* runtime-dependent pure expression or super */ /^(250|49|6|748|792|888)$/.test(__webpack_require__.j) ? (noop) : null);
-const _WeakRef = typeof WeakRef !== "undefined"
+const _WeakRef = (/* runtime-dependent pure expression or super */ /^(250|49|6|748|792|888)$/.test(__webpack_require__.j) ? (typeof WeakRef !== "undefined"
     ? WeakRef
     : function (value) {
         return { deref: () => value };
-    };
-const _WeakMap = typeof WeakMap !== "undefined" ? WeakMap : Map;
-const _FinalizationRegistry = typeof FinalizationRegistry !== "undefined"
+    }) : null);
+const _WeakMap = (/* runtime-dependent pure expression or super */ /^(250|49|6|748|792|888)$/.test(__webpack_require__.j) ? (typeof WeakMap !== "undefined" ? WeakMap : Map) : null);
+const _FinalizationRegistry = (/* runtime-dependent pure expression or super */ /^(250|49|6|748|792|888)$/.test(__webpack_require__.j) ? (typeof FinalizationRegistry !== "undefined"
     ? FinalizationRegistry
     : function () {
         return {
             register: noop,
             unregister: noop,
         };
-    };
+    }) : null);
 const finalizationBatchSize = 10024;
 class WeakCache {
     constructor(max = Infinity, dispose = defaultDispose) {
@@ -66501,6 +66052,128 @@ const range = (a, b, str) => {
 
 /***/ },
 
+/***/ 85471
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   $: () => (/* binding */ addHook)
+/* harmony export */ });
+// @ts-check
+
+function addHook(state, kind, name, hook) {
+  const orig = hook;
+  if (!state.registry[name]) {
+    state.registry[name] = [];
+  }
+
+  if (kind === "before") {
+    hook = (method, options) => {
+      return Promise.resolve()
+        .then(orig.bind(null, options))
+        .then(method.bind(null, options));
+    };
+  }
+
+  if (kind === "after") {
+    hook = (method, options) => {
+      let result;
+      return Promise.resolve()
+        .then(method.bind(null, options))
+        .then((result_) => {
+          result = result_;
+          return orig(result, options);
+        })
+        .then(() => {
+          return result;
+        });
+    };
+  }
+
+  if (kind === "error") {
+    hook = (method, options) => {
+      return Promise.resolve()
+        .then(method.bind(null, options))
+        .catch((error) => {
+          return orig(error, options);
+        });
+    };
+  }
+
+  state.registry[name].push({
+    hook: hook,
+    orig: orig,
+  });
+}
+
+
+/***/ },
+
+/***/ 43347
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   k: () => (/* binding */ register)
+/* harmony export */ });
+// @ts-check
+
+function register(state, name, method, options) {
+  if (typeof method !== "function") {
+    throw new Error("method for before hook must be a function");
+  }
+
+  if (!options) {
+    options = {};
+  }
+
+  if (Array.isArray(name)) {
+    return name.reverse().reduce((callback, name) => {
+      return register.bind(null, state, name, callback, options);
+    }, method)();
+  }
+
+  return Promise.resolve().then(() => {
+    if (!state.registry[name]) {
+      return method(options);
+    }
+
+    return state.registry[name].reduce((method, registered) => {
+      return registered.hook.bind(null, method, options);
+    }, method)();
+  });
+}
+
+
+/***/ },
+
+/***/ 51794
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   S: () => (/* binding */ removeHook)
+/* harmony export */ });
+// @ts-check
+
+function removeHook(state, name, method) {
+  if (!state.registry[name]) {
+    return;
+  }
+
+  const index = state.registry[name]
+    .map((registered) => {
+      return registered.orig;
+    })
+    .indexOf(method);
+
+  if (index === -1) {
+    return;
+  }
+
+  state.registry[name].splice(index, 1);
+}
+
+
+/***/ },
+
 /***/ 77825
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
@@ -66616,10 +66289,10 @@ if (/^(245|367|390)$/.test(__webpack_require__.j)) {
 
 
 
-const defaultOptions = {
+const defaultOptions = (/* runtime-dependent pure expression or super */ /^(245|367|390)$/.test(__webpack_require__.j) ? ({
   allowBooleanAttributes: false, //A tag can have attributes without any value
   unpairedTags: []
-};
+}) : null);
 
 //const tagsPattern = new RegExp("<\\/?([\\w:\\-_\.]+)\\s*\/?>","g");
 function validate(xmlData, options) {
@@ -66926,7 +66599,7 @@ function readAttributeStr(xmlData, i) {
 /**
  * Select all the attributes whether valid or invalid.
  */
-const validAttrStrRegxp = (/* runtime-dependent pure expression or super */ /^(245|367|390)$/.test(__webpack_require__.j) ? (new RegExp('(\\s*)([^\\s=]+)(\\s*=)?(\\s*([\'"])(([\\s\\S])*?)\\5)?', 'g')) : null);
+const validAttrStrRegxp = new RegExp('(\\s*)([^\\s=]+)(\\s*=)?(\\s*([\'"])(([\\s\\S])*?)\\5)?', 'g');
 
 //attr, ="sd", a="amit's", a="sd"b="saf", ab  cd=""
 
@@ -67743,7 +67416,9 @@ function validateEntityName(name, xmlVersion) {
 /* harmony export */   D: () => (/* binding */ buildOptions)
 /* harmony export */ });
 /* unused harmony export defaultOptions */
-/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(15546);
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(15546);
+}
 
 
 
@@ -67755,7 +67430,7 @@ const defaultOnDangerousProperty = (name) => {
 };
 
 
-const defaultOptions = {
+const defaultOptions = (/* runtime-dependent pure expression or super */ /^(245|367|390)$/.test(__webpack_require__.j) ? ({
   preserveOrder: false,
   attributeNamePrefix: '@_',
   attributesGroupName: false,
@@ -67800,7 +67475,7 @@ const defaultOptions = {
   strictReservedNames: true,
   jPath: true, // if true, pass jPath string to callbacks; if false, pass matcher instance
   onDangerousProperty: defaultOnDangerousProperty
-};
+}) : null);
 
 
 /**
@@ -67910,198 +67585,42 @@ const buildOptions = function (options) {
 
 /***/ },
 
-/***/ 70386
+/***/ 42772
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  A: () => (/* binding */ OrderedObjParser)
-});
-
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.8.0/node_modules/fast-xml-parser/src/util.js
-var util = __webpack_require__(15546);
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.8.0/node_modules/fast-xml-parser/src/xmlparser/xmlNode.js
-var xmlNode = __webpack_require__(18348);
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.8.0/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js + 1 modules
-var DocTypeReader = __webpack_require__(30656);
-;// ./node_modules/.pnpm/strnum@2.3.0/node_modules/strnum/strnum.js
-const hexRegex = /^[-+]?0x[a-fA-F0-9]+$/;
-const binRegex = /^0b[01]+$/;
-const octRegex = /^0o[0-7]+$/;
-const numRegex = /^([\-\+])?(0*)([0-9]*(\.[0-9]*)?)$/;
-
-const consider = {
-    hex: true,
-    binary: false,
-    octal: false,
-    leadingZeros: true,
-    decimalPoint: "\.",
-    eNotation: true,
-    //skipLike: /regex/,
-    infinity: "original", // "null", "infinity" (Infinity type), "string" ("Infinity" (the string literal))
-};
-
-function toNumber(str, options = {}) {
-    options = Object.assign({}, consider, options);
-    if (!str || typeof str !== "string") return str;
-
-    let trimmedStr = str.trim();
-
-    if (trimmedStr.length === 0) return str;
-    else if (options.skipLike !== undefined && options.skipLike.test(trimmedStr)) return str;
-    else if (trimmedStr === "0") return 0;
-    else if (options.hex && hexRegex.test(trimmedStr)) {
-        return parse_int(trimmedStr, 16);
-    } else if (options.binary && binRegex.test(trimmedStr)) {
-        return parse_int(trimmedStr, 2);
-    } else if (options.octal && octRegex.test(trimmedStr)) {
-        return parse_int(trimmedStr, 8);
-    } else if (!isFinite(trimmedStr)) { //Infinity
-        return handleInfinity(str, Number(trimmedStr), options);
-    } else if (trimmedStr.includes('e') || trimmedStr.includes('E')) { //eNotation
-        return resolveEnotation(str, trimmedStr, options);
-    } else {
-        //separate negative sign, leading zeros, and rest number
-        const match = numRegex.exec(trimmedStr);
-        // +00.123 => [ , '+', '00', '.123', ..
-        if (match) {
-            const sign = match[1] || "";
-            const leadingZeros = match[2];
-            let numTrimmedByZeros = trimZeros(match[3]); //complete num without leading zeros
-            const decimalAdjacentToLeadingZeros = sign ? // 0., -00., 000.
-                str[leadingZeros.length + 1] === "."
-                : str[leadingZeros.length] === ".";
-
-            //trim ending zeros for floating number
-            if (!options.leadingZeros //leading zeros are not allowed
-                && (leadingZeros.length > 1
-                    || (leadingZeros.length === 1 && !decimalAdjacentToLeadingZeros))) {
-                // 00, 00.3, +03.24, 03, 03.24
-                return str;
-            }
-            else {//no leading zeros or leading zeros are allowed
-                const num = Number(trimmedStr);
-                const parsedStr = String(num);
-
-                if (num === 0) return num;
-                if (parsedStr.search(/[eE]/) !== -1) { //given number is long and parsed to eNotation
-                    if (options.eNotation) return num;
-                    else return str;
-                } else if (trimmedStr.indexOf(".") !== -1) { //floating number
-                    if (parsedStr === "0") return num; //0.0
-                    else if (parsedStr === numTrimmedByZeros) return num; //0.456. 0.79000
-                    else if (parsedStr === `${sign}${numTrimmedByZeros}`) return num;
-                    else return str;
-                }
-
-                let n = leadingZeros ? numTrimmedByZeros : trimmedStr;
-                if (leadingZeros) {
-                    // -009 => -9
-                    return (n === parsedStr) || (sign + n === parsedStr) ? num : str
-                } else {
-                    // +9
-                    return (n === parsedStr) || (n === sign + parsedStr) ? num : str
-                }
-            }
-        } else { //non-numeric string
-            return str;
-        }
-    }
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (/* binding */ OrderedObjParser)
+/* harmony export */ });
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(15546);
 }
-
-const eNotationRegx = /^([-+])?(0*)(\d*(\.\d*)?[eE][-\+]?\d+)$/;
-function resolveEnotation(str, trimmedStr, options) {
-    if (!options.eNotation) return str;
-    const notation = trimmedStr.match(eNotationRegx);
-    if (notation) {
-        let sign = notation[1] || "";
-        const eChar = notation[3].indexOf("e") === -1 ? "E" : "e";
-        const leadingZeros = notation[2];
-        const eAdjacentToLeadingZeros = sign ? // 0E.
-            str[leadingZeros.length + 1] === eChar
-            : str[leadingZeros.length] === eChar;
-
-        if (leadingZeros.length > 1 && eAdjacentToLeadingZeros) return str;
-        else if (leadingZeros.length === 1
-            && (notation[3].startsWith(`.${eChar}`) || notation[3][0] === eChar)) {
-            return Number(trimmedStr);
-        } else if (leadingZeros.length > 0) {
-            // Has leading zeros — only accept if leadingZeros option allows it
-            if (options.leadingZeros && !eAdjacentToLeadingZeros) {
-                trimmedStr = (notation[1] || "") + notation[3];
-                return Number(trimmedStr);
-            } else return str;
-        } else {
-            // No leading zeros — always valid e-notation, parse it
-            return Number(trimmedStr);
-        }
-    } else {
-        return str;
-    }
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _xmlNode_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(18348);
 }
-
-/**
- * 
- * @param {string} numStr without leading zeros
- * @returns 
- */
-function trimZeros(numStr) {
-    if (numStr && numStr.indexOf(".") !== -1) {//float
-        numStr = numStr.replace(/0+$/, ""); //remove ending zeros
-        if (numStr === ".") numStr = "0";
-        else if (numStr[0] === ".") numStr = "0" + numStr;
-        else if (numStr[numStr.length - 1] === ".") numStr = numStr.substring(0, numStr.length - 1);
-        return numStr;
-    }
-    return numStr;
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _DocTypeReader_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(30656);
 }
-
-function parse_int(numStr, base) {
-    const str = numStr.trim();
-    if (base === 2 || base === 8) numStr = str.substring(2);
-
-    if (parseInt) return parseInt(numStr, base);
-    else if (Number.parseInt) return Number.parseInt(numStr, base);
-    else if (window && window.parseInt) return window.parseInt(numStr, base);
-    else throw new Error("parseInt, Number.parseInt, window.parseInt are not supported");
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var strnum__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(30382);
 }
-
-/**
- * Handle infinite values based on user option
- * @param {string} str - original input string
- * @param {number} num - parsed number (Infinity or -Infinity)
- * @param {object} options - user options
- * @returns {string|number|null} based on infinity option
- */
-function handleInfinity(str, num, options) {
-    const isPositive = num === Infinity;
-
-    switch (options.infinity.toLowerCase()) {
-        case "null":
-            return null;
-        case "infinity":
-            return num; // Return Infinity or -Infinity
-        case "string":
-            return isPositive ? "Infinity" : "-Infinity";
-        case "original":
-        default:
-            return str; // Return original string like "1e1000"
-    }
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _ignoreAttributes_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(77825);
 }
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.8.0/node_modules/fast-xml-parser/src/ignoreAttributes.js
-var ignoreAttributes = __webpack_require__(77825);
-// EXTERNAL MODULE: ./node_modules/.pnpm/path-expression-matcher@1.5.0/node_modules/path-expression-matcher/src/Matcher.js
-var Matcher = __webpack_require__(28173);
-// EXTERNAL MODULE: ./node_modules/.pnpm/path-expression-matcher@1.5.0/node_modules/path-expression-matcher/src/Expression.js
-var Expression = __webpack_require__(18277);
-// EXTERNAL MODULE: ./node_modules/.pnpm/path-expression-matcher@1.5.0/node_modules/path-expression-matcher/src/ExpressionSet.js
-var ExpressionSet = __webpack_require__(99597);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@nodable+entities@2.1.0/node_modules/@nodable/entities/src/entities.js
-var entities = __webpack_require__(82617);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@nodable+entities@2.1.0/node_modules/@nodable/entities/src/EntityDecoder.js
-var EntityDecoder = __webpack_require__(78601);
-;// ./node_modules/.pnpm/fast-xml-parser@5.8.0/node_modules/fast-xml-parser/src/xmlparser/OrderedObjParser.js
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var path_expression_matcher__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(18277);
+}
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var path_expression_matcher__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(28173);
+}
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var path_expression_matcher__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(99597);
+}
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _nodable_entities__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(78601);
+}
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _nodable_entities__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(82617);
+}
 
 ///@ts-check
 
@@ -68186,16 +67705,16 @@ class OrderedObjParser {
     this.readStopNodeData = readStopNodeData;
     this.saveTextToParentTag = saveTextToParentTag;
     this.addChild = addChild;
-    this.ignoreAttributesFn = (0,ignoreAttributes/* default */.A)(this.options.ignoreAttributes)
+    this.ignoreAttributesFn = (0,_ignoreAttributes_js__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .A)(this.options.ignoreAttributes)
     this.entityExpansionCount = 0;
     this.currentExpandedLength = 0;
-    let namedEntities = { ...entities/* XML */._9 };
+    let namedEntities = { ..._nodable_entities__WEBPACK_IMPORTED_MODULE_9__/* .XML */ ._9 };
     if (this.options.entityDecoder) {
       this.entityDecoder = this.options.entityDecoder
     } else {
       if (typeof this.options.htmlEntities === "object") namedEntities = this.options.htmlEntities;
-      else if (this.options.htmlEntities === true) namedEntities = { ...entities/* COMMON_HTML */.KS, ...entities/* CURRENCY */.UM };
-      this.entityDecoder = new EntityDecoder/* default */.A({
+      else if (this.options.htmlEntities === true) namedEntities = { ..._nodable_entities__WEBPACK_IMPORTED_MODULE_9__/* .COMMON_HTML */ .KS, ..._nodable_entities__WEBPACK_IMPORTED_MODULE_9__/* .CURRENCY */ .UM };
+      this.entityDecoder = new _nodable_entities__WEBPACK_IMPORTED_MODULE_8__/* ["default"] */ .A({
         namedEntities: { ...namedEntities, ...externalEntities },
         numericAllowed: this.options.htmlEntities,
         limit: {
@@ -68208,22 +67727,22 @@ class OrderedObjParser {
     }
 
     // Initialize path matcher for path-expression-matcher
-    this.matcher = new Matcher/* default */.A();
+    this.matcher = new path_expression_matcher__WEBPACK_IMPORTED_MODULE_6__/* ["default"] */ .A();
     this.readonlyMatcher = this.matcher.readOnly();
 
     // Flag to track if current node is a stop node (optimization)
     this.isCurrentNodeStopNode = false;
 
     // Pre-compile stopNodes expressions
-    this.stopNodeExpressionsSet = new ExpressionSet/* default */.A();
+    this.stopNodeExpressionsSet = new path_expression_matcher__WEBPACK_IMPORTED_MODULE_7__/* ["default"] */ .A();
     const stopNodesOpts = this.options.stopNodes;
     if (stopNodesOpts && stopNodesOpts.length > 0) {
       for (let i = 0; i < stopNodesOpts.length; i++) {
         const stopNodeExp = stopNodesOpts[i];
         if (typeof stopNodeExp === 'string') {
           // Convert string to Expression object
-          this.stopNodeExpressionsSet.add(new Expression/* default */.A(stopNodeExp));
-        } else if (stopNodeExp instanceof Expression/* default */.A) {
+          this.stopNodeExpressionsSet.add(new path_expression_matcher__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .A(stopNodeExp));
+        } else if (stopNodeExp instanceof path_expression_matcher__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .A) {
           // Already an Expression object
           this.stopNodeExpressionsSet.add(stopNodeExp);
         }
@@ -68300,7 +67819,7 @@ function buildAttributesMap(attrStr, jPath, tagName, force = false) {
     // attrStr = attrStr.replace(/\r?\n/g, ' ');
     //attrStr = attrStr || attrStr.trim();
 
-    const matches = (0,util/* getAllMatches */.Xe)(attrStr, attrsRegx);
+    const matches = (0,_util_js__WEBPACK_IMPORTED_MODULE_0__/* .getAllMatches */ .Xe)(attrStr, attrsRegx);
     const len = matches.length; //don't make it inline
     const attrs = {};
 
@@ -68380,7 +67899,7 @@ function buildAttributesMap(attrStr, jPath, tagName, force = false) {
 }
 const parseXml = function (xmlData) {
   xmlData = xmlData.replace(/\r\n?/g, "\n"); //TODO: remove this line
-  const xmlObj = new xmlNode/* default */.A('!xml');
+  const xmlObj = new _xmlNode_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A('!xml');
   let currentNode = xmlObj;
   let textData = "";
 
@@ -68392,7 +67911,7 @@ const parseXml = function (xmlData) {
   this.entityExpansionCount = 0;
   this.currentExpandedLength = 0;
   const options = this.options;
-  const docTypeReader = new DocTypeReader/* default */.A(options.processEntities);
+  const docTypeReader = new _DocTypeReader_js__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A(options.processEntities);
   const xmlLen = xmlData.length;
   for (let i = 0; i < xmlLen; i++) {//for each char in XML data
     const ch = xmlData[i];
@@ -68450,7 +67969,7 @@ const parseXml = function (xmlData) {
           //do nothing
         } else {
 
-          const childNode = new xmlNode/* default */.A(tagData.tagName);
+          const childNode = new _xmlNode_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A(tagData.tagName);
           childNode.add(options.textNodeName, "");
 
           if (tagData.tagName !== tagData.tagExp && tagData.attrExpPresent && options.ignoreAttributes !== true) {
@@ -68606,7 +68125,7 @@ const parseXml = function (xmlData) {
             tagContent = result.tagContent;
           }
 
-          const childNode = new xmlNode/* default */.A(tagName);
+          const childNode = new _xmlNode_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A(tagName);
 
           if (prefixedAttrs) {
             childNode[":@"] = prefixedAttrs;
@@ -68624,7 +68143,7 @@ const parseXml = function (xmlData) {
           if (isSelfClosing) {
             ({ tagName, tagExp } = transformTagName(options.transformTagName, tagName, tagExp, options));
 
-            const childNode = new xmlNode/* default */.A(tagName);
+            const childNode = new _xmlNode_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A(tagName);
             if (prefixedAttrs) {
               childNode[":@"] = prefixedAttrs;
             }
@@ -68633,7 +68152,7 @@ const parseXml = function (xmlData) {
             this.isCurrentNodeStopNode = false; // Reset flag
           }
           else if (options.unpairedTagsSet.has(tagName)) {//unpaired tag
-            const childNode = new xmlNode/* default */.A(tagName);
+            const childNode = new _xmlNode_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A(tagName);
             if (prefixedAttrs) {
               childNode[":@"] = prefixedAttrs;
             }
@@ -68646,7 +68165,7 @@ const parseXml = function (xmlData) {
           }
           //opening tag
           else {
-            const childNode = new xmlNode/* default */.A(tagName);
+            const childNode = new _xmlNode_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A(tagName);
             if (this.tagsNodeStack.length > options.maxNestedTags) {
               throw new Error("Maximum nested tags exceeded");
             }
@@ -68898,9 +68417,9 @@ function parseValue(val, shouldParse, options) {
     const newval = val.trim();
     if (newval === 'true') return true;
     else if (newval === 'false') return false;
-    else return toNumber(val, options);
+    else return (0,strnum__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A)(val, options);
   } else {
-    if ((0,util/* isExist */.yQ)(val)) {
+    if ((0,_util_js__WEBPACK_IMPORTED_MODULE_0__/* .isExist */ .yQ)(val)) {
       return val;
     } else {
       return '';
@@ -68933,9 +68452,9 @@ function transformTagName(fn, tagName, tagExp, options) {
 
 
 function sanitizeName(name, options) {
-  if (util/* criticalProperties */.vl.includes(name)) {
+  if (_util_js__WEBPACK_IMPORTED_MODULE_0__/* .criticalProperties */ .vl.includes(name)) {
     throw new Error(`[SECURITY] Invalid name: "${name}" is a reserved JavaScript keyword that could cause prototype pollution`);
-  } else if (util/* DANGEROUS_PROPERTY_NAMES */.q9.includes(name)) {
+  } else if (_util_js__WEBPACK_IMPORTED_MODULE_0__/* .DANGEROUS_PROPERTY_NAMES */ .q9.includes(name)) {
     return options.onDangerousProperty(name);
   }
   return name;
@@ -68953,7 +68472,7 @@ if (/^(245|367|390)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _OptionsBuilder_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(35224);
 }
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _OrderedObjParser_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(70386);
+	/* harmony import */ var _OrderedObjParser_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(42772);
 }
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _node2json_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(56481);
@@ -69658,6 +69177,199 @@ var OperationTypeNode;
 
 /***/ },
 
+/***/ 68440
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   yo: () => (/* binding */ printBlockString)
+/* harmony export */ });
+/* unused harmony exports dedentBlockStringLines, isPrintableAsBlockString */
+/* unused harmony import specifier */ var isWhiteSpace;
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _characterClasses_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(48139);
+}
+
+/**
+ * Produces the value of a block string from its parsed raw value, similar to
+ * CoffeeScript's block string, Python's docstring trim or Ruby's strip_heredoc.
+ *
+ * This implements the GraphQL spec's BlockStringValue() static algorithm.
+ *
+ * @internal
+ */
+
+function dedentBlockStringLines(lines) {
+  var _firstNonEmptyLine2;
+
+  let commonIndent = Number.MAX_SAFE_INTEGER;
+  let firstNonEmptyLine = null;
+  let lastNonEmptyLine = -1;
+
+  for (let i = 0; i < lines.length; ++i) {
+    var _firstNonEmptyLine;
+
+    const line = lines[i];
+    const indent = leadingWhitespace(line);
+
+    if (indent === line.length) {
+      continue; // skip empty lines
+    }
+
+    firstNonEmptyLine =
+      (_firstNonEmptyLine = firstNonEmptyLine) !== null &&
+      _firstNonEmptyLine !== void 0
+        ? _firstNonEmptyLine
+        : i;
+    lastNonEmptyLine = i;
+
+    if (i !== 0 && indent < commonIndent) {
+      commonIndent = indent;
+    }
+  }
+
+  return lines // Remove common indentation from all lines but first.
+    .map((line, i) => (i === 0 ? line : line.slice(commonIndent))) // Remove leading and trailing blank lines.
+    .slice(
+      (_firstNonEmptyLine2 = firstNonEmptyLine) !== null &&
+        _firstNonEmptyLine2 !== void 0
+        ? _firstNonEmptyLine2
+        : 0,
+      lastNonEmptyLine + 1,
+    );
+}
+
+function leadingWhitespace(str) {
+  let i = 0;
+
+  while (i < str.length && isWhiteSpace(str.charCodeAt(i))) {
+    ++i;
+  }
+
+  return i;
+}
+/**
+ * @internal
+ */
+
+function isPrintableAsBlockString(value) {
+  if (value === '') {
+    return true; // empty string is printable
+  }
+
+  let isEmptyLine = true;
+  let hasIndent = false;
+  let hasCommonIndent = true;
+  let seenNonEmptyLine = false;
+
+  for (let i = 0; i < value.length; ++i) {
+    switch (value.codePointAt(i)) {
+      case 0x0000:
+      case 0x0001:
+      case 0x0002:
+      case 0x0003:
+      case 0x0004:
+      case 0x0005:
+      case 0x0006:
+      case 0x0007:
+      case 0x0008:
+      case 0x000b:
+      case 0x000c:
+      case 0x000e:
+      case 0x000f:
+        return false;
+      // Has non-printable characters
+
+      case 0x000d:
+        //  \r
+        return false;
+      // Has \r or \r\n which will be replaced as \n
+
+      case 10:
+        //  \n
+        if (isEmptyLine && !seenNonEmptyLine) {
+          return false; // Has leading new line
+        }
+
+        seenNonEmptyLine = true;
+        isEmptyLine = true;
+        hasIndent = false;
+        break;
+
+      case 9: //   \t
+
+      case 32:
+        //  <space>
+        hasIndent || (hasIndent = isEmptyLine);
+        break;
+
+      default:
+        hasCommonIndent && (hasCommonIndent = hasIndent);
+        isEmptyLine = false;
+    }
+  }
+
+  if (isEmptyLine) {
+    return false; // Has trailing empty lines
+  }
+
+  if (hasCommonIndent && seenNonEmptyLine) {
+    return false; // Has internal indent
+  }
+
+  return true;
+}
+/**
+ * Print a block string in the indented block form by adding a leading and
+ * trailing blank line. However, if a block string starts with whitespace and is
+ * a single-line, adding a leading blank line would strip that whitespace.
+ *
+ * @internal
+ */
+
+function printBlockString(value, options) {
+  const escapedValue = value.replace(/"""/g, '\\"""'); // Expand a block string's raw value into independent lines.
+
+  const lines = escapedValue.split(/\r\n|[\n\r]/g);
+  const isSingleLine = lines.length === 1; // If common indentation is found we can fix some of those cases by adding leading new line
+
+  const forceLeadingNewLine =
+    lines.length > 1 &&
+    lines
+      .slice(1)
+      .every((line) => line.length === 0 || (0,_characterClasses_mjs__WEBPACK_IMPORTED_MODULE_0__/* .isWhiteSpace */ .i0)(line.charCodeAt(0))); // Trailing triple quotes just looks confusing but doesn't force trailing new line
+
+  const hasTrailingTripleQuotes = escapedValue.endsWith('\\"""'); // Trailing quote (single or double) or slash forces trailing new line
+
+  const hasTrailingQuote = value.endsWith('"') && !hasTrailingTripleQuotes;
+  const hasTrailingSlash = value.endsWith('\\');
+  const forceTrailingNewline = hasTrailingQuote || hasTrailingSlash;
+  const printAsMultipleLines =
+    !(options !== null && options !== void 0 && options.minimize) && // add leading and trailing new lines only if it improves readability
+    (!isSingleLine ||
+      value.length > 70 ||
+      forceTrailingNewline ||
+      forceLeadingNewLine ||
+      hasTrailingTripleQuotes);
+  let result = ''; // Format a multi-line block quote to account for leading space.
+
+  const skipLeadingNewLine = isSingleLine && (0,_characterClasses_mjs__WEBPACK_IMPORTED_MODULE_0__/* .isWhiteSpace */ .i0)(value.charCodeAt(0));
+
+  if ((printAsMultipleLines && !skipLeadingNewLine) || forceLeadingNewLine) {
+    result += '\n';
+  }
+
+  result += escapedValue;
+
+  if (printAsMultipleLines || forceTrailingNewline) {
+    result += '\n';
+  }
+
+  return '"""' + result + '"""';
+}
+
+
+/***/ },
+
 /***/ 48139
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
@@ -69802,6 +69514,192 @@ var Kind;
  *
  * @deprecated Please use `Kind`. Will be remove in v17.
  */
+
+
+/***/ },
+
+/***/ 42430
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   T: () => (/* binding */ printString)
+/* harmony export */ });
+/**
+ * Prints a string as a GraphQL StringValue literal. Replaces control characters
+ * and excluded characters (" U+0022 and \\ U+005C) with escape sequences.
+ */
+function printString(str) {
+  return `"${str.replace(escapedRegExp, escapedReplacer)}"`;
+} // eslint-disable-next-line no-control-regex
+
+const escapedRegExp = /[\x00-\x1f\x22\x5c\x7f-\x9f]/g;
+
+function escapedReplacer(str) {
+  return escapeSequences[str.charCodeAt(0)];
+} // prettier-ignore
+
+const escapeSequences = (/* runtime-dependent pure expression or super */ /^(250|49|6|748|792|888)$/.test(__webpack_require__.j) ? ([
+  '\\u0000',
+  '\\u0001',
+  '\\u0002',
+  '\\u0003',
+  '\\u0004',
+  '\\u0005',
+  '\\u0006',
+  '\\u0007',
+  '\\b',
+  '\\t',
+  '\\n',
+  '\\u000B',
+  '\\f',
+  '\\r',
+  '\\u000E',
+  '\\u000F',
+  '\\u0010',
+  '\\u0011',
+  '\\u0012',
+  '\\u0013',
+  '\\u0014',
+  '\\u0015',
+  '\\u0016',
+  '\\u0017',
+  '\\u0018',
+  '\\u0019',
+  '\\u001A',
+  '\\u001B',
+  '\\u001C',
+  '\\u001D',
+  '\\u001E',
+  '\\u001F',
+  '',
+  '',
+  '\\"',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '', // 2F
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '', // 3F
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '', // 4F
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '\\\\',
+  '',
+  '',
+  '', // 5F
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '', // 6F
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '\\u007F',
+  '\\u0080',
+  '\\u0081',
+  '\\u0082',
+  '\\u0083',
+  '\\u0084',
+  '\\u0085',
+  '\\u0086',
+  '\\u0087',
+  '\\u0088',
+  '\\u0089',
+  '\\u008A',
+  '\\u008B',
+  '\\u008C',
+  '\\u008D',
+  '\\u008E',
+  '\\u008F',
+  '\\u0090',
+  '\\u0091',
+  '\\u0092',
+  '\\u0093',
+  '\\u0094',
+  '\\u0095',
+  '\\u0096',
+  '\\u0097',
+  '\\u0098',
+  '\\u0099',
+  '\\u009A',
+  '\\u009B',
+  '\\u009C',
+  '\\u009D',
+  '\\u009E',
+  '\\u009F',
+]) : null);
 
 
 /***/ },
@@ -73754,6 +73652,178 @@ class Matcher {
   readOnly() {
     return this._view;
   }
+}
+
+/***/ },
+
+/***/ 30382
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (/* binding */ toNumber)
+/* harmony export */ });
+const hexRegex = /^[-+]?0x[a-fA-F0-9]+$/;
+const binRegex = /^0b[01]+$/;
+const octRegex = /^0o[0-7]+$/;
+const numRegex = /^([\-\+])?(0*)([0-9]*(\.[0-9]*)?)$/;
+
+const consider = (/* runtime-dependent pure expression or super */ /^(245|367|390)$/.test(__webpack_require__.j) ? ({
+    hex: true,
+    binary: false,
+    octal: false,
+    leadingZeros: true,
+    decimalPoint: "\.",
+    eNotation: true,
+    //skipLike: /regex/,
+    infinity: "original", // "null", "infinity" (Infinity type), "string" ("Infinity" (the string literal))
+}) : null);
+
+function toNumber(str, options = {}) {
+    options = Object.assign({}, consider, options);
+    if (!str || typeof str !== "string") return str;
+
+    let trimmedStr = str.trim();
+
+    if (trimmedStr.length === 0) return str;
+    else if (options.skipLike !== undefined && options.skipLike.test(trimmedStr)) return str;
+    else if (trimmedStr === "0") return 0;
+    else if (options.hex && hexRegex.test(trimmedStr)) {
+        return parse_int(trimmedStr, 16);
+    } else if (options.binary && binRegex.test(trimmedStr)) {
+        return parse_int(trimmedStr, 2);
+    } else if (options.octal && octRegex.test(trimmedStr)) {
+        return parse_int(trimmedStr, 8);
+    } else if (!isFinite(trimmedStr)) { //Infinity
+        return handleInfinity(str, Number(trimmedStr), options);
+    } else if (trimmedStr.includes('e') || trimmedStr.includes('E')) { //eNotation
+        return resolveEnotation(str, trimmedStr, options);
+    } else {
+        //separate negative sign, leading zeros, and rest number
+        const match = numRegex.exec(trimmedStr);
+        // +00.123 => [ , '+', '00', '.123', ..
+        if (match) {
+            const sign = match[1] || "";
+            const leadingZeros = match[2];
+            let numTrimmedByZeros = trimZeros(match[3]); //complete num without leading zeros
+            const decimalAdjacentToLeadingZeros = sign ? // 0., -00., 000.
+                str[leadingZeros.length + 1] === "."
+                : str[leadingZeros.length] === ".";
+
+            //trim ending zeros for floating number
+            if (!options.leadingZeros //leading zeros are not allowed
+                && (leadingZeros.length > 1
+                    || (leadingZeros.length === 1 && !decimalAdjacentToLeadingZeros))) {
+                // 00, 00.3, +03.24, 03, 03.24
+                return str;
+            }
+            else {//no leading zeros or leading zeros are allowed
+                const num = Number(trimmedStr);
+                const parsedStr = String(num);
+
+                if (num === 0) return num;
+                if (parsedStr.search(/[eE]/) !== -1) { //given number is long and parsed to eNotation
+                    if (options.eNotation) return num;
+                    else return str;
+                } else if (trimmedStr.indexOf(".") !== -1) { //floating number
+                    if (parsedStr === "0") return num; //0.0
+                    else if (parsedStr === numTrimmedByZeros) return num; //0.456. 0.79000
+                    else if (parsedStr === `${sign}${numTrimmedByZeros}`) return num;
+                    else return str;
+                }
+
+                let n = leadingZeros ? numTrimmedByZeros : trimmedStr;
+                if (leadingZeros) {
+                    // -009 => -9
+                    return (n === parsedStr) || (sign + n === parsedStr) ? num : str
+                } else {
+                    // +9
+                    return (n === parsedStr) || (n === sign + parsedStr) ? num : str
+                }
+            }
+        } else { //non-numeric string
+            return str;
+        }
+    }
+}
+
+const eNotationRegx = /^([-+])?(0*)(\d*(\.\d*)?[eE][-\+]?\d+)$/;
+function resolveEnotation(str, trimmedStr, options) {
+    if (!options.eNotation) return str;
+    const notation = trimmedStr.match(eNotationRegx);
+    if (notation) {
+        let sign = notation[1] || "";
+        const eChar = notation[3].indexOf("e") === -1 ? "E" : "e";
+        const leadingZeros = notation[2];
+        const eAdjacentToLeadingZeros = sign ? // 0E.
+            str[leadingZeros.length + 1] === eChar
+            : str[leadingZeros.length] === eChar;
+
+        if (leadingZeros.length > 1 && eAdjacentToLeadingZeros) return str;
+        else if (leadingZeros.length === 1
+            && (notation[3].startsWith(`.${eChar}`) || notation[3][0] === eChar)) {
+            return Number(trimmedStr);
+        } else if (leadingZeros.length > 0) {
+            // Has leading zeros — only accept if leadingZeros option allows it
+            if (options.leadingZeros && !eAdjacentToLeadingZeros) {
+                trimmedStr = (notation[1] || "") + notation[3];
+                return Number(trimmedStr);
+            } else return str;
+        } else {
+            // No leading zeros — always valid e-notation, parse it
+            return Number(trimmedStr);
+        }
+    } else {
+        return str;
+    }
+}
+
+/**
+ * 
+ * @param {string} numStr without leading zeros
+ * @returns 
+ */
+function trimZeros(numStr) {
+    if (numStr && numStr.indexOf(".") !== -1) {//float
+        numStr = numStr.replace(/0+$/, ""); //remove ending zeros
+        if (numStr === ".") numStr = "0";
+        else if (numStr[0] === ".") numStr = "0" + numStr;
+        else if (numStr[numStr.length - 1] === ".") numStr = numStr.substring(0, numStr.length - 1);
+        return numStr;
+    }
+    return numStr;
+}
+
+function parse_int(numStr, base) {
+    const str = numStr.trim();
+    if (base === 2 || base === 8) numStr = str.substring(2);
+
+    if (parseInt) return parseInt(numStr, base);
+    else if (Number.parseInt) return Number.parseInt(numStr, base);
+    else if (window && window.parseInt) return window.parseInt(numStr, base);
+    else throw new Error("parseInt, Number.parseInt, window.parseInt are not supported");
+}
+
+/**
+ * Handle infinite values based on user option
+ * @param {string} str - original input string
+ * @param {number} num - parsed number (Infinity or -Infinity)
+ * @param {object} options - user options
+ * @returns {string|number|null} based on infinity option
+ */
+function handleInfinity(str, num, options) {
+    const isPositive = num === Infinity;
+
+    switch (options.infinity.toLowerCase()) {
+        case "null":
+            return null;
+        case "infinity":
+            return num; // Return Infinity or -Infinity
+        case "string":
+            return isPositive ? "Infinity" : "-Infinity";
+        case "original":
+        default:
+            return str; // Return original string like "1e1000"
+    }
 }
 
 /***/ },
