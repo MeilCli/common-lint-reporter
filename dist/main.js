@@ -17,7 +17,7 @@ import { createRequire as __WEBPACK_EXTERNAL_createRequire } from "node:module";
 const __WEBPACK_EXTERNAL_createRequire_require = __WEBPACK_EXTERNAL_createRequire(import.meta.url);
 /******/ var __webpack_modules__ = ({
 
-/***/ 87570
+/***/ 4024
 (__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) {
 
 
@@ -147,8 +147,8 @@ var ApolloClient = __webpack_require__(2564);
 var HttpLink = __webpack_require__(34293);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.1.9_graphql-ws@6.0.8_graphql@16.14.0_ws@8.20.0__graphql@16.14.0_react@19.2.6_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/inMemoryCache.js + 6 modules
 var inMemoryCache = __webpack_require__(74820);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@9.1.1/node_modules/@actions/github/lib/github.js + 14 modules
-var github = __webpack_require__(70888);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@9.1.1/node_modules/@actions/github/lib/github.js + 11 modules
+var github = __webpack_require__(4503);
 ;// ./src/github/context.ts
 
 function githubContext(option) {
@@ -212,7 +212,7 @@ class GitHubContext {
 }
 
 // EXTERNAL MODULE: ./graphql/graphql.ts
-var graphql = __webpack_require__(45881);
+var graphql = __webpack_require__(34364);
 ;// ./src/github/client.ts
 
 
@@ -1726,6 +1726,6 @@ module.exports = __WEBPACK_EXTERNAL_createRequire_require("util");
 /******/ // startup
 /******/ // Load entry module and return exports
 /******/ // This entry module depends on other loaded chunks and execution need to be delayed
-/******/ var __webpack_exports__ = __webpack_require__.O(undefined, [121,630], () => (__webpack_require__(87570)))
+/******/ var __webpack_exports__ = __webpack_require__.O(undefined, [121,630], () => (__webpack_require__(4024)))
 /******/ __webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 
