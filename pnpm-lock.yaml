@@ -118,8 +118,8 @@ importers:
         specifier: 29.4.11
         version: 29.4.11(@babel/core@7.29.0)(@jest/transform@30.4.1)(@jest/types@30.4.1)(babel-jest@30.3.0(@babel/core@7.29.0))(jest-util@30.4.1)(jest@30.3.0(@types/node@25.9.3))(typescript@6.0.3)
       ts-loader:
-        specifier: 9.6.0
-        version: 9.6.0(typescript@6.0.3)(webpack@5.107.2)
+        specifier: 9.6.2
+        version: 9.6.2(typescript@6.0.3)(webpack@5.107.2)
       typescript:
         specifier: 6.0.3
         version: 6.0.3
@@ -1806,10 +1806,6 @@ packages:
     resolution: {integrity: sha512-xYcDWrpELkFzz9SpZ3PlI6Eu6eD93Yf0WLDRxikGhWJ3MAir2SNZTIVCVZqZ/NUyx8AdMc2gT9C0gPiw18kG+A==}
     engines: {node: '>=10.13.0'}
 
-  enhanced-resolve@5.22.1:
-    resolution: {integrity: sha512-6QEuw3zoX1SJQc7b87aBXke/no+mG2bTBgw29gWMQonLmpEkWoCAVkl+M49e48AZlWzxiDzDZzYdp6kobcyLww==}
-    engines: {node: '>=10.13.0'}
-
   env-paths@2.2.1:
     resolution: {integrity: sha512-+h1lkLKhZMTYjog1VEpJNG7NZJWcuc2DDk/qsqSTRRCOXiLjeQ1d1/udrUGhqMxUgAlwKNZ0cf2uqan5GLuS2A==}
     engines: {node: '>=6'}
@@ -3248,8 +3244,8 @@ packages:
       jest-util:
         optional: true
 
-  ts-loader@9.6.0:
-    resolution: {integrity: sha512-dsJO0S+T7grTDWTc4a0nTygXGjKncVUpx8Y+af8EvI/D5WgTJby5UEk5eoMCB9EcLQmnvitqh99MqtjtHgAwFQ==}
+  ts-loader@9.6.2:
+    resolution: {integrity: sha512-R4iuczmtgxvtuI556s+hTZ6/7Ee03VCAk/l/M8LY1OAsUgB7YydsCxkgq9D9pKRaD7GJqUi2u8fp9zZP/ufjKA==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       loader-utils: '*'
@@ -5556,11 +5552,6 @@ snapshots:
       graceful-fs: 4.2.11
       tapable: 2.3.3
 
-  enhanced-resolve@5.22.1:
-    dependencies:
-      graceful-fs: 4.2.11
-      tapable: 2.3.3
-
   env-paths@2.2.1: {}
 
   envinfo@7.21.0: {}
@@ -7187,12 +7178,10 @@ snapshots:
       babel-jest: 30.3.0(@babel/core@7.29.0)
       jest-util: 30.4.1
 
-  ts-loader@9.6.0(typescript@6.0.3)(webpack@5.107.2):
+  ts-loader@9.6.2(typescript@6.0.3)(webpack@5.107.2):
     dependencies:
       chalk: 4.1.2
-      enhanced-resolve: 5.22.1
-      micromatch: 4.0.8
-      semver: 7.8.1
+      picomatch: 4.0.4
       source-map: 0.7.6
       typescript: 6.0.3
       webpack: 5.107.2(webpack-cli@7.0.3)
