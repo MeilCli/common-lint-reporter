@@ -66343,7 +66343,7 @@ function removeHook(state, name, method) {
 
 /***/ },
 
-/***/ 58426
+/***/ 203
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -66370,7 +66370,7 @@ function getIgnoreAttributesFn(ignoreAttributes) {
 
 /***/ },
 
-/***/ 90821
+/***/ 62960
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -66445,14 +66445,14 @@ const criticalProperties = (/* runtime-dependent pure expression or super */ /^(
 
 /***/ },
 
-/***/ 8571
+/***/ 7520
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   t: () => (/* binding */ validate)
 /* harmony export */ });
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(90821);
+	/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(62960);
 }
 
 
@@ -66883,7 +66883,7 @@ function getPositionFromMatch(match) {
 
 /***/ },
 
-/***/ 49187
+/***/ 83866
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 
@@ -67163,7 +67163,7 @@ const sanitize = (str, production = 'name', { replacement = '_' } = {}) => {
 
   return result || replacement;
 };
-;// ./node_modules/.pnpm/fast-xml-parser@5.9.0/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js
+;// ./node_modules/.pnpm/fast-xml-parser@5.9.3/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js
 
 
 class DocTypeReader {
@@ -67578,7 +67578,7 @@ function validateEntityName(name, xmlVersion) {
 
 /***/ },
 
-/***/ 87835
+/***/ 34374
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -67586,7 +67586,7 @@ function validateEntityName(name, xmlVersion) {
 /* harmony export */ });
 /* unused harmony export defaultOptions */
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(90821);
+	/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(62960);
 }
 
 
@@ -67755,7 +67755,7 @@ const buildOptions = function (options) {
 
 /***/ },
 
-/***/ 5016
+/***/ 4756
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 
@@ -67764,13 +67764,13 @@ __webpack_require__.d(__webpack_exports__, {
   A: () => (/* binding */ OrderedObjParser)
 });
 
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.9.0/node_modules/fast-xml-parser/src/util.js
-var util = __webpack_require__(90821);
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.9.0/node_modules/fast-xml-parser/src/xmlparser/xmlNode.js
-var xmlNode = __webpack_require__(47121);
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.9.0/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js + 1 modules
-var DocTypeReader = __webpack_require__(49187);
-;// ./node_modules/.pnpm/anynum@1.0.0/node_modules/anynum/digitTable.js
+// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.9.3/node_modules/fast-xml-parser/src/util.js
+var util = __webpack_require__(62960);
+// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.9.3/node_modules/fast-xml-parser/src/xmlparser/xmlNode.js
+var xmlNode = __webpack_require__(45062);
+// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.9.3/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js + 1 modules
+var DocTypeReader = __webpack_require__(83866);
+;// ./node_modules/.pnpm/anynum@1.0.1/node_modules/anynum/digitTable.js
 /**
  * Flat lookup table: maps Unicode code point → ASCII digit (0-9).
  * Only decimal digit characters (Unicode category Nd) are included.
@@ -67888,7 +67888,7 @@ for (const zero of SCRIPT_ZEROS) {
 
 
 
-;// ./node_modules/.pnpm/anynum@1.0.0/node_modules/anynum/anynum.js
+;// ./node_modules/.pnpm/anynum@1.0.1/node_modules/anynum/anynum.js
 
 
 
@@ -68024,7 +68024,7 @@ function anynum(str) {
 
 
 /* harmony default export */ const anynum_anynum = (anynum);
-;// ./node_modules/.pnpm/strnum@2.4.0/node_modules/strnum/strnum.js
+;// ./node_modules/.pnpm/strnum@2.4.1/node_modules/strnum/strnum.js
 const hexRegex = /^[-+]?0x[a-fA-F0-9]+$/;
 const binRegex = /^0b[01]+$/;
 const octRegex = /^0o[0-7]+$/;
@@ -68196,14 +68196,14 @@ function handleInfinity(str, num, options) {
             return str; // Return original string like "1e1000"
     }
 }
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.9.0/node_modules/fast-xml-parser/src/ignoreAttributes.js
-var ignoreAttributes = __webpack_require__(58426);
-// EXTERNAL MODULE: ./node_modules/.pnpm/path-expression-matcher@1.5.0/node_modules/path-expression-matcher/src/Matcher.js
-var Matcher = __webpack_require__(28173);
-// EXTERNAL MODULE: ./node_modules/.pnpm/path-expression-matcher@1.5.0/node_modules/path-expression-matcher/src/Expression.js
-var Expression = __webpack_require__(18277);
-// EXTERNAL MODULE: ./node_modules/.pnpm/path-expression-matcher@1.5.0/node_modules/path-expression-matcher/src/ExpressionSet.js
-var ExpressionSet = __webpack_require__(99597);
+// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.9.3/node_modules/fast-xml-parser/src/ignoreAttributes.js
+var ignoreAttributes = __webpack_require__(203);
+// EXTERNAL MODULE: ./node_modules/.pnpm/path-expression-matcher@1.6.0/node_modules/path-expression-matcher/src/Matcher.js
+var Matcher = __webpack_require__(96334);
+// EXTERNAL MODULE: ./node_modules/.pnpm/path-expression-matcher@1.6.0/node_modules/path-expression-matcher/src/Expression.js
+var Expression = __webpack_require__(43684);
+// EXTERNAL MODULE: ./node_modules/.pnpm/path-expression-matcher@1.6.0/node_modules/path-expression-matcher/src/ExpressionSet.js
+var ExpressionSet = __webpack_require__(60070);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@nodable+entities@2.2.0/node_modules/@nodable/entities/src/entities.js
 var entities = __webpack_require__(70968);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@nodable+entities@2.2.0/node_modules/@nodable/entities/src/EntityDecoder.js
@@ -69258,7 +69258,7 @@ function allUnsafe(value, context) {
 
 
 /* harmony default export */ const src = ((/* unused pure expression or super */ null && (isUnsafe)));
-;// ./node_modules/.pnpm/fast-xml-parser@5.9.0/node_modules/fast-xml-parser/src/xmlparser/OrderedObjParser.js
+;// ./node_modules/.pnpm/fast-xml-parser@5.9.3/node_modules/fast-xml-parser/src/xmlparser/OrderedObjParser.js
 
 ///@ts-check
 
@@ -70108,26 +70108,26 @@ function sanitizeName(name, options) {
 
 /***/ },
 
-/***/ 41286
+/***/ 53309
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   A: () => (/* binding */ XMLParser)
 /* harmony export */ });
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _OptionsBuilder_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(87835);
+	/* harmony import */ var _OptionsBuilder_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(34374);
 }
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _OrderedObjParser_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5016);
+	/* harmony import */ var _OrderedObjParser_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4756);
 }
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _node2json_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(51068);
+	/* harmony import */ var _node2json_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(34567);
 }
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _validator_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(8571);
+	/* harmony import */ var _validator_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7520);
 }
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _xmlNode_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(47121);
+	/* harmony import */ var _xmlNode_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(45062);
 }
 
 
@@ -70203,13 +70203,13 @@ class XMLParser {
 
 /***/ },
 
-/***/ 51068
+/***/ 34567
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   A: () => (/* binding */ prettify)
 /* harmony export */ });
-/* harmony import */ var _xmlNode_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(47121);
+/* harmony import */ var _xmlNode_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(45062);
 
 
 
@@ -70390,7 +70390,7 @@ function isLeafTag(obj, options) {
 
 /***/ },
 
-/***/ 47121
+/***/ 45062
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -74395,7 +74395,7 @@ function wrap(originalFunction, { max = Math.pow(2, 16), keyArgs, makeCacheKey =
 
 /***/ },
 
-/***/ 18277
+/***/ 43684
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -74636,7 +74636,7 @@ class Expression {
 
 /***/ },
 
-/***/ 99597
+/***/ 60070
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -74678,6 +74678,9 @@ class ExpressionSet {
     /** @type {import('./Expression.js').default[]} expressions containing deep wildcard (..) */
     this._deepWildcards = [];
 
+    /** @type {Map<string, import('./Expression.js').default[]>} terminalTag → deep wildcard expressions */
+    this._deepByTerminalTag = new Map();
+
     /** @type {Set<string>} pattern strings already added — used for deduplication */
     this._patterns = new Set();
 
@@ -74709,7 +74712,14 @@ class ExpressionSet {
     this._patterns.add(expression.pattern);
 
     if (expression.hasDeepWildcard()) {
-      this._deepWildcards.push(expression);
+      const lastSeg = expression.segments[expression.segments.length - 1];
+      if (lastSeg && lastSeg.type !== 'deep-wildcard' && lastSeg.tag !== '*') {
+        const tag = lastSeg.tag;
+        if (!this._deepByTerminalTag.has(tag)) this._deepByTerminalTag.set(tag, []);
+        this._deepByTerminalTag.get(tag).push(expression);
+      } else {
+        this._deepWildcards.push(expression);
+      }
       return this;
     }
 
@@ -74843,7 +74853,13 @@ class ExpressionSet {
       }
     }
 
-    // 3. Deep wildcards — cannot be pre-filtered by depth or tag
+    // 3. Deep wildcards — indexed by terminal tag, then unindexed fallback
+    const deepBucket = this._deepByTerminalTag.get(tag);
+    if (deepBucket) {
+      for (let i = 0; i < deepBucket.length; i++) {
+        if (matcher.matches(deepBucket[i])) return deepBucket[i];
+      }
+    }
     for (let i = 0; i < this._deepWildcards.length; i++) {
       if (matcher.matches(this._deepWildcards[i])) return this._deepWildcards[i];
     }
@@ -74855,7 +74871,7 @@ class ExpressionSet {
 
 /***/ },
 
-/***/ 28173
+/***/ 96334
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -74938,6 +74954,26 @@ class MatcherView {
     if (path.length === 0) return false;
     const current = path[path.length - 1];
     return current.values !== undefined && attrName in current.values;
+  }
+
+  /**
+   * Get the value of a "kept" attribute from the nearest ancestor (or
+   * current node) that declared it via `push(tag, attrs, ns, { keep: [...] })`.
+   * @param {string} attrName
+   * @returns {*}
+   */
+  getAnyParentAttr(attrName) {
+    return this._matcher.getAnyParentAttr(attrName);
+  }
+
+  /**
+   * Check whether any ancestor (or the current node) kept the given
+   * attribute via `push(tag, attrs, ns, { keep: [...] })`.
+   * @param {string} attrName
+   * @returns {boolean}
+   */
+  hasAnyParentAttr(attrName) {
+    return this._matcher.hasAnyParentAttr(attrName);
   }
 
   /**
@@ -75048,6 +75084,9 @@ class Matcher {
     // Each siblingStacks entry: Map<tagName, count> tracking occurrences at each level
     this._pathStringCache = null;
     this._view = new MatcherView(this);
+
+    // Kept-attribute stack: only populated when push() is called with options.keep.
+    this._keptAttrs = [];
   }
 
   /**
@@ -75055,8 +75094,10 @@ class Matcher {
    * @param {string} tagName
    * @param {Object|null} [attrValues=null]
    * @param {string|null} [namespace=null]
+   * @param {Object|null} [options=null]
+   * @param {string[]} [options.keep] - Names of attributes (from attrValues)
    */
-  push(tagName, attrValues = null, namespace = null) {
+  push(tagName, attrValues = null, namespace = null, options = null) {
     this._pathStringCache = null;
 
     // Remove values from previous current node (now becoming ancestor)
@@ -75103,6 +75144,24 @@ class Matcher {
     }
 
     this.path.push(node);
+
+    // Depth of the node we just pushed (1-based, matches this.path.length)
+    const depth = this.path.length;
+
+    // Copy only the requested attributes into the kept-attrs stack. This is
+    // the one part of push() whose cost scales with input (O(keep.length))
+    // rather than being O(1) — by design, since the caller is explicitly
+    // opting in for specific attribute names. No options/keep => zero added
+    // cost beyond the two property reads below.
+    const keep = options !== null ? options.keep : null;
+    if (keep !== null && keep !== undefined && keep.length > 0 && attrValues) {
+      for (let i = 0; i < keep.length; i++) {
+        const name = keep[i];
+        if (attrValues[name] !== undefined) {
+          this._keptAttrs.push({ depth, name, value: attrValues[name] });
+        }
+      }
+    }
   }
 
   /**
@@ -75117,6 +75176,18 @@ class Matcher {
 
     if (this.siblingStacks.length > this.path.length + 1) {
       this.siblingStacks.length = this.path.length + 1;
+    }
+
+    // Drop any kept attributes that belonged to the popped node (or deeper).
+    // _keptAttrs is depth-ordered (push only ever appends increasing depths),
+    // so this is a backward scan that stops at the first surviving entry —
+    // typically O(1) since kept attrs are rare by design.
+    const poppedDepth = this.path.length + 1;
+    while (
+      this._keptAttrs.length > 0 &&
+      this._keptAttrs[this._keptAttrs.length - 1].depth >= poppedDepth
+    ) {
+      this._keptAttrs.pop();
     }
 
     return node;
@@ -75171,6 +75242,38 @@ class Matcher {
     if (this.path.length === 0) return false;
     const current = this.path[this.path.length - 1];
     return current.values !== undefined && attrName in current.values;
+  }
+
+  /**
+   * Get the value of a "kept" attribute from the nearest ancestor (or
+   * current node) that declared it via `push(tag, attrs, ns, { keep: [...] })`.
+   * Unlike getAttrValue(), this works regardless of how deep the path has
+   * gone since the attribute was pushed — but only for attribute names that
+   * were explicitly marked with `keep` at push time. Cost is proportional to
+   * the number of currently-kept attributes (typically 0-3), not path depth.
+   * @param {string} attrName
+   * @returns {*} the value, or undefined if no ancestor kept this attribute
+   */
+  getAnyParentAttr(attrName) {
+    const kept = this._keptAttrs;
+    for (let i = kept.length - 1; i >= 0; i--) {
+      if (kept[i].name === attrName) return kept[i].value;
+    }
+    return undefined;
+  }
+
+  /**
+   * Check whether any ancestor (or the current node) kept the given
+   * attribute via `push(tag, attrs, ns, { keep: [...] })`.
+   * @param {string} attrName
+   * @returns {boolean}
+   */
+  hasAnyParentAttr(attrName) {
+    const kept = this._keptAttrs;
+    for (let i = kept.length - 1; i >= 0; i--) {
+      if (kept[i].name === attrName) return true;
+    }
+    return false;
   }
 
   /**
@@ -75249,6 +75352,7 @@ class Matcher {
     this._pathStringCache = null;
     this.path = [];
     this.siblingStacks = [];
+    this._keptAttrs = [];
   }
 
   /**
@@ -75398,7 +75502,8 @@ class Matcher {
   snapshot() {
     return {
       path: this.path.map(node => ({ ...node })),
-      siblingStacks: this.siblingStacks.map(map => new Map(map))
+      siblingStacks: this.siblingStacks.map(map => new Map(map)),
+      keptAttrs: this._keptAttrs.map(entry => ({ ...entry }))
     };
   }
 
@@ -75410,6 +75515,7 @@ class Matcher {
     this._pathStringCache = null;
     this.path = snapshot.path.map(node => ({ ...node }));
     this.siblingStacks = snapshot.siblingStacks.map(map => new Map(map));
+    this._keptAttrs = (snapshot.keptAttrs || []).map(entry => ({ ...entry }));
   }
 
   /**
@@ -75432,6 +75538,7 @@ class Matcher {
     return this._view;
   }
 }
+
 
 /***/ },
 
