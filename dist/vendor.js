@@ -43054,7 +43054,7 @@ function toCommandProperties(annotationProperties) {
 
 /***/ },
 
-/***/ 4503
+/***/ 16149
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 
@@ -43181,69 +43181,14 @@ function getUserAgentWithOrchestrationId(baseUserAgent) {
 //# sourceMappingURL=utils.js.map
 // EXTERNAL MODULE: ./node_modules/.pnpm/universal-user-agent@7.0.3/node_modules/universal-user-agent/index.js
 var universal_user_agent = __webpack_require__(96556);
-// EXTERNAL MODULE: ./node_modules/.pnpm/before-after-hook@4.0.0/node_modules/before-after-hook/lib/register.js
-var register = __webpack_require__(43347);
-// EXTERNAL MODULE: ./node_modules/.pnpm/before-after-hook@4.0.0/node_modules/before-after-hook/lib/add.js
-var add = __webpack_require__(85471);
-// EXTERNAL MODULE: ./node_modules/.pnpm/before-after-hook@4.0.0/node_modules/before-after-hook/lib/remove.js
-var remove = __webpack_require__(51794);
-;// ./node_modules/.pnpm/before-after-hook@4.0.0/node_modules/before-after-hook/index.js
-// @ts-check
-
-
-
-
-
-// bind with array of arguments: https://stackoverflow.com/a/21792913
-const bind = Function.bind;
-const bindable = bind.bind(bind);
-
-function bindApi(hook, state, name) {
-  const removeHookRef = bindable(remove/* removeHook */.S, null).apply(
-    null,
-    name ? [state, name] : [state]
-  );
-  hook.api = { remove: removeHookRef };
-  hook.remove = removeHookRef;
-  ["before", "error", "after", "wrap"].forEach((kind) => {
-    const args = name ? [state, kind, name] : [state, kind];
-    hook[kind] = hook.api[kind] = bindable(add/* addHook */.$, null).apply(null, args);
-  });
-}
-
-function Singular() {
-  const singularHookName = Symbol("Singular");
-  const singularHookState = {
-    registry: {},
-  };
-  const singularHook = register/* register */.k.bind(null, singularHookState, singularHookName);
-  bindApi(singularHook, singularHookState, singularHookName);
-  return singularHook;
-}
-
-function Collection() {
-  const state = {
-    registry: {},
-  };
-
-  const hook = register/* register */.k.bind(null, state);
-  bindApi(hook, state);
-
-  return hook;
-}
-
-/* harmony default export */ const before_after_hook = ({ Singular, Collection });
-
+// EXTERNAL MODULE: ./node_modules/.pnpm/before-after-hook@4.0.0/node_modules/before-after-hook/index.js
+var before_after_hook = __webpack_require__(95000);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@octokit+request@10.0.8/node_modules/@octokit/request/dist-bundle/index.js + 3 modules
 var dist_bundle = __webpack_require__(39026);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@octokit+graphql@9.0.3/node_modules/@octokit/graphql/dist-bundle/index.js
 var graphql_dist_bundle = __webpack_require__(1258);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@octokit+auth-token@6.0.0/node_modules/@octokit/auth-token/dist-bundle/index.js
 var auth_token_dist_bundle = __webpack_require__(56306);
-;// ./node_modules/.pnpm/@octokit+core@7.0.6/node_modules/@octokit/core/dist-src/version.js
-const VERSION = "7.0.6";
-
-
 ;// ./node_modules/.pnpm/@octokit+core@7.0.6/node_modules/@octokit/core/dist-src/index.js
 
 
@@ -43270,9 +43215,9 @@ function createLogger(logger = {}) {
   }
   return logger;
 }
-const userAgentTrail = `octokit-core.js/${VERSION} ${(0,universal_user_agent/* getUserAgent */.$)()}`;
+const userAgentTrail = `octokit-core.js/${(/* inlined export .VERSION */"7.0.6")} ${(0,universal_user_agent/* getUserAgent */.$)()}`;
 class Octokit {
-  static VERSION = VERSION;
+  static VERSION = (/* inlined export .VERSION */"7.0.6");
   static defaults(defaults) {
     const OctokitWithDefaults = class extends this {
       constructor(...args) {
@@ -43312,7 +43257,7 @@ class Octokit {
     return NewOctokit;
   }
   constructor(options = {}) {
-    const hook = new before_after_hook.Collection();
+    const hook = new before_after_hook/* default */.A.Collection();
     const requestDefaults = {
       baseUrl: dist_bundle/* request */.E.endpoint.DEFAULTS.baseUrl,
       headers: {},
@@ -43384,11 +43329,6 @@ class Octokit {
   auth;
 }
 
-
-;// ./node_modules/.pnpm/@octokit+plugin-rest-endpoint-methods@17.0.0_@octokit+core@7.0.6/node_modules/@octokit/plugin-rest-endpoint-methods/dist-src/version.js
-const version_VERSION = "17.0.0";
-
-//# sourceMappingURL=version.js.map
 
 ;// ./node_modules/.pnpm/@octokit+plugin-rest-endpoint-methods@17.0.0_@octokit+core@7.0.6/node_modules/@octokit/plugin-rest-endpoint-methods/dist-src/generated/endpoints.js
 const Endpoints = {
@@ -45819,7 +45759,7 @@ function restEndpointMethods(octokit) {
     rest: api
   };
 }
-restEndpointMethods.VERSION = version_VERSION;
+restEndpointMethods.VERSION = (/* inlined export .VERSION */"17.0.0");
 function legacyRestEndpointMethods(octokit) {
   const api = endpointsToMethods(octokit);
   return {
@@ -45827,13 +45767,13 @@ function legacyRestEndpointMethods(octokit) {
     rest: api
   };
 }
-legacyRestEndpointMethods.VERSION = version_VERSION;
+legacyRestEndpointMethods.VERSION = (/* inlined export .VERSION */"17.0.0");
 
 //# sourceMappingURL=index.js.map
 
 ;// ./node_modules/.pnpm/@octokit+plugin-paginate-rest@14.0.0_@octokit+core@7.0.6/node_modules/@octokit/plugin-paginate-rest/dist-bundle/index.js
 // pkg/dist-src/version.js
-var dist_bundle_VERSION = "0.0.0-development";
+var VERSION = "0.0.0-development";
 
 // pkg/dist-src/normalize-paginated-list-response.js
 function normalizePaginatedListResponse(response) {
@@ -46240,7 +46180,7 @@ function paginateRest(octokit) {
     })
   };
 }
-paginateRest.VERSION = dist_bundle_VERSION;
+paginateRest.VERSION = VERSION;
 
 
 ;// ./node_modules/.pnpm/@actions+github@9.1.1/node_modules/@actions/github/lib/utils.js
@@ -49729,16 +49669,17 @@ class MissingFieldError extends Error {
 /* harmony export */   D_: () => (/* binding */ EntityStore),
 /* harmony export */   M2: () => (/* binding */ maybeDependOnExistenceOfEntity)
 /* harmony export */ });
+/* unused harmony import specifier */ var isReference;
+/* unused harmony import specifier */ var invariant;
 /* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25012);
 /* harmony import */ var _wry_trie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(57235);
 /* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(18618);
 /* harmony import */ var _apollo_client_utilities__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(99475);
-/* harmony import */ var _apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(19896);
 /* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(37101);
 /* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(63892);
 /* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(87734);
 /* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(59588);
-/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(17592);
+/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(59373);
 /* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(19567);
 
 
@@ -49914,14 +49855,14 @@ class EntityStore {
                             changedFields[storeFieldName] = newValue;
                             needToMerge = true;
                             fieldValue = newValue;
-                            if (_apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_4__/* .__DEV__ */ .g) {
+                            if ((/* inlined export .__DEV__ */false)) {
                                 const checkReference = (ref) => {
                                     if (this.lookup(ref.__ref) === undefined) {
-                                        _apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_4__/* .__DEV__ */ .g && _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_9__/* .invariant */ .V1.warn(105, ref);
+                                        (/* inlined export .__DEV__ */false) && invariant.warn(105, ref);
                                         return true;
                                     }
                                 };
-                                if ((0,_apollo_client_utilities__WEBPACK_IMPORTED_MODULE_3__/* .isReference */ .A)(newValue)) {
+                                if (isReference(newValue)) {
                                     checkReference(newValue);
                                 }
                                 else if (Array.isArray(newValue)) {
@@ -49929,7 +49870,7 @@ class EntityStore {
                                     let seenReference = false;
                                     let someNonReference;
                                     for (const value of newValue) {
-                                        if ((0,_apollo_client_utilities__WEBPACK_IMPORTED_MODULE_3__/* .isReference */ .A)(value)) {
+                                        if (isReference(value)) {
                                             seenReference = true;
                                             if (checkReference(value))
                                                 break;
@@ -49946,7 +49887,7 @@ class EntityStore {
                                             }
                                         }
                                         if (seenReference && someNonReference !== undefined) {
-                                            _apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_4__/* .__DEV__ */ .g && _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_9__/* .invariant */ .V1.warn(106, someNonReference);
+                                            (/* inlined export .__DEV__ */false) && invariant.warn(106, someNonReference);
                                             break;
                                         }
                                     }
@@ -50417,12 +50358,10 @@ function supportsResultCaching(store) {
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   $3: () => (/* binding */ hasOwn),
 /* harmony export */   I6: () => (/* binding */ normalizeConfig),
 /* harmony export */   T9: () => (/* binding */ selectionSetMatchesResult),
 /* harmony export */   Ui: () => (/* binding */ getTypenameFromStoreObject),
 /* harmony export */   d1: () => (/* binding */ storeValueIsStoreObject),
-/* harmony export */   gk: () => (/* binding */ TypeOrFieldNameRegExp),
 /* harmony export */   iJ: () => (/* binding */ fieldNameFromStoreName),
 /* harmony export */   lq: () => (/* binding */ extractFragmentContext),
 /* harmony export */   mv: () => (/* binding */ makeProcessedFieldsMerger),
@@ -50540,10 +50479,15 @@ function extractFragmentContext(document, fragments) {
     };
 }
 //# sourceMappingURL=helpers.js.map
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "$3", 0, /* binding */ hasOwn,
+/* harmony export */   "gk", 0, /* binding */ TypeOrFieldNameRegExp
+/* harmony export */ ]);
+
 
 /***/ },
 
-/***/ 58998
+/***/ 65663
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 
@@ -50568,22 +50512,41 @@ var canonicalStringify = __webpack_require__(45094);
 var print = __webpack_require__(1958);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/storeUtils.js
 var storeUtils = __webpack_require__(99475);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/environment/index.production.js
-var index_production = __webpack_require__(19896);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/index.production.js
-var internal_index_production = __webpack_require__(28592);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/invariant/index.js
-var invariant = __webpack_require__(17592);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/invariant/index.js + 1 modules
+var invariant = __webpack_require__(59373);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@wry+caches@1.0.1/node_modules/@wry/caches/lib/weak.js
 var weak = __webpack_require__(818);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@wry+trie@0.5.0/node_modules/@wry/trie/lib/index.js
 var trie_lib = __webpack_require__(57235);
 // EXTERNAL MODULE: ./node_modules/.pnpm/rxjs@7.8.2/node_modules/rxjs/dist/cjs/index.js
 var cjs = __webpack_require__(71530);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getFragmentDefinition.js
-var getFragmentDefinition = __webpack_require__(81796);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/mapObservableFragment.js
-var mapObservableFragment = __webpack_require__(25086);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/memoize.js
+var memoize = __webpack_require__(62749);
+;// ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/mapObservableFragment.js
+
+
+function mapObservableFragment(observable, mapFn) {
+    let currentResult;
+    let stableMappedResult;
+    function toMapped(result) {
+        if (result !== currentResult) {
+            currentResult = result;
+            stableMappedResult = mapFn(currentResult);
+        }
+        return stableMappedResult;
+    }
+    return Object.assign(observable.pipe((0,cjs.map)(toMapped), (0,cjs.shareReplay)({ bufferSize: 1, refCount: true })), {
+        getCurrentResult: () => toMapped(observable.getCurrentResult()),
+    });
+}
+const mapObservableFragmentMemoized = (0,memoize/* memoize */.B)(function mapObservableFragmentMemoized(observable, 
+/**
+ * used together with `observable` as memoization key, `mapFn` is explicitly not used as memoization key
+ */
+_cacheKey, mapFn) {
+    return mapObservableFragment(observable, mapFn);
+}, { max: 1, makeCacheKey: (args) => args.slice(0, 2) });
+//# sourceMappingURL=mapObservableFragment.js.map
 ;// ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/combineLatestBatched.js
 
 /**
@@ -50770,6 +50733,9 @@ function bindCacheKey(...prebound) {
 }
 //# sourceMappingURL=bindCacheKey.js.map
 ;// ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/cache/core/cache.js
+/* unused harmony import specifier */ var getApolloCacheMemoryInternals;
+/* unused harmony import specifier */ var getFragmentDefinition;
+/* unused harmony import specifier */ var cache_invariant;
 
 
 
@@ -50902,10 +50868,10 @@ class ApolloCache {
             // and using `cache.identify` themselves will avoid seeing the obscure
             // warning.
             const id = value == null ? value : this.toCacheId(value);
-            if (index_production/* __DEV__ */.g) {
-                const actualFragmentName = fragmentName || (0,getFragmentDefinition/* getFragmentDefinition */.E)(fragment).name.value;
+            if ((/* inlined export .__DEV__ */false)) {
+                const actualFragmentName = fragmentName || getFragmentDefinition(fragment).name.value;
                 if (id === undefined) {
-                    index_production/* __DEV__ */.g && invariant/* invariant */.V1.warn(118, actualFragmentName);
+                    (/* inlined export .__DEV__ */false) && cache_invariant.warn(118, actualFragmentName);
                 }
             }
             return id;
@@ -50921,7 +50887,7 @@ class ApolloCache {
             // NOTE: Using `from` with an array will maintain `null` properly
             // without the need for a similar fallback since watchFragment with
             // arrays is new functionality in v4.1.
-            return from === null ? observable : ((0,mapObservableFragment/* mapObservableFragmentMemoized */.Q)(observable, Symbol.for("apollo.transform.individualResult"), (result) => ({
+            return from === null ? observable : (mapObservableFragmentMemoized(observable, Symbol.for("apollo.transform.individualResult"), (result) => ({
                 ...result,
                 data: result.data ?? {},
             })));
@@ -51104,8 +51070,8 @@ class ApolloCache {
         return typeof from === "string" ? from : this.identify(from);
     }
 }
-if (index_production/* __DEV__ */.g) {
-    ApolloCache.prototype.getMemoryInternals = internal_index_production/* getApolloCacheMemoryInternals */.tQ;
+if ((/* inlined export .__DEV__ */false)) {
+    ApolloCache.prototype.getMemoryInternals = getApolloCacheMemoryInternals;
 }
 const nullResult = Object.freeze({
     data: null,
@@ -51413,7 +51379,7 @@ class StoreReader {
                     context,
                 }), i);
             }
-            if (index_production/* __DEV__ */.g) {
+            if ((/* inlined export .__DEV__ */false)) {
                 assertSelectionSetForIdValue(context.store, field, item);
             }
             return item;
@@ -51460,13 +51426,15 @@ var getOperationDefinition = __webpack_require__(65369);
 var hasDirectives = __webpack_require__(28547);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/constants.js
 var constants = __webpack_require__(94384);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/cloneDeep.js
-var cloneDeep = __webpack_require__(77082);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/isNonEmptyArray.js
 var isNonEmptyArray = __webpack_require__(35328);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/argumentsObjectFromField.js
 var argumentsObjectFromField = __webpack_require__(13504);
 ;// ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/writeToStore.js
+/* unused harmony import specifier */ var cloneDeep;
+/* unused harmony import specifier */ var writeToStore_resultKeyNameFromField;
+/* unused harmony import specifier */ var writeToStore_invariant;
+/* unused harmony import specifier */ var fieldNameFromStoreName;
 
 
 
@@ -51555,14 +51523,14 @@ class StoreWriter {
                 // merge into the store (see store.merge statement below).
                 storeObject = applied;
             }
-            if (index_production/* __DEV__ */.g && !context.overwrite) {
+            if ((/* inlined export .__DEV__ */false) && !context.overwrite) {
                 const fieldsWithSelectionSets = {};
                 fieldNodeSet.forEach((field) => {
                     if (field.selectionSet) {
                         fieldsWithSelectionSets[field.name.value] = true;
                     }
                 });
-                const hasSelectionSet = (storeFieldName) => fieldsWithSelectionSets[(0,helpers/* fieldNameFromStoreName */.iJ)(storeFieldName)] ===
+                const hasSelectionSet = (storeFieldName) => fieldsWithSelectionSets[fieldNameFromStoreName(storeFieldName)] ===
                     true;
                 const hasMergeFunction = (storeFieldName) => {
                     const childTree = mergeTree && mergeTree.map.get(storeFieldName);
@@ -51691,7 +51659,7 @@ class StoreWriter {
                     [storeFieldName]: incomingValue,
                 });
             }
-            else if (index_production/* __DEV__ */.g &&
+            else if ((/* inlined export .__DEV__ */false) &&
                 !context.clientOnly &&
                 !context.deferred &&
                 !transform/* addTypenameToDocument */.X.added(field) &&
@@ -51699,7 +51667,7 @@ class StoreWriter {
                 // provide a default value, so its absence from the written data should
                 // not be cause for alarm.
                 !policies.getReadFunction(typename, field.name.value)) {
-                invariant/* invariant */.V1.error(115, (0,resultKeyNameFromField/* resultKeyNameFromField */.u)(field), result);
+                writeToStore_invariant.error(115, writeToStore_resultKeyNameFromField(field), result);
             }
         });
         // Identify the result object, even if dataId was already provided,
@@ -51772,7 +51740,7 @@ class StoreWriter {
             // In development, we need to clone scalar values so that they can be
             // safely frozen with maybeDeepFreeze in readFromStore.ts. In production,
             // it's cheaper to store the scalar values directly in the cache.
-            return index_production/* __DEV__ */.g ? (0,cloneDeep/* cloneDeep */.m)(value) : value;
+            return (/* inlined export .__DEV__ */false) ? cloneDeep(value) : value;
         }
         if ((0,isArray/* isArray */.c)(value)) {
             return value.map((item, i) => {
@@ -52019,7 +51987,7 @@ function warnAboutDataLoss(existingRef, incomingObj, storeFieldName, store) {
             }
         });
     }
-    index_production/* __DEV__ */.g && invariant/* invariant */.V1.warn(117, fieldName, parentType, childTypenames.length ?
+    (/* inlined export .__DEV__ */false) && invariant/* invariant */.V1.warn(117, fieldName, parentType, childTypenames.length ?
         "either ensure all objects of type " +
             childTypenames.join(" and ") +
             " have an ID or a custom merge function, or "
@@ -52055,6 +52023,7 @@ function getTypenameFromResult(result, selectionSet, fragmentMap) {
 //# sourceMappingURL=writeToStore.js.map
 
 ;// ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/inMemoryCache.js
+/* unused harmony import specifier */ var getInMemoryCacheMemoryInternals;
 
 
 
@@ -52293,7 +52262,7 @@ class InMemoryCache extends ApolloCache {
             return this.policies.identify(object)[0];
         }
         catch (e) {
-            index_production/* __DEV__ */.g && invariant/* invariant */.V1.warn(e);
+            (/* inlined export .__DEV__ */false) && invariant/* invariant */.V1.warn(e);
         }
     }
     evict(options) {
@@ -52557,8 +52526,8 @@ class InMemoryCache extends ApolloCache {
         }
     }
 }
-if (index_production/* __DEV__ */.g) {
-    InMemoryCache.prototype.getMemoryInternals = internal_index_production/* getInMemoryCacheMemoryInternals */.cM;
+if ((/* inlined export .__DEV__ */false)) {
+    InMemoryCache.prototype.getMemoryInternals = getInMemoryCacheMemoryInternals;
 }
 //# sourceMappingURL=inMemoryCache.js.map
 
@@ -52589,7 +52558,7 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(63892);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(17592);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(59373);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(19567);
@@ -52787,19 +52756,19 @@ function normalize(value) {
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Wd: () => (/* binding */ defaultStreamFieldMergeFn),
 /* harmony export */   lx: () => (/* binding */ Policies),
 /* harmony export */   mN: () => (/* binding */ normalizeReadFieldOptions)
 /* harmony export */ });
-/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25012);
+/* unused harmony import specifier */ var stringifyForDisplay;
+/* unused harmony import specifier */ var invariant;
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25012);
+}
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _apollo_client_masking__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(80230);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _apollo_client_utilities__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(99475);
-}
-if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(19896);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(94384);
@@ -52820,19 +52789,16 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(54536);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(32051);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(59373);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(17592);
+	/* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(19567);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(19567);
+	/* harmony import */ var _key_extractor_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(29444);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _key_extractor_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(29444);
-}
-if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _reactiveVars_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(37841);
+	/* harmony import */ var _reactiveVars_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(37841);
 }
 
 
@@ -52890,7 +52856,7 @@ class Policies {
     constructor(config) {
         this.config = config;
         this.config = {
-            dataIdFromObject: _helpers_js__WEBPACK_IMPORTED_MODULE_12__/* .defaultDataIdFromObject */ .or,
+            dataIdFromObject: _helpers_js__WEBPACK_IMPORTED_MODULE_11__/* .defaultDataIdFromObject */ .or,
             ...config,
         };
         this.cache = this.config.cache;
@@ -52939,7 +52905,7 @@ class Policies {
             while (keyFn) {
                 const specifierOrId = keyFn({ ...object, ...storeObject }, context);
                 if ((0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__/* .isArray */ .c)(specifierOrId)) {
-                    keyFn = (0,_key_extractor_js__WEBPACK_IMPORTED_MODULE_13__/* .keyFieldsFnFromSpecifier */ .v2)(specifierOrId);
+                    keyFn = (0,_key_extractor_js__WEBPACK_IMPORTED_MODULE_12__/* .keyFieldsFnFromSpecifier */ .v2)(specifierOrId);
                 }
                 else {
                     id = specifierOrId;
@@ -52973,7 +52939,7 @@ class Policies {
                 this.setRootTypename("Mutation", typename);
             if (subscriptionType)
                 this.setRootTypename("Subscription", typename);
-            if (_helpers_js__WEBPACK_IMPORTED_MODULE_12__/* .hasOwn */ .$3.call(this.toBeAdded, typename)) {
+            if (_helpers_js__WEBPACK_IMPORTED_MODULE_11__/* .hasOwn */ .$3.call(this.toBeAdded, typename)) {
                 this.toBeAdded[typename].push(incoming);
             }
             else {
@@ -53003,7 +52969,7 @@ class Policies {
             keyFields === false ? nullKeyFieldsFn
                 // Pass an array of strings to use those fields to compute a
                 // composite ID for objects of this typename.
-                : (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__/* .isArray */ .c)(keyFields) ? (0,_key_extractor_js__WEBPACK_IMPORTED_MODULE_13__/* .keyFieldsFnFromSpecifier */ .v2)(keyFields)
+                : (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__/* .isArray */ .c)(keyFields) ? (0,_key_extractor_js__WEBPACK_IMPORTED_MODULE_12__/* .keyFieldsFnFromSpecifier */ .v2)(keyFields)
                     // Pass a function to take full control over identification.
                     : typeof keyFields === "function" ? keyFields
                         // Leave existing.keyFn unchanged if above cases fail.
@@ -53031,7 +52997,7 @@ class Policies {
                         keyArgs === false ? simpleKeyArgsFn
                             // Pass an array of strings to use named arguments to
                             // compute a composite identity for the field.
-                            : (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__/* .isArray */ .c)(keyArgs) ? (0,_key_extractor_js__WEBPACK_IMPORTED_MODULE_13__/* .keyArgsFnFromSpecifier */ .fc)(keyArgs)
+                            : (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__/* .isArray */ .c)(keyArgs) ? (0,_key_extractor_js__WEBPACK_IMPORTED_MODULE_12__/* .keyArgsFnFromSpecifier */ .fc)(keyArgs)
                                 // Pass a function to take full control over field identity.
                                 : typeof keyArgs === "function" ? keyArgs
                                     // Leave existing.keyFn unchanged if above cases fail.
@@ -53056,7 +53022,7 @@ class Policies {
         const rootId = "ROOT_" + which.toUpperCase();
         const old = this.rootTypenamesById[rootId];
         if (typename !== old) {
-            (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_11__/* .invariant */ .V1)(!old || old === which, 108, which);
+            (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_10__/* .invariant */ .V1)(!old || old === which, 108, which);
             // First, delete any old __typename associated with this rootId from
             // rootIdsByTypename.
             if (old)
@@ -53076,7 +53042,7 @@ class Policies {
             this.getSupertypeSet(supertype, true);
             possibleTypes[supertype].forEach((subtype) => {
                 this.getSupertypeSet(subtype, true).add(supertype);
-                const match = subtype.match(_helpers_js__WEBPACK_IMPORTED_MODULE_12__/* .TypeOrFieldNameRegExp */ .gk);
+                const match = subtype.match(_helpers_js__WEBPACK_IMPORTED_MODULE_11__/* .TypeOrFieldNameRegExp */ .gk);
                 if (!match || match[0] !== subtype) {
                     // TODO Don't interpret just any invalid typename as a RegExp.
                     this.fuzzySubtypes.set(subtype, new RegExp(subtype));
@@ -53085,7 +53051,7 @@ class Policies {
         });
     }
     getTypePolicy(typename) {
-        if (!_helpers_js__WEBPACK_IMPORTED_MODULE_12__/* .hasOwn */ .$3.call(this.typePolicies, typename)) {
+        if (!_helpers_js__WEBPACK_IMPORTED_MODULE_11__/* .hasOwn */ .$3.call(this.typePolicies, typename)) {
             const policy = (this.typePolicies[typename] = {});
             policy.fields = {};
             // When the TypePolicy for typename is first accessed, instead of
@@ -53199,7 +53165,7 @@ class Policies {
                 if (supertypeSet.has(supertype)) {
                     if (!typenameSupertypeSet.has(supertype)) {
                         if (checkingFuzzySubtypes) {
-                            _apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_3__/* .__DEV__ */ .g && _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_11__/* .invariant */ .V1.warn(109, typename, supertype);
+                            (/* inlined export .__DEV__ */false) && _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_10__/* .invariant */ .V1.warn(109, typename, supertype);
                         }
                         // Record positive results for faster future lookup.
                         // Unfortunately, we cannot safely cache negative results,
@@ -53218,7 +53184,7 @@ class Policies {
                     // after we verify the supertype, but this check is often less
                     // expensive than that search, and we will have to do the
                     // comparison anyway whenever we find a potential match.
-                    (0,_helpers_js__WEBPACK_IMPORTED_MODULE_12__/* .selectionSetMatchesResult */ .T9)(fragment.selectionSet, result, variables)) {
+                    (0,_helpers_js__WEBPACK_IMPORTED_MODULE_11__/* .selectionSetMatchesResult */ .T9)(fragment.selectionSet, result, variables)) {
                     // We don't always need to check fuzzy subtypes (if no result
                     // was provided, or !this.fuzzySubtypes.size), but, when we do,
                     // we only want to check them once.
@@ -53259,7 +53225,7 @@ class Policies {
             while (keyFn) {
                 const specifierOrString = keyFn(args, context);
                 if ((0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__/* .isArray */ .c)(specifierOrString)) {
-                    keyFn = (0,_key_extractor_js__WEBPACK_IMPORTED_MODULE_13__/* .keyArgsFnFromSpecifier */ .fc)(specifierOrString);
+                    keyFn = (0,_key_extractor_js__WEBPACK_IMPORTED_MODULE_12__/* .keyArgsFnFromSpecifier */ .fc)(specifierOrString);
                 }
                 else {
                     // If the custom keyFn returns a falsy value, fall back to
@@ -53283,7 +53249,7 @@ class Policies {
         // Make sure custom field names start with the actual field.name.value
         // of the field, so we can always figure out which properties of a
         // StoreObject correspond to which original field names.
-        return fieldName === (0,_helpers_js__WEBPACK_IMPORTED_MODULE_12__/* .fieldNameFromStoreName */ .iJ)(storeFieldName) ? storeFieldName
+        return fieldName === (0,_helpers_js__WEBPACK_IMPORTED_MODULE_11__/* .fieldNameFromStoreName */ .iJ)(storeFieldName) ? storeFieldName
             : fieldName + ":" + storeFieldName;
     }
     readField(options, context) {
@@ -53299,7 +53265,7 @@ class Policies {
                 options.typename = typename;
         }
         const storeFieldName = this.getStoreFieldName(options);
-        const fieldName = (0,_helpers_js__WEBPACK_IMPORTED_MODULE_12__/* .fieldNameFromStoreName */ .iJ)(storeFieldName);
+        const fieldName = (0,_helpers_js__WEBPACK_IMPORTED_MODULE_11__/* .fieldNameFromStoreName */ .iJ)(storeFieldName);
         const existing = context.store.getFieldValue(objectOrReference, storeFieldName);
         const policy = this.getFieldPolicy(options.typename, fieldName);
         const read = policy && policy.read;
@@ -53308,7 +53274,7 @@ class Policies {
                 objectOrReference.__ref
                 : objectOrReference, storeFieldName));
             // Call read(existing, readOptions) with cacheSlot holding this.cache.
-            return _reactiveVars_js__WEBPACK_IMPORTED_MODULE_14__/* .cacheSlot */ .bl.withValue(this.cache, read, [
+            return _reactiveVars_js__WEBPACK_IMPORTED_MODULE_13__/* .cacheSlot */ .bl.withValue(this.cache, read, [
                 existing,
                 readOptions,
             ]);
@@ -53390,7 +53356,7 @@ class Policies {
 }
 function makeFieldFunctionOptions(policies, objectOrReference, fieldSpec, context, storage) {
     const storeFieldName = policies.getStoreFieldName(fieldSpec);
-    const fieldName = (0,_helpers_js__WEBPACK_IMPORTED_MODULE_12__/* .fieldNameFromStoreName */ .iJ)(storeFieldName);
+    const fieldName = (0,_helpers_js__WEBPACK_IMPORTED_MODULE_11__/* .fieldNameFromStoreName */ .iJ)(storeFieldName);
     const variables = fieldSpec.variables || context.variables;
     const { toReference, canRead } = context.store;
     return {
@@ -53446,12 +53412,12 @@ function normalizeReadFieldOptions(readFieldArgs, objectOrReference, variables) 
         options = { ...fieldNameOrOptions };
         // Default to objectOrReference only when fieldNameOrOptions.from is
         // actually omitted, rather than just undefined.
-        if (!_helpers_js__WEBPACK_IMPORTED_MODULE_12__/* .hasOwn */ .$3.call(options, "from")) {
+        if (!_helpers_js__WEBPACK_IMPORTED_MODULE_11__/* .hasOwn */ .$3.call(options, "from")) {
             options.from = objectOrReference;
         }
     }
-    if (_apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_3__/* .__DEV__ */ .g && options.from === void 0) {
-        _apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_3__/* .__DEV__ */ .g && _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_11__/* .invariant */ .V1.warn(110, (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_10__/* .stringifyForDisplay */ .p)(Array.from(readFieldArgs)));
+    if ((/* inlined export .__DEV__ */false) && options.from === void 0) {
+        (/* inlined export .__DEV__ */false) && invariant.warn(110, stringifyForDisplay(Array.from(readFieldArgs)));
     }
     if (void 0 === options.variables) {
         options.variables = variables;
@@ -53461,7 +53427,7 @@ function normalizeReadFieldOptions(readFieldArgs, objectOrReference, variables) 
 function makeMergeObjectsFunction(store) {
     return function mergeObjects(existing, incoming) {
         if ((0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__/* .isArray */ .c)(existing) || (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__/* .isArray */ .c)(incoming)) {
-            throw (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_11__/* .newInvariantError */ .vA)(111);
+            throw (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_10__/* .newInvariantError */ .vA)(111);
         }
         // These dynamic checks are necessary because the parameters of a
         // custom merge function can easily have the any type, so the type
@@ -53474,14 +53440,14 @@ function makeMergeObjectsFunction(store) {
             if (typesDiffer) {
                 return incoming;
             }
-            if ((0,_apollo_client_utilities__WEBPACK_IMPORTED_MODULE_2__/* .isReference */ .A)(existing) && (0,_helpers_js__WEBPACK_IMPORTED_MODULE_12__/* .storeValueIsStoreObject */ .d1)(incoming)) {
+            if ((0,_apollo_client_utilities__WEBPACK_IMPORTED_MODULE_2__/* .isReference */ .A)(existing) && (0,_helpers_js__WEBPACK_IMPORTED_MODULE_11__/* .storeValueIsStoreObject */ .d1)(incoming)) {
                 // Update the normalized EntityStore for the entity identified by
                 // existing.__ref, preferring/overwriting any fields contributed by the
                 // newer incoming StoreObject.
                 store.merge(existing.__ref, incoming);
                 return existing;
             }
-            if ((0,_helpers_js__WEBPACK_IMPORTED_MODULE_12__/* .storeValueIsStoreObject */ .d1)(existing) && (0,_apollo_client_utilities__WEBPACK_IMPORTED_MODULE_2__/* .isReference */ .A)(incoming)) {
+            if ((0,_helpers_js__WEBPACK_IMPORTED_MODULE_11__/* .storeValueIsStoreObject */ .d1)(existing) && (0,_apollo_client_utilities__WEBPACK_IMPORTED_MODULE_2__/* .isReference */ .A)(incoming)) {
                 // Update the normalized EntityStore for the entity identified by
                 // incoming.__ref, taking fields from the older existing object only if
                 // those fields are not already present in the newer StoreObject
@@ -53489,8 +53455,8 @@ function makeMergeObjectsFunction(store) {
                 store.merge(existing, incoming.__ref);
                 return incoming;
             }
-            if ((0,_helpers_js__WEBPACK_IMPORTED_MODULE_12__/* .storeValueIsStoreObject */ .d1)(existing) &&
-                (0,_helpers_js__WEBPACK_IMPORTED_MODULE_12__/* .storeValueIsStoreObject */ .d1)(incoming)) {
+            if ((0,_helpers_js__WEBPACK_IMPORTED_MODULE_11__/* .storeValueIsStoreObject */ .d1)(existing) &&
+                (0,_helpers_js__WEBPACK_IMPORTED_MODULE_11__/* .storeValueIsStoreObject */ .d1)(incoming)) {
                 return { ...existing, ...incoming };
             }
         }
@@ -53498,6 +53464,10 @@ function makeMergeObjectsFunction(store) {
     };
 }
 //# sourceMappingURL=policies.js.map
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "Wd", 0, /* binding */ defaultStreamFieldMergeFn
+/* harmony export */ ]);
 
 
 /***/ },
@@ -53508,8 +53478,7 @@ function makeMergeObjectsFunction(store) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   MS: () => (/* binding */ recallCache),
 /* harmony export */   UT: () => (/* binding */ makeVar),
-/* harmony export */   WR: () => (/* binding */ forgetCache),
-/* harmony export */   bl: () => (/* binding */ cacheSlot)
+/* harmony export */   WR: () => (/* binding */ forgetCache)
 /* harmony export */ });
 /* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(18618);
 
@@ -53595,6 +53564,10 @@ function broadcast(cache) {
     }
 }
 //# sourceMappingURL=reactiveVars.js.map
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "bl", 0, /* binding */ cacheSlot
+/* harmony export */ ]);
+
 
 /***/ },
 
@@ -53613,8 +53586,8 @@ var ast = __webpack_require__(87202);
 var cjs = __webpack_require__(71530);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/hasDirectives.js
 var hasDirectives = __webpack_require__(28547);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/invariant/index.js
-var invariant = __webpack_require__(17592);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/invariant/index.js + 1 modules
+var invariant = __webpack_require__(59373);
 ;// ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/incremental/handlers/notImplemented.js
 
 
@@ -53636,18 +53609,12 @@ class NotImplementedHandler {
 var execute = __webpack_require__(84318);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/DocumentTransform.js
 var DocumentTransform = __webpack_require__(7026);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/environment/index.production.js
-var index_production = __webpack_require__(19896);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/mergeOptions.js
 var mergeOptions = __webpack_require__(62723);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getOperationName.js
-var getOperationName = __webpack_require__(21479);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/compact.js
 var compact = __webpack_require__(18636);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/checkDocument.js
 var checkDocument = __webpack_require__(81900);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/mapObservableFragment.js
-var mapObservableFragment = __webpack_require__(25086);
 // EXTERNAL MODULE: ./node_modules/.pnpm/graphql@16.14.2/node_modules/graphql/language/visitor.mjs
 var visitor = __webpack_require__(92904);
 ;// ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/removeFragmentSpreads.js
@@ -53662,10 +53629,6 @@ function removeMaskedFragmentSpreads(document) {
     });
 }
 //# sourceMappingURL=removeFragmentSpreads.js.map
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/index.production.js
-var internal_index_production = __webpack_require__(28592);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/version.js
-var version = __webpack_require__(28876);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@wry+trie@0.5.0/node_modules/@wry/trie/lib/index.js
 var lib = __webpack_require__(57235);
 // EXTERNAL MODULE: ./node_modules/.pnpm/graphql@16.14.2/node_modules/graphql/language/kinds.mjs
@@ -53706,6 +53669,8 @@ var removeDirectivesFromDocument = __webpack_require__(62594);
 var getDefaultValues = __webpack_require__(49906);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/isDocumentNode.js
 var isDocumentNode = __webpack_require__(70256);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getOperationName.js
+var getOperationName = __webpack_require__(21479);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/isNonNullObject.js
 var isNonNullObject = __webpack_require__(63892);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/constants.js
@@ -53719,6 +53684,10 @@ var ObservableQuery = __webpack_require__(80250);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/core/QueryInfo.js
 var QueryInfo = __webpack_require__(60930);
 ;// ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/core/QueryManager.js
+/* unused harmony import specifier */ var QueryManager_getOperationDefinition;
+/* unused harmony import specifier */ var QueryManager_getOperationName;
+/* unused harmony import specifier */ var QueryManager_invariant;
+/* unused harmony import specifier */ var logMissingFieldErrors;
 
 
 
@@ -53825,8 +53794,8 @@ class QueryManager {
         const { hasClientExports } = this.getDocumentInfo(mutation);
         variables = this.getVariables(mutation, variables);
         if (hasClientExports) {
-            if (index_production/* __DEV__ */.g) {
-                (0,invariant/* invariant */.V1)(this.localState, 90, (0,getOperationName/* getOperationName */.n)(mutation, "(anonymous)"));
+            if ((/* inlined export .__DEV__ */false)) {
+                QueryManager_invariant(this.localState, 90, QueryManager_getOperationName(mutation, "(anonymous)"));
             }
             variables = await this.localState.getExportedVariables({
                 client: this.client,
@@ -54128,15 +54097,15 @@ class QueryManager {
                 queries.add(oq);
             });
         }
-        if (index_production/* __DEV__ */.g && queryNamesAndQueryStrings.size) {
+        if ((/* inlined export .__DEV__ */false) && queryNamesAndQueryStrings.size) {
             queryNamesAndQueryStrings.forEach((included, nameOrQueryString) => {
                 if (!included) {
                     const queryName = queryNames.get(nameOrQueryString);
                     if (queryName) {
-                        index_production/* __DEV__ */.g && invariant/* invariant */.V1.warn(92, queryName);
+                        (/* inlined export .__DEV__ */false) && QueryManager_invariant.warn(92, queryName);
                     }
                     else {
-                        index_production/* __DEV__ */.g && invariant/* invariant */.V1.warn(93);
+                        (/* inlined export .__DEV__ */false) && QueryManager_invariant.warn(93);
                     }
                 }
             });
@@ -54162,11 +54131,11 @@ class QueryManager {
         query = this.transform(query);
         variables = this.getVariables(query, variables);
         let restart;
-        if (index_production/* __DEV__ */.g) {
-            (0,invariant/* invariant */.V1)(
+        if ((/* inlined export .__DEV__ */false)) {
+            QueryManager_invariant(
                 !this.getDocumentInfo(query).hasClientExports || this.localState,
                 94,
-                (0,getOperationName/* getOperationName */.n)(query, "(anonymous)")
+                QueryManager_getOperationName(query, "(anonymous)")
             );
         }
         const observable = (this.getDocumentInfo(query).hasClientExports ?
@@ -54306,8 +54275,8 @@ class QueryManager {
         }
         if (clientQuery) {
             const { operation } = (0,getOperationDefinition/* getOperationDefinition */.V)(query);
-            if (index_production/* __DEV__ */.g) {
-                (0,invariant/* invariant */.V1)(
+            if ((/* inlined export .__DEV__ */false)) {
+                QueryManager_invariant(
                     this.localState,
                     95,
                     operation[0].toUpperCase() + operation.slice(1),
@@ -54491,8 +54460,8 @@ class QueryManager {
         // for backwards compatibility. TODO This code could be simpler if
         // we deprecated and removed LocalState.
         if (this.getDocumentInfo(normalized.query).hasClientExports) {
-            if (index_production/* __DEV__ */.g) {
-                (0,invariant/* invariant */.V1)(this.localState, 97, (0,getOperationName/* getOperationName */.n)(normalized.query, "(anonymous)"));
+            if ((/* inlined export .__DEV__ */false)) {
+                QueryManager_invariant(this.localState, 97, QueryManager_getOperationName(normalized.query, "(anonymous)"));
             }
             observable = (0,cjs.from)(this.localState.getExportedVariables({
                 client: this.client,
@@ -54657,15 +54626,15 @@ class QueryManager {
     noCacheWarningsByCause = new WeakSet();
     maskOperation(options) {
         const { document, data } = options;
-        if (index_production/* __DEV__ */.g) {
+        if ((/* inlined export .__DEV__ */false)) {
             const { fetchPolicy, cause = {} } = options;
-            const operationType = (0,getOperationDefinition/* getOperationDefinition */.V)(document)?.operation;
+            const operationType = QueryManager_getOperationDefinition(document)?.operation;
             if (this.dataMasking &&
                 fetchPolicy === "no-cache" &&
                 !isFullyUnmaskedOperation(document) &&
                 !this.noCacheWarningsByCause.has(cause)) {
                 this.noCacheWarningsByCause.add(cause);
-                index_production/* __DEV__ */.g && invariant/* invariant */.V1.warn(98, (0,getOperationName/* getOperationName */.n)(document, `Unnamed ${operationType ?? "operation"}`));
+                (/* inlined export .__DEV__ */false) && QueryManager_invariant.warn(98, QueryManager_getOperationName(document, `Unnamed ${operationType ?? "operation"}`));
             }
         }
         return (this.dataMasking ?
@@ -54687,8 +54656,8 @@ class QueryManager {
         });
         const resultsFromCache = (diff, networkStatus) => {
             const data = diff.result;
-            if (index_production/* __DEV__ */.g && !returnPartialData && data !== null) {
-                (0,ObservableQuery/* logMissingFieldErrors */.y)(diff.missing);
+            if ((/* inlined export .__DEV__ */false) && !returnPartialData && data !== null) {
+                logMissingFieldErrors(diff.missing);
             }
             const toResult = (data) => {
                 // TODO: Eventually we should move this handling into
@@ -54722,8 +54691,8 @@ class QueryManager {
             // `undefined` anyways in `toResult`.
             (diff.complete || returnPartialData) &&
                 this.getDocumentInfo(query).hasForcedResolvers) {
-                if (index_production/* __DEV__ */.g) {
-                    (0,invariant/* invariant */.V1)(this.localState, 99, (0,getOperationName/* getOperationName */.n)(query, "(anonymous)"));
+                if ((/* inlined export .__DEV__ */false)) {
+                    QueryManager_invariant(this.localState, 99, QueryManager_getOperationName(query, "(anonymous)"));
                 }
                 onCacheHit();
                 return (0,cjs.from)(this.localState.execute({
@@ -54868,6 +54837,10 @@ function removeStreamDetailsFromExtensions(original) {
 //# sourceMappingURL=QueryManager.js.map
 
 ;// ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/core/ApolloClient.js
+/* unused harmony import specifier */ var getApolloClientMemoryInternals;
+/* unused harmony import specifier */ var ApolloClient_getOperationName;
+/* unused harmony import specifier */ var mapObservableFragmentMemoized;
+/* unused harmony import specifier */ var ApolloClient_invariant;
 
 
 
@@ -54940,9 +54913,9 @@ class ApolloClient {
      * ```
      */
     constructor(options) {
-        if (index_production/* __DEV__ */.g) {
-            (0,invariant/* invariant */.V1)(options.cache, 68);
-            (0,invariant/* invariant */.V1)(options.link, 69);
+        if ((/* inlined export .__DEV__ */false)) {
+            ApolloClient_invariant(options.cache, 68);
+            ApolloClient_invariant(options.link, 69);
         }
         const { cache, documentTransform, ssrMode = false, ssrForceFetchDelay = 0, queryDeduplication = true, defaultOptions, defaultContext, assumeImmutableResults = cache.assumeImmutableResults, localState, devtools, dataMasking, link, incrementalHandler = new NotImplementedHandler(), experiments = [], refetchEventManager, } = options;
         this.link = link;
@@ -54955,7 +54928,7 @@ class ApolloClient {
         this.defaultOptions = (defaultOptions || {});
         this.devtoolsConfig = {
             ...devtools,
-            enabled: devtools?.enabled ?? index_production/* __DEV__ */.g,
+            enabled: devtools?.enabled ?? (/* inlined export .__DEV__ */false),
         };
         this.watchQuery = this.watchQuery.bind(this);
         this.query = this.query.bind(this);
@@ -54964,7 +54937,7 @@ class ApolloClient {
         this.resetStore = this.resetStore.bind(this);
         this.reFetchObservableQueries = this.refetchObservableQueries =
             this.refetchObservableQueries.bind(this);
-        this.version = version/* version */.r;
+        this.version = (/* inlined export .version */"4.2.3");
         this.queryManager = new QueryManager({
             client: this,
             defaultOptions: this.defaultOptions,
@@ -55009,7 +54982,7 @@ class ApolloClient {
         /**
          * Suggest installing the devtools for developers who don't have them
          */
-        if (!hasSuggestedDevtools && index_production/* __DEV__ */.g) {
+        if (!hasSuggestedDevtools && (/* inlined export .__DEV__ */false)) {
             hasSuggestedDevtools = true;
             if (window.document &&
                 window.top === window.self &&
@@ -55031,7 +55004,7 @@ class ApolloClient {
                             }
                         }
                         if (url) {
-                            index_production/* __DEV__ */.g && invariant/* invariant */.V1.log("Download the Apollo DevTools for a better development " +
+                            (/* inlined export .__DEV__ */false) && ApolloClient_invariant.log("Download the Apollo DevTools for a better development " +
                                 "experience: %s", url);
                         }
                     }
@@ -55123,20 +55096,20 @@ class ApolloClient {
                 options.refetchOn = mergedRefetchOn;
             }
         }
-        if (index_production/* __DEV__ */.g) {
+        if ((/* inlined export .__DEV__ */false)) {
             const { query } = options;
             const { refetchEventManager } = this;
             // Note: refetchOn evaluates the original refetchOn value, not the merged
             // refetchOn value.
             if (refetchOn) {
-                const operationName = (0,getOperationName/* getOperationName */.n)(query, "(anonymous)");
+                const operationName = ApolloClient_getOperationName(query, "(anonymous)");
                 if (!refetchEventManager) {
-                    index_production/* __DEV__ */.g && invariant/* invariant */.V1.warn(70, operationName);
+                    (/* inlined export .__DEV__ */false) && ApolloClient_invariant.warn(70, operationName);
                 }
                 else if (typeof refetchOn === "object") {
                     Object.keys(refetchOn).forEach((source) => {
                         if (!refetchEventManager.hasSource(source)) {
-                            index_production/* __DEV__ */.g && invariant/* invariant */.V1.warn(71, source, operationName);
+                            (/* inlined export .__DEV__ */false) && ApolloClient_invariant.warn(71, source, operationName);
                         }
                     });
                 }
@@ -55157,14 +55130,14 @@ class ApolloClient {
         if (this.defaultOptions.query) {
             options = (0,mergeOptions/* mergeOptions */.l)(this.defaultOptions.query, options);
         }
-        if (index_production/* __DEV__ */.g) {
-            (0,invariant/* invariant */.V1)(options.fetchPolicy !== "cache-and-network", 72);
-            (0,invariant/* invariant */.V1)(options.fetchPolicy !== "standby", 73);
-            (0,invariant/* invariant */.V1)(options.query, 74);
-            (0,invariant/* invariant */.V1)(options.query.kind === "Document", 75);
-            (0,invariant/* invariant */.V1)(!options.returnPartialData, 76);
-            (0,invariant/* invariant */.V1)(!options.pollInterval, 77);
-            (0,invariant/* invariant */.V1)(!options.notifyOnNetworkStatusChange, 78);
+        if ((/* inlined export .__DEV__ */false)) {
+            ApolloClient_invariant(options.fetchPolicy !== "cache-and-network", 72);
+            ApolloClient_invariant(options.fetchPolicy !== "standby", 73);
+            ApolloClient_invariant(options.query, 74);
+            ApolloClient_invariant(options.query.kind === "Document", 75);
+            ApolloClient_invariant(!options.returnPartialData, 76);
+            ApolloClient_invariant(!options.pollInterval, 77);
+            ApolloClient_invariant(!options.notifyOnNetworkStatusChange, 78);
         }
         return this.queryManager.query(options);
     };
@@ -55181,9 +55154,9 @@ class ApolloClient {
             fetchPolicy: "network-only",
             errorPolicy: "none",
         }, this.defaultOptions.mutate), options);
-        if (index_production/* __DEV__ */.g) {
-            (0,invariant/* invariant */.V1)(optionsWithDefaults.mutation, 79);
-            (0,invariant/* invariant */.V1)(optionsWithDefaults.fetchPolicy === "network-only" ||
+        if ((/* inlined export .__DEV__ */false)) {
+            ApolloClient_invariant(optionsWithDefaults.mutation, 79);
+            ApolloClient_invariant(optionsWithDefaults.fetchPolicy === "network-only" ||
                 optionsWithDefaults.fetchPolicy === "no-cache", 80);
         }
         (0,checkDocument/* checkDocument */.s)(optionsWithDefaults.mutation, ast/* OperationTypeNode */.cE.MUTATION);
@@ -55216,8 +55189,8 @@ class ApolloClient {
             ...options,
             fragment: this.transform(options.fragment, dataMasking),
         });
-        if (index_production/* __DEV__ */.g) {
-            return (0,mapObservableFragment/* mapObservableFragmentMemoized */.Q)(observable, Symbol.for("apollo.transform.dev.mask"), (result) => ({
+        if ((/* inlined export .__DEV__ */false)) {
+            return mapObservableFragmentMemoized(observable, Symbol.for("apollo.transform.dev.mask"), (result) => ({
                 ...result,
                 // The transform will remove fragment spreads from the fragment
                 // document when dataMasking is enabled. The `mask` function
@@ -55390,7 +55363,7 @@ class ApolloClient {
         // result.queries and result.results instead, you shouldn't have to worry
         // about preventing uncaught rejections for the Promise.all result.
         result.catch((error) => {
-            index_production/* __DEV__ */.g && invariant/* invariant */.V1.debug(81, error);
+            (/* inlined export .__DEV__ */false) && invariant/* invariant */.V1.debug(81, error);
         });
         return result;
     }
@@ -55451,8 +55424,8 @@ class ApolloClient {
             : transformed;
     }
 }
-if (index_production/* __DEV__ */.g) {
-    ApolloClient.prototype.getMemoryInternals = internal_index_production/* getApolloClientMemoryInternals */.ep;
+if ((/* inlined export .__DEV__ */false)) {
+    ApolloClient.prototype.getMemoryInternals = getApolloClientMemoryInternals;
 }
 //# sourceMappingURL=ApolloClient.js.map
 
@@ -55477,8 +55450,6 @@ var cjs = __webpack_require__(71530);
 var isNetworkRequestSettled = __webpack_require__(5943);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/isNetworkRequestInFlight.js
 var isNetworkRequestInFlight = __webpack_require__(15481);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/environment/index.production.js
-var index_production = __webpack_require__(19896);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/constants.js
 var constants = __webpack_require__(94384);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getOperationDefinition.js
@@ -55487,8 +55458,6 @@ var getOperationDefinition = __webpack_require__(65369);
 var filterMap = __webpack_require__(58205);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/equalByQuery.js
 var equalByQuery = __webpack_require__(91350);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getQueryDefinition.js
-var getQueryDefinition = __webpack_require__(61248);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getOperationName.js
 var getOperationName = __webpack_require__(21479);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/compact.js
@@ -55501,11 +55470,14 @@ function preventUnhandledRejection(promise) {
 //# sourceMappingURL=preventUnhandledRejection.js.map
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/toQueryResult.js
 var toQueryResult = __webpack_require__(91283);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/invariant/index.js
-var invariant = __webpack_require__(17592);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/invariant/index.js + 1 modules
+var invariant = __webpack_require__(59373);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/core/networkStatus.js
 var core_networkStatus = __webpack_require__(94326);
 ;// ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/core/ObservableQuery.js
+/* unused harmony import specifier */ var ObservableQuery_getOperationName;
+/* unused harmony import specifier */ var getQueryDefinition;
+/* unused harmony import specifier */ var ObservableQuery_invariant;
 
 
 
@@ -55886,11 +55858,11 @@ class ObservableQuery {
         else {
             reobserveOptions.fetchPolicy = "network-only";
         }
-        if (index_production/* __DEV__ */.g && variables && ObservableQuery_hasOwnProperty.call(variables, "variables")) {
-            const queryDef = (0,getQueryDefinition/* getQueryDefinition */.A)(this.query);
+        if ((/* inlined export .__DEV__ */false) && variables && ObservableQuery_hasOwnProperty.call(variables, "variables")) {
+            const queryDef = getQueryDefinition(this.query);
             const vars = queryDef.variableDefinitions;
             if (!vars || !vars.some((v) => v.variable.name.value === "variables")) {
-                index_production/* __DEV__ */.g && invariant/* invariant */.V1.warn(83, variables, queryDef.name?.value || queryDef);
+                (/* inlined export .__DEV__ */false) && ObservableQuery_invariant.warn(83, variables, queryDef.name?.value || queryDef);
             }
         }
         if (variables && !(0,lib/* equal */.L)(this.variables, variables)) {
@@ -56363,11 +56335,11 @@ class ObservableQuery {
                 options.fetchPolicy === "standby");
         };
         if (shouldCancelPolling()) {
-            if (index_production/* __DEV__ */.g) {
+            if ((/* inlined export .__DEV__ */false)) {
                 if (!this.didWarnCacheOnlyPolling &&
                     pollInterval &&
                     fetchPolicy === "cache-only") {
-                    index_production/* __DEV__ */.g && invariant/* invariant */.V1.warn(87, (0,getOperationName/* getOperationName */.n)(this.query, "(anonymous)"));
+                    (/* inlined export .__DEV__ */false) && ObservableQuery_invariant.warn(87, ObservableQuery_getOperationName(this.query, "(anonymous)"));
                     this.didWarnCacheOnlyPolling = true;
                 }
             }
@@ -56873,8 +56845,8 @@ class ObservableQuery {
     }
 }
 function logMissingFieldErrors(missing) {
-    if (index_production/* __DEV__ */.g && missing) {
-        index_production/* __DEV__ */.g && invariant/* invariant */.V1.debug(88, missing);
+    if ((/* inlined export .__DEV__ */false) && missing) {
+        (/* inlined export .__DEV__ */false) && ObservableQuery_invariant.debug(88, missing);
     }
 }
 function isEqualQuery(a, b) {
@@ -56928,7 +56900,9 @@ function getTrackingOperatorPromise(defaultValue) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   L: () => (/* binding */ QueryInfo)
 /* harmony export */ });
-/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25012);
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25012);
+}
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(21479);
 }
@@ -56939,7 +56913,7 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(94384);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(17592);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(59373);
 }
 
 
@@ -57923,9 +57897,11 @@ class UnconventionalError extends Error {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   $b: () => (/* binding */ toErrorLike),
-/* harmony export */   K$: () => (/* binding */ PROTOCOL_ERRORS_SYMBOL),
 /* harmony export */   uR: () => (/* binding */ graphQLResultHasProtocolErrors)
 /* harmony export */ });
+/* empty/unused harmony star reexport */
+/* empty/unused harmony star reexport */
+/* empty/unused harmony star reexport */
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _CombinedProtocolErrors_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(50160);
 }
@@ -57966,6 +57942,10 @@ function toErrorLike(error) {
 
 
 //# sourceMappingURL=index.js.map
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "K$", 0, /* binding */ PROTOCOL_ERRORS_SYMBOL
+/* harmony export */ ]);
+
 
 /***/ },
 
@@ -58017,6 +57997,7 @@ function brand(error) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   C: () => (/* binding */ ApolloLink)
 /* harmony export */ });
+/* unused harmony import specifier */ var invariant;
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(71530);
 }
@@ -58024,10 +58005,7 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _apollo_client_link_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(68422);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(19896);
-}
-if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(17592);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(59373);
 }
 
 
@@ -58129,9 +58107,9 @@ class ApolloLink {
     static split(test, left, right = new ApolloLink((op, forward) => forward(op))) {
         const link = new ApolloLink((operation, forward) => {
             const result = test(operation);
-            if (_apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_2__/* .__DEV__ */ .g) {
+            if ((/* inlined export .__DEV__ */false)) {
                 if (typeof result !== "boolean") {
-                    _apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_2__/* .__DEV__ */ .g && _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__/* .invariant */ .V1.warn(63, result);
+                    (/* inlined export .__DEV__ */false) && invariant.warn(63, result);
                 }
             }
             return result ?
@@ -58172,8 +58150,8 @@ class ApolloLink {
      */
     static execute(link, request, context) {
         return link.request((0,_apollo_client_link_utils__WEBPACK_IMPORTED_MODULE_1__/* .createOperation */ .k)(request, context), () => {
-            if (_apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_2__/* .__DEV__ */ .g) {
-                _apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_2__/* .__DEV__ */ .g && _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__/* .invariant */ .V1.warn(64);
+            if ((/* inlined export .__DEV__ */false)) {
+                (/* inlined export .__DEV__ */false) && invariant.warn(64);
             }
             return rxjs__WEBPACK_IMPORTED_MODULE_0__.EMPTY;
         });
@@ -58302,17 +58280,18 @@ class ApolloLink {
 /***/ 84318
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   g: () => (/* binding */ execute)
-/* harmony export */ });
 /* harmony import */ var _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(70634);
 
 const execute = _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__/* .ApolloLink */ .C.execute;
 //# sourceMappingURL=execute.js.map
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "g", 0, /* binding */ execute
+/* harmony export */ ]);
+
 
 /***/ },
 
-/***/ 49167
+/***/ 45263
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 
@@ -58530,19 +58509,8 @@ function isSubscriptionOperation(document) {
     return isOperation(document, "subscription");
 }
 //# sourceMappingURL=operations.js.map
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/environment/index.production.js
-var index_production = __webpack_require__(19896);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/globals/maybe.js
 var maybe = __webpack_require__(43694);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/invariant/index.js
-var invariant = __webpack_require__(17592);
-;// ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/link/http/checkFetcher.js
-
-const checkFetcher = (fetcher) => {
-    (0,invariant/* invariant */.V1)(fetcher || typeof fetch !== "undefined", 61);
-};
-//# sourceMappingURL=checkFetcher.js.map
-
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/errors/index.js
 var errors = __webpack_require__(3466);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/errors/CombinedProtocolErrors.js
@@ -58553,6 +58521,8 @@ var ServerError = __webpack_require__(42953);
 var ServerParseError = __webpack_require__(27332);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/isNonNullObject.js
 var isNonNullObject = __webpack_require__(63892);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/invariant/index.js + 1 modules
+var invariant = __webpack_require__(59373);
 ;// ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/link/http/parseAndCheckHttpResponse.js
 
 
@@ -58889,6 +58859,7 @@ const selectURI = (operation, fallbackURI) => {
 };
 //# sourceMappingURL=selectURI.js.map
 ;// ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/link/http/BaseHttpLink.js
+/* unused harmony import specifier */ var checkFetcher;
 
 
 
@@ -58936,7 +58907,7 @@ class BaseHttpLink extends ApolloLink/* ApolloLink */.C {
         let { uri = "/graphql", 
         // use default global fetch if nothing passed in
         fetch: preferredFetch, print = defaultPrinter, includeExtensions, preserveHeaderCase, useGETForQueries, includeUnusedVariables = false, ...requestOptions } = options;
-        if (index_production/* __DEV__ */.g) {
+        if ((/* inlined export .__DEV__ */false)) {
             // Make sure at least one of preferredFetch, window.fetch, or backupFetch is
             // defined, so requests won't fail at runtime.
             checkFetcher(preferredFetch || backupFetch);
@@ -59150,16 +59121,13 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7015);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(19896);
-}
-if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(59588);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(93152);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(17592);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(59373);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(80230);
@@ -59195,7 +59163,7 @@ function maskSelectionSet(data, selectionSet, context, migration, path) {
                 memo[index] = null;
                 continue;
             }
-            const masked = maskSelectionSet(item, selectionSet, context, migration, _apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_1__/* .__DEV__ */ .g ? `${path || ""}[${index}]` : void 0);
+            const masked = maskSelectionSet(item, selectionSet, context, migration, (/* inlined export .__DEV__ */false) ? `${path || ""}[${index}]` : void 0);
             if (knownChanged.has(masked)) {
                 knownChanged.add(memo);
             }
@@ -59218,15 +59186,15 @@ function maskSelectionSet(data, selectionSet, context, migration, path) {
                 continue;
             }
             if (childSelectionSet && value !== null) {
-                const masked = maskSelectionSet(data[keyName], childSelectionSet, context, migration, _apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_1__/* .__DEV__ */ .g ? `${path || ""}.${keyName}` : void 0);
+                const masked = maskSelectionSet(data[keyName], childSelectionSet, context, migration, (/* inlined export .__DEV__ */false) ? `${path || ""}.${keyName}` : void 0);
                 if (knownChanged.has(masked)) {
                     value = masked;
                 }
             }
-            if (!_apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_1__/* .__DEV__ */ .g) {
+            if (!(/* inlined export .__DEV__ */false)) {
                 memo[keyName] = value;
             }
-            if (_apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_1__/* .__DEV__ */ .g) {
+            if ((/* inlined export .__DEV__ */false)) {
                 if (migration &&
                     keyName !== "__typename" &&
                     // either the field is not present in the memo object
@@ -59278,7 +59246,7 @@ function getAccessorWarningDescriptor(fieldName, value, path, operationName, ope
         if (_utils_js__WEBPACK_IMPORTED_MODULE_5__/* .disableWarningsSlot */ .y.getValue()) {
             return value;
         }
-        _apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_1__/* .__DEV__ */ .g && _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__/* .invariant */ .V1.warn(40, operationName ?
+        (/* inlined export .__DEV__ */false) && _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__/* .invariant */ .V1.warn(40, operationName ?
             `${operationType} '${operationName}'`
             : `anonymous ${operationType}`, `${path}.${fieldName}`.replace(/^\./, ""));
         getValue = () => value;
@@ -59306,7 +59274,9 @@ function getAccessorWarningDescriptor(fieldName, value, path, operationName, ope
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   z: () => (/* binding */ maskFragment)
 /* harmony export */ });
-/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25012);
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25012);
+}
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7015);
 }
@@ -59317,7 +59287,7 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(78475);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(17592);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(59373);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _maskDefinition_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(106);
@@ -59380,7 +59350,7 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(65369);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(17592);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(59373);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _maskDefinition_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(106);
@@ -59418,19 +59388,11 @@ function maskOperation(data, document, cache) {
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   s: () => (/* binding */ getFragmentMaskMode),
-/* harmony export */   y: () => (/* binding */ disableWarningsSlot)
+/* harmony export */   s: () => (/* binding */ getFragmentMaskMode)
 /* harmony export */ });
-if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7015);
-}
-/* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(18618);
-if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(19896);
-}
-if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(17592);
-}
+/* unused harmony import specifier */ var Kind;
+/* unused harmony import specifier */ var invariant;
+/* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(18618);
 
 
 
@@ -59442,23 +59404,23 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 * 
 * @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
 */
-const disableWarningsSlot = new optimism__WEBPACK_IMPORTED_MODULE_1__/* .Slot */ .DX();
+const disableWarningsSlot = new optimism__WEBPACK_IMPORTED_MODULE_0__/* .Slot */ .DX();
 function getFragmentMaskMode(fragment) {
     const directive = fragment.directives?.find(({ name }) => name.value === "unmask");
     if (!directive) {
         return "mask";
     }
     const modeArg = directive.arguments?.find(({ name }) => name.value === "mode");
-    if (_apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_2__/* .__DEV__ */ .g) {
+    if ((/* inlined export .__DEV__ */false)) {
         if (modeArg) {
-            if (modeArg.value.kind === graphql__WEBPACK_IMPORTED_MODULE_0__/* .Kind */ .b.VARIABLE) {
-                _apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_2__/* .__DEV__ */ .g && _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__/* .invariant */ .V1.warn(44);
+            if (modeArg.value.kind === Kind.VARIABLE) {
+                (/* inlined export .__DEV__ */false) && invariant.warn(44);
             }
-            else if (modeArg.value.kind !== graphql__WEBPACK_IMPORTED_MODULE_0__/* .Kind */ .b.STRING) {
-                _apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_2__/* .__DEV__ */ .g && _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__/* .invariant */ .V1.warn(45);
+            else if (modeArg.value.kind !== Kind.STRING) {
+                (/* inlined export .__DEV__ */false) && invariant.warn(45);
             }
             else if (modeArg.value.value !== "migrate") {
-                _apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_2__/* .__DEV__ */ .g && _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__/* .invariant */ .V1.warn(46, modeArg.value.value);
+                (/* inlined export .__DEV__ */false) && invariant.warn(46, modeArg.value.value);
             }
         }
     }
@@ -59471,15 +59433,16 @@ function getFragmentMaskMode(fragment) {
 }
 //# sourceMappingURL=utils.js.map
 
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "y", 0, /* binding */ disableWarningsSlot
+/* harmony export */ ]);
+
 
 /***/ },
 
 /***/ 64963
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   v: () => (/* binding */ cacheSizes)
-/* harmony export */ });
 /* harmony import */ var _apollo_client_utilities_internal_globals__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(17195);
 
 const cacheSizeSymbol = Symbol.for("apollo.cacheSize");
@@ -59507,17 +59470,10 @@ const cacheSizeSymbol = Symbol.for("apollo.cacheSize");
  */
 const cacheSizes = { ..._apollo_client_utilities_internal_globals__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A[cacheSizeSymbol] };
 //# sourceMappingURL=sizes.js.map
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "v", 0, /* binding */ cacheSizes
+/* harmony export */ ]);
 
-/***/ },
-
-/***/ 19896
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   g: () => (/* binding */ __DEV__)
-/* harmony export */ });
-const __DEV__ = false;
-//# sourceMappingURL=index.production.js.map
 
 /***/ },
 
@@ -59530,13 +59486,17 @@ const __DEV__ = false;
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _wry_caches__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(818);
 }
-/* harmony import */ var _wry_trie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(57235);
-/* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(18618);
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _wry_trie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(57235);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(18618);
+}
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(81900);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(17592);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(59373);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _caching_sizes_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(64963);
@@ -60146,15 +60106,12 @@ function hasMultilineItems(maybeArray) {
     : false;
 }
 
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/environment/index.production.js
-var index_production = __webpack_require__(19896);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/caches.js
 var caches = __webpack_require__(96722);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getMemoryInternals.js
-var getMemoryInternals = __webpack_require__(74838);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/caching/sizes.js
 var sizes = __webpack_require__(64963);
 ;// ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/print.js
+/* unused harmony import specifier */ var registerGlobalCache;
 
 
 
@@ -60181,8 +60138,8 @@ const print_print = Object.assign((ast) => {
     },
 });
 print_print.reset();
-if (index_production/* __DEV__ */.g) {
-    (0,getMemoryInternals/* registerGlobalCache */.D_)("print", () => (printCache ? printCache.size : 0));
+if ((/* inlined export .__DEV__ */false)) {
+    registerGlobalCache("print", () => (printCache ? printCache.size : 0));
 }
 //# sourceMappingURL=print.js.map
 
@@ -60218,9 +60175,6 @@ function isReference(obj) {
 /***/ 36093
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   X: () => (/* binding */ addTypenameToDocument)
-/* harmony export */ });
 /* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7015);
 /* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(92904);
 
@@ -60294,6 +60248,10 @@ const addTypenameToDocument = Object.assign(function (doc) {
     },
 });
 //# sourceMappingURL=transform.js.map
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "X", 0, /* binding */ addTypenameToDocument
+/* harmony export */ ]);
+
 
 /***/ },
 
@@ -60436,10 +60394,6 @@ function argumentsObjectFromField(field, variables) {
 /***/ 96722
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (/* binding */ AutoCleanedWeakCache),
-/* harmony export */   V: () => (/* binding */ AutoCleanedStrongCache)
-/* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _wry_caches__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(44989);
 }
@@ -60520,19 +60474,20 @@ const AutoCleanedStrongCache = function (max, dispose) {
 };
 //# sourceMappingURL=caches.js.map
 
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "A", 0, /* binding */ AutoCleanedWeakCache,
+/* harmony export */   "V", 0, /* binding */ AutoCleanedStrongCache
+/* harmony export */ ]);
+
 
 /***/ },
 
 /***/ 45094
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   M: () => (/* binding */ canonicalStringify)
-/* harmony export */ });
-/* harmony import */ var _apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(19896);
+/* unused harmony import specifier */ var registerGlobalCache;
 /* harmony import */ var _caching_sizes_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(64963);
 /* harmony import */ var _caches_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(96722);
-/* harmony import */ var _getMemoryInternals_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(74838);
 
 
 
@@ -60587,8 +60542,8 @@ const canonicalStringify = Object.assign(function canonicalStringify(value) {
         sortingMap = new _caches_js__WEBPACK_IMPORTED_MODULE_2__/* .AutoCleanedStrongCache */ .V(_caching_sizes_js__WEBPACK_IMPORTED_MODULE_1__/* .cacheSizes */ .v.canonicalStringify || 1000 /* defaultCacheSizes.canonicalStringify */);
     },
 });
-if (_apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_0__/* .__DEV__ */ .g) {
-    (0,_getMemoryInternals_js__WEBPACK_IMPORTED_MODULE_3__/* .registerGlobalCache */ .D_)("canonicalStringify", () => sortingMap.size);
+if ((/* inlined export .__DEV__ */false)) {
+    registerGlobalCache("canonicalStringify", () => sortingMap.size);
 }
 // Values are JSON-serialized arrays of object keys (in any order), and values
 // are sorted arrays of the same keys.
@@ -60642,19 +60597,21 @@ function everyKeyInOrder(key, i, keys) {
     return i === 0 || keys[i - 1] <= key;
 }
 //# sourceMappingURL=canonicalStringify.js.map
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "M", 0, /* binding */ canonicalStringify
+/* harmony export */ ]);
+
 
 /***/ },
 
 /***/ 81900
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   s: () => (/* binding */ checkDocument)
-/* harmony export */ });
+/* unused harmony import specifier */ var newInvariantError;
+/* unused harmony import specifier */ var invariant;
 /* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7015);
 /* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(92904);
-/* harmony import */ var _apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(19896);
-/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(17592);
+/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(59373);
 /* harmony import */ var _caching_sizes_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(64963);
 /* harmony import */ var _getOperationName_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(21479);
 /* harmony import */ var _memoize_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(62749);
@@ -60675,14 +60632,14 @@ function everyKeyInOrder(key, i, keys) {
 const checkDocument = (0,_memoize_js__WEBPACK_IMPORTED_MODULE_6__/* .memoize */ .B)((doc, expectedType) => {
     (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__/* .invariant */ .V1)(doc && doc.kind === "Document", 1);
     const operations = doc.definitions.filter((d) => d.kind === "OperationDefinition");
-    if (_apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_2__/* .__DEV__ */ .g) {
+    if ((/* inlined export .__DEV__ */false)) {
         doc.definitions.forEach((definition) => {
             if (definition.kind !== "OperationDefinition" &&
                 definition.kind !== "FragmentDefinition") {
-                throw (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__/* .newInvariantError */ .vA)(2, definition.kind);
+                throw newInvariantError(2, definition.kind);
             }
         });
-        (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__/* .invariant */ .V1)(operations.length <= 1, 3, operations.length);
+        invariant(operations.length <= 1, 3, operations.length);
     }
     if (expectedType) {
         (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__/* .invariant */ .V1)(
@@ -60723,57 +60680,9 @@ const checkDocument = (0,_memoize_js__WEBPACK_IMPORTED_MODULE_6__/* .memoize */ 
 });
 //# sourceMappingURL=checkDocument.js.map
 
-
-/***/ },
-
-/***/ 77082
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   m: () => (/* binding */ cloneDeep)
-/* harmony export */ });
-const { toString } = Object.prototype;
-/**
-* Deeply clones a value to create a new instance.
-*
-* @internal
-* 
-* @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
-*/
-function cloneDeep(value) {
-    return __cloneDeep(value);
-}
-function __cloneDeep(val, seen) {
-    switch (toString.call(val)) {
-        case "[object Array]": {
-            seen = seen || new Map();
-            if (seen.has(val))
-                return seen.get(val);
-            const copy = val.slice(0);
-            seen.set(val, copy);
-            copy.forEach(function (child, i) {
-                copy[i] = __cloneDeep(child, seen);
-            });
-            return copy;
-        }
-        case "[object Object]": {
-            seen = seen || new Map();
-            if (seen.has(val))
-                return seen.get(val);
-            // High fidelity polyfills of Object.create and Object.getPrototypeOf are
-            // possible in all JS environments, so we will assume they exist/work.
-            const copy = Object.create(Object.getPrototypeOf(val));
-            seen.set(val, copy);
-            Object.keys(val).forEach((key) => {
-                copy[key] = __cloneDeep(val[key], seen);
-            });
-            return copy;
-        }
-        default:
-            return val;
-    }
-}
-//# sourceMappingURL=cloneDeep.js.map
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "s", 0, /* binding */ checkDocument
+/* harmony export */ ]);
 
 
 /***/ },
@@ -60814,11 +60723,6 @@ function compact(...objects) {
 /***/ 94384
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   DH: () => (/* binding */ streamInfoSymbol),
-/* harmony export */   X: () => (/* binding */ extensionsSymbol),
-/* harmony export */   _K: () => (/* binding */ variablesUnknownSymbol)
-/* harmony export */ });
 /**
 * @internal
 * Used to set `extensions` on the GraphQL result without exposing it
@@ -60842,6 +60746,12 @@ const streamInfoSymbol = Symbol.for("apollo.result.streamInfo");
 */
 const variablesUnknownSymbol = Symbol.for("apollo.observableQuery.variablesUnknown");
 //# sourceMappingURL=constants.js.map
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "DH", 0, /* binding */ streamInfoSymbol,
+/* harmony export */   "X", 0, /* binding */ extensionsSymbol,
+/* harmony export */   "_K", 0, /* binding */ variablesUnknownSymbol
+/* harmony export */ ]);
 
 
 /***/ },
@@ -60872,65 +60782,15 @@ function createFragmentMap(fragments = []) {
 
 /***/ },
 
-/***/ 89968
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   o: () => (/* binding */ deepFreeze)
-/* harmony export */ });
-if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(19896);
-}
-if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _isNonNullObject_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(63892);
-}
-
-
-/**
-* @internal only to be imported in tests
-* 
-* @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
-*/
-function deepFreeze(value) {
-    const workSet = new Set([value]);
-    workSet.forEach((obj) => {
-        if ((0,_isNonNullObject_js__WEBPACK_IMPORTED_MODULE_1__/* .isNonNullObject */ .U)(obj) && shallowFreeze(obj) === obj) {
-            Object.getOwnPropertyNames(obj).forEach((name) => {
-                if ((0,_isNonNullObject_js__WEBPACK_IMPORTED_MODULE_1__/* .isNonNullObject */ .U)(obj[name]))
-                    workSet.add(obj[name]);
-            });
-        }
-    });
-    return value;
-}
-function shallowFreeze(obj) {
-    if (_apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_0__/* .__DEV__ */ .g && !Object.isFrozen(obj)) {
-        try {
-            Object.freeze(obj);
-        }
-        catch (e) {
-            // Some types like Uint8Array and Node.js's Buffer cannot be frozen, but
-            // they all throw a TypeError when you try, so we re-throw any exceptions
-            // that are not TypeErrors, since that would be unexpected.
-            if (e instanceof TypeError)
-                return null;
-            throw e;
-        }
-    }
-    return obj;
-}
-//# sourceMappingURL=deepFreeze.js.map
-
-
-/***/ },
-
 /***/ 91350
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   a: () => (/* binding */ equalByQuery)
 /* harmony export */ });
-/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25012);
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25012);
+}
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _createFragmentMap_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(62031);
 }
@@ -61124,7 +60984,7 @@ function getDefaultValues(definition) {
 /* harmony export */   E: () => (/* binding */ getFragmentDefinition)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(17592);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(59373);
 }
 
 /**
@@ -61170,7 +61030,7 @@ function getFragmentDefinitions(doc) {
 /* harmony export */   H: () => (/* binding */ getFragmentFromSelection)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(17592);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(59373);
 }
 
 /**
@@ -61207,7 +61067,7 @@ function getFragmentFromSelection(selection, fragmentMap) {
 /* harmony export */   V: () => (/* binding */ getMainDefinition)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(17592);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(59373);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _checkDocument_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(81900);
@@ -61274,147 +61134,6 @@ function getMainDefinition(queryDoc) {
 
 /***/ },
 
-/***/ 74838
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   D_: () => (/* binding */ registerGlobalCache)
-/* harmony export */ });
-/* unused harmony exports getApolloClientMemoryInternals, getInMemoryCacheMemoryInternals, getApolloCacheMemoryInternals */
-/* unused harmony import specifier */ var __DEV__;
-/* unused harmony import specifier */ var cacheSizes;
-
-
-const globalCaches = (/* runtime-dependent pure expression or super */ /^(250|49|6|748|792|888)$/.test(__webpack_require__.j) ? ({}) : null);
-function registerGlobalCache(name, getSize) {
-    globalCaches[name] = getSize;
-}
-/**
-* For internal purposes only - please call `ApolloClient.getMemoryInternals` instead
-* @internal
-* 
-* @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
-*/
-const getApolloClientMemoryInternals = (/* unused pure expression or super */ null && (__DEV__ ?
-    _getApolloClientMemoryInternals
-    : undefined));
-/**
-* For internal purposes only - please call `ApolloClient.getMemoryInternals` instead
-* @internal
-* 
-* @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
-*/
-const getInMemoryCacheMemoryInternals = (/* unused pure expression or super */ null && (__DEV__ ?
-    _getInMemoryCacheMemoryInternals
-    : undefined));
-/**
-* For internal purposes only - please call `ApolloClient.getMemoryInternals` instead
-* @internal
-* 
-* @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
-*/
-const getApolloCacheMemoryInternals = (/* unused pure expression or super */ null && (__DEV__ ?
-    _getApolloCacheMemoryInternals
-    : undefined));
-function getCurrentCacheSizes() {
-    // `defaultCacheSizes` is a `const enum` that will be inlined during build, so we have to reconstruct it's shape here
-    const defaults = {
-        canonicalStringify: 1000 /* defaultCacheSizes["canonicalStringify"] */,
-        checkDocument: 2000 /* defaultCacheSizes["checkDocument"] */,
-        print: 2000 /* defaultCacheSizes["print"] */,
-        "documentTransform.cache": 2000 /* defaultCacheSizes["documentTransform.cache"] */,
-        "queryManager.getDocumentInfo": 2000 /* defaultCacheSizes["queryManager.getDocumentInfo"] */,
-        "PersistedQueryLink.persistedQueryHashes": 2000 /* defaultCacheSizes["PersistedQueryLink.persistedQueryHashes"] */,
-        "fragmentRegistry.transform": 2000 /* defaultCacheSizes["fragmentRegistry.transform"] */,
-        "fragmentRegistry.lookup": 1000 /* defaultCacheSizes["fragmentRegistry.lookup"] */,
-        "fragmentRegistry.findFragmentSpreads": 4000 /* defaultCacheSizes["fragmentRegistry.findFragmentSpreads"] */,
-        "cache.fragmentQueryDocuments": 1000 /* defaultCacheSizes["cache.fragmentQueryDocuments"] */,
-        "removeTypenameFromVariables.getVariableDefinitions": 2000 /* defaultCacheSizes["removeTypenameFromVariables.getVariableDefinitions"] */,
-        "inMemoryCache.maybeBroadcastWatch": 5000 /* defaultCacheSizes["inMemoryCache.maybeBroadcastWatch"] */,
-        "inMemoryCache.executeSelectionSet": 50000 /* defaultCacheSizes["inMemoryCache.executeSelectionSet"] */,
-        "inMemoryCache.executeSubSelectedArray": 10000 /* defaultCacheSizes["inMemoryCache.executeSubSelectedArray"] */,
-    };
-    return Object.fromEntries(Object.entries(defaults).map(([k, v]) => [
-        k,
-        cacheSizes[k] || v,
-    ]));
-}
-function _getApolloClientMemoryInternals() {
-    if (!__DEV__)
-        throw new Error("only supported in development mode");
-    return {
-        limits: getCurrentCacheSizes(),
-        sizes: {
-            print: globalCaches.print?.(),
-            canonicalStringify: globalCaches.canonicalStringify?.(),
-            links: linkInfo(this.link),
-            queryManager: {
-                getDocumentInfo: this["queryManager"]["transformCache"].size,
-                documentTransforms: transformInfo(this["queryManager"].documentTransform),
-            },
-            ...this.cache.getMemoryInternals?.(),
-        },
-    };
-}
-function _getApolloCacheMemoryInternals() {
-    return {
-        cache: {
-            fragmentQueryDocuments: getWrapperInformation(this["getFragmentDoc"]),
-        },
-    };
-}
-function _getInMemoryCacheMemoryInternals() {
-    const fragments = this.config.fragments;
-    return {
-        ..._getApolloCacheMemoryInternals.apply(this),
-        addTypenameDocumentTransform: transformInfo(this["addTypenameTransform"]),
-        inMemoryCache: {
-            executeSelectionSet: getWrapperInformation(this["storeReader"]["executeSelectionSet"]),
-            executeSubSelectedArray: getWrapperInformation(this["storeReader"]["executeSubSelectedArray"]),
-            maybeBroadcastWatch: getWrapperInformation(this["maybeBroadcastWatch"]),
-        },
-        fragmentRegistry: {
-            findFragmentSpreads: getWrapperInformation(fragments?.findFragmentSpreads),
-            lookup: getWrapperInformation(fragments?.lookup),
-            transform: getWrapperInformation(fragments?.transform),
-        },
-    };
-}
-function isWrapper(f) {
-    return !!f && "dirtyKey" in f;
-}
-function getWrapperInformation(f) {
-    return isWrapper(f) ? f.size : undefined;
-}
-function isDefined(value) {
-    return value != null;
-}
-function transformInfo(transform) {
-    return recurseTransformInfo(transform).map((cache) => ({ cache }));
-}
-function recurseTransformInfo(transform) {
-    return transform ?
-        [
-            getWrapperInformation(transform?.["performWork"]),
-            ...recurseTransformInfo(transform?.["left"]),
-            ...recurseTransformInfo(transform?.["right"]),
-        ].filter(isDefined)
-        : [];
-}
-function linkInfo(link) {
-    return link ?
-        [
-            link?.getMemoryInternals?.(),
-            ...linkInfo(link?.left),
-            ...linkInfo(link?.right),
-        ].filter(isDefined)
-        : [];
-}
-//# sourceMappingURL=getMemoryInternals.js.map
-
-
-/***/ },
-
 /***/ 65369
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
@@ -61465,7 +61184,7 @@ function getOperationName(doc, fallback) {
 /* harmony export */   A: () => (/* binding */ getQueryDefinition)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(17592);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(59373);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _getOperationDefinition_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(65369);
@@ -61490,9 +61209,6 @@ function getQueryDefinition(doc) {
 /***/ 74230
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   o: () => (/* binding */ getStoreKeyName)
-/* harmony export */ });
 /* harmony import */ var _canonicalStringify_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(45094);
 
 const KNOWN_DIRECTIVES = [
@@ -61568,15 +61284,16 @@ const getStoreKeyName = Object.assign(function (fieldName, args, directives) {
 });
 //# sourceMappingURL=getStoreKeyName.js.map
 
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "o", 0, /* binding */ getStoreKeyName
+/* harmony export */ ]);
+
 
 /***/ },
 
 /***/ 17195
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
 /* harmony import */ var _maybe_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(43694);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (// We don't expect the Function constructor ever to be invoked at runtime, as
@@ -61592,6 +61309,10 @@ const getStoreKeyName = Object.assign(function (fieldName, args, directives) {
     return _maybe_js__WEBPACK_IMPORTED_MODULE_0__/* .maybe */ .n.constructor("return this")();
 }));
 //# sourceMappingURL=global.js.map
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "A", 0, /* export default binding */ __WEBPACK_DEFAULT_EXPORT__
+/* harmony export */ ]);
 
 
 /***/ },
@@ -61697,30 +61418,9 @@ function hasForcedResolvers(document) {
 
 /***/ },
 
-/***/ 28592
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   cM: () => (/* binding */ getInMemoryCacheMemoryInternals),
-/* harmony export */   ep: () => (/* binding */ getApolloClientMemoryInternals),
-/* harmony export */   tQ: () => (/* binding */ getApolloCacheMemoryInternals)
-/* harmony export */ });
-// eslint-disable-next-line no-restricted-syntax
-
-function unsupported() {
-    throw new Error("only supported in development mode");
-}
-const getApolloCacheMemoryInternals = (/* runtime-dependent pure expression or super */ /^(250|49|6|748|792|888)$/.test(__webpack_require__.j) ? (unsupported) : null), getApolloClientMemoryInternals = (/* runtime-dependent pure expression or super */ /^(250|49|6|748|792|888)$/.test(__webpack_require__.j) ? (unsupported) : null), getInMemoryCacheMemoryInternals = (/* runtime-dependent pure expression or super */ /^(250|49|6|748|792|888)$/.test(__webpack_require__.j) ? (unsupported) : null);
-//# sourceMappingURL=index.production.js.map
-
-/***/ },
-
 /***/ 16060
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   c: () => (/* binding */ isArray)
-/* harmony export */ });
 /**
 * A version of Array.isArray that works better with readonly arrays.
 *
@@ -61730,6 +61430,10 @@ const getApolloCacheMemoryInternals = (/* runtime-dependent pure expression or s
 */
 const isArray = Array.isArray;
 //# sourceMappingURL=isArray.js.map
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "c", 0, /* binding */ isArray
+/* harmony export */ ]);
 
 
 /***/ },
@@ -61860,53 +61564,13 @@ function makeUniqueId(prefix) {
 
 /***/ },
 
-/***/ 25086
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Q: () => (/* binding */ mapObservableFragmentMemoized)
-/* harmony export */ });
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(71530);
-/* harmony import */ var _memoize_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(62749);
-
-
-function mapObservableFragment(observable, mapFn) {
-    let currentResult;
-    let stableMappedResult;
-    function toMapped(result) {
-        if (result !== currentResult) {
-            currentResult = result;
-            stableMappedResult = mapFn(currentResult);
-        }
-        return stableMappedResult;
-    }
-    return Object.assign(observable.pipe((0,rxjs__WEBPACK_IMPORTED_MODULE_0__.map)(toMapped), (0,rxjs__WEBPACK_IMPORTED_MODULE_0__.shareReplay)({ bufferSize: 1, refCount: true })), {
-        getCurrentResult: () => toMapped(observable.getCurrentResult()),
-    });
-}
-const mapObservableFragmentMemoized = (0,_memoize_js__WEBPACK_IMPORTED_MODULE_1__/* .memoize */ .B)(function mapObservableFragmentMemoized(observable, 
-/**
- * used together with `observable` as memoization key, `mapFn` is explicitly not used as memoization key
- */
-_cacheKey, mapFn) {
-    return mapObservableFragment(observable, mapFn);
-}, { max: 1, makeCacheKey: (args) => args.slice(0, 2) });
-//# sourceMappingURL=mapObservableFragment.js.map
-
-/***/ },
-
 /***/ 59588
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   G: () => (/* binding */ maybeDeepFreeze)
 /* harmony export */ });
-if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(19896);
-}
-if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _deepFreeze_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(89968);
-}
+/* unused harmony import specifier */ var deepFreeze;
 
 
 /**
@@ -61915,8 +61579,8 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 * @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
 */
 function maybeDeepFreeze(obj) {
-    if (_apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_0__/* .__DEV__ */ .g) {
-        (0,_deepFreeze_js__WEBPACK_IMPORTED_MODULE_1__/* .deepFreeze */ .o)(obj);
+    if ((/* inlined export .__DEV__ */false)) {
+        deepFreeze(obj);
     }
     return obj;
 }
@@ -61931,7 +61595,9 @@ function maybeDeepFreeze(obj) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   B: () => (/* binding */ memoize)
 /* harmony export */ });
-/* harmony import */ var _wry_trie__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(57235);
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _wry_trie__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(57235);
+}
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _caches_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(96722);
 }
@@ -62044,7 +61710,7 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(92904);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17592);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(59373);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _checkDocument_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(81900);
@@ -62396,7 +62062,7 @@ function resultKeyNameFromField(field) {
 /* harmony export */   M: () => (/* binding */ shouldInclude)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(17592);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(59373);
 }
 
 /**
@@ -62491,34 +62157,6 @@ function storeKeyNameFromField(field, variables) {
 
 /***/ },
 
-/***/ 32051
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   p: () => (/* binding */ stringifyForDisplay)
-/* harmony export */ });
-if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _makeUniqueId_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(84837);
-}
-
-/**
-* @internal
-* 
-* @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
-*/
-function stringifyForDisplay(value, space = 0) {
-    const undefId = (0,_makeUniqueId_js__WEBPACK_IMPORTED_MODULE_0__/* .makeUniqueId */ .v)("stringifyForDisplay");
-    return JSON.stringify(value, (_, value) => {
-        return value === void 0 ? undefId : value;
-    }, space)
-        .split(JSON.stringify(undefId))
-        .join("<undefined>");
-}
-//# sourceMappingURL=stringifyForDisplay.js.map
-
-
-/***/ },
-
 /***/ 91283
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
@@ -62554,7 +62192,7 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7015);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(17592);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(59373);
 }
 
 
@@ -62601,18 +62239,40 @@ function valueToObjectRepresentation(argObj, name, value, variables) {
 
 /***/ },
 
-/***/ 17592
+/***/ 59373
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   V1: () => (/* binding */ invariant),
-/* harmony export */   vA: () => (/* binding */ newInvariantError)
-/* harmony export */ });
-/* unused harmony exports InvariantError, setVerbosity, ApolloErrorMessageHandler */
-/* harmony import */ var _apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(19896);
-/* harmony import */ var _apollo_client_utilities_internal_globals__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(17195);
-/* harmony import */ var _version_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(28876);
-/* harmony import */ var _internal_stringifyForDisplay_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(32051);
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  V1: () => (/* binding */ invariant),
+  vA: () => (/* binding */ newInvariantError)
+});
+
+// UNUSED EXPORTS: ApolloErrorMessageHandler, InvariantError, setVerbosity
+
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/globals/global.js
+var global = __webpack_require__(17195);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/makeUniqueId.js
+var makeUniqueId = __webpack_require__(84837);
+;// ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/stringifyForDisplay.js
+
+/**
+* @internal
+* 
+* @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
+*/
+function stringifyForDisplay(value, space = 0) {
+    const undefId = (0,makeUniqueId/* makeUniqueId */.v)("stringifyForDisplay");
+    return JSON.stringify(value, (_, value) => {
+        return value === void 0 ? undefId : value;
+    }, space)
+        .split(JSON.stringify(undefId))
+        .join("<undefined>");
+}
+//# sourceMappingURL=stringifyForDisplay.js.map
+
+;// ./node_modules/.pnpm/@apollo+client@4.2.3_graphql-ws@6.0.8_graphql@16.14.2_ws@8.20.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/utilities/invariant/index.js
 
 
 
@@ -62627,7 +62287,7 @@ class InvariantError extends Error {
     }
 }
 const verbosityLevels = ["debug", "log", "warn", "error", "silent"];
-let verbosityLevel = verbosityLevels.indexOf(_apollo_client_utilities_environment__WEBPACK_IMPORTED_MODULE_0__/* .__DEV__ */ .g ? "log" : "silent");
+let verbosityLevel = verbosityLevels.indexOf((/* inlined export .__DEV__ */false) ? "log" : "silent");
 function invariant(condition, ...args) {
     if (!condition) {
         throw newInvariantError(...args);
@@ -62675,13 +62335,13 @@ function newInvariantError(message, ...optionalParams) {
         getFallbackErrorMsg(message, optionalParams));
 }
 // This is duplicated between `@apollo/client/dev` and `@apollo/client/utilities/invariant` to prevent circular references.
-const ApolloErrorMessageHandler = Symbol.for("ApolloErrorMessageHandler_" + _version_js__WEBPACK_IMPORTED_MODULE_2__/* .version */ .r);
+const ApolloErrorMessageHandler = Symbol.for("ApolloErrorMessageHandler_" + (/* inlined export .version */"4.2.3"));
 function stringify(arg) {
     if (typeof arg == "string") {
         return arg;
     }
     try {
-        return (0,_internal_stringifyForDisplay_js__WEBPACK_IMPORTED_MODULE_3__/* .stringifyForDisplay */ .p)(arg, 2).slice(0, 1000);
+        return stringifyForDisplay(arg, 2).slice(0, 1000);
     }
     catch {
         return "<non-serializable>";
@@ -62690,8 +62350,8 @@ function stringify(arg) {
 function getHandledErrorMsg(message, messageArgs = []) {
     if (!message)
         return;
-    return (_apollo_client_utilities_internal_globals__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A[ApolloErrorMessageHandler] &&
-        _apollo_client_utilities_internal_globals__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A[ApolloErrorMessageHandler](message, messageArgs.map(stringify)));
+    return (global/* default */.A[ApolloErrorMessageHandler] &&
+        global/* default */.A[ApolloErrorMessageHandler](message, messageArgs.map(stringify)));
 }
 function getFallbackErrorMsg(message, messageArgs = []) {
     if (!message)
@@ -62700,7 +62360,7 @@ function getFallbackErrorMsg(message, messageArgs = []) {
         return messageArgs.reduce((msg, arg) => msg.replace(/%[sdfo]/, stringify(arg)), message);
     }
     return `An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#${encodeURIComponent(JSON.stringify({
-        version: _version_js__WEBPACK_IMPORTED_MODULE_2__/* .version */ .r,
+        version: (/* inlined export .version */"4.2.3"),
         message,
         args: messageArgs.map(stringify),
     }))}`;
@@ -62747,26 +62407,11 @@ function isNetworkRequestSettled(networkStatus) {
 
 /***/ },
 
-/***/ 28876
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   r: () => (/* binding */ version)
-/* harmony export */ });
-/* unused harmony export build */
-const version = "4.2.3";
-const build = "esm";
-//# sourceMappingURL=version.js.map
-
-
-/***/ },
-
 /***/ 26462
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (/* binding */ EntityDecoder),
-/* harmony export */   H: () => (/* binding */ ENTITY_ACTION)
+/* harmony export */   A: () => (/* binding */ EntityDecoder)
 /* harmony export */ });
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _entities_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(70968);
@@ -63415,17 +63060,16 @@ class EntityDecoder {
     return this._applyNCRAction(effective, token, cp);
   }
 }
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "H", 0, /* binding */ ENTITY_ACTION
+/* harmony export */ ]);
+
 
 /***/ },
 
 /***/ 70968
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   KS: () => (/* binding */ COMMON_HTML),
-/* harmony export */   UM: () => (/* binding */ CURRENCY),
-/* harmony export */   _9: () => (/* binding */ XML)
-/* harmony export */ });
 /* unused harmony exports BASIC_LATIN, LATIN_ACCENTS, LATIN_EXTENDED, GREEK, CYRILLIC, MATH, MATH_ADVANCED, ARROWS, SHAPES, PUNCTUATION, FRACTIONS, MISC_SYMBOLS, ALL_ENTITIES */
 // ---------------------------------------------------------------------------
 // Complete HTML5 named entity reference
@@ -64586,6 +64230,12 @@ const COMMON_HTML = (/* runtime-dependent pure expression or super */ /^(245|367
 // Note: NUMERIC_ENTITIES (&#NNN; / &#xHH;) are handled by the scanner directly
 // via String.fromCodePoint() without any map lookup.
 // ---------------------------------------------------------------------------
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "KS", 0, /* binding */ COMMON_HTML,
+/* harmony export */   "UM", 0, /* binding */ CURRENCY,
+/* harmony export */   "_9", 0, /* binding */ XML
+/* harmony export */ ]);
+
 
 /***/ },
 
@@ -66160,9 +65810,6 @@ function isObjRef(value) {
 /***/ 26681
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   l: () => (/* binding */ balanced)
-/* harmony export */ });
 /* unused harmony export range */
 const balanced = (a, b, str) => {
     const ma = a instanceof RegExp ? maybeMatch(a, str) : a;
@@ -66218,6 +65865,75 @@ const range = (a, b, str) => {
     return result;
 };
 //# sourceMappingURL=index.js.map
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "l", 0, /* binding */ balanced
+/* harmony export */ ]);
+
+
+/***/ },
+
+/***/ 95000
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+if (/^(250|49|6|748|792|888|99)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _lib_register_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(43347);
+}
+if (/^(250|49|6|748|792|888|99)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _lib_add_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(85471);
+}
+if (/^(250|49|6|748|792|888|99)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _lib_remove_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(51794);
+}
+// @ts-check
+
+
+
+
+
+// bind with array of arguments: https://stackoverflow.com/a/21792913
+const bind = Function.bind;
+const bindable = bind.bind(bind);
+
+function bindApi(hook, state, name) {
+  const removeHookRef = bindable(_lib_remove_js__WEBPACK_IMPORTED_MODULE_2__/* .removeHook */ .S, null).apply(
+    null,
+    name ? [state, name] : [state]
+  );
+  hook.api = { remove: removeHookRef };
+  hook.remove = removeHookRef;
+  ["before", "error", "after", "wrap"].forEach((kind) => {
+    const args = name ? [state, kind, name] : [state, kind];
+    hook[kind] = hook.api[kind] = bindable(_lib_add_js__WEBPACK_IMPORTED_MODULE_1__/* .addHook */ .$, null).apply(null, args);
+  });
+}
+
+function Singular() {
+  const singularHookName = Symbol("Singular");
+  const singularHookState = {
+    registry: {},
+  };
+  const singularHook = _lib_register_js__WEBPACK_IMPORTED_MODULE_0__/* .register */ .k.bind(null, singularHookState, singularHookName);
+  bindApi(singularHook, singularHookState, singularHookName);
+  return singularHook;
+}
+
+function Collection() {
+  const state = {
+    registry: {},
+  };
+
+  const hook = _lib_register_js__WEBPACK_IMPORTED_MODULE_0__/* .register */ .k.bind(null, state);
+  bindApi(hook, state);
+
+  return hook;
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((/* runtime-dependent pure expression or super */ /^(250|49|6|748|792|888|99)$/.test(__webpack_require__.j) ? ({ Singular, Collection }) : null));
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "A", 0, /* export default binding */ __WEBPACK_DEFAULT_EXPORT__
+/* harmony export */ ]);
+
 
 /***/ },
 
@@ -66374,10 +66090,7 @@ function getIgnoreAttributesFn(ignoreAttributes) {
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Eo: () => (/* binding */ isName),
 /* harmony export */   Xe: () => (/* binding */ getAllMatches),
-/* harmony export */   q9: () => (/* binding */ DANGEROUS_PROPERTY_NAMES),
-/* harmony export */   vl: () => (/* binding */ criticalProperties),
 /* harmony export */   yQ: () => (/* binding */ isExist)
 /* harmony export */ });
 /* unused harmony exports nameRegexp, isEmptyObject, getValue */
@@ -66442,6 +66155,12 @@ const DANGEROUS_PROPERTY_NAMES = (/* runtime-dependent pure expression or super 
 ]) : null);
 
 const criticalProperties = (/* runtime-dependent pure expression or super */ /^(245|367|390)$/.test(__webpack_require__.j) ? (["__proto__", "constructor", "prototype"]) : null);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "Eo", 0, /* binding */ isName,
+/* harmony export */   "q9", 0, /* binding */ DANGEROUS_PROPERTY_NAMES,
+/* harmony export */   "vl", 0, /* binding */ criticalProperties
+/* harmony export */ ]);
+
 
 /***/ },
 
@@ -66883,287 +66602,15 @@ function getPositionFromMatch(match) {
 
 /***/ },
 
-/***/ 83866
+/***/ 99526
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  A: () => (/* binding */ DocTypeReader)
-});
-
-;// ./node_modules/.pnpm/xml-naming@0.1.0/node_modules/xml-naming/src/index.js
-/**
- * xml-naming
- * Validates XML Name productions as defined in the XML 1.0 and 1.1 specifications.
- * Covers: Name, NCName, QName, NMToken, NMTokens
- *
- * XML 1.0 spec: https://www.w3.org/TR/xml/#NT-Name
- * XML 1.1 spec: https://www.w3.org/TR/xml11/#NT-NameStartChar
- * XML NS spec:  https://www.w3.org/TR/xml-names/#NT-NCName
- */
-
-// ---------------------------------------------------------------------------
-// Character class strings — XML 1.0
-//
-// NameStartChar ::= ":" | [A-Z] | "_" | [a-z]
-//   | [#xC0-#xD6]   | [#xD8-#xF6]   | [#xF8-#x2FF]
-//   | [#x370-#x37D] | [#x37F-#x1FFF]    <- split to exclude #x0487
-//   | [#x200C-#x200D]
-//   | [#x2070-#x218F] | [#x2C00-#x2FEF]
-//   | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD]
-//
-// NameChar ::= NameStartChar | "-" | "." | [0-9]
-//   | #xB7 | [#x0300-#x036F] | [#x203F-#x2040]
-//
-// Note: \u0487 (Combining Cyrillic Millions Sign) was added in Unicode 4.0,
-// after XML 1.0 was defined against Unicode 2.0. It falls inside the range
-// \u037F-\u1FFF but must be excluded. We split that range into
-// \u037F-\u0486 and \u0488-\u1FFF to exclude it explicitly.
-// ---------------------------------------------------------------------------
-
-const nameStartChar10 =
-  ':A-Za-z_' +
-  '\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF' +
-  '\u0370-\u037D' +
-  '\u037F-\u0486\u0488-\u1FFF' +  // split to exclude \u0487
-  '\u200C-\u200D' +
-  '\u2070-\u218F' +
-  '\u2C00-\u2FEF' +
-  '\u3001-\uD7FF' +
-  '\uF900-\uFDCF' +
-  '\uFDF0-\uFFFD';
-
-const nameChar10 =
-  nameStartChar10 +
-  '\\-\\.\\d' +
-  '\u00B7' +
-  '\u0300-\u036F' +
-  '\u203F-\u2040';
-
-// ---------------------------------------------------------------------------
-// Character class strings — XML 1.1
-//
-// Differences from XML 1.0:
-//
-// NameStartChar:
-//   1.0 has split ranges: \u00C0-\u00D6, \u00D8-\u00F6, \u00F8-\u02FF
-//   1.1 merges them into: \u00C0-\u02FF
-//   (\u00D7 x and \u00F7 / are division symbols, excluded in both versions)
-//
-//   1.0 tops out at \uFFFD (BMP only)
-//   1.1 adds \u{10000}-\u{EFFFF} (supplementary planes)
-//   These require the /u flag on the RegExp — see buildRegexes below.
-//
-// NameChar:
-//   1.1 adds \u0487 (Combining Cyrillic Millions Sign, added in Unicode 4.0)
-// ---------------------------------------------------------------------------
-
-const nameStartChar11 =
-  ':A-Za-z_' +
-  '\u00C0-\u02FF' +                    // merged — 1.0 had three split ranges here
-  '\u0370-\u037D' +
-  '\u037F-\u0486\u0488-\u1FFF' +       // split to exclude \u0487 (combining mark, never a NameStartChar)
-  '\u200C-\u200D' +
-  '\u2070-\u218F' +
-  '\u2C00-\u2FEF' +
-  '\u3001-\uD7FF' +
-  '\uF900-\uFDCF' +
-  '\uFDF0-\uFFFD' +
-  '\u{10000}-\u{EFFFF}';     // supplementary planes — REQUIRES /u flag on RegExp
-
-const nameChar11 =
-  nameStartChar11 +
-  '\\-\\.\\d' +
-  '\u00B7' +
-  '\u0300-\u036F' +
-  '\u0487' +                 // Combining Cyrillic Millions Sign — valid in 1.1, not 1.0
-  '\u203F-\u2040';
-
-// ---------------------------------------------------------------------------
-// Regex builders
-//
-// XML 1.0 regexes: no flags — BMP only, standard JS regex behaviour.
-// XML 1.1 regexes: /u flag — required for \u{10000}-\u{EFFFF} to match actual
-//   supplementary code points rather than lone surrogates (which are illegal XML).
-// ---------------------------------------------------------------------------
-
-const buildRegexes = (startChar, char, flags = '') => {
-  const ncStart = startChar.replace(':', '');
-  const ncChar = char.replace(':', '');
-  const ncNamePat = `[${ncStart}][${ncChar}]*`;
-
-  return {
-    name: new RegExp(`^[${startChar}][${char}]*$`, flags),
-    ncName: new RegExp(`^${ncNamePat}$`, flags),
-    qName: new RegExp(`^${ncNamePat}(?::${ncNamePat})?$`, flags),
-    nmToken: new RegExp(`^[${char}]+$`, flags),
-    nmTokens: new RegExp(`^[${char}]+(?:\\s+[${char}]+)*$`, flags),
-  };
-};
-
-const regexes10 = buildRegexes(nameStartChar10, nameChar10);       // no /u — BMP only
-const regexes11 = buildRegexes(nameStartChar11, nameChar11, 'u');  // /u — enables \u{10000}-\u{EFFFF}
-
-const getRegexes = (xmlVersion = '1.0') =>
-  xmlVersion === '1.1' ? regexes11 : regexes10;
-
-// ---------------------------------------------------------------------------
-// Boolean validators
-// ---------------------------------------------------------------------------
-
-/**
- * Returns true if the string is a valid XML Name.
- * Colons are allowed anywhere (Name production).
- * Used for: DOCTYPE entity names, notation names, DTD element declarations.
- */
-const src_name = (str, { xmlVersion = '1.0' } = {}) =>
-  getRegexes(xmlVersion).name.test(str);
-
-/**
- * Returns true if the string is a valid NCName (Non-Colonized Name).
- * Colons are not permitted.
- * Used for: namespace prefixes, local names, SVG id attributes.
- */
-const ncName = (str, { xmlVersion = '1.0' } = {}) =>
-  getRegexes(xmlVersion).ncName.test(str);
-
-/**
- * Returns true if the string is a valid QName (Qualified Name).
- * Allows exactly one colon as a prefix separator: prefix:localName.
- * Used for: element and attribute names in namespace-aware XML/SVG.
- */
-const qName = (str, { xmlVersion = '1.0' } = {}) =>
-  getRegexes(xmlVersion).qName.test(str);
-
-/**
- * Returns true if the string is a valid NMToken.
- * Like Name but no restriction on the first character.
- * Used for: DTD NMTOKEN attribute values.
- */
-const nmToken = (str, { xmlVersion = '1.0' } = {}) =>
-  getRegexes(xmlVersion).nmToken.test(str);
-
-/**
- * Returns true if the string is a valid NMTokens value.
- * A whitespace-separated list of NMToken values.
- * Used for: DTD NMTOKENS attribute values.
- */
-const nmTokens = (str, { xmlVersion = '1.0' } = {}) =>
-  getRegexes(xmlVersion).nmTokens.test(str);
-
-// ---------------------------------------------------------------------------
-// Diagnostic validator
-// ---------------------------------------------------------------------------
-
-const PRODUCTIONS = (/* unused pure expression or super */ null && (['name', 'ncName', 'qName', 'nmToken', 'nmTokens']));
-
-/**
- * Validates a string against a named production and returns a detailed result.
- *
- * @param {string} str
- * @param {'name'|'ncName'|'qName'|'nmToken'|'nmTokens'} production
- * @param {{ xmlVersion?: '1.0'|'1.1' }} [opts]
- * @returns {{ valid: boolean, production: string, input: string, reason?: string, position?: number }}
- */
-const validate = (str, production, { xmlVersion = '1.0' } = {}) => {
-  if (!PRODUCTIONS.includes(production)) {
-    throw new TypeError(
-      `Unknown production "${production}". Must be one of: ${PRODUCTIONS.join(', ')}`
-    );
-  }
-
-  const validators = { name: src_name, ncName, qName, nmToken, nmTokens };
-  const isValid = validators[production](str, { xmlVersion });
-
-  if (isValid) return { valid: true, production, input: str };
-
-  let reason = 'Does not match the production rules';
-  let position;
-
-  if (str.length === 0) {
-    reason = 'Input is empty';
-  } else if (production === 'ncName' && str.includes(':')) {
-    position = str.indexOf(':');
-    reason = 'Colon is not allowed in NCName';
-  } else if (production === 'qName' && str.startsWith(':')) {
-    reason = 'QName cannot start with a colon';
-    position = 0;
-  } else if (production === 'qName' && str.endsWith(':')) {
-    reason = 'QName cannot end with a colon';
-    position = str.length - 1;
-  } else if (production === 'qName' && (str.match(/:/g) || []).length > 1) {
-    reason = 'QName can have at most one colon';
-    position = str.lastIndexOf(':');
-  } else if (
-    ['name', 'ncName', 'qName'].includes(production) &&
-    !/^[:A-Za-z_\u00C0-\uFFFD]/.test(str[0])
-  ) {
-    reason = `First character "${str[0]}" is not a valid NameStartChar`;
-    position = 0;
-  } else {
-    for (let i = 0; i < str.length; i++) {
-      if (!/[\w\-\\.:\u00B7\u00C0-\uFFFD]/.test(str[i])) {
-        reason = `Character "${str[i]}" at position ${i} is not a valid NameChar`;
-        position = i;
-        break;
-      }
-    }
-  }
-
-  return { valid: false, production, input: str, reason, position };
-};
-
-// ---------------------------------------------------------------------------
-// Batch validator
-// ---------------------------------------------------------------------------
-
-/**
- * Validates an array of strings against a named production.
- *
- * @param {string[]} strings
- * @param {'name'|'ncName'|'qName'|'nmToken'|'nmTokens'} production
- * @param {{ xmlVersion?: '1.0'|'1.1' }} [opts]
- * @returns {Array<{ valid: boolean, production: string, input: string, reason?: string, position?: number }>}
- */
-const validateAll = (strings, production, opts = {}) =>
-  strings.map(str => validate(str, production, opts));
-
-// ---------------------------------------------------------------------------
-// Sanitizer
-// ---------------------------------------------------------------------------
-
-/**
- * Transforms an invalid string into the nearest valid XML name for the given production.
- *
- * @param {string} str
- * @param {'name'|'ncName'|'qName'|'nmToken'|'nmTokens'} production
- * @param {{ replacement?: string }} [opts]
- * @returns {string}
- */
-const sanitize = (str, production = 'name', { replacement = '_' } = {}) => {
-  if (!str) return replacement;
-
-  let result = str;
-
-  // Strip colons for NCName
-  if (production === 'ncName') {
-    result = result.replace(/:/g, '');
-  }
-
-  // Replace illegal characters
-  result = result.replace(/[^\w\-\.:\u00B7\u00C0-\uFFFD]/g, replacement);
-
-  // Fix invalid start character for Name / NCName / QName
-  if (production !== 'nmToken' && production !== 'nmTokens') {
-    if (/^[\-\.\d]/.test(result)) {
-      result = replacement + result;
-    }
-  }
-
-  return result || replacement;
-};
-;// ./node_modules/.pnpm/fast-xml-parser@5.9.3/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (/* binding */ DocTypeReader)
+/* harmony export */ });
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var xml_naming__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(88250);
+}
 
 
 class DocTypeReader {
@@ -67396,7 +66843,7 @@ class DocTypeReader {
         let elementName = xmlData.substring(startIndex, i);
 
         // Validate element name
-        if (!this.suppressValidationErr && !qName(elementName, { xmlVersion: this.xmlVersion })) {
+        if (!this.suppressValidationErr && !(0,xml_naming__WEBPACK_IMPORTED_MODULE_0__/* .qName */ .fG)(elementName, { xmlVersion: this.xmlVersion })) {
             throw new Error(`Invalid element name: "${elementName}"`);
         }
 
@@ -67570,7 +67017,7 @@ function hasSeq(data, seq, i) {
 }
 
 function validateEntityName(name, xmlVersion) {
-    if (qName(name, { xmlVersion: xmlVersion }))
+    if ((0,xml_naming__WEBPACK_IMPORTED_MODULE_0__/* .qName */ .fG)(name, { xmlVersion: xmlVersion }))
         return name;
     else
         throw new Error(`Invalid entity name ${name}`);
@@ -67581,9 +67028,6 @@ function validateEntityName(name, xmlVersion) {
 /***/ 34374
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   D: () => (/* binding */ buildOptions)
-/* harmony export */ });
 /* unused harmony export defaultOptions */
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(62960);
@@ -67752,462 +67196,2677 @@ const buildOptions = function (options) {
   //console.debug(built.processEntities)
   return built;
 };
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "D", 0, /* binding */ buildOptions
+/* harmony export */ ]);
+
 
 /***/ },
 
-/***/ 4756
+/***/ 97918
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (/* binding */ OrderedObjParser)
+/* harmony export */ });
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(62960);
+}
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _xmlNode_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(45062);
+}
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _DocTypeReader_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(99526);
+}
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var strnum__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(19580);
+}
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _ignoreAttributes_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(203);
+}
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var path_expression_matcher__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(43684);
+}
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var path_expression_matcher__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(96334);
+}
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var path_expression_matcher__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(60070);
+}
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _nodable_entities__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(26462);
+}
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _nodable_entities__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(70968);
+}
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var is_unsafe__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(61985);
+}
+
+///@ts-check
+
+
+
+
+
+
+
+
+
+
+
+
+// const regx =
+//   '<((!\\[CDATA\\[([\\s\\S]*?)(]]>))|((NAME:)?(NAME))([^>]*)>|((\\/)(NAME)\\s*>))([^<]*)'
+//   .replace(/NAME/g, util.nameRegexp);
+
+//const tagsRegx = new RegExp("<(\\/?[\\w:\\-\._]+)([^>]*)>(\\s*"+cdataRegx+")*([^<]+)?","g");
+//const tagsRegx = new RegExp("<(\\/?)((\\w*:)?([\\w:\\-\._]+))([^>]*)>([^<]*)("+cdataRegx+"([^<]*))*([^<]+)?","g");
+
+// Helper functions for attribute and namespace handling
+
+/**
+ * Extract raw attributes (without prefix) from prefixed attribute map
+ * @param {object} prefixedAttrs - Attributes with prefix from buildAttributesMap
+ * @param {object} options - Parser options containing attributeNamePrefix
+ * @returns {object} Raw attributes for matcher
+ */
+function extractRawAttributes(prefixedAttrs, options) {
+  if (!prefixedAttrs) return {};
+
+  // Handle attributesGroupName option
+  const attrs = options.attributesGroupName
+    ? prefixedAttrs[options.attributesGroupName]
+    : prefixedAttrs;
+
+  if (!attrs) return {};
+
+  const rawAttrs = {};
+  for (const key in attrs) {
+    // Remove the attribute prefix to get raw name
+    if (key.startsWith(options.attributeNamePrefix)) {
+      const rawName = key.substring(options.attributeNamePrefix.length);
+      rawAttrs[rawName] = attrs[key];
+    } else {
+      // Attribute without prefix (shouldn't normally happen, but be safe)
+      rawAttrs[key] = attrs[key];
+    }
+  }
+  return rawAttrs;
+}
+
+/**
+ * Extract namespace from raw tag name
+ * @param {string} rawTagName - Tag name possibly with namespace (e.g., "soap:Envelope")
+ * @returns {string|undefined} Namespace or undefined
+ */
+function extractNamespace(rawTagName) {
+  if (!rawTagName || typeof rawTagName !== 'string') return undefined;
+
+  const colonIndex = rawTagName.indexOf(':');
+  if (colonIndex !== -1 && colonIndex > 0) {
+    const ns = rawTagName.substring(0, colonIndex);
+    // Don't treat xmlns as a namespace
+    if (ns !== 'xmlns') {
+      return ns;
+    }
+  }
+  return undefined;
+}
+
+class OrderedObjParser {
+  constructor(options, externalEntities) {
+    this.options = options;
+    this.currentNode = null;
+    this.tagsNodeStack = [];
+    this.parseXml = parseXml;
+    this.parseTextData = parseTextData;
+    this.resolveNameSpace = resolveNameSpace;
+    this.buildAttributesMap = buildAttributesMap;
+    this.isItStopNode = isItStopNode;
+    this.replaceEntitiesValue = replaceEntitiesValue;
+    this.readStopNodeData = readStopNodeData;
+    this.saveTextToParentTag = saveTextToParentTag;
+    this.addChild = addChild;
+    this.ignoreAttributesFn = (0,_ignoreAttributes_js__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .A)(this.options.ignoreAttributes)
+    this.entityExpansionCount = 0;
+    this.currentExpandedLength = 0;
+    let namedEntities = { ..._nodable_entities__WEBPACK_IMPORTED_MODULE_9__/* .XML */ ._9 };
+    if (this.options.entityDecoder) {
+      this.entityDecoder = this.options.entityDecoder
+    } else {
+      if (typeof this.options.htmlEntities === "object") namedEntities = this.options.htmlEntities;
+      else if (this.options.htmlEntities === true) namedEntities = { ..._nodable_entities__WEBPACK_IMPORTED_MODULE_9__/* .COMMON_HTML */ .KS, ..._nodable_entities__WEBPACK_IMPORTED_MODULE_9__/* .CURRENCY */ .UM };
+      this.entityDecoder = new _nodable_entities__WEBPACK_IMPORTED_MODULE_8__/* ["default"] */ .A({
+        namedEntities: { ...namedEntities, ...externalEntities },
+        numericAllowed: this.options.htmlEntities,
+        limit: {
+          maxTotalExpansions: this.options.processEntities.maxTotalExpansions,
+          maxExpandedLength: this.options.processEntities.maxExpandedLength,
+          applyLimitsTo: this.options.processEntities.appliesTo,
+        },
+        // onExternalEntity: (name, value) => isUnsafe(value) ? 'block' : 'allow',
+        onInputEntity: (name, value) =>
+          //TODO: VALID_CONTEXTS.HTML should be set only if this.options.htmlEntities
+          (0,is_unsafe__WEBPACK_IMPORTED_MODULE_10__/* .isUnsafe */ .zk)(value, [is_unsafe__WEBPACK_IMPORTED_MODULE_10__/* .VALID_CONTEXTS */ .Em.HTML, is_unsafe__WEBPACK_IMPORTED_MODULE_10__/* .VALID_CONTEXTS */ .Em.XML])
+            ? _nodable_entities__WEBPACK_IMPORTED_MODULE_8__/* .ENTITY_ACTION */ .H.BLOCK : _nodable_entities__WEBPACK_IMPORTED_MODULE_8__/* .ENTITY_ACTION */ .H.ALLOW,
+
+        //postCheck: resolved => resolved
+      });
+    }
+
+    // Initialize path matcher for path-expression-matcher
+    this.matcher = new path_expression_matcher__WEBPACK_IMPORTED_MODULE_6__/* ["default"] */ .A();
+    this.readonlyMatcher = this.matcher.readOnly();
+
+    // Flag to track if current node is a stop node (optimization)
+    this.isCurrentNodeStopNode = false;
+
+    // Pre-compile stopNodes expressions
+    this.stopNodeExpressionsSet = new path_expression_matcher__WEBPACK_IMPORTED_MODULE_7__/* ["default"] */ .A();
+    const stopNodesOpts = this.options.stopNodes;
+    if (stopNodesOpts && stopNodesOpts.length > 0) {
+      for (let i = 0; i < stopNodesOpts.length; i++) {
+        const stopNodeExp = stopNodesOpts[i];
+        if (typeof stopNodeExp === 'string') {
+          // Convert string to Expression object
+          this.stopNodeExpressionsSet.add(new path_expression_matcher__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .A(stopNodeExp));
+        } else if (stopNodeExp instanceof path_expression_matcher__WEBPACK_IMPORTED_MODULE_5__/* ["default"] */ .A) {
+          // Already an Expression object
+          this.stopNodeExpressionsSet.add(stopNodeExp);
+        }
+      }
+      this.stopNodeExpressionsSet.seal();
+    }
+  }
+
+}
+
+
+/**
+ * @param {string} val
+ * @param {string} tagName
+ * @param {string|Matcher} jPath - jPath string or Matcher instance based on options.jPath
+ * @param {boolean} dontTrim
+ * @param {boolean} hasAttributes
+ * @param {boolean} isLeafNode
+ * @param {boolean} escapeEntities
+ */
+function parseTextData(val, tagName, jPath, dontTrim, hasAttributes, isLeafNode, escapeEntities) {
+  const options = this.options;
+  if (val !== undefined) {
+    if (options.trimValues && !dontTrim) {
+      val = val.trim();
+    }
+    if (val.length > 0) {
+      if (!escapeEntities) val = this.replaceEntitiesValue(val, tagName, jPath);
+
+      // Pass jPath string or matcher based on options.jPath setting
+      const jPathOrMatcher = options.jPath ? jPath.toString() : jPath;
+      const newval = options.tagValueProcessor(tagName, val, jPathOrMatcher, hasAttributes, isLeafNode);
+      if (newval === null || newval === undefined) {
+        //don't parse
+        return val;
+      } else if (typeof newval !== typeof val || newval !== val) {
+        //overwrite
+        return newval;
+      } else if (options.trimValues) {
+        return parseValue(val, options.parseTagValue, options.numberParseOptions);
+      } else {
+        const trimmedVal = val.trim();
+        if (trimmedVal === val) {
+          return parseValue(val, options.parseTagValue, options.numberParseOptions);
+        } else {
+          return val;
+        }
+      }
+    }
+  }
+}
+
+function resolveNameSpace(tagname) {
+  if (this.options.removeNSPrefix) {
+    const tags = tagname.split(':');
+    const prefix = tagname.charAt(0) === '/' ? '/' : '';
+    if (tags[0] === 'xmlns') {
+      return '';
+    }
+    if (tags.length === 2) {
+      tagname = prefix + tags[1];
+    }
+  }
+  return tagname;
+}
+
+//TODO: change regex to capture NS
+//const attrsRegx = new RegExp("([\\w\\-\\.\\:]+)\\s*=\\s*(['\"])((.|\n)*?)\\2","gm");
+const attrsRegx = new RegExp('([^\\s=]+)\\s*(=\\s*([\'"])([\\s\\S]*?)\\3)?', 'gm');
+
+function buildAttributesMap(attrStr, jPath, tagName, force = false) {
+  const options = this.options;
+  if (force === true || (options.ignoreAttributes !== true && typeof attrStr === 'string')) {
+    // attrStr = attrStr.replace(/\r?\n/g, ' ');
+    //attrStr = attrStr || attrStr.trim();
+
+    const matches = (0,_util_js__WEBPACK_IMPORTED_MODULE_0__/* .getAllMatches */ .Xe)(attrStr, attrsRegx);
+    const len = matches.length; //don't make it inline
+    const attrs = {};
+
+    // Pre-process values once: trim + entity replacement
+    // Reused in both matcher update and second pass
+    const processedVals = new Array(len);
+    let hasRawAttrs = false;
+    const rawAttrsForMatcher = {};
+
+    for (let i = 0; i < len; i++) {
+      const attrName = this.resolveNameSpace(matches[i][1]);
+      const oldVal = matches[i][4];
+
+      if (attrName.length && oldVal !== undefined) {
+        let val = oldVal;
+        if (options.trimValues) val = val.trim();
+        val = this.replaceEntitiesValue(val, tagName, this.readonlyMatcher);
+        processedVals[i] = val;
+
+        rawAttrsForMatcher[attrName] = val;
+        hasRawAttrs = true;
+      }
+    }
+
+    // Update matcher ONCE before second pass, if applicable
+    if (hasRawAttrs && typeof jPath === 'object' && jPath.updateCurrent) {
+      jPath.updateCurrent(rawAttrsForMatcher);
+    }
+
+    // Hoist toString() once — path doesn't change during attribute processing
+    const jPathStr = options.jPath ? jPath.toString() : this.readonlyMatcher;
+
+    // Second pass: apply processors, build final attrs
+    let hasAttrs = false;
+    for (let i = 0; i < len; i++) {
+      const attrName = this.resolveNameSpace(matches[i][1]);
+
+      if (this.ignoreAttributesFn(attrName, jPathStr)) continue;
+
+      let aName = options.attributeNamePrefix + attrName;
+
+      if (attrName.length) {
+        if (options.transformAttributeName) {
+          aName = options.transformAttributeName(aName);
+        }
+        aName = sanitizeName(aName, options);
+
+        if (matches[i][4] !== undefined) {
+          // Reuse already-processed value — no double entity replacement
+          const oldVal = processedVals[i];
+
+          const newVal = options.attributeValueProcessor(attrName, oldVal, jPathStr);
+          if (newVal === null || newVal === undefined) {
+            attrs[aName] = oldVal;
+          } else if (typeof newVal !== typeof oldVal || newVal !== oldVal) {
+            attrs[aName] = newVal;
+          } else {
+            attrs[aName] = parseValue(oldVal, options.parseAttributeValue, options.numberParseOptions);
+          }
+          hasAttrs = true;
+        } else if (options.allowBooleanAttributes) {
+          attrs[aName] = true;
+          hasAttrs = true;
+        }
+      }
+    }
+
+    if (!hasAttrs) return;
+
+    if (options.attributesGroupName && !options.preserveOrder) {
+      const attrCollection = {};
+      attrCollection[options.attributesGroupName] = attrs;
+      return attrCollection;
+    }
+    return attrs;
+  }
+}
+const parseXml = function (xmlData) {
+  xmlData = xmlData.replace(/\r\n?/g, "\n"); //TODO: remove this line
+  const xmlObj = new _xmlNode_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A('!xml');
+  let currentNode = xmlObj;
+  let textData = "";
+
+  // Reset matcher for new document
+  this.matcher.reset();
+  this.entityDecoder.reset();
+
+  // Reset entity expansion counters for this document
+  this.entityExpansionCount = 0;
+  this.currentExpandedLength = 0;
+  const options = this.options;
+  const docTypeReader = new _DocTypeReader_js__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A(options.processEntities);
+  const xmlLen = xmlData.length;
+  for (let i = 0; i < xmlLen; i++) {//for each char in XML data
+    const ch = xmlData[i];
+    if (ch === '<') {
+      // const nextIndex = i+1;
+      // const _2ndChar = xmlData[nextIndex];
+      const c1 = xmlData.charCodeAt(i + 1);
+      if (c1 === 47) {//Closing Tag '/'
+        const closeIndex = findClosingIndex(xmlData, ">", i, "Closing Tag is not closed.")
+        let tagName = xmlData.substring(i + 2, closeIndex).trim();
+
+        if (options.removeNSPrefix) {
+          const colonIndex = tagName.indexOf(":");
+          if (colonIndex !== -1) {
+            tagName = tagName.substr(colonIndex + 1);
+          }
+        }
+
+        tagName = transformTagName(options.transformTagName, tagName, "", options).tagName;
+
+        if (currentNode) {
+          textData = this.saveTextToParentTag(textData, currentNode, this.readonlyMatcher);
+        }
+
+        //check if last tag of nested tag was unpaired tag
+        const lastTagName = this.matcher.getCurrentTag();
+        if (tagName && options.unpairedTagsSet.has(tagName)) {
+          throw new Error(`Unpaired tag can not be used as closing tag: </${tagName}>`);
+        }
+        if (lastTagName && options.unpairedTagsSet.has(lastTagName)) {
+          // Pop the unpaired tag
+          this.matcher.pop();
+          this.tagsNodeStack.pop();
+        }
+        // Pop the closing tag
+        this.matcher.pop();
+        this.isCurrentNodeStopNode = false; // Reset flag when closing tag
+
+        currentNode = this.tagsNodeStack.pop();//avoid recursion, set the parent tag scope
+        textData = "";
+        i = closeIndex;
+      } else if (c1 === 63) { //'?'
+
+        let tagData = readTagExp(xmlData, i, false, "?>");
+        if (!tagData) throw new Error("Pi Tag is not closed.");
+
+        textData = this.saveTextToParentTag(textData, currentNode, this.readonlyMatcher);
+        const attsMap = this.buildAttributesMap(tagData.tagExp, this.matcher, tagData.tagName, true);
+        if (attsMap) {
+          const ver = attsMap[this.options.attributeNamePrefix + "version"];
+          this.entityDecoder.setXmlVersion(Number(ver) || 1.0);
+          docTypeReader.setXmlVersion(Number(ver) || 1.0);
+        }
+        if ((options.ignoreDeclaration && tagData.tagName === "?xml") || options.ignorePiTags) {
+          //do nothing
+        } else {
+
+          const childNode = new _xmlNode_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A(tagData.tagName);
+          childNode.add(options.textNodeName, "");
+
+          if (tagData.tagName !== tagData.tagExp && tagData.attrExpPresent && options.ignoreAttributes !== true) {
+            childNode[":@"] = attsMap
+          }
+          this.addChild(currentNode, childNode, this.readonlyMatcher, i);
+        }
+
+
+        i = tagData.closeIndex + 1;
+      } else if (c1 === 33
+        && xmlData.charCodeAt(i + 2) === 45
+        && xmlData.charCodeAt(i + 3) === 45) { //'!--'
+        const endIndex = findClosingIndex(xmlData, "-->", i + 4, "Comment is not closed.")
+        if (options.commentPropName) {
+          const comment = xmlData.substring(i + 4, endIndex - 2);
+
+          textData = this.saveTextToParentTag(textData, currentNode, this.readonlyMatcher);
+
+          currentNode.add(options.commentPropName, [{ [options.textNodeName]: comment }]);
+        }
+        i = endIndex;
+      } else if (c1 === 33
+        && xmlData.charCodeAt(i + 2) === 68) { //'!D'
+        const result = docTypeReader.readDocType(xmlData, i);
+        this.entityDecoder.addInputEntities(result.entities);
+        i = result.i;
+      } else if (c1 === 33
+        && xmlData.charCodeAt(i + 2) === 91) { // '!['
+        const closeIndex = findClosingIndex(xmlData, "]]>", i, "CDATA is not closed.") - 2;
+        const tagExp = xmlData.substring(i + 9, closeIndex);
+
+        textData = this.saveTextToParentTag(textData, currentNode, this.readonlyMatcher);
+
+        let val = this.parseTextData(tagExp, currentNode.tagname, this.readonlyMatcher, true, false, true, true);
+        if (val == undefined) val = "";
+
+        //cdata should be set even if it is 0 length string
+        if (options.cdataPropName) {
+          currentNode.add(options.cdataPropName, [{ [options.textNodeName]: tagExp }]);
+        } else {
+          currentNode.add(options.textNodeName, val);
+        }
+
+        i = closeIndex + 2;
+      } else {//Opening tag
+        let result = readTagExp(xmlData, i, options.removeNSPrefix);
+
+        // Safety check: readTagExp can return undefined
+        if (!result) {
+          // Log context for debugging
+          const context = xmlData.substring(Math.max(0, i - 50), Math.min(xmlLen, i + 50));
+          throw new Error(`readTagExp returned undefined at position ${i}. Context: "${context}"`);
+        }
+
+        let tagName = result.tagName;
+        const rawTagName = result.rawTagName;
+        let tagExp = result.tagExp;
+        let attrExpPresent = result.attrExpPresent;
+        let closeIndex = result.closeIndex;
+
+        ({ tagName, tagExp } = transformTagName(options.transformTagName, tagName, tagExp, options));
+
+        if (options.strictReservedNames &&
+          (tagName === options.commentPropName
+            || tagName === options.cdataPropName
+            || tagName === options.textNodeName
+            || tagName === options.attributesGroupName
+          )) {
+          throw new Error(`Invalid tag name: ${tagName}`);
+        }
+
+        //save text as child node
+        if (currentNode && textData) {
+          if (currentNode.tagname !== '!xml') {
+            //when nested tag is found
+            textData = this.saveTextToParentTag(textData, currentNode, this.readonlyMatcher, false);
+          }
+        }
+
+        //check if last tag was unpaired tag
+        const lastTag = currentNode;
+        if (lastTag && options.unpairedTagsSet.has(lastTag.tagname)) {
+          currentNode = this.tagsNodeStack.pop();
+          this.matcher.pop();
+        }
+
+        // Clean up self-closing syntax BEFORE processing attributes
+        // This is where tagExp gets the trailing / removed
+        let isSelfClosing = false;
+        if (tagExp.length > 0 && tagExp.lastIndexOf("/") === tagExp.length - 1) {
+          isSelfClosing = true;
+          if (tagName[tagName.length - 1] === "/") {
+            tagName = tagName.substr(0, tagName.length - 1);
+            tagExp = tagName;
+          } else {
+            tagExp = tagExp.substr(0, tagExp.length - 1);
+          }
+
+          // Re-check attrExpPresent after cleaning
+          attrExpPresent = (tagName !== tagExp);
+        }
+
+        // Now process attributes with CLEAN tagExp (no trailing /)
+        let prefixedAttrs = null;
+        let rawAttrs = {};
+        let namespace = undefined;
+
+        // Extract namespace from rawTagName
+        namespace = extractNamespace(rawTagName);
+
+        // Push tag to matcher FIRST (with empty attrs for now) so callbacks see correct path
+        if (tagName !== xmlObj.tagname) {
+          this.matcher.push(tagName, {}, namespace);
+        }
+
+        // Now build attributes - callbacks will see correct matcher state
+        if (tagName !== tagExp && attrExpPresent) {
+          // Build attributes (returns prefixed attributes for the tree)
+          // Note: buildAttributesMap now internally updates the matcher with raw attributes
+          prefixedAttrs = this.buildAttributesMap(tagExp, this.matcher, tagName);
+
+          if (prefixedAttrs) {
+            // Extract raw attributes (without prefix) for our use
+            //TODO: seems a performance overhead
+            rawAttrs = extractRawAttributes(prefixedAttrs, options);
+          }
+        }
+
+        // Now check if this is a stop node (after attributes are set)
+        if (tagName !== xmlObj.tagname) {
+          this.isCurrentNodeStopNode = this.isItStopNode();
+        }
+
+        const startIndex = i;
+        if (this.isCurrentNodeStopNode) {
+          let tagContent = "";
+
+          // For self-closing tags, content is empty
+          if (isSelfClosing) {
+            i = result.closeIndex;
+          }
+          //unpaired tag
+          else if (options.unpairedTagsSet.has(tagName)) {
+            i = result.closeIndex;
+          }
+          //normal tag
+          else {
+            //read until closing tag is found
+            const result = this.readStopNodeData(xmlData, rawTagName, closeIndex + 1);
+            if (!result) throw new Error(`Unexpected end of ${rawTagName}`);
+            i = result.i;
+            tagContent = result.tagContent;
+          }
+
+          const childNode = new _xmlNode_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A(tagName);
+
+          if (prefixedAttrs) {
+            childNode[":@"] = prefixedAttrs;
+          }
+
+          // For stop nodes, store raw content as-is without any processing
+          childNode.add(options.textNodeName, tagContent);
+
+          this.matcher.pop(); // Pop the stop node tag
+          this.isCurrentNodeStopNode = false; // Reset flag
+
+          this.addChild(currentNode, childNode, this.readonlyMatcher, startIndex);
+        } else {
+          //selfClosing tag
+          if (isSelfClosing) {
+            ({ tagName, tagExp } = transformTagName(options.transformTagName, tagName, tagExp, options));
+
+            const childNode = new _xmlNode_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A(tagName);
+            if (prefixedAttrs) {
+              childNode[":@"] = prefixedAttrs;
+            }
+            this.addChild(currentNode, childNode, this.readonlyMatcher, startIndex);
+            this.matcher.pop(); // Pop self-closing tag
+            this.isCurrentNodeStopNode = false; // Reset flag
+          }
+          else if (options.unpairedTagsSet.has(tagName)) {//unpaired tag
+            const childNode = new _xmlNode_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A(tagName);
+            if (prefixedAttrs) {
+              childNode[":@"] = prefixedAttrs;
+            }
+            this.addChild(currentNode, childNode, this.readonlyMatcher, startIndex);
+            this.matcher.pop(); // Pop unpaired tag
+            this.isCurrentNodeStopNode = false; // Reset flag
+            i = result.closeIndex;
+            // Continue to next iteration without changing currentNode
+            continue;
+          }
+          //opening tag
+          else {
+            const childNode = new _xmlNode_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A(tagName);
+            if (this.tagsNodeStack.length > options.maxNestedTags) {
+              throw new Error("Maximum nested tags exceeded");
+            }
+            this.tagsNodeStack.push(currentNode);
+
+            if (prefixedAttrs) {
+              childNode[":@"] = prefixedAttrs;
+            }
+            this.addChild(currentNode, childNode, this.readonlyMatcher, startIndex);
+            currentNode = childNode;
+          }
+          textData = "";
+          i = closeIndex;
+        }
+      }
+    } else {
+      textData += xmlData[i];
+    }
+  }
+  return xmlObj.child;
+}
+
+function addChild(currentNode, childNode, matcher, startIndex) {
+  // unset startIndex if not requested
+  if (!this.options.captureMetaData) startIndex = undefined;
+
+  // Pass jPath string or matcher based on options.jPath setting
+  const jPathOrMatcher = this.options.jPath ? matcher.toString() : matcher;
+  const result = this.options.updateTag(childNode.tagname, jPathOrMatcher, childNode[":@"])
+  if (result === false) {
+    //do nothing
+  } else if (typeof result === "string") {
+    childNode.tagname = result
+    currentNode.addChild(childNode, startIndex);
+  } else {
+    currentNode.addChild(childNode, startIndex);
+  }
+}
+
+/**
+ * @param {object} val - Entity object with regex and val properties
+ * @param {string} tagName - Tag name
+ * @param {string|Matcher} jPath - jPath string or Matcher instance based on options.jPath
+ */
+function replaceEntitiesValue(val, tagName, jPath) {
+  const entityConfig = this.options.processEntities;
+
+  if (!entityConfig || !entityConfig.enabled) {
+    return val;
+  }
+
+  // Check if tag is allowed to contain entities
+  if (entityConfig.allowedTags) {
+    const jPathOrMatcher = this.options.jPath ? jPath.toString() : jPath;
+    const allowed = Array.isArray(entityConfig.allowedTags)
+      ? entityConfig.allowedTags.includes(tagName)
+      : entityConfig.allowedTags(tagName, jPathOrMatcher);
+
+    if (!allowed) {
+      return val;
+    }
+  }
+
+  // Apply custom tag filter if provided
+  if (entityConfig.tagFilter) {
+    const jPathOrMatcher = this.options.jPath ? jPath.toString() : jPath;
+    if (!entityConfig.tagFilter(tagName, jPathOrMatcher)) {
+      return val; // Skip based on custom filter
+    }
+  }
+
+  return this.entityDecoder.decode(val);
+}
+
+
+function saveTextToParentTag(textData, parentNode, matcher, isLeafNode) {
+  if (textData) { //store previously collected data as textNode
+    if (isLeafNode === undefined) isLeafNode = parentNode.child.length === 0
+
+    textData = this.parseTextData(textData,
+      parentNode.tagname,
+      matcher,
+      false,
+      parentNode[":@"] ? Object.keys(parentNode[":@"]).length !== 0 : false,
+      isLeafNode);
+
+    if (textData !== undefined && textData !== "")
+      parentNode.add(this.options.textNodeName, textData);
+    textData = "";
+  }
+  return textData;
+}
+
+/**
+ * @param {Array<Expression>} stopNodeExpressions - Array of compiled Expression objects
+ * @param {Matcher} matcher - Current path matcher
+ */
+function isItStopNode() {
+  if (this.stopNodeExpressionsSet.size === 0) return false;
+
+  return this.matcher.matchesAny(this.stopNodeExpressionsSet);
+}
+
+/**
+ * Returns the tag Expression and where it is ending handling single-double quotes situation
+ * @param {string} xmlData 
+ * @param {number} i starting index
+ * @returns 
+ */
+function tagExpWithClosingIndex(xmlData, i, closingChar = ">") {
+  //TODO: ignore boolean attributes in tag expression
+  //TODO: if ignore attributes, dont read full attribute expression but the end. But read for xml declaration
+  let attrBoundary = 0;
+  const len = xmlData.length;
+  const closeCode0 = closingChar.charCodeAt(0);
+  const closeCode1 = closingChar.length > 1 ? closingChar.charCodeAt(1) : -1;
+
+  let result = '';
+  let segmentStart = i;
+
+  for (let index = i; index < len; index++) {
+    const code = xmlData.charCodeAt(index);
+
+    if (attrBoundary) {
+      if (code === attrBoundary) attrBoundary = 0;
+    } else if (code === 34 || code === 39) { // " or '
+      attrBoundary = code;
+    } else if (code === closeCode0) {
+      if (closeCode1 !== -1) {
+        if (xmlData.charCodeAt(index + 1) === closeCode1) {
+          result += xmlData.substring(segmentStart, index);
+          return { data: result, index };
+        }
+      } else {
+        result += xmlData.substring(segmentStart, index);
+        return { data: result, index };
+      }
+    } else if (code === 9 && !attrBoundary) { // \t - only replace with space outside attribute values
+      // Flush accumulated segment, add space, start new segment
+      result += xmlData.substring(segmentStart, index) + ' ';
+      segmentStart = index + 1;
+    }
+  }
+}
+
+function findClosingIndex(xmlData, str, i, errMsg) {
+  const closingIndex = xmlData.indexOf(str, i);
+  if (closingIndex === -1) {
+    throw new Error(errMsg)
+  } else {
+    return closingIndex + str.length - 1;
+  }
+}
+
+function findClosingChar(xmlData, char, i, errMsg) {
+  const closingIndex = xmlData.indexOf(char, i);
+  if (closingIndex === -1) throw new Error(errMsg);
+  return closingIndex; // no offset needed
+}
+
+function readTagExp(xmlData, i, removeNSPrefix, closingChar = ">") {
+  const result = tagExpWithClosingIndex(xmlData, i + 1, closingChar);
+  if (!result) return;
+  let tagExp = result.data;
+  const closeIndex = result.index;
+  const separatorIndex = tagExp.search(/\s/);
+  let tagName = tagExp;
+  let attrExpPresent = true;
+  if (separatorIndex !== -1) {//separate tag name and attributes expression
+    tagName = tagExp.substring(0, separatorIndex);
+    tagExp = tagExp.substring(separatorIndex + 1).trimStart();
+  }
+
+  const rawTagName = tagName;
+  if (removeNSPrefix) {
+    const colonIndex = tagName.indexOf(":");
+    if (colonIndex !== -1) {
+      tagName = tagName.substr(colonIndex + 1);
+      attrExpPresent = tagName !== result.data.substr(colonIndex + 1);
+    }
+  }
+
+  return {
+    tagName: tagName,
+    tagExp: tagExp,
+    closeIndex: closeIndex,
+    attrExpPresent: attrExpPresent,
+    rawTagName: rawTagName,
+  }
+}
+/**
+ * find paired tag for a stop node
+ * @param {string} xmlData 
+ * @param {string} tagName 
+ * @param {number} i 
+ */
+function readStopNodeData(xmlData, tagName, i) {
+  const startIndex = i;
+  // Starting at 1 since we already have an open tag
+  let openTagCount = 1;
+
+  const xmllen = xmlData.length;
+  for (; i < xmllen; i++) {
+    if (xmlData[i] === "<") {
+      const c1 = xmlData.charCodeAt(i + 1);
+      if (c1 === 47) {//close tag '/'
+        const closeIndex = findClosingChar(xmlData, ">", i, `${tagName} is not closed`);
+        let closeTagName = xmlData.substring(i + 2, closeIndex).trim();
+        if (closeTagName === tagName) {
+          openTagCount--;
+          if (openTagCount === 0) {
+            return {
+              tagContent: xmlData.substring(startIndex, i),
+              i: closeIndex
+            }
+          }
+        }
+        i = closeIndex;
+      } else if (c1 === 63) { //?
+        const closeIndex = findClosingIndex(xmlData, "?>", i + 1, "StopNode is not closed.")
+        i = closeIndex;
+      } else if (c1 === 33
+        && xmlData.charCodeAt(i + 2) === 45
+        && xmlData.charCodeAt(i + 3) === 45) { // '!--'
+        const closeIndex = findClosingIndex(xmlData, "-->", i + 3, "StopNode is not closed.")
+        i = closeIndex;
+      } else if (c1 === 33
+        && xmlData.charCodeAt(i + 2) === 91) { // '!['
+        const closeIndex = findClosingIndex(xmlData, "]]>", i, "StopNode is not closed.") - 2;
+        i = closeIndex;
+      } else {
+        const tagData = readTagExp(xmlData, i, false)
+
+        if (tagData) {
+          const openTagName = tagData && tagData.tagName;
+          if (openTagName === tagName && tagData.tagExp[tagData.tagExp.length - 1] !== "/") {
+            openTagCount++;
+          }
+          i = tagData.closeIndex;
+        }
+      }
+    }
+  }//end for loop
+}
+
+function parseValue(val, shouldParse, options) {
+  if (shouldParse && typeof val === 'string') {
+    //console.log(options)
+    const newval = val.trim();
+    if (newval === 'true') return true;
+    else if (newval === 'false') return false;
+    else return (0,strnum__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .A)(val, options);
+  } else {
+    if ((0,_util_js__WEBPACK_IMPORTED_MODULE_0__/* .isExist */ .yQ)(val)) {
+      return val;
+    } else {
+      return '';
+    }
+  }
+}
+
+function fromCodePoint(str, base, prefix) {
+  const codePoint = Number.parseInt(str, base);
+
+  if (codePoint >= 0 && codePoint <= 0x10FFFF) {
+    return String.fromCodePoint(codePoint);
+  } else {
+    return prefix + str + ";";
+  }
+}
+
+function transformTagName(fn, tagName, tagExp, options) {
+  if (fn) {
+    const newTagName = fn(tagName);
+    if (tagExp === tagName) {
+      tagExp = newTagName
+    }
+    tagName = newTagName;
+  }
+  tagName = sanitizeName(tagName, options);
+  return { tagName, tagExp };
+}
+
+
+
+function sanitizeName(name, options) {
+  if (_util_js__WEBPACK_IMPORTED_MODULE_0__/* .criticalProperties */ .vl.includes(name)) {
+    throw new Error(`[SECURITY] Invalid name: "${name}" is a reserved JavaScript keyword that could cause prototype pollution`);
+  } else if (_util_js__WEBPACK_IMPORTED_MODULE_0__/* .DANGEROUS_PROPERTY_NAMES */ .q9.includes(name)) {
+    return options.onDangerousProperty(name);
+  }
+  return name;
+}
+
+/***/ },
+
+/***/ 53309
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (/* binding */ XMLParser)
+/* harmony export */ });
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _OptionsBuilder_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(34374);
+}
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _OrderedObjParser_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(97918);
+}
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _node2json_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(34567);
+}
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _validator_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7520);
+}
+if (/^(245|367|390)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _xmlNode_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(45062);
+}
+
+
+
+
+
+
+class XMLParser {
+
+    constructor(options) {
+        this.externalEntities = {};
+        this.options = (0,_OptionsBuilder_js__WEBPACK_IMPORTED_MODULE_0__/* .buildOptions */ .D)(options);
+
+    }
+    /**
+     * Parse XML dats to JS object 
+     * @param {string|Uint8Array} xmlData 
+     * @param {boolean|Object} validationOption 
+     */
+    parse(xmlData, validationOption) {
+        if (typeof xmlData !== "string" && xmlData.toString) {
+            xmlData = xmlData.toString();
+        } else if (typeof xmlData !== "string") {
+            throw new Error("XML data is accepted in String or Bytes[] form.")
+        }
+
+        if (validationOption) {
+            if (validationOption === true) validationOption = {}; //validate with default options
+
+            const result = (0,_validator_js__WEBPACK_IMPORTED_MODULE_3__/* .validate */ .t)(xmlData, validationOption);
+            if (result !== true) {
+                throw Error(`${result.err.msg}:${result.err.line}:${result.err.col}`)
+            }
+        }
+        const orderedObjParser = new _OrderedObjParser_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A(this.options, this.externalEntities);
+        // orderedObjParser.entityDecoder.setExternalEntities(this.externalEntities);
+        const orderedResult = orderedObjParser.parseXml(xmlData);
+        if (this.options.preserveOrder || orderedResult === undefined) return orderedResult;
+        else return (0,_node2json_js__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A)(orderedResult, this.options, orderedObjParser.matcher, orderedObjParser.readonlyMatcher);
+    }
+
+    /**
+     * Add Entity which is not by default supported by this library
+     * @param {string} key 
+     * @param {string} value 
+     */
+    addEntity(key, value) {
+        if (value.indexOf("&") !== -1) {
+            throw new Error("Entity value can't have '&'")
+        } else if (key.indexOf("&") !== -1 || key.indexOf(";") !== -1) {
+            throw new Error("An entity must be set without '&' and ';'. Eg. use '#xD' for '&#xD;'")
+        } else if (value === "&") {
+            throw new Error("An entity with value '&' is not permitted");
+        } else {
+            this.externalEntities[key] = value;
+        }
+    }
+
+    /**
+     * Returns a Symbol that can be used to access the metadata
+     * property on a node.
+     * 
+     * If Symbol is not available in the environment, an ordinary property is used
+     * and the name of the property is here returned.
+     * 
+     * The XMLMetaData property is only present when `captureMetaData`
+     * is true in the options.
+     */
+    static getMetaDataSymbol() {
+        return _xmlNode_js__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .A.getMetaDataSymbol();
+    }
+}
+
+/***/ },
+
+/***/ 34567
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (/* binding */ prettify)
+/* harmony export */ });
+/* harmony import */ var _xmlNode_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(45062);
+
+
+
+
+
+const METADATA_SYMBOL = _xmlNode_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.getMetaDataSymbol();
+
+/**
+ * Helper function to strip attribute prefix from attribute map
+ * @param {object} attrs - Attributes with prefix (e.g., {"@_class": "code"})
+ * @param {string} prefix - Attribute prefix to remove (e.g., "@_")
+ * @returns {object} Attributes without prefix (e.g., {"class": "code"})
+ */
+function stripAttributePrefix(attrs, prefix) {
+  if (!attrs || typeof attrs !== 'object') return {};
+  if (!prefix) return attrs;
+
+  const rawAttrs = {};
+  for (const key in attrs) {
+    if (key.startsWith(prefix)) {
+      const rawName = key.substring(prefix.length);
+      rawAttrs[rawName] = attrs[key];
+    } else {
+      // Attribute without prefix (shouldn't normally happen, but be safe)
+      rawAttrs[key] = attrs[key];
+    }
+  }
+  return rawAttrs;
+}
+
+/**
+ * 
+ * @param {array} node 
+ * @param {any} options 
+ * @param {Matcher} matcher - Path matcher instance
+ * @returns 
+ */
+function prettify(node, options, matcher, readonlyMatcher) {
+  return compress(node, options, matcher, readonlyMatcher);
+}
+
+/**
+ * @param {array} arr 
+ * @param {object} options 
+ * @param {Matcher} matcher - Path matcher instance
+ * @returns object
+ */
+function compress(arr, options, matcher, readonlyMatcher) {
+  let text;
+  const compressedObj = {}; //This is intended to be a plain object
+  for (let i = 0; i < arr.length; i++) {
+    const tagObj = arr[i];
+    const property = propName(tagObj);
+
+    // Push current property to matcher WITH RAW ATTRIBUTES (no prefix)
+    if (property !== undefined && property !== options.textNodeName) {
+      const rawAttrs = stripAttributePrefix(
+        tagObj[":@"] || {},
+        options.attributeNamePrefix
+      );
+      matcher.push(property, rawAttrs);
+    }
+
+    if (property === options.textNodeName) {
+      if (text === undefined) text = tagObj[property];
+      else text += "" + tagObj[property];
+    } else if (property === undefined) {
+      continue;
+    } else if (tagObj[property]) {
+
+      let val = compress(tagObj[property], options, matcher, readonlyMatcher);
+      const isLeaf = isLeafTag(val, options);
+
+      if (Object.keys(val).length === 0 && options.alwaysCreateTextNode) {
+        val[options.textNodeName] = "";
+      }
+
+      if (tagObj[":@"]) {
+        assignAttributes(val, tagObj[":@"], readonlyMatcher, options);
+      } else if (Object.keys(val).length === 1 && val[options.textNodeName] !== undefined && !options.alwaysCreateTextNode) {
+        val = val[options.textNodeName];
+      } else if (Object.keys(val).length === 0) {
+        if (options.alwaysCreateTextNode) val[options.textNodeName] = "";
+        else val = "";
+      }
+
+      if (tagObj[METADATA_SYMBOL] !== undefined && typeof val === "object" && val !== null) {
+        val[METADATA_SYMBOL] = tagObj[METADATA_SYMBOL]; // copy over metadata
+      }
+
+
+      if (compressedObj[property] !== undefined && Object.prototype.hasOwnProperty.call(compressedObj, property)) {
+        if (!Array.isArray(compressedObj[property])) {
+          compressedObj[property] = [compressedObj[property]];
+        }
+        compressedObj[property].push(val);
+      } else {
+        //TODO: if a node is not an array, then check if it should be an array
+        //also determine if it is a leaf node
+
+        // Pass jPath string or readonlyMatcher based on options.jPath setting
+        const jPathOrMatcher = options.jPath ? readonlyMatcher.toString() : readonlyMatcher;
+        if (options.isArray(property, jPathOrMatcher, isLeaf)) {
+          compressedObj[property] = [val];
+        } else {
+          compressedObj[property] = val;
+        }
+      }
+
+      // Pop property from matcher after processing
+      if (property !== undefined && property !== options.textNodeName) {
+        matcher.pop();
+      }
+    }
+
+  }
+  // if(text && text.length > 0) compressedObj[options.textNodeName] = text;
+  if (typeof text === "string") {
+    if (text.length > 0) compressedObj[options.textNodeName] = text;
+  } else if (text !== undefined) compressedObj[options.textNodeName] = text;
+
+
+  return compressedObj;
+}
+
+function propName(obj) {
+  const keys = Object.keys(obj);
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    if (key !== ":@") return key;
+  }
+}
+
+function assignAttributes(obj, attrMap, readonlyMatcher, options) {
+  if (attrMap) {
+    const keys = Object.keys(attrMap);
+    const len = keys.length; //don't make it inline
+    for (let i = 0; i < len; i++) {
+      const atrrName = keys[i];  // This is the PREFIXED name (e.g., "@_class")
+
+      // Strip prefix for matcher path (for isArray callback)
+      const rawAttrName = atrrName.startsWith(options.attributeNamePrefix)
+        ? atrrName.substring(options.attributeNamePrefix.length)
+        : atrrName;
+
+      // For attributes, we need to create a temporary path
+      // Pass jPath string or matcher based on options.jPath setting
+      const jPathOrMatcher = options.jPath
+        ? readonlyMatcher.toString() + "." + rawAttrName
+        : readonlyMatcher;
+
+      if (options.isArray(atrrName, jPathOrMatcher, true, true)) {
+        obj[atrrName] = [attrMap[atrrName]];
+      } else {
+        obj[atrrName] = attrMap[atrrName];
+      }
+    }
+  }
+}
+
+function isLeafTag(obj, options) {
+  const { textNodeName } = options;
+  const propCount = Object.keys(obj).length;
+
+  if (propCount === 0) {
+    return true;
+  }
+
+  if (
+    propCount === 1 &&
+    (obj[textNodeName] || typeof obj[textNodeName] === "boolean" || obj[textNodeName] === 0)
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+/***/ },
+
+/***/ 45062
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   A: () => (/* binding */ XmlNode)
+/* harmony export */ });
+
+
+let METADATA_SYMBOL;
+
+if (typeof Symbol !== "function") {
+  METADATA_SYMBOL = "@@xmlMetadata";
+} else {
+  METADATA_SYMBOL = Symbol("XML Node Metadata");
+}
+
+class XmlNode {
+  constructor(tagname) {
+    this.tagname = tagname;
+    this.child = []; //nested tags, text, cdata, comments in order
+    this[":@"] = Object.create(null); //attributes map
+  }
+  add(key, val) {
+    // this.child.push( {name : key, val: val, isCdata: isCdata });
+    if (key === "__proto__") key = "#__proto__";
+    this.child.push({ [key]: val });
+  }
+  addChild(node, startIndex) {
+    if (node.tagname === "__proto__") node.tagname = "#__proto__";
+    if (node[":@"] && Object.keys(node[":@"]).length > 0) {
+      this.child.push({ [node.tagname]: node.child, [":@"]: node[":@"] });
+    } else {
+      this.child.push({ [node.tagname]: node.child });
+    }
+    // if requested, add the startIndex
+    if (startIndex !== undefined) {
+      // Note: for now we just overwrite the metadata. If we had more complex metadata,
+      // we might need to do an object append here:  metadata = { ...metadata, startIndex }
+      this.child[this.child.length - 1][METADATA_SYMBOL] = { startIndex };
+    }
+  }
+  /** symbol used for metadata */
+  static getMetaDataSymbol() {
+    return METADATA_SYMBOL;
+  }
+}
+
+
+/***/ },
+
+/***/ 80785
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   U: () => (/* binding */ devAssert)
+/* harmony export */ });
+/** @internal */
+function devAssert(condition, message) {
+  const booleanCondition = Boolean(condition);
+
+  if (!booleanCondition) {
+    throw new Error(message);
+  }
+}
+
+
+/***/ },
+
+/***/ 19342
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   N: () => (/* binding */ inspect)
+/* harmony export */ });
+const MAX_ARRAY_LENGTH = 10;
+const MAX_RECURSIVE_DEPTH = 2;
+/**
+ * Used to print values in error messages.
+ *
+ * @internal
+ */
+
+function inspect(value) {
+  return formatValue(value, []);
+}
+
+function formatValue(value, seenValues) {
+  switch (typeof value) {
+    case 'string':
+      return JSON.stringify(value);
+
+    case 'function':
+      return value.name ? `[function ${value.name}]` : '[function]';
+
+    case 'object':
+      return formatObjectValue(value, seenValues);
+
+    default:
+      return String(value);
+  }
+}
+
+function formatObjectValue(value, previouslySeenValues) {
+  if (value === null) {
+    return 'null';
+  }
+
+  if (previouslySeenValues.includes(value)) {
+    return '[Circular]';
+  }
+
+  const seenValues = [...previouslySeenValues, value];
+
+  if (isJSONable(value)) {
+    const jsonValue = value.toJSON(); // check for infinite recursion
+
+    if (jsonValue !== value) {
+      return typeof jsonValue === 'string'
+        ? jsonValue
+        : formatValue(jsonValue, seenValues);
+    }
+  } else if (Array.isArray(value)) {
+    return formatArray(value, seenValues);
+  }
+
+  return formatObject(value, seenValues);
+}
+
+function isJSONable(value) {
+  return typeof value.toJSON === 'function';
+}
+
+function formatObject(object, seenValues) {
+  const entries = Object.entries(object);
+
+  if (entries.length === 0) {
+    return '{}';
+  }
+
+  if (seenValues.length > MAX_RECURSIVE_DEPTH) {
+    return '[' + getObjectTag(object) + ']';
+  }
+
+  const properties = entries.map(
+    ([key, value]) => key + ': ' + formatValue(value, seenValues),
+  );
+  return '{ ' + properties.join(', ') + ' }';
+}
+
+function formatArray(array, seenValues) {
+  if (array.length === 0) {
+    return '[]';
+  }
+
+  if (seenValues.length > MAX_RECURSIVE_DEPTH) {
+    return '[Array]';
+  }
+
+  const len = Math.min(MAX_ARRAY_LENGTH, array.length);
+  const remaining = array.length - len;
+  const items = [];
+
+  for (let i = 0; i < len; ++i) {
+    items.push(formatValue(array[i], seenValues));
+  }
+
+  if (remaining === 1) {
+    items.push('... 1 more item');
+  } else if (remaining > 1) {
+    items.push(`... ${remaining} more items`);
+  }
+
+  return '[' + items.join(', ') + ']';
+}
+
+function getObjectTag(object) {
+  const tag = Object.prototype.toString
+    .call(object)
+    .replace(/^\[object /, '')
+    .replace(/]$/, '');
+
+  if (tag === 'Object' && typeof object.constructor === 'function') {
+    const name = object.constructor.name;
+
+    if (typeof name === 'string' && name !== '') {
+      return name;
+    }
+  }
+
+  return tag;
+}
+
+
+/***/ },
+
+/***/ 87202
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Ll: () => (/* binding */ isNode),
+/* harmony export */   cE: () => (/* binding */ OperationTypeNode)
+/* harmony export */ });
+/* unused harmony exports Location, Token */
+/** @category AST */
+
+/**
+ * Contains a range of UTF-8 character offsets and token references that
+ * identify the region of the source from which the AST derived.
+ */
+class Location {
+  /** The character offset at which this Node begins. */
+
+  /** The character offset at which this Node ends. */
+
+  /** The Token at which this Node begins. */
+
+  /** The Token at which this Node ends. */
+
+  /** The Source document the AST represents. */
+
+  /**
+   * Creates a Location instance.
+   * @param startToken - The start token.
+   * @param endToken - The end token.
+   * @param source - Source document used to derive error locations.
+   * @example
+   * ```ts
+   * import { Location, Source, Token, TokenKind } from 'graphql/language';
+   *
+   * const source = new Source('{ hello }');
+   * const startToken = new Token(TokenKind.BRACE_L, 0, 1, 1, 1);
+   * const endToken = new Token(TokenKind.BRACE_R, 8, 9, 1, 9);
+   * const location = new Location(startToken, endToken, source);
+   *
+   * location.start; // => 0
+   * location.end; // => 9
+   * location.source.body; // => '{ hello }'
+   * ```
+   */
+  constructor(startToken, endToken, source) {
+    this.start = startToken.start;
+    this.end = endToken.end;
+    this.startToken = startToken;
+    this.endToken = endToken;
+    this.source = source;
+  }
+  /**
+   * Returns the value used by `Object.prototype.toString`.
+   * @returns The built-in string tag for this object.
+   */
+
+  get [Symbol.toStringTag]() {
+    return 'Location';
+  }
+  /**
+   * Returns a JSON representation of this location.
+   * @returns The JSON-serializable representation.
+   * @example
+   * ```ts
+   * import { parse } from 'graphql/language';
+   *
+   * const document = parse('{ hello }');
+   * const location = document.loc?.toJSON();
+   *
+   * location; // => { start: 0, end: 9 }
+   * ```
+   */
+
+  toJSON() {
+    return {
+      start: this.start,
+      end: this.end,
+    };
+  }
+}
+/**
+ * Represents a range of characters represented by a lexical token
+ * within a Source.
+ */
+
+class Token {
+  /** The kind of Token. */
+
+  /** The character offset at which this Node begins. */
+
+  /** The character offset at which this Node ends. */
+
+  /** The 1-indexed line number on which this Token appears. */
+
+  /** The 1-indexed column number at which this Token begins. */
+
+  /**
+   * For non-punctuation tokens, represents the interpreted value of the token.
+   *
+   * Note: is undefined for punctuation tokens, but typed as string for
+   * convenience in the parser.
+   */
+
+  /**
+   * Tokens exist as nodes in a double-linked-list amongst all tokens
+   * including ignored tokens. <SOF> is always the first node and <EOF>
+   * the last.
+   */
+
+  /** Next token in the token stream, including ignored tokens. */
+
+  /**
+   * Creates a Token instance.
+   * @param kind - Token kind produced by lexical analysis.
+   * @param start - Character offset where this token begins.
+   * @param end - Character offset where this token ends.
+   * @param line - One-indexed line number where this token begins.
+   * @param column - One-indexed column number where this token begins.
+   * @param value - Interpreted value for non-punctuation tokens.
+   * @example
+   * ```ts
+   * import { Token, TokenKind } from 'graphql/language';
+   *
+   * const token = new Token(TokenKind.NAME, 2, 7, 1, 3, 'hello');
+   *
+   * token.kind; // => TokenKind.NAME
+   * token.value; // => 'hello'
+   * token.toJSON(); // => { kind: 'Name', value: 'hello', line: 1, column: 3 }
+   * ```
+   */
+  constructor(kind, start, end, line, column, value) {
+    this.kind = kind;
+    this.start = start;
+    this.end = end;
+    this.line = line;
+    this.column = column; // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
+    this.value = value;
+    this.prev = null;
+    this.next = null;
+  }
+  /**
+   * Returns the value used by `Object.prototype.toString`.
+   * @returns The built-in string tag for this object.
+   */
+
+  get [Symbol.toStringTag]() {
+    return 'Token';
+  }
+  /**
+   * Returns a JSON representation of this token.
+   * @returns The JSON-serializable representation.
+   * @example
+   * ```ts
+   * import { Lexer, Source } from 'graphql/language';
+   *
+   * const lexer = new Lexer(new Source('{ hello }'));
+   * const token = lexer.advance().toJSON();
+   *
+   * token; // => { kind: '{', value: undefined, line: 1, column: 1 }
+   * ```
+   */
+
+  toJSON() {
+    return {
+      kind: this.kind,
+      value: this.value,
+      line: this.line,
+      column: this.column,
+    };
+  }
+}
+/** The list of all possible AST node types. */
+
+/** @internal */
+const QueryDocumentKeys = {
+  Name: [],
+  Document: ['definitions'],
+  OperationDefinition: [
+    'description',
+    'name',
+    'variableDefinitions',
+    'directives',
+    'selectionSet',
+  ],
+  VariableDefinition: [
+    'description',
+    'variable',
+    'type',
+    'defaultValue',
+    'directives',
+  ],
+  Variable: ['name'],
+  SelectionSet: ['selections'],
+  Field: ['alias', 'name', 'arguments', 'directives', 'selectionSet'],
+  Argument: ['name', 'value'],
+  FragmentSpread: ['name', 'directives'],
+  InlineFragment: ['typeCondition', 'directives', 'selectionSet'],
+  FragmentDefinition: [
+    'description',
+    'name', // Note: fragment variable definitions are deprecated and will removed in v17.0.0
+    'variableDefinitions',
+    'typeCondition',
+    'directives',
+    'selectionSet',
+  ],
+  IntValue: [],
+  FloatValue: [],
+  StringValue: [],
+  BooleanValue: [],
+  NullValue: [],
+  EnumValue: [],
+  ListValue: ['values'],
+  ObjectValue: ['fields'],
+  ObjectField: ['name', 'value'],
+  Directive: ['name', 'arguments'],
+  NamedType: ['name'],
+  ListType: ['type'],
+  NonNullType: ['type'],
+  SchemaDefinition: ['description', 'directives', 'operationTypes'],
+  OperationTypeDefinition: ['type'],
+  ScalarTypeDefinition: ['description', 'name', 'directives'],
+  ObjectTypeDefinition: [
+    'description',
+    'name',
+    'interfaces',
+    'directives',
+    'fields',
+  ],
+  FieldDefinition: ['description', 'name', 'arguments', 'type', 'directives'],
+  InputValueDefinition: [
+    'description',
+    'name',
+    'type',
+    'defaultValue',
+    'directives',
+  ],
+  InterfaceTypeDefinition: [
+    'description',
+    'name',
+    'interfaces',
+    'directives',
+    'fields',
+  ],
+  UnionTypeDefinition: ['description', 'name', 'directives', 'types'],
+  EnumTypeDefinition: ['description', 'name', 'directives', 'values'],
+  EnumValueDefinition: ['description', 'name', 'directives'],
+  InputObjectTypeDefinition: ['description', 'name', 'directives', 'fields'],
+  DirectiveDefinition: [
+    'description',
+    'name',
+    'arguments',
+    'directives',
+    'locations',
+  ],
+  SchemaExtension: ['directives', 'operationTypes'],
+  DirectiveExtension: ['name', 'directives'],
+  ScalarTypeExtension: ['name', 'directives'],
+  ObjectTypeExtension: ['name', 'interfaces', 'directives', 'fields'],
+  InterfaceTypeExtension: ['name', 'interfaces', 'directives', 'fields'],
+  UnionTypeExtension: ['name', 'directives', 'types'],
+  EnumTypeExtension: ['name', 'directives', 'values'],
+  InputObjectTypeExtension: ['name', 'directives', 'fields'],
+  TypeCoordinate: ['name'],
+  MemberCoordinate: ['name', 'memberName'],
+  ArgumentCoordinate: ['name', 'fieldName', 'argumentName'],
+  DirectiveCoordinate: ['name'],
+  DirectiveArgumentCoordinate: ['name', 'argumentName'],
+};
+const kindValues = new Set(Object.keys(QueryDocumentKeys));
+/** @internal */
+
+function isNode(maybeNode) {
+  const maybeKind =
+    maybeNode === null || maybeNode === void 0 ? void 0 : maybeNode.kind;
+  return typeof maybeKind === 'string' && kindValues.has(maybeKind);
+}
+/** An identifier in a GraphQL document. */
+
+/**
+ * The operation types supported by GraphQL executable definitions.
+ * @category Kinds
+ */
+var OperationTypeNode;
+
+(function (OperationTypeNode) {
+  OperationTypeNode['QUERY'] = 'query';
+  OperationTypeNode['MUTATION'] = 'mutation';
+  OperationTypeNode['SUBSCRIPTION'] = 'subscription';
+})(OperationTypeNode || (OperationTypeNode = {}));
+
+
+/** A variable declaration in an operation or legacy fragment definition. */
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "aD", 0, /* binding */ QueryDocumentKeys
+/* harmony export */ ]);
+
+
+/***/ },
+
+/***/ 16402
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   yo: () => (/* binding */ printBlockString)
+/* harmony export */ });
+/* unused harmony exports dedentBlockStringLines, isPrintableAsBlockString */
+/* unused harmony import specifier */ var isWhiteSpace;
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _characterClasses_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(30409);
+}
+
+/**
+ * Produces the value of a block string from its parsed raw value, similar to
+ * CoffeeScript's block string, Python's docstring trim or Ruby's strip_heredoc.
+ *
+ * This implements the GraphQL spec's BlockStringValue() static algorithm.
+ *
+ * @internal
+ */
+
+function dedentBlockStringLines(lines) {
+  var _firstNonEmptyLine2;
+
+  let commonIndent = Number.MAX_SAFE_INTEGER;
+  let firstNonEmptyLine = null;
+  let lastNonEmptyLine = -1;
+
+  for (let i = 0; i < lines.length; ++i) {
+    var _firstNonEmptyLine;
+
+    const line = lines[i];
+    const indent = leadingWhitespace(line);
+
+    if (indent === line.length) {
+      continue; // skip empty lines
+    }
+
+    firstNonEmptyLine =
+      (_firstNonEmptyLine = firstNonEmptyLine) !== null &&
+      _firstNonEmptyLine !== void 0
+        ? _firstNonEmptyLine
+        : i;
+    lastNonEmptyLine = i;
+
+    if (i !== 0 && indent < commonIndent) {
+      commonIndent = indent;
+    }
+  }
+
+  return lines // Remove common indentation from all lines but first.
+    .map((line, i) => (i === 0 ? line : line.slice(commonIndent))) // Remove leading and trailing blank lines.
+    .slice(
+      (_firstNonEmptyLine2 = firstNonEmptyLine) !== null &&
+        _firstNonEmptyLine2 !== void 0
+        ? _firstNonEmptyLine2
+        : 0,
+      lastNonEmptyLine + 1,
+    );
+}
+
+function leadingWhitespace(str) {
+  let i = 0;
+
+  while (i < str.length && isWhiteSpace(str.charCodeAt(i))) {
+    ++i;
+  }
+
+  return i;
+}
+/** @internal */
+
+function isPrintableAsBlockString(value) {
+  if (value === '') {
+    return true; // empty string is printable
+  }
+
+  let isEmptyLine = true;
+  let hasIndent = false;
+  let hasCommonIndent = true;
+  let seenNonEmptyLine = false;
+
+  for (let i = 0; i < value.length; ++i) {
+    switch (value.codePointAt(i)) {
+      case 0x0000:
+      case 0x0001:
+      case 0x0002:
+      case 0x0003:
+      case 0x0004:
+      case 0x0005:
+      case 0x0006:
+      case 0x0007:
+      case 0x0008:
+      case 0x000b:
+      case 0x000c:
+      case 0x000e:
+      case 0x000f:
+        return false;
+      // Has non-printable characters
+
+      case 0x000d:
+        //  \r
+        return false;
+      // Has \r or \r\n which will be replaced as \n
+
+      case 10:
+        //  \n
+        if (isEmptyLine && !seenNonEmptyLine) {
+          return false; // Has leading new line
+        }
+
+        seenNonEmptyLine = true;
+        isEmptyLine = true;
+        hasIndent = false;
+        break;
+
+      case 9: //   \t
+
+      case 32:
+        //  <space>
+        hasIndent || (hasIndent = isEmptyLine);
+        break;
+
+      default:
+        hasCommonIndent && (hasCommonIndent = hasIndent);
+        isEmptyLine = false;
+    }
+  }
+
+  if (isEmptyLine) {
+    return false; // Has trailing empty lines
+  }
+
+  if (hasCommonIndent && seenNonEmptyLine) {
+    return false; // Has internal indent
+  }
+
+  return true;
+}
+/**
+ * Print a block string in the indented block form by adding a leading and
+ * trailing blank line. However, if a block string starts with whitespace and is
+ * a single-line, adding a leading blank line would strip that whitespace.
+ *
+ * @internal
+ */
+
+function printBlockString(value, options) {
+  const escapedValue = value.replace(/"""/g, '\\"""'); // Expand a block string's raw value into independent lines.
+
+  const lines = escapedValue.split(/\r\n|[\n\r]/g);
+  const isSingleLine = lines.length === 1; // If common indentation is found we can fix some of those cases by adding leading new line
+
+  const forceLeadingNewLine =
+    lines.length > 1 &&
+    lines
+      .slice(1)
+      .every((line) => line.length === 0 || (0,_characterClasses_mjs__WEBPACK_IMPORTED_MODULE_0__/* .isWhiteSpace */ .i0)(line.charCodeAt(0))); // Trailing triple quotes just looks confusing but doesn't force trailing new line
+
+  const hasTrailingTripleQuotes = escapedValue.endsWith('\\"""'); // Trailing quote (single or double) or slash forces trailing new line
+
+  const hasTrailingQuote = value.endsWith('"') && !hasTrailingTripleQuotes;
+  const hasTrailingSlash = value.endsWith('\\');
+  const forceTrailingNewline = hasTrailingQuote || hasTrailingSlash;
+  const printAsMultipleLines =
+    !(options !== null && options !== void 0 && options.minimize) && // add leading and trailing new lines only if it improves readability
+    (!isSingleLine ||
+      value.length > 70 ||
+      forceTrailingNewline ||
+      forceLeadingNewLine ||
+      hasTrailingTripleQuotes);
+  let result = ''; // Format a multi-line block quote to account for leading space.
+
+  const skipLeadingNewLine = isSingleLine && (0,_characterClasses_mjs__WEBPACK_IMPORTED_MODULE_0__/* .isWhiteSpace */ .i0)(value.charCodeAt(0));
+
+  if ((printAsMultipleLines && !skipLeadingNewLine) || forceLeadingNewLine) {
+    result += '\n';
+  }
+
+  result += escapedValue;
+
+  if (printAsMultipleLines || forceTrailingNewline) {
+    result += '\n';
+  }
+
+  return '"""' + result + '"""';
+}
+
+
+/***/ },
+
+/***/ 30409
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   i0: () => (/* binding */ isWhiteSpace)
+/* harmony export */ });
+/* unused harmony exports isDigit, isLetter, isNameStart, isNameContinue */
+/**
+ * ```
+ * WhiteSpace ::
+ *   - "Horizontal Tab (U+0009)"
+ *   - "Space (U+0020)"
+ * ```
+ * @internal
+ */
+function isWhiteSpace(code) {
+  return code === 0x0009 || code === 0x0020;
+}
+/**
+ * ```
+ * Digit :: one of
+ *   - `0` `1` `2` `3` `4` `5` `6` `7` `8` `9`
+ * ```
+ * @internal
+ */
+
+function isDigit(code) {
+  return code >= 0x0030 && code <= 0x0039;
+}
+/**
+ * ```
+ * Letter :: one of
+ *   - `A` `B` `C` `D` `E` `F` `G` `H` `I` `J` `K` `L` `M`
+ *   - `N` `O` `P` `Q` `R` `S` `T` `U` `V` `W` `X` `Y` `Z`
+ *   - `a` `b` `c` `d` `e` `f` `g` `h` `i` `j` `k` `l` `m`
+ *   - `n` `o` `p` `q` `r` `s` `t` `u` `v` `w` `x` `y` `z`
+ * ```
+ * @internal
+ */
+
+function isLetter(code) {
+  return (
+    (code >= 0x0061 && code <= 0x007a) || // A-Z
+    (code >= 0x0041 && code <= 0x005a) // a-z
+  );
+}
+/**
+ * ```
+ * NameStart ::
+ *   - Letter
+ *   - `_`
+ * ```
+ * @internal
+ */
+
+function isNameStart(code) {
+  return isLetter(code) || code === 0x005f;
+}
+/**
+ * ```
+ * NameContinue ::
+ *   - Letter
+ *   - Digit
+ *   - `_`
+ * ```
+ * @internal
+ */
+
+function isNameContinue(code) {
+  return isLetter(code) || isDigit(code) || code === 0x005f;
+}
+
+
+/***/ },
+
+/***/ 7015
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   b: () => (/* binding */ Kind)
+/* harmony export */ });
+/** @category Kinds */
+
+/** The set of allowed kind values for AST nodes. */
+var Kind;
+
+(function (Kind) {
+  Kind['NAME'] = 'Name';
+  Kind['DOCUMENT'] = 'Document';
+  Kind['OPERATION_DEFINITION'] = 'OperationDefinition';
+  Kind['VARIABLE_DEFINITION'] = 'VariableDefinition';
+  Kind['SELECTION_SET'] = 'SelectionSet';
+  Kind['FIELD'] = 'Field';
+  Kind['ARGUMENT'] = 'Argument';
+  Kind['FRAGMENT_SPREAD'] = 'FragmentSpread';
+  Kind['INLINE_FRAGMENT'] = 'InlineFragment';
+  Kind['FRAGMENT_DEFINITION'] = 'FragmentDefinition';
+  Kind['VARIABLE'] = 'Variable';
+  Kind['INT'] = 'IntValue';
+  Kind['FLOAT'] = 'FloatValue';
+  Kind['STRING'] = 'StringValue';
+  Kind['BOOLEAN'] = 'BooleanValue';
+  Kind['NULL'] = 'NullValue';
+  Kind['ENUM'] = 'EnumValue';
+  Kind['LIST'] = 'ListValue';
+  Kind['OBJECT'] = 'ObjectValue';
+  Kind['OBJECT_FIELD'] = 'ObjectField';
+  Kind['DIRECTIVE'] = 'Directive';
+  Kind['NAMED_TYPE'] = 'NamedType';
+  Kind['LIST_TYPE'] = 'ListType';
+  Kind['NON_NULL_TYPE'] = 'NonNullType';
+  Kind['SCHEMA_DEFINITION'] = 'SchemaDefinition';
+  Kind['OPERATION_TYPE_DEFINITION'] = 'OperationTypeDefinition';
+  Kind['SCALAR_TYPE_DEFINITION'] = 'ScalarTypeDefinition';
+  Kind['OBJECT_TYPE_DEFINITION'] = 'ObjectTypeDefinition';
+  Kind['FIELD_DEFINITION'] = 'FieldDefinition';
+  Kind['INPUT_VALUE_DEFINITION'] = 'InputValueDefinition';
+  Kind['INTERFACE_TYPE_DEFINITION'] = 'InterfaceTypeDefinition';
+  Kind['UNION_TYPE_DEFINITION'] = 'UnionTypeDefinition';
+  Kind['ENUM_TYPE_DEFINITION'] = 'EnumTypeDefinition';
+  Kind['ENUM_VALUE_DEFINITION'] = 'EnumValueDefinition';
+  Kind['INPUT_OBJECT_TYPE_DEFINITION'] = 'InputObjectTypeDefinition';
+  Kind['DIRECTIVE_DEFINITION'] = 'DirectiveDefinition';
+  Kind['SCHEMA_EXTENSION'] = 'SchemaExtension';
+  Kind['DIRECTIVE_EXTENSION'] = 'DirectiveExtension';
+  Kind['SCALAR_TYPE_EXTENSION'] = 'ScalarTypeExtension';
+  Kind['OBJECT_TYPE_EXTENSION'] = 'ObjectTypeExtension';
+  Kind['INTERFACE_TYPE_EXTENSION'] = 'InterfaceTypeExtension';
+  Kind['UNION_TYPE_EXTENSION'] = 'UnionTypeExtension';
+  Kind['ENUM_TYPE_EXTENSION'] = 'EnumTypeExtension';
+  Kind['INPUT_OBJECT_TYPE_EXTENSION'] = 'InputObjectTypeExtension';
+  Kind['TYPE_COORDINATE'] = 'TypeCoordinate';
+  Kind['MEMBER_COORDINATE'] = 'MemberCoordinate';
+  Kind['ARGUMENT_COORDINATE'] = 'ArgumentCoordinate';
+  Kind['DIRECTIVE_COORDINATE'] = 'DirectiveCoordinate';
+  Kind['DIRECTIVE_ARGUMENT_COORDINATE'] = 'DirectiveArgumentCoordinate';
+})(Kind || (Kind = {}));
+
+
+/**
+ * Deprecated legacy alias for the enum type representing the possible kind
+ * values of AST nodes. This alias will be removed in v17. In v17, `Kind` is
+ * exported as the single public symbol for both the runtime object and the
+ * corresponding TypeScript type.
+ * @deprecated Will be removed in v17. In v17, use `Kind` as both the runtime
+ * value and the type.
+ */
+
+
+/***/ },
+
+/***/ 7424
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   T: () => (/* binding */ printString)
+/* harmony export */ });
+/**
+ * Prints a string as a GraphQL StringValue literal. Replaces control characters
+ * and excluded characters (" U+0022 and \\ U+005C) with escape sequences.
+ *
+ * @internal
+ */
+function printString(str) {
+  return `"${str.replace(escapedRegExp, escapedReplacer)}"`;
+}
+/** @internal */
+// eslint-disable-next-line no-control-regex
+
+const escapedRegExp = /[\x00-\x1f\x22\x5c\x7f-\x9f]/g;
+
+function escapedReplacer(str) {
+  return escapeSequences[str.charCodeAt(0)];
+} // prettier-ignore
+
+const escapeSequences = (/* runtime-dependent pure expression or super */ /^(250|49|6|748|792|888)$/.test(__webpack_require__.j) ? ([
+  '\\u0000',
+  '\\u0001',
+  '\\u0002',
+  '\\u0003',
+  '\\u0004',
+  '\\u0005',
+  '\\u0006',
+  '\\u0007',
+  '\\b',
+  '\\t',
+  '\\n',
+  '\\u000B',
+  '\\f',
+  '\\r',
+  '\\u000E',
+  '\\u000F',
+  '\\u0010',
+  '\\u0011',
+  '\\u0012',
+  '\\u0013',
+  '\\u0014',
+  '\\u0015',
+  '\\u0016',
+  '\\u0017',
+  '\\u0018',
+  '\\u0019',
+  '\\u001A',
+  '\\u001B',
+  '\\u001C',
+  '\\u001D',
+  '\\u001E',
+  '\\u001F',
+  '',
+  '',
+  '\\"',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '', // 2F
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '', // 3F
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '', // 4F
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '\\\\',
+  '',
+  '',
+  '', // 5F
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '', // 6F
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '',
+  '\\u007F',
+  '\\u0080',
+  '\\u0081',
+  '\\u0082',
+  '\\u0083',
+  '\\u0084',
+  '\\u0085',
+  '\\u0086',
+  '\\u0087',
+  '\\u0088',
+  '\\u0089',
+  '\\u008A',
+  '\\u008B',
+  '\\u008C',
+  '\\u008D',
+  '\\u008E',
+  '\\u008F',
+  '\\u0090',
+  '\\u0091',
+  '\\u0092',
+  '\\u0093',
+  '\\u0094',
+  '\\u0095',
+  '\\u0096',
+  '\\u0097',
+  '\\u0098',
+  '\\u0099',
+  '\\u009A',
+  '\\u009B',
+  '\\u009C',
+  '\\u009D',
+  '\\u009E',
+  '\\u009F',
+]) : null);
+
+
+/***/ },
+
+/***/ 92904
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   YR: () => (/* binding */ visit)
+/* harmony export */ });
+/* unused harmony exports visitInParallel, getEnterLeaveForKind, getVisitFn */
+/* unused harmony import specifier */ var Kind;
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _jsutils_devAssert_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(80785);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _jsutils_inspect_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(19342);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _ast_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(87202);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7015);
+}
+/** @category Visiting */
+
+
+
+
+/** A visitor defines the callbacks called during AST traversal. */
+
+/** A value that can be returned from a visitor function to stop traversal. */
+const BREAK = Object.freeze({});
+/**
+ * visit() will walk through an AST using a depth-first traversal, calling
+ * the visitor's enter function at each node in the traversal, and calling the
+ * leave function after visiting that node and all of its child nodes.
+ *
+ * By returning different values from the enter and leave functions, the
+ * behavior of the visitor can be altered, including skipping over a sub-tree of
+ * the AST (by returning false), editing the AST by returning a value or null
+ * to remove the value, or to stop the whole traversal by returning BREAK.
+ *
+ * When using visit() to edit an AST, the original AST will not be modified, and
+ * a new version of the AST with the changes applied will be returned from the
+ * visit function.
+ * @param root - The AST node at which to start traversal.
+ * @param visitor - The visitor or reducer functions to call while traversing.
+ * @param visitorKeys - Optional map of child keys to visit for each AST node kind.
+ * @returns The original AST, an edited AST, or a reduced value depending on the visitor.
+ * @typeParam N - The root AST node type returned when visiting without reducing.
+ * @example
+ * ```ts
+ * // Return values control traversal: undefined makes no change, false skips
+ * // a subtree, BREAK stops traversal, null removes a node, and any other
+ * // value replaces the current node.
+ * import { Kind, parse, print, visit } from 'graphql/language';
+ *
+ * const document = parse('{ hero { name } }');
+ * const editedAST = visit(document, {
+ *   Field: (node) => {
+ *     if (node.name.value === 'hero') {
+ *       return {
+ *         ...node,
+ *         name: { kind: Kind.NAME, value: 'human' },
+ *       };
+ *     }
+ *   },
+ * });
+ *
+ * print(editedAST); // => '{\n  human {\n    name\n  }\n}'
+ * ```
+ * @example
+ * ```ts
+ * // A named visitor function runs when entering nodes of that kind.
+ * import { parse, visit } from 'graphql/language';
+ *
+ * const document = parse('{ hero { name } }');
+ * const fieldNames = [];
+ *
+ * visit(document, {
+ *   Field: (node) => {
+ *     fieldNames.push(node.name.value);
+ *   },
+ * });
+ *
+ * fieldNames; // => ['hero', 'name']
+ * ```
+ * @example
+ * ```ts
+ * // A named visitor object can provide separate enter and leave handlers for
+ * // nodes of that kind.
+ * import { parse, visit } from 'graphql/language';
+ *
+ * const document = parse('{ hero { name } }');
+ * const events = [];
+ *
+ * visit(document, {
+ *   Field: {
+ *     enter: (node) => {
+ *       events.push(`enter:${node.name.value}`);
+ *     },
+ *     leave: (node) => {
+ *       events.push(`leave:${node.name.value}`);
+ *     },
+ *   },
+ * });
+ *
+ * events; // => ['enter:hero', 'enter:name', 'leave:name', 'leave:hero']
+ * ```
+ * @example
+ * ```ts
+ * // Generic enter and leave handlers run for every node.
+ * import { parse, visit } from 'graphql/language';
+ *
+ * const document = parse('{ hero { name } }');
+ * let enterCount = 0;
+ * let leaveCount = 0;
+ *
+ * visit(document, {
+ *   enter: (node) => {
+ *     enterCount += 1;
+ *   },
+ *   leave: (node) => {
+ *     leaveCount += 1;
+ *   },
+ * });
+ *
+ * enterCount; // => leaveCount
+ * enterCount > 0; // => true
+ * ```
+ */
+
+/** @internal */
+function visit(root, visitor, visitorKeys = _ast_mjs__WEBPACK_IMPORTED_MODULE_2__/* .QueryDocumentKeys */ .aD) {
+  const enterLeaveMap = new Map();
+
+  for (const kind of Object.values(_kinds_mjs__WEBPACK_IMPORTED_MODULE_3__/* .Kind */ .b)) {
+    enterLeaveMap.set(kind, getEnterLeaveForKind(visitor, kind));
+  }
+  /* eslint-disable no-undef-init */
+
+  let stack = undefined;
+  let inArray = Array.isArray(root);
+  let keys = [root];
+  let index = -1;
+  let edits = [];
+  let node = root;
+  let key = undefined;
+  let parent = undefined;
+  const path = [];
+  const ancestors = [];
+  /* eslint-enable no-undef-init */
+
+  do {
+    index++;
+    const isLeaving = index === keys.length;
+    const isEdited = isLeaving && edits.length !== 0;
+
+    if (isLeaving) {
+      key = ancestors.length === 0 ? undefined : path[path.length - 1];
+      node = parent;
+      parent = ancestors.pop();
+
+      if (isEdited) {
+        if (inArray) {
+          node = node.slice();
+          let editOffset = 0;
+
+          for (const [editKey, editValue] of edits) {
+            const arrayKey = editKey - editOffset;
+
+            if (editValue === null) {
+              node.splice(arrayKey, 1);
+              editOffset++;
+            } else {
+              node[arrayKey] = editValue;
+            }
+          }
+        } else {
+          node = { ...node };
+
+          for (const [editKey, editValue] of edits) {
+            node[editKey] = editValue;
+          }
+        }
+      }
+
+      index = stack.index;
+      keys = stack.keys;
+      edits = stack.edits;
+      inArray = stack.inArray;
+      stack = stack.prev;
+    } else if (parent) {
+      key = inArray ? index : keys[index];
+      node = parent[key];
+
+      if (node === null || node === undefined) {
+        continue;
+      }
+
+      path.push(key);
+    }
+
+    let result;
+
+    if (!Array.isArray(node)) {
+      var _enterLeaveMap$get, _enterLeaveMap$get2;
+
+      (0,_ast_mjs__WEBPACK_IMPORTED_MODULE_2__/* .isNode */ .Ll)(node) || (0,_jsutils_devAssert_mjs__WEBPACK_IMPORTED_MODULE_0__/* .devAssert */ .U)(false, `Invalid AST Node: ${(0,_jsutils_inspect_mjs__WEBPACK_IMPORTED_MODULE_1__/* .inspect */ .N)(node)}.`);
+      const visitFn = isLeaving
+        ? (_enterLeaveMap$get = enterLeaveMap.get(node.kind)) === null ||
+          _enterLeaveMap$get === void 0
+          ? void 0
+          : _enterLeaveMap$get.leave
+        : (_enterLeaveMap$get2 = enterLeaveMap.get(node.kind)) === null ||
+          _enterLeaveMap$get2 === void 0
+        ? void 0
+        : _enterLeaveMap$get2.enter;
+      result =
+        visitFn === null || visitFn === void 0
+          ? void 0
+          : visitFn.call(visitor, node, key, parent, path, ancestors);
+
+      if (result === BREAK) {
+        break;
+      }
+
+      if (result === false) {
+        if (!isLeaving) {
+          path.pop();
+          continue;
+        }
+      } else if (result !== undefined) {
+        edits.push([key, result]);
+
+        if (!isLeaving) {
+          if ((0,_ast_mjs__WEBPACK_IMPORTED_MODULE_2__/* .isNode */ .Ll)(result)) {
+            node = result;
+          } else {
+            path.pop();
+            continue;
+          }
+        }
+      }
+    }
+
+    if (result === undefined && isEdited) {
+      edits.push([key, node]);
+    }
+
+    if (isLeaving) {
+      path.pop();
+    } else {
+      var _node$kind;
+
+      stack = {
+        inArray,
+        index,
+        keys,
+        edits,
+        prev: stack,
+      };
+      inArray = Array.isArray(node);
+      keys = inArray
+        ? node
+        : (_node$kind = visitorKeys[node.kind]) !== null &&
+          _node$kind !== void 0
+        ? _node$kind
+        : [];
+      index = -1;
+      edits = [];
+
+      if (parent) {
+        ancestors.push(parent);
+      }
+
+      parent = node;
+    }
+  } while (stack !== undefined);
+
+  if (edits.length !== 0) {
+    // New root
+    return edits[edits.length - 1][1];
+  }
+
+  return root;
+}
+/**
+ * Creates a new visitor instance which delegates to many visitors to run in
+ * parallel. Each visitor will be visited for each node before moving on.
+ *
+ * If a prior visitor edits a node, no following visitors will see that node.
+ * @param visitors - The visitors to merge into one parallel visitor.
+ * @returns A visitor that delegates traversal to each provided visitor.
+ * @example
+ * ```ts
+ * import { parse, visit, visitInParallel } from 'graphql/language';
+ *
+ * const document = parse('{ hero { name } }');
+ * const events = [];
+ *
+ * visit(
+ *   document,
+ *   visitInParallel([
+ *     { Field: (node) => { events.push(`field:${node.name.value}`); } },
+ *     { Name: (node) => { events.push(`name:${node.value}`); } },
+ *   ]),
+ * );
+ *
+ * events; // => ['field:hero', 'name:hero', 'field:name', 'name:name']
+ * ```
+ */
+
+function visitInParallel(visitors) {
+  const skipping = new Array(visitors.length).fill(null);
+  const mergedVisitor = Object.create(null);
+
+  for (const kind of Object.values(Kind)) {
+    let hasVisitor = false;
+    const enterList = new Array(visitors.length).fill(undefined);
+    const leaveList = new Array(visitors.length).fill(undefined);
+
+    for (let i = 0; i < visitors.length; ++i) {
+      const { enter, leave } = getEnterLeaveForKind(visitors[i], kind);
+      hasVisitor || (hasVisitor = enter != null || leave != null);
+      enterList[i] = enter;
+      leaveList[i] = leave;
+    }
+
+    if (!hasVisitor) {
+      continue;
+    }
+
+    const mergedEnterLeave = {
+      enter(...args) {
+        const node = args[0];
+
+        for (let i = 0; i < visitors.length; i++) {
+          if (skipping[i] === null) {
+            var _enterList$i;
+
+            const result =
+              (_enterList$i = enterList[i]) === null || _enterList$i === void 0
+                ? void 0
+                : _enterList$i.apply(visitors[i], args);
+
+            if (result === false) {
+              skipping[i] = node;
+            } else if (result === BREAK) {
+              skipping[i] = BREAK;
+            } else if (result !== undefined) {
+              return result;
+            }
+          }
+        }
+      },
+
+      leave(...args) {
+        const node = args[0];
+
+        for (let i = 0; i < visitors.length; i++) {
+          if (skipping[i] === null) {
+            var _leaveList$i;
+
+            const result =
+              (_leaveList$i = leaveList[i]) === null || _leaveList$i === void 0
+                ? void 0
+                : _leaveList$i.apply(visitors[i], args);
+
+            if (result === BREAK) {
+              skipping[i] = BREAK;
+            } else if (result !== undefined && result !== false) {
+              return result;
+            }
+          } else if (skipping[i] === node) {
+            skipping[i] = null;
+          }
+        }
+      },
+    };
+    mergedVisitor[kind] = mergedEnterLeave;
+  }
+
+  return mergedVisitor;
+}
+/**
+ * Given a visitor instance and a node kind, return EnterLeaveVisitor for that kind.
+ * @param visitor - The visitor object to inspect.
+ * @param kind - The AST node kind to resolve handlers for.
+ * @returns The enter and leave handlers that apply for the given node kind.
+ * @example
+ * ```ts
+ * import { Kind, getEnterLeaveForKind } from 'graphql/language';
+ *
+ * const handlers = getEnterLeaveForKind({ Field: () => {} }, Kind.FIELD);
+ *
+ * typeof handlers.enter; // => 'function'
+ * handlers.leave; // => undefined
+ * ```
+ */
+
+function getEnterLeaveForKind(visitor, kind) {
+  const kindVisitor = visitor[kind];
+
+  if (typeof kindVisitor === 'object') {
+    // { Kind: { enter() {}, leave() {} } }
+    return kindVisitor;
+  } else if (typeof kindVisitor === 'function') {
+    // { Kind() {} }
+    return {
+      enter: kindVisitor,
+      leave: undefined,
+    };
+  } // { enter() {}, leave() {} }
+
+  return {
+    enter: visitor.enter,
+    leave: visitor.leave,
+  };
+}
+/**
+ * Given a visitor instance, if it is leaving or not, and a node kind, return
+ * the function the visitor runtime should call. This deprecated compatibility
+ * helper delegates to `getEnterLeaveForKind`; call `getEnterLeaveForKind`
+ * directly because getVisitFn will be removed in v17.
+ * @param visitor - The visitor object to inspect.
+ * @param kind - The AST node kind to resolve a handler for.
+ * @param isLeaving - Whether to resolve the leave handler instead of the enter handler.
+ * @returns The visit function that applies for the given node kind and traversal phase, if one exists.
+ * @example
+ * ```ts
+ * import { Kind, getVisitFn } from 'graphql/language';
+ *
+ * const enter = getVisitFn({ Field: () => {} }, Kind.FIELD, false);
+ * const leave = getVisitFn({ Field: () => {} }, Kind.FIELD, true);
+ *
+ * typeof enter; // => 'function'
+ * leave; // => undefined
+ * ```
+ * @category Visiting
+ * @deprecated Please use `getEnterLeaveForKind` instead. Will be removed in v17
+ */
+
+/* c8 ignore next 8 */
+
+function getVisitFn(visitor, kind, isLeaving) {
+  const { enter, leave } = getEnterLeaveForKind(visitor, kind);
+  return isLeaving ? leave : enter;
+}
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "sP", 0, /* binding */ BREAK
+/* harmony export */ ]);
+
+
+/***/ },
+
+/***/ 61985
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  A: () => (/* binding */ OrderedObjParser)
+  Em: () => (/* reexport */ VALID_CONTEXTS),
+  zk: () => (/* binding */ isUnsafe)
 });
 
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.9.3/node_modules/fast-xml-parser/src/util.js
-var util = __webpack_require__(62960);
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.9.3/node_modules/fast-xml-parser/src/xmlparser/xmlNode.js
-var xmlNode = __webpack_require__(45062);
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.9.3/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js + 1 modules
-var DocTypeReader = __webpack_require__(83866);
-;// ./node_modules/.pnpm/anynum@1.0.1/node_modules/anynum/digitTable.js
-/**
- * Flat lookup table: maps Unicode code point → ASCII digit (0-9).
- * Only decimal digit characters (Unicode category Nd) are included.
- *
- * Strategy: Int32Array of size (maxCodePoint - minCodePoint + 1).
- * Value 0xFF means "not a digit". Value 0-9 is the ASCII digit value.
- * This gives O(1) lookup with no branching, no bisect, no loop.
- *
- * Memory: range is 0x0660 to 0x1FBF0 → ~129,936 entries × 1 byte = ~127 KB.
- * Acceptable for a one-time init; lookup is a single array index.
- */
+// UNUSED EXPORTS: allUnsafe, default, whyUnsafe
 
-// All known Unicode Nd (decimal digit) script zero code points.
-// Each script has exactly 10 consecutive digits: zero+0 .. zero+9.
-const SCRIPT_ZEROS = [
-  // Basic Latin (ASCII) — included for completeness / pass-through
-  0x0030, // 0-9
-
-  // Arabic scripts
-  0x0660, // Arabic-Indic ٠١٢٣٤٥٦٧٨٩
-  0x06F0, // Extended Arabic-Indic (Urdu/Persian/Sindhi) ۰۱۲۳
-
-  // Indic scripts
-  0x0966, // Devanagari ०१२३४५६७८९
-  0x09E6, // Bengali ০১২৩৪৫৬৭৮৯
-  0x0A66, // Gurmukhi ੦੧੨੩੪੫੬੭੮੯
-  0x0AE6, // Gujarati ૦૧૨૩૪૫૬૭૮૯
-  0x0B66, // Odia ୦୧୨୩୪୫୬୭୮୯
-  0x0BE6, // Tamil ௦௧௨௩௪௫௬௭௮௯
-  0x0C66, // Telugu ౦౧౨౩౪౫౬౭౮౯
-  0x0CE6, // Kannada ೦೧೨೩೪೫೬೭೮೯
-  0x0D66, // Malayalam ൦൧൨൩൪൫൬൭൮൯
-  0x0DE6, // Sinhala Archaic ෦෧෨෩෪෫෬෭෮෯
-
-  // Southeast Asian scripts
-  0x0E50, // Thai ๐๑๒๓๔๕๖๗๘๙
-  0x0ED0, // Lao ໐໑໒໓໔໕໖໗໘໙
-  0x0F20, // Tibetan ༠༡༢༣༤༥༦༧༨༩
-  0x1040, // Myanmar ၀၁၂၃၄၅၆၇၈၉
-  0x1090, // Myanmar Shan ႐႑႒႓႔႕႖႗႘႙
-  0x17E0, // Khmer ០១២៣៤៥៦៧៨៩
-  0x1810, // Mongolian ᠐᠑᠒᠓᠔᠕᠖᠗᠘᠙
-  0x1946, // Limbu ᥆᥇᥈᥉᥊᥋᥌᥍᥎᥏
-  0x19D0, // New Tai Lue ᧐᧑᧒᧓᧔᧕᧖᧗᧘᧙
-  0x1A80, // Tai Tham Hora ᪀᪁᪂᪃᪄᪅᪆᪇᪈᪉
-  0x1A90, // Tai Tham Tham ᪐᪑᪒᪓᪔᪕᪖᪗᪘᪙
-  0x1B50, // Balinese ᭐᭑᭒᭓᭔᭕᭖᭗᭘᭙
-  0x1BB0, // Sundanese ᮰᮱᮲᮳᮴᮵᮶᮷᮸᮹
-  0x1C40, // Lepcha ᱀᱁᱂᱃᱄᱅᱆᱇᱈᱉
-  0x1C50, // Ol Chiki ᱐᱑᱒᱓᱔᱕᱖᱗᱘᱙
-
-  // Fullwidth (CJK context)
-  0xFF10, // Fullwidth ０１２３４５６７８９
-
-  // Mathematical digit variants (Unicode math block)
-  0x1D7CE, // Mathematical Bold
-  0x1D7D8, // Mathematical Double-Struck
-  0x1D7E2, // Mathematical Sans-Serif
-  0x1D7EC, // Mathematical Sans-Serif Bold
-  0x1D7F6, // Mathematical Monospace
-
-  // Other scripts
-  0x104A0, // Osmanya 𐒠𐒡𐒢𐒣𐒤𐒥𐒦𐒧𐒨𐒩
-  0x10D30, // Hanifi Rohingya 𐴰𐴱𐴲𐴳𐴴𐴵𐴶𐴷𐴸𐴹
-  0x11066, // Brahmi 𑁦𑁧𑁨𑁩𑁪𑁫𑁬𑁭𑁮𑁯
-  0x110F0, // Sora Sompeng 𑃰𑃱𑃲𑃳𑃴𑃵𑃶𑃷𑃸𑃹
-  0x11136, // Chakma 𑄶𑄷𑄸𑄹𑄺𑄻𑄼𑄽𑄾𑄿
-  0x111D0, // Sharada 𑇐𑇑𑇒𑇓𑇔𑇕𑇖𑇗𑇘𑇙
-  0x112F0, // Khudawadi 𑋰𑋱𑋲𑋳𑋴𑋵𑋶𑋷𑋸𑋹
-  0x11450, // Newa 𑑐𑑑𑑒𑑓𑑔𑑕𑑖𑑗𑑘𑑙
-  0x114D0, // Tirhuta 𑓐𑓑𑓒𑓓𑓔𑓕𑓖𑓗𑓘𑓙
-  0x11650, // Modi 𑙐𑙑𑙒𑙓𑙔𑙕𑙖𑙗𑙘𑙙
-  0x116C0, // Takri 𑛀𑛁𑛂𑛃𑛄𑛅𑛆𑛇𑛈𑛉
-  0x11730, // Ahom 𑜰𑜱𑜲𑜳𑜴𑜵𑜶𑜷𑜸𑜹
-  0x118E0, // Warang Citi 𑣠𑣡𑣢𑣣𑣤𑣥𑣦𑣧𑣨𑣩
-  0x11950, // Dives Akuru 𑥐𑥑𑥒𑥓𑥔𑥕𑥖𑥗𑥘𑥙
-  0x11BF0, // Khitan Small Script 𑯰𑯱𑯲𑯳𑯴𑯵𑯶𑯷𑯸𑯹
-  0x11C50, // Bhaiksuki 𑱐𑱑𑱒𑱓𑱔𑱕𑱖𑱗𑱘𑱙
-  0x11D50, // Masaram Gondi 𑵐𑵑𑵒𑵓𑵔𑵕𑵖𑵗𑵘𑵙
-  0x11DA0, // Gunjala Gondi 𑶠𑶡𑶢𑶣𑶤𑶥𑶦𑶧𑶨𑶩
-  0x11F50, // Kawi 𑽐𑽑𑽒𑽓𑽔𑽕𑽖𑽗𑽘𑽙
-  0x16A60, // Mro 𖩠𖩡𖩢𖩣𖩤𖩥𖩦𖩧𖩨𖩩
-  0x16AC0, // Tangsa 𖫀𖫁𖫂𖫃𖫄𖫅𖫆𖫇𖫈𖫉
-  0x16B50, // Pahawh Hmong 𖭐𖭑𖭒𖭓𖭔𖭕𖭖𖭗𖭘𖭙
-  0x1E140, // Nyiakeng Puachue Hmong 𞅀𞅁𞅂𞅃𞅄𞅅𞅆𞅇𞅈𞅉
-  0x1E2F0, // Wancho 𞋰𞋱𞋲𞋳𞋴𞋵𞋶𞋷𞋸𞋹
-  0x1E4F0, // Nag Mundari 𞓰𞓱𞓲𞓳𞓴𞓵𞓶𞓷𞓸𞓹
-  0x1E950, // Adlam 𞥐𞥑𞥒𞥓𞥔𞥕𞥖𞥗𞥘𞥙
-  0x1FBF0, // Segmented digit symbols 🯰🯱🯲🯳🯴🯵🯶🯷🯸🯹
-];
-
-// Build a sparse Map for scripts above 0xFFFF (surrogate-pair range).
-// These can't go into a flat Uint8Array indexed by code point efficiently.
-const NOT_DIGIT = 0xFF;
-const HIGH_MAP = new Map(); // codePoint → digit value (0-9)
-
-const LOW_MAX = 0xFFFF;
-const LOW_MIN = 0x0660; // first non-ASCII digit script
-
-// Flat Uint8Array covering 0x0660 .. 0xFFFF
-const TABLE_OFFSET = LOW_MIN;
-const TABLE_SIZE = LOW_MAX - LOW_MIN + 1;
-const TABLE = new Uint8Array(TABLE_SIZE).fill(NOT_DIGIT);
-
-for (const zero of SCRIPT_ZEROS) {
-  for (let d = 0; d < 10; d++) {
-    const cp = zero + d;
-    if (cp <= LOW_MAX) {
-      TABLE[cp - TABLE_OFFSET] = d;
-    } else {
-      HIGH_MAP.set(cp, d);
-    }
-  }
-}
-
-
-
-;// ./node_modules/.pnpm/anynum@1.0.1/node_modules/anynum/anynum.js
-
-
-
-
-const CHAR_0 = 48; // '0'.charCodeAt(0)
-const CHAR_9 = 57; // '9'.charCodeAt(0)
-const CHAR_MINUS = 45; // '-'.charCodeAt(0)
-
-// Unicode minus/hyphen variants worth normalizing to ASCII '-' in numeric context:
-//   U+2212  MINUS SIGN       − (mathematically correct minus)
-//   U+FF0D  FULLWIDTH HYPHEN-MINUS  － (Japanese fullwidth context)
-//   U+FE63  SMALL HYPHEN-MINUS     ﹣ (small form variant)
-//
-// NOT normalized (deliberate):
-//   U+2013  EN DASH  –  (punctuation, not a numeric sign)
-//   U+2014  EM DASH  —  (punctuation)
-//   U+2010  HYPHEN   ‐  (typographic hyphen)
-//
-// Rationale: only characters a human or locale formatter would plausibly use
-// as a numeric minus sign are normalized. Dashes used for punctuation are left
-// alone to avoid mangling non-numeric strings.
-const MINUS_SET = new Set([0x2212, 0xFF0D, 0xFE63]);
-
-/**
- * Normalize all Unicode decimal digit characters in a string to ASCII (0-9),
- * and normalize Unicode minus variants to ASCII '-' (U+002D).
- *
- * Non-digit, non-minus characters are passed through unchanged.
- *
- * Performance design:
- * - Fast path: if the string has no convertible characters, return it unchanged
- *   (zero allocation).
- * - BMP digits (0x0660..0xFFFF excl. surrogates): flat Uint8Array lookup (O(1)).
- * - Supplementary plane digits (> 0xFFFF, encoded as surrogate pairs): Map lookup.
- * - Minus variants: checked inline with a small fixed Set.
- *
- * @param {string} str
- * @returns {string}
- */
-function anynum(str) {
-  if (typeof str !== 'string') return str;
-
-  const len = str.length;
-  if (len === 0) return str;
-
-  // Scan for first character needing conversion.
-  // If none found, return original string (zero allocation).
-  let firstHit = -1;
-
-  for (let i = 0; i < len; i++) {
-    const cc = str.charCodeAt(i);
-
-    // ASCII digit or ASCII minus — already normalized, skip fast
-    if ((cc >= CHAR_0 && cc <= CHAR_9) || cc === CHAR_MINUS) continue;
-
-    // Below first unicode digit script — check minus variants only
-    if (cc < TABLE_OFFSET) {
-      if (MINUS_SET.has(cc)) { firstHit = i; break; }
-      continue;
-    }
-
-    // Surrogate pairs live in BMP range 0xD800-0xDFFF — check before TABLE
-    if (cc >= 0xD800 && cc <= 0xDBFF) {
-      if (i + 1 < len) {
-        const low = str.charCodeAt(i + 1);
-        if (low >= 0xDC00 && low <= 0xDFFF) {
-          const cp = 0x10000 + ((cc - 0xD800) << 10) + (low - 0xDC00);
-          if (HIGH_MAP.has(cp)) { firstHit = i; break; }
-        }
-      }
-      continue;
-    }
-
-    // BMP non-surrogate: flat table lookup; also check minus variants in this range
-    if (TABLE[cc - TABLE_OFFSET] !== NOT_DIGIT || MINUS_SET.has(cc)) {
-      firstHit = i;
-      break;
-    }
-  }
-
-  // Nothing to replace — return original, zero allocation
-  if (firstHit === -1) return str;
-
-  // Build result: copy unchanged prefix, then convert from firstHit onward
-  const chars = [];
-
-  if (firstHit > 0) chars.push(str.slice(0, firstHit));
-
-  for (let i = firstHit; i < len; i++) {
-    const cc = str.charCodeAt(i);
-
-    // ASCII digit or ASCII minus — pass through
-    if ((cc >= CHAR_0 && cc <= CHAR_9) || cc === CHAR_MINUS) {
-      chars.push(str[i]);
-      continue;
-    }
-
-    // Below TABLE_OFFSET — check minus variants, else pass through
-    if (cc < TABLE_OFFSET) {
-      chars.push(MINUS_SET.has(cc) ? '-' : str[i]);
-      continue;
-    }
-
-    // Surrogate pairs
-    if (cc >= 0xD800 && cc <= 0xDBFF) {
-      if (i + 1 < len) {
-        const low = str.charCodeAt(i + 1);
-        if (low >= 0xDC00 && low <= 0xDFFF) {
-          const cp = 0x10000 + ((cc - 0xD800) << 10) + (low - 0xDC00);
-          const d = HIGH_MAP.get(cp);
-          if (d !== undefined) {
-            chars.push(String.fromCharCode(d + 48));
-            i++; // consume low surrogate
-            continue;
-          }
-        }
-      }
-      chars.push(str[i]);
-      continue;
-    }
-
-    // BMP non-surrogate: flat table lookup + minus variants
-    if (MINUS_SET.has(cc)) {
-      chars.push('-');
-      continue;
-    }
-    const d = TABLE[cc - TABLE_OFFSET];
-    chars.push(d !== NOT_DIGIT ? String.fromCharCode(d + 48) : str[i]);
-  }
-
-  return chars.join('');
-}
-
-
-/* harmony default export */ const anynum_anynum = (anynum);
-;// ./node_modules/.pnpm/strnum@2.4.1/node_modules/strnum/strnum.js
-const hexRegex = /^[-+]?0x[a-fA-F0-9]+$/;
-const binRegex = /^0b[01]+$/;
-const octRegex = /^0o[0-7]+$/;
-const numRegex = /^([\-\+])?(0*)([0-9]*(\.[0-9]*)?)$/;
-
-
-
-const consider = {
-    hex: true,
-    binary: false,
-    octal: false,
-    leadingZeros: true,
-    decimalPoint: "\.",
-    eNotation: true,
-    //skipLike: /regex/,
-    infinity: "original", // "null", "infinity" (Infinity type), "string" ("Infinity" (the string literal))
-    unicode: false,
-};
-
-function toNumber(str, options = {}) {
-    options = Object.assign({}, consider, options);
-    if (!str || typeof str !== "string") return str;
-
-    let trimmedStr = str.trim();
-
-    if (trimmedStr.length === 0) return str;
-    else if (options.skipLike !== undefined && options.skipLike.test(trimmedStr)) return str;
-    else if (trimmedStr === "0") return 0;
-
-    if (options.unicode) {
-        trimmedStr = anynum_anynum(trimmedStr);
-        if (trimmedStr === "0") return 0; // re-check after normalization
-    }
-    if (options.hex && hexRegex.test(trimmedStr)) {
-        return parse_int(trimmedStr, 16);
-    } else if (options.binary && binRegex.test(trimmedStr)) {
-        return parse_int(trimmedStr, 2);
-    } else if (options.octal && octRegex.test(trimmedStr)) {
-        return parse_int(trimmedStr, 8);
-    } else if (!isFinite(trimmedStr)) { //Infinity
-        return handleInfinity(str, Number(trimmedStr), options);
-    } else if (trimmedStr.includes('e') || trimmedStr.includes('E')) { //eNotation
-        return resolveEnotation(str, trimmedStr, options);
-    } else {
-        //separate negative sign, leading zeros, and rest number
-        const match = numRegex.exec(trimmedStr);
-        // +00.123 => [ , '+', '00', '.123', ..
-        if (match) {
-            const sign = match[1] || "";
-            const leadingZeros = match[2];
-            let numTrimmedByZeros = trimZeros(match[3]); //complete num without leading zeros
-            const decimalAdjacentToLeadingZeros = sign ? // 0., -00., 000.
-                str[leadingZeros.length + 1] === "."
-                : str[leadingZeros.length] === ".";
-
-            //trim ending zeros for floating number
-            if (!options.leadingZeros //leading zeros are not allowed
-                && (leadingZeros.length > 1
-                    || (leadingZeros.length === 1 && !decimalAdjacentToLeadingZeros))) {
-                // 00, 00.3, +03.24, 03, 03.24
-                return str;
-            }
-            else {//no leading zeros or leading zeros are allowed
-                const num = Number(trimmedStr);
-                const parsedStr = String(num);
-
-                if (num === 0) return num;
-                if (parsedStr.search(/[eE]/) !== -1) { //given number is long and parsed to eNotation
-                    if (options.eNotation) return num;
-                    else return str;
-                } else if (trimmedStr.indexOf(".") !== -1) { //floating number
-                    if (parsedStr === "0") return num; //0.0
-                    else if (parsedStr === numTrimmedByZeros) return num; //0.456. 0.79000
-                    else if (parsedStr === `${sign}${numTrimmedByZeros}`) return num;
-                    else return str;
-                }
-
-                let n = leadingZeros ? numTrimmedByZeros : trimmedStr;
-                if (leadingZeros) {
-                    // -009 => -9
-                    return (n === parsedStr) || (sign + n === parsedStr) ? num : str
-                } else {
-                    // +9
-                    return (n === parsedStr) || (n === sign + parsedStr) ? num : str
-                }
-            }
-        } else { //non-numeric string
-            return str;
-        }
-    }
-}
-
-const eNotationRegx = /^([-+])?(0*)(\d*(\.\d*)?[eE][-\+]?\d+)$/;
-function resolveEnotation(str, trimmedStr, options) {
-    if (!options.eNotation) return str;
-    const notation = trimmedStr.match(eNotationRegx);
-    if (notation) {
-        let sign = notation[1] || "";
-        const eChar = notation[3].indexOf("e") === -1 ? "E" : "e";
-        const leadingZeros = notation[2];
-        const eAdjacentToLeadingZeros = sign ? // 0E.
-            str[leadingZeros.length + 1] === eChar
-            : str[leadingZeros.length] === eChar;
-
-        if (leadingZeros.length > 1 && eAdjacentToLeadingZeros) return str;
-        else if (leadingZeros.length === 1
-            && (notation[3].startsWith(`.${eChar}`) || notation[3][0] === eChar)) {
-            return Number(trimmedStr);
-        } else if (leadingZeros.length > 0) {
-            // Has leading zeros — only accept if leadingZeros option allows it
-            if (options.leadingZeros && !eAdjacentToLeadingZeros) {
-                trimmedStr = (notation[1] || "") + notation[3];
-                return Number(trimmedStr);
-            } else return str;
-        } else {
-            // No leading zeros — always valid e-notation, parse it
-            return Number(trimmedStr);
-        }
-    } else {
-        return str;
-    }
-}
-
-/**
- * 
- * @param {string} numStr without leading zeros
- * @returns 
- */
-function trimZeros(numStr) {
-    if (numStr && numStr.indexOf(".") !== -1) {//float
-        numStr = numStr.replace(/0+$/, ""); //remove ending zeros
-        if (numStr === ".") numStr = "0";
-        else if (numStr[0] === ".") numStr = "0" + numStr;
-        else if (numStr[numStr.length - 1] === ".") numStr = numStr.substring(0, numStr.length - 1);
-        return numStr;
-    }
-    return numStr;
-}
-
-function parse_int(numStr, base) {
-    const str = numStr.trim();
-    if (base === 2 || base === 8) numStr = str.substring(2);
-
-    if (parseInt) return parseInt(numStr, base);
-    else if (Number.parseInt) return Number.parseInt(numStr, base);
-    else if (window && window.parseInt) return window.parseInt(numStr, base);
-    else throw new Error("parseInt, Number.parseInt, window.parseInt are not supported");
-}
-
-/**
- * Handle infinite values based on user option
- * @param {string} str - original input string
- * @param {number} num - parsed number (Infinity or -Infinity)
- * @param {object} options - user options
- * @returns {string|number|null} based on infinity option
- */
-function handleInfinity(str, num, options) {
-    const isPositive = num === Infinity;
-
-    switch (options.infinity.toLowerCase()) {
-        case "null":
-            return null;
-        case "infinity":
-            return num; // Return Infinity or -Infinity
-        case "string":
-            return isPositive ? "Infinity" : "-Infinity";
-        case "original":
-        default:
-            return str; // Return original string like "1e1000"
-    }
-}
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.9.3/node_modules/fast-xml-parser/src/ignoreAttributes.js
-var ignoreAttributes = __webpack_require__(203);
-// EXTERNAL MODULE: ./node_modules/.pnpm/path-expression-matcher@1.6.0/node_modules/path-expression-matcher/src/Matcher.js
-var Matcher = __webpack_require__(96334);
-// EXTERNAL MODULE: ./node_modules/.pnpm/path-expression-matcher@1.6.0/node_modules/path-expression-matcher/src/Expression.js
-var Expression = __webpack_require__(43684);
-// EXTERNAL MODULE: ./node_modules/.pnpm/path-expression-matcher@1.6.0/node_modules/path-expression-matcher/src/ExpressionSet.js
-var ExpressionSet = __webpack_require__(60070);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@nodable+entities@2.2.0/node_modules/@nodable/entities/src/entities.js
-var entities = __webpack_require__(70968);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@nodable+entities@2.2.0/node_modules/@nodable/entities/src/EntityDecoder.js
-var EntityDecoder = __webpack_require__(26462);
 ;// ./node_modules/.pnpm/is-unsafe@1.0.1/node_modules/is-unsafe/src/contexts/html.js
 /**
  * HTML context patterns.
@@ -69258,2611 +70917,6 @@ function allUnsafe(value, context) {
 
 
 /* harmony default export */ const src = ((/* unused pure expression or super */ null && (isUnsafe)));
-;// ./node_modules/.pnpm/fast-xml-parser@5.9.3/node_modules/fast-xml-parser/src/xmlparser/OrderedObjParser.js
-
-///@ts-check
-
-
-
-
-
-
-
-
-
-
-
-
-// const regx =
-//   '<((!\\[CDATA\\[([\\s\\S]*?)(]]>))|((NAME:)?(NAME))([^>]*)>|((\\/)(NAME)\\s*>))([^<]*)'
-//   .replace(/NAME/g, util.nameRegexp);
-
-//const tagsRegx = new RegExp("<(\\/?[\\w:\\-\._]+)([^>]*)>(\\s*"+cdataRegx+")*([^<]+)?","g");
-//const tagsRegx = new RegExp("<(\\/?)((\\w*:)?([\\w:\\-\._]+))([^>]*)>([^<]*)("+cdataRegx+"([^<]*))*([^<]+)?","g");
-
-// Helper functions for attribute and namespace handling
-
-/**
- * Extract raw attributes (without prefix) from prefixed attribute map
- * @param {object} prefixedAttrs - Attributes with prefix from buildAttributesMap
- * @param {object} options - Parser options containing attributeNamePrefix
- * @returns {object} Raw attributes for matcher
- */
-function extractRawAttributes(prefixedAttrs, options) {
-  if (!prefixedAttrs) return {};
-
-  // Handle attributesGroupName option
-  const attrs = options.attributesGroupName
-    ? prefixedAttrs[options.attributesGroupName]
-    : prefixedAttrs;
-
-  if (!attrs) return {};
-
-  const rawAttrs = {};
-  for (const key in attrs) {
-    // Remove the attribute prefix to get raw name
-    if (key.startsWith(options.attributeNamePrefix)) {
-      const rawName = key.substring(options.attributeNamePrefix.length);
-      rawAttrs[rawName] = attrs[key];
-    } else {
-      // Attribute without prefix (shouldn't normally happen, but be safe)
-      rawAttrs[key] = attrs[key];
-    }
-  }
-  return rawAttrs;
-}
-
-/**
- * Extract namespace from raw tag name
- * @param {string} rawTagName - Tag name possibly with namespace (e.g., "soap:Envelope")
- * @returns {string|undefined} Namespace or undefined
- */
-function extractNamespace(rawTagName) {
-  if (!rawTagName || typeof rawTagName !== 'string') return undefined;
-
-  const colonIndex = rawTagName.indexOf(':');
-  if (colonIndex !== -1 && colonIndex > 0) {
-    const ns = rawTagName.substring(0, colonIndex);
-    // Don't treat xmlns as a namespace
-    if (ns !== 'xmlns') {
-      return ns;
-    }
-  }
-  return undefined;
-}
-
-class OrderedObjParser {
-  constructor(options, externalEntities) {
-    this.options = options;
-    this.currentNode = null;
-    this.tagsNodeStack = [];
-    this.parseXml = parseXml;
-    this.parseTextData = parseTextData;
-    this.resolveNameSpace = resolveNameSpace;
-    this.buildAttributesMap = buildAttributesMap;
-    this.isItStopNode = isItStopNode;
-    this.replaceEntitiesValue = replaceEntitiesValue;
-    this.readStopNodeData = readStopNodeData;
-    this.saveTextToParentTag = saveTextToParentTag;
-    this.addChild = addChild;
-    this.ignoreAttributesFn = (0,ignoreAttributes/* default */.A)(this.options.ignoreAttributes)
-    this.entityExpansionCount = 0;
-    this.currentExpandedLength = 0;
-    let namedEntities = { ...entities/* XML */._9 };
-    if (this.options.entityDecoder) {
-      this.entityDecoder = this.options.entityDecoder
-    } else {
-      if (typeof this.options.htmlEntities === "object") namedEntities = this.options.htmlEntities;
-      else if (this.options.htmlEntities === true) namedEntities = { ...entities/* COMMON_HTML */.KS, ...entities/* CURRENCY */.UM };
-      this.entityDecoder = new EntityDecoder/* default */.A({
-        namedEntities: { ...namedEntities, ...externalEntities },
-        numericAllowed: this.options.htmlEntities,
-        limit: {
-          maxTotalExpansions: this.options.processEntities.maxTotalExpansions,
-          maxExpandedLength: this.options.processEntities.maxExpandedLength,
-          applyLimitsTo: this.options.processEntities.appliesTo,
-        },
-        // onExternalEntity: (name, value) => isUnsafe(value) ? 'block' : 'allow',
-        onInputEntity: (name, value) =>
-          //TODO: VALID_CONTEXTS.HTML should be set only if this.options.htmlEntities
-          isUnsafe(value, [VALID_CONTEXTS.HTML, VALID_CONTEXTS.XML])
-            ? EntityDecoder/* ENTITY_ACTION */.H.BLOCK : EntityDecoder/* ENTITY_ACTION */.H.ALLOW,
-
-        //postCheck: resolved => resolved
-      });
-    }
-
-    // Initialize path matcher for path-expression-matcher
-    this.matcher = new Matcher/* default */.A();
-    this.readonlyMatcher = this.matcher.readOnly();
-
-    // Flag to track if current node is a stop node (optimization)
-    this.isCurrentNodeStopNode = false;
-
-    // Pre-compile stopNodes expressions
-    this.stopNodeExpressionsSet = new ExpressionSet/* default */.A();
-    const stopNodesOpts = this.options.stopNodes;
-    if (stopNodesOpts && stopNodesOpts.length > 0) {
-      for (let i = 0; i < stopNodesOpts.length; i++) {
-        const stopNodeExp = stopNodesOpts[i];
-        if (typeof stopNodeExp === 'string') {
-          // Convert string to Expression object
-          this.stopNodeExpressionsSet.add(new Expression/* default */.A(stopNodeExp));
-        } else if (stopNodeExp instanceof Expression/* default */.A) {
-          // Already an Expression object
-          this.stopNodeExpressionsSet.add(stopNodeExp);
-        }
-      }
-      this.stopNodeExpressionsSet.seal();
-    }
-  }
-
-}
-
-
-/**
- * @param {string} val
- * @param {string} tagName
- * @param {string|Matcher} jPath - jPath string or Matcher instance based on options.jPath
- * @param {boolean} dontTrim
- * @param {boolean} hasAttributes
- * @param {boolean} isLeafNode
- * @param {boolean} escapeEntities
- */
-function parseTextData(val, tagName, jPath, dontTrim, hasAttributes, isLeafNode, escapeEntities) {
-  const options = this.options;
-  if (val !== undefined) {
-    if (options.trimValues && !dontTrim) {
-      val = val.trim();
-    }
-    if (val.length > 0) {
-      if (!escapeEntities) val = this.replaceEntitiesValue(val, tagName, jPath);
-
-      // Pass jPath string or matcher based on options.jPath setting
-      const jPathOrMatcher = options.jPath ? jPath.toString() : jPath;
-      const newval = options.tagValueProcessor(tagName, val, jPathOrMatcher, hasAttributes, isLeafNode);
-      if (newval === null || newval === undefined) {
-        //don't parse
-        return val;
-      } else if (typeof newval !== typeof val || newval !== val) {
-        //overwrite
-        return newval;
-      } else if (options.trimValues) {
-        return parseValue(val, options.parseTagValue, options.numberParseOptions);
-      } else {
-        const trimmedVal = val.trim();
-        if (trimmedVal === val) {
-          return parseValue(val, options.parseTagValue, options.numberParseOptions);
-        } else {
-          return val;
-        }
-      }
-    }
-  }
-}
-
-function resolveNameSpace(tagname) {
-  if (this.options.removeNSPrefix) {
-    const tags = tagname.split(':');
-    const prefix = tagname.charAt(0) === '/' ? '/' : '';
-    if (tags[0] === 'xmlns') {
-      return '';
-    }
-    if (tags.length === 2) {
-      tagname = prefix + tags[1];
-    }
-  }
-  return tagname;
-}
-
-//TODO: change regex to capture NS
-//const attrsRegx = new RegExp("([\\w\\-\\.\\:]+)\\s*=\\s*(['\"])((.|\n)*?)\\2","gm");
-const attrsRegx = new RegExp('([^\\s=]+)\\s*(=\\s*([\'"])([\\s\\S]*?)\\3)?', 'gm');
-
-function buildAttributesMap(attrStr, jPath, tagName, force = false) {
-  const options = this.options;
-  if (force === true || (options.ignoreAttributes !== true && typeof attrStr === 'string')) {
-    // attrStr = attrStr.replace(/\r?\n/g, ' ');
-    //attrStr = attrStr || attrStr.trim();
-
-    const matches = (0,util/* getAllMatches */.Xe)(attrStr, attrsRegx);
-    const len = matches.length; //don't make it inline
-    const attrs = {};
-
-    // Pre-process values once: trim + entity replacement
-    // Reused in both matcher update and second pass
-    const processedVals = new Array(len);
-    let hasRawAttrs = false;
-    const rawAttrsForMatcher = {};
-
-    for (let i = 0; i < len; i++) {
-      const attrName = this.resolveNameSpace(matches[i][1]);
-      const oldVal = matches[i][4];
-
-      if (attrName.length && oldVal !== undefined) {
-        let val = oldVal;
-        if (options.trimValues) val = val.trim();
-        val = this.replaceEntitiesValue(val, tagName, this.readonlyMatcher);
-        processedVals[i] = val;
-
-        rawAttrsForMatcher[attrName] = val;
-        hasRawAttrs = true;
-      }
-    }
-
-    // Update matcher ONCE before second pass, if applicable
-    if (hasRawAttrs && typeof jPath === 'object' && jPath.updateCurrent) {
-      jPath.updateCurrent(rawAttrsForMatcher);
-    }
-
-    // Hoist toString() once — path doesn't change during attribute processing
-    const jPathStr = options.jPath ? jPath.toString() : this.readonlyMatcher;
-
-    // Second pass: apply processors, build final attrs
-    let hasAttrs = false;
-    for (let i = 0; i < len; i++) {
-      const attrName = this.resolveNameSpace(matches[i][1]);
-
-      if (this.ignoreAttributesFn(attrName, jPathStr)) continue;
-
-      let aName = options.attributeNamePrefix + attrName;
-
-      if (attrName.length) {
-        if (options.transformAttributeName) {
-          aName = options.transformAttributeName(aName);
-        }
-        aName = sanitizeName(aName, options);
-
-        if (matches[i][4] !== undefined) {
-          // Reuse already-processed value — no double entity replacement
-          const oldVal = processedVals[i];
-
-          const newVal = options.attributeValueProcessor(attrName, oldVal, jPathStr);
-          if (newVal === null || newVal === undefined) {
-            attrs[aName] = oldVal;
-          } else if (typeof newVal !== typeof oldVal || newVal !== oldVal) {
-            attrs[aName] = newVal;
-          } else {
-            attrs[aName] = parseValue(oldVal, options.parseAttributeValue, options.numberParseOptions);
-          }
-          hasAttrs = true;
-        } else if (options.allowBooleanAttributes) {
-          attrs[aName] = true;
-          hasAttrs = true;
-        }
-      }
-    }
-
-    if (!hasAttrs) return;
-
-    if (options.attributesGroupName && !options.preserveOrder) {
-      const attrCollection = {};
-      attrCollection[options.attributesGroupName] = attrs;
-      return attrCollection;
-    }
-    return attrs;
-  }
-}
-const parseXml = function (xmlData) {
-  xmlData = xmlData.replace(/\r\n?/g, "\n"); //TODO: remove this line
-  const xmlObj = new xmlNode/* default */.A('!xml');
-  let currentNode = xmlObj;
-  let textData = "";
-
-  // Reset matcher for new document
-  this.matcher.reset();
-  this.entityDecoder.reset();
-
-  // Reset entity expansion counters for this document
-  this.entityExpansionCount = 0;
-  this.currentExpandedLength = 0;
-  const options = this.options;
-  const docTypeReader = new DocTypeReader/* default */.A(options.processEntities);
-  const xmlLen = xmlData.length;
-  for (let i = 0; i < xmlLen; i++) {//for each char in XML data
-    const ch = xmlData[i];
-    if (ch === '<') {
-      // const nextIndex = i+1;
-      // const _2ndChar = xmlData[nextIndex];
-      const c1 = xmlData.charCodeAt(i + 1);
-      if (c1 === 47) {//Closing Tag '/'
-        const closeIndex = findClosingIndex(xmlData, ">", i, "Closing Tag is not closed.")
-        let tagName = xmlData.substring(i + 2, closeIndex).trim();
-
-        if (options.removeNSPrefix) {
-          const colonIndex = tagName.indexOf(":");
-          if (colonIndex !== -1) {
-            tagName = tagName.substr(colonIndex + 1);
-          }
-        }
-
-        tagName = transformTagName(options.transformTagName, tagName, "", options).tagName;
-
-        if (currentNode) {
-          textData = this.saveTextToParentTag(textData, currentNode, this.readonlyMatcher);
-        }
-
-        //check if last tag of nested tag was unpaired tag
-        const lastTagName = this.matcher.getCurrentTag();
-        if (tagName && options.unpairedTagsSet.has(tagName)) {
-          throw new Error(`Unpaired tag can not be used as closing tag: </${tagName}>`);
-        }
-        if (lastTagName && options.unpairedTagsSet.has(lastTagName)) {
-          // Pop the unpaired tag
-          this.matcher.pop();
-          this.tagsNodeStack.pop();
-        }
-        // Pop the closing tag
-        this.matcher.pop();
-        this.isCurrentNodeStopNode = false; // Reset flag when closing tag
-
-        currentNode = this.tagsNodeStack.pop();//avoid recursion, set the parent tag scope
-        textData = "";
-        i = closeIndex;
-      } else if (c1 === 63) { //'?'
-
-        let tagData = readTagExp(xmlData, i, false, "?>");
-        if (!tagData) throw new Error("Pi Tag is not closed.");
-
-        textData = this.saveTextToParentTag(textData, currentNode, this.readonlyMatcher);
-        const attsMap = this.buildAttributesMap(tagData.tagExp, this.matcher, tagData.tagName, true);
-        if (attsMap) {
-          const ver = attsMap[this.options.attributeNamePrefix + "version"];
-          this.entityDecoder.setXmlVersion(Number(ver) || 1.0);
-          docTypeReader.setXmlVersion(Number(ver) || 1.0);
-        }
-        if ((options.ignoreDeclaration && tagData.tagName === "?xml") || options.ignorePiTags) {
-          //do nothing
-        } else {
-
-          const childNode = new xmlNode/* default */.A(tagData.tagName);
-          childNode.add(options.textNodeName, "");
-
-          if (tagData.tagName !== tagData.tagExp && tagData.attrExpPresent && options.ignoreAttributes !== true) {
-            childNode[":@"] = attsMap
-          }
-          this.addChild(currentNode, childNode, this.readonlyMatcher, i);
-        }
-
-
-        i = tagData.closeIndex + 1;
-      } else if (c1 === 33
-        && xmlData.charCodeAt(i + 2) === 45
-        && xmlData.charCodeAt(i + 3) === 45) { //'!--'
-        const endIndex = findClosingIndex(xmlData, "-->", i + 4, "Comment is not closed.")
-        if (options.commentPropName) {
-          const comment = xmlData.substring(i + 4, endIndex - 2);
-
-          textData = this.saveTextToParentTag(textData, currentNode, this.readonlyMatcher);
-
-          currentNode.add(options.commentPropName, [{ [options.textNodeName]: comment }]);
-        }
-        i = endIndex;
-      } else if (c1 === 33
-        && xmlData.charCodeAt(i + 2) === 68) { //'!D'
-        const result = docTypeReader.readDocType(xmlData, i);
-        this.entityDecoder.addInputEntities(result.entities);
-        i = result.i;
-      } else if (c1 === 33
-        && xmlData.charCodeAt(i + 2) === 91) { // '!['
-        const closeIndex = findClosingIndex(xmlData, "]]>", i, "CDATA is not closed.") - 2;
-        const tagExp = xmlData.substring(i + 9, closeIndex);
-
-        textData = this.saveTextToParentTag(textData, currentNode, this.readonlyMatcher);
-
-        let val = this.parseTextData(tagExp, currentNode.tagname, this.readonlyMatcher, true, false, true, true);
-        if (val == undefined) val = "";
-
-        //cdata should be set even if it is 0 length string
-        if (options.cdataPropName) {
-          currentNode.add(options.cdataPropName, [{ [options.textNodeName]: tagExp }]);
-        } else {
-          currentNode.add(options.textNodeName, val);
-        }
-
-        i = closeIndex + 2;
-      } else {//Opening tag
-        let result = readTagExp(xmlData, i, options.removeNSPrefix);
-
-        // Safety check: readTagExp can return undefined
-        if (!result) {
-          // Log context for debugging
-          const context = xmlData.substring(Math.max(0, i - 50), Math.min(xmlLen, i + 50));
-          throw new Error(`readTagExp returned undefined at position ${i}. Context: "${context}"`);
-        }
-
-        let tagName = result.tagName;
-        const rawTagName = result.rawTagName;
-        let tagExp = result.tagExp;
-        let attrExpPresent = result.attrExpPresent;
-        let closeIndex = result.closeIndex;
-
-        ({ tagName, tagExp } = transformTagName(options.transformTagName, tagName, tagExp, options));
-
-        if (options.strictReservedNames &&
-          (tagName === options.commentPropName
-            || tagName === options.cdataPropName
-            || tagName === options.textNodeName
-            || tagName === options.attributesGroupName
-          )) {
-          throw new Error(`Invalid tag name: ${tagName}`);
-        }
-
-        //save text as child node
-        if (currentNode && textData) {
-          if (currentNode.tagname !== '!xml') {
-            //when nested tag is found
-            textData = this.saveTextToParentTag(textData, currentNode, this.readonlyMatcher, false);
-          }
-        }
-
-        //check if last tag was unpaired tag
-        const lastTag = currentNode;
-        if (lastTag && options.unpairedTagsSet.has(lastTag.tagname)) {
-          currentNode = this.tagsNodeStack.pop();
-          this.matcher.pop();
-        }
-
-        // Clean up self-closing syntax BEFORE processing attributes
-        // This is where tagExp gets the trailing / removed
-        let isSelfClosing = false;
-        if (tagExp.length > 0 && tagExp.lastIndexOf("/") === tagExp.length - 1) {
-          isSelfClosing = true;
-          if (tagName[tagName.length - 1] === "/") {
-            tagName = tagName.substr(0, tagName.length - 1);
-            tagExp = tagName;
-          } else {
-            tagExp = tagExp.substr(0, tagExp.length - 1);
-          }
-
-          // Re-check attrExpPresent after cleaning
-          attrExpPresent = (tagName !== tagExp);
-        }
-
-        // Now process attributes with CLEAN tagExp (no trailing /)
-        let prefixedAttrs = null;
-        let rawAttrs = {};
-        let namespace = undefined;
-
-        // Extract namespace from rawTagName
-        namespace = extractNamespace(rawTagName);
-
-        // Push tag to matcher FIRST (with empty attrs for now) so callbacks see correct path
-        if (tagName !== xmlObj.tagname) {
-          this.matcher.push(tagName, {}, namespace);
-        }
-
-        // Now build attributes - callbacks will see correct matcher state
-        if (tagName !== tagExp && attrExpPresent) {
-          // Build attributes (returns prefixed attributes for the tree)
-          // Note: buildAttributesMap now internally updates the matcher with raw attributes
-          prefixedAttrs = this.buildAttributesMap(tagExp, this.matcher, tagName);
-
-          if (prefixedAttrs) {
-            // Extract raw attributes (without prefix) for our use
-            //TODO: seems a performance overhead
-            rawAttrs = extractRawAttributes(prefixedAttrs, options);
-          }
-        }
-
-        // Now check if this is a stop node (after attributes are set)
-        if (tagName !== xmlObj.tagname) {
-          this.isCurrentNodeStopNode = this.isItStopNode();
-        }
-
-        const startIndex = i;
-        if (this.isCurrentNodeStopNode) {
-          let tagContent = "";
-
-          // For self-closing tags, content is empty
-          if (isSelfClosing) {
-            i = result.closeIndex;
-          }
-          //unpaired tag
-          else if (options.unpairedTagsSet.has(tagName)) {
-            i = result.closeIndex;
-          }
-          //normal tag
-          else {
-            //read until closing tag is found
-            const result = this.readStopNodeData(xmlData, rawTagName, closeIndex + 1);
-            if (!result) throw new Error(`Unexpected end of ${rawTagName}`);
-            i = result.i;
-            tagContent = result.tagContent;
-          }
-
-          const childNode = new xmlNode/* default */.A(tagName);
-
-          if (prefixedAttrs) {
-            childNode[":@"] = prefixedAttrs;
-          }
-
-          // For stop nodes, store raw content as-is without any processing
-          childNode.add(options.textNodeName, tagContent);
-
-          this.matcher.pop(); // Pop the stop node tag
-          this.isCurrentNodeStopNode = false; // Reset flag
-
-          this.addChild(currentNode, childNode, this.readonlyMatcher, startIndex);
-        } else {
-          //selfClosing tag
-          if (isSelfClosing) {
-            ({ tagName, tagExp } = transformTagName(options.transformTagName, tagName, tagExp, options));
-
-            const childNode = new xmlNode/* default */.A(tagName);
-            if (prefixedAttrs) {
-              childNode[":@"] = prefixedAttrs;
-            }
-            this.addChild(currentNode, childNode, this.readonlyMatcher, startIndex);
-            this.matcher.pop(); // Pop self-closing tag
-            this.isCurrentNodeStopNode = false; // Reset flag
-          }
-          else if (options.unpairedTagsSet.has(tagName)) {//unpaired tag
-            const childNode = new xmlNode/* default */.A(tagName);
-            if (prefixedAttrs) {
-              childNode[":@"] = prefixedAttrs;
-            }
-            this.addChild(currentNode, childNode, this.readonlyMatcher, startIndex);
-            this.matcher.pop(); // Pop unpaired tag
-            this.isCurrentNodeStopNode = false; // Reset flag
-            i = result.closeIndex;
-            // Continue to next iteration without changing currentNode
-            continue;
-          }
-          //opening tag
-          else {
-            const childNode = new xmlNode/* default */.A(tagName);
-            if (this.tagsNodeStack.length > options.maxNestedTags) {
-              throw new Error("Maximum nested tags exceeded");
-            }
-            this.tagsNodeStack.push(currentNode);
-
-            if (prefixedAttrs) {
-              childNode[":@"] = prefixedAttrs;
-            }
-            this.addChild(currentNode, childNode, this.readonlyMatcher, startIndex);
-            currentNode = childNode;
-          }
-          textData = "";
-          i = closeIndex;
-        }
-      }
-    } else {
-      textData += xmlData[i];
-    }
-  }
-  return xmlObj.child;
-}
-
-function addChild(currentNode, childNode, matcher, startIndex) {
-  // unset startIndex if not requested
-  if (!this.options.captureMetaData) startIndex = undefined;
-
-  // Pass jPath string or matcher based on options.jPath setting
-  const jPathOrMatcher = this.options.jPath ? matcher.toString() : matcher;
-  const result = this.options.updateTag(childNode.tagname, jPathOrMatcher, childNode[":@"])
-  if (result === false) {
-    //do nothing
-  } else if (typeof result === "string") {
-    childNode.tagname = result
-    currentNode.addChild(childNode, startIndex);
-  } else {
-    currentNode.addChild(childNode, startIndex);
-  }
-}
-
-/**
- * @param {object} val - Entity object with regex and val properties
- * @param {string} tagName - Tag name
- * @param {string|Matcher} jPath - jPath string or Matcher instance based on options.jPath
- */
-function replaceEntitiesValue(val, tagName, jPath) {
-  const entityConfig = this.options.processEntities;
-
-  if (!entityConfig || !entityConfig.enabled) {
-    return val;
-  }
-
-  // Check if tag is allowed to contain entities
-  if (entityConfig.allowedTags) {
-    const jPathOrMatcher = this.options.jPath ? jPath.toString() : jPath;
-    const allowed = Array.isArray(entityConfig.allowedTags)
-      ? entityConfig.allowedTags.includes(tagName)
-      : entityConfig.allowedTags(tagName, jPathOrMatcher);
-
-    if (!allowed) {
-      return val;
-    }
-  }
-
-  // Apply custom tag filter if provided
-  if (entityConfig.tagFilter) {
-    const jPathOrMatcher = this.options.jPath ? jPath.toString() : jPath;
-    if (!entityConfig.tagFilter(tagName, jPathOrMatcher)) {
-      return val; // Skip based on custom filter
-    }
-  }
-
-  return this.entityDecoder.decode(val);
-}
-
-
-function saveTextToParentTag(textData, parentNode, matcher, isLeafNode) {
-  if (textData) { //store previously collected data as textNode
-    if (isLeafNode === undefined) isLeafNode = parentNode.child.length === 0
-
-    textData = this.parseTextData(textData,
-      parentNode.tagname,
-      matcher,
-      false,
-      parentNode[":@"] ? Object.keys(parentNode[":@"]).length !== 0 : false,
-      isLeafNode);
-
-    if (textData !== undefined && textData !== "")
-      parentNode.add(this.options.textNodeName, textData);
-    textData = "";
-  }
-  return textData;
-}
-
-/**
- * @param {Array<Expression>} stopNodeExpressions - Array of compiled Expression objects
- * @param {Matcher} matcher - Current path matcher
- */
-function isItStopNode() {
-  if (this.stopNodeExpressionsSet.size === 0) return false;
-
-  return this.matcher.matchesAny(this.stopNodeExpressionsSet);
-}
-
-/**
- * Returns the tag Expression and where it is ending handling single-double quotes situation
- * @param {string} xmlData 
- * @param {number} i starting index
- * @returns 
- */
-function tagExpWithClosingIndex(xmlData, i, closingChar = ">") {
-  //TODO: ignore boolean attributes in tag expression
-  //TODO: if ignore attributes, dont read full attribute expression but the end. But read for xml declaration
-  let attrBoundary = 0;
-  const len = xmlData.length;
-  const closeCode0 = closingChar.charCodeAt(0);
-  const closeCode1 = closingChar.length > 1 ? closingChar.charCodeAt(1) : -1;
-
-  let result = '';
-  let segmentStart = i;
-
-  for (let index = i; index < len; index++) {
-    const code = xmlData.charCodeAt(index);
-
-    if (attrBoundary) {
-      if (code === attrBoundary) attrBoundary = 0;
-    } else if (code === 34 || code === 39) { // " or '
-      attrBoundary = code;
-    } else if (code === closeCode0) {
-      if (closeCode1 !== -1) {
-        if (xmlData.charCodeAt(index + 1) === closeCode1) {
-          result += xmlData.substring(segmentStart, index);
-          return { data: result, index };
-        }
-      } else {
-        result += xmlData.substring(segmentStart, index);
-        return { data: result, index };
-      }
-    } else if (code === 9 && !attrBoundary) { // \t - only replace with space outside attribute values
-      // Flush accumulated segment, add space, start new segment
-      result += xmlData.substring(segmentStart, index) + ' ';
-      segmentStart = index + 1;
-    }
-  }
-}
-
-function findClosingIndex(xmlData, str, i, errMsg) {
-  const closingIndex = xmlData.indexOf(str, i);
-  if (closingIndex === -1) {
-    throw new Error(errMsg)
-  } else {
-    return closingIndex + str.length - 1;
-  }
-}
-
-function findClosingChar(xmlData, char, i, errMsg) {
-  const closingIndex = xmlData.indexOf(char, i);
-  if (closingIndex === -1) throw new Error(errMsg);
-  return closingIndex; // no offset needed
-}
-
-function readTagExp(xmlData, i, removeNSPrefix, closingChar = ">") {
-  const result = tagExpWithClosingIndex(xmlData, i + 1, closingChar);
-  if (!result) return;
-  let tagExp = result.data;
-  const closeIndex = result.index;
-  const separatorIndex = tagExp.search(/\s/);
-  let tagName = tagExp;
-  let attrExpPresent = true;
-  if (separatorIndex !== -1) {//separate tag name and attributes expression
-    tagName = tagExp.substring(0, separatorIndex);
-    tagExp = tagExp.substring(separatorIndex + 1).trimStart();
-  }
-
-  const rawTagName = tagName;
-  if (removeNSPrefix) {
-    const colonIndex = tagName.indexOf(":");
-    if (colonIndex !== -1) {
-      tagName = tagName.substr(colonIndex + 1);
-      attrExpPresent = tagName !== result.data.substr(colonIndex + 1);
-    }
-  }
-
-  return {
-    tagName: tagName,
-    tagExp: tagExp,
-    closeIndex: closeIndex,
-    attrExpPresent: attrExpPresent,
-    rawTagName: rawTagName,
-  }
-}
-/**
- * find paired tag for a stop node
- * @param {string} xmlData 
- * @param {string} tagName 
- * @param {number} i 
- */
-function readStopNodeData(xmlData, tagName, i) {
-  const startIndex = i;
-  // Starting at 1 since we already have an open tag
-  let openTagCount = 1;
-
-  const xmllen = xmlData.length;
-  for (; i < xmllen; i++) {
-    if (xmlData[i] === "<") {
-      const c1 = xmlData.charCodeAt(i + 1);
-      if (c1 === 47) {//close tag '/'
-        const closeIndex = findClosingChar(xmlData, ">", i, `${tagName} is not closed`);
-        let closeTagName = xmlData.substring(i + 2, closeIndex).trim();
-        if (closeTagName === tagName) {
-          openTagCount--;
-          if (openTagCount === 0) {
-            return {
-              tagContent: xmlData.substring(startIndex, i),
-              i: closeIndex
-            }
-          }
-        }
-        i = closeIndex;
-      } else if (c1 === 63) { //?
-        const closeIndex = findClosingIndex(xmlData, "?>", i + 1, "StopNode is not closed.")
-        i = closeIndex;
-      } else if (c1 === 33
-        && xmlData.charCodeAt(i + 2) === 45
-        && xmlData.charCodeAt(i + 3) === 45) { // '!--'
-        const closeIndex = findClosingIndex(xmlData, "-->", i + 3, "StopNode is not closed.")
-        i = closeIndex;
-      } else if (c1 === 33
-        && xmlData.charCodeAt(i + 2) === 91) { // '!['
-        const closeIndex = findClosingIndex(xmlData, "]]>", i, "StopNode is not closed.") - 2;
-        i = closeIndex;
-      } else {
-        const tagData = readTagExp(xmlData, i, false)
-
-        if (tagData) {
-          const openTagName = tagData && tagData.tagName;
-          if (openTagName === tagName && tagData.tagExp[tagData.tagExp.length - 1] !== "/") {
-            openTagCount++;
-          }
-          i = tagData.closeIndex;
-        }
-      }
-    }
-  }//end for loop
-}
-
-function parseValue(val, shouldParse, options) {
-  if (shouldParse && typeof val === 'string') {
-    //console.log(options)
-    const newval = val.trim();
-    if (newval === 'true') return true;
-    else if (newval === 'false') return false;
-    else return toNumber(val, options);
-  } else {
-    if ((0,util/* isExist */.yQ)(val)) {
-      return val;
-    } else {
-      return '';
-    }
-  }
-}
-
-function fromCodePoint(str, base, prefix) {
-  const codePoint = Number.parseInt(str, base);
-
-  if (codePoint >= 0 && codePoint <= 0x10FFFF) {
-    return String.fromCodePoint(codePoint);
-  } else {
-    return prefix + str + ";";
-  }
-}
-
-function transformTagName(fn, tagName, tagExp, options) {
-  if (fn) {
-    const newTagName = fn(tagName);
-    if (tagExp === tagName) {
-      tagExp = newTagName
-    }
-    tagName = newTagName;
-  }
-  tagName = sanitizeName(tagName, options);
-  return { tagName, tagExp };
-}
-
-
-
-function sanitizeName(name, options) {
-  if (util/* criticalProperties */.vl.includes(name)) {
-    throw new Error(`[SECURITY] Invalid name: "${name}" is a reserved JavaScript keyword that could cause prototype pollution`);
-  } else if (util/* DANGEROUS_PROPERTY_NAMES */.q9.includes(name)) {
-    return options.onDangerousProperty(name);
-  }
-  return name;
-}
-
-/***/ },
-
-/***/ 53309
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (/* binding */ XMLParser)
-/* harmony export */ });
-if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _OptionsBuilder_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(34374);
-}
-if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _OrderedObjParser_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4756);
-}
-if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _node2json_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(34567);
-}
-if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _validator_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7520);
-}
-if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _xmlNode_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(45062);
-}
-
-
-
-
-
-
-class XMLParser {
-
-    constructor(options) {
-        this.externalEntities = {};
-        this.options = (0,_OptionsBuilder_js__WEBPACK_IMPORTED_MODULE_0__/* .buildOptions */ .D)(options);
-
-    }
-    /**
-     * Parse XML dats to JS object 
-     * @param {string|Uint8Array} xmlData 
-     * @param {boolean|Object} validationOption 
-     */
-    parse(xmlData, validationOption) {
-        if (typeof xmlData !== "string" && xmlData.toString) {
-            xmlData = xmlData.toString();
-        } else if (typeof xmlData !== "string") {
-            throw new Error("XML data is accepted in String or Bytes[] form.")
-        }
-
-        if (validationOption) {
-            if (validationOption === true) validationOption = {}; //validate with default options
-
-            const result = (0,_validator_js__WEBPACK_IMPORTED_MODULE_3__/* .validate */ .t)(xmlData, validationOption);
-            if (result !== true) {
-                throw Error(`${result.err.msg}:${result.err.line}:${result.err.col}`)
-            }
-        }
-        const orderedObjParser = new _OrderedObjParser_js__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A(this.options, this.externalEntities);
-        // orderedObjParser.entityDecoder.setExternalEntities(this.externalEntities);
-        const orderedResult = orderedObjParser.parseXml(xmlData);
-        if (this.options.preserveOrder || orderedResult === undefined) return orderedResult;
-        else return (0,_node2json_js__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A)(orderedResult, this.options, orderedObjParser.matcher, orderedObjParser.readonlyMatcher);
-    }
-
-    /**
-     * Add Entity which is not by default supported by this library
-     * @param {string} key 
-     * @param {string} value 
-     */
-    addEntity(key, value) {
-        if (value.indexOf("&") !== -1) {
-            throw new Error("Entity value can't have '&'")
-        } else if (key.indexOf("&") !== -1 || key.indexOf(";") !== -1) {
-            throw new Error("An entity must be set without '&' and ';'. Eg. use '#xD' for '&#xD;'")
-        } else if (value === "&") {
-            throw new Error("An entity with value '&' is not permitted");
-        } else {
-            this.externalEntities[key] = value;
-        }
-    }
-
-    /**
-     * Returns a Symbol that can be used to access the metadata
-     * property on a node.
-     * 
-     * If Symbol is not available in the environment, an ordinary property is used
-     * and the name of the property is here returned.
-     * 
-     * The XMLMetaData property is only present when `captureMetaData`
-     * is true in the options.
-     */
-    static getMetaDataSymbol() {
-        return _xmlNode_js__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .A.getMetaDataSymbol();
-    }
-}
-
-/***/ },
-
-/***/ 34567
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (/* binding */ prettify)
-/* harmony export */ });
-/* harmony import */ var _xmlNode_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(45062);
-
-
-
-
-
-const METADATA_SYMBOL = _xmlNode_js__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .A.getMetaDataSymbol();
-
-/**
- * Helper function to strip attribute prefix from attribute map
- * @param {object} attrs - Attributes with prefix (e.g., {"@_class": "code"})
- * @param {string} prefix - Attribute prefix to remove (e.g., "@_")
- * @returns {object} Attributes without prefix (e.g., {"class": "code"})
- */
-function stripAttributePrefix(attrs, prefix) {
-  if (!attrs || typeof attrs !== 'object') return {};
-  if (!prefix) return attrs;
-
-  const rawAttrs = {};
-  for (const key in attrs) {
-    if (key.startsWith(prefix)) {
-      const rawName = key.substring(prefix.length);
-      rawAttrs[rawName] = attrs[key];
-    } else {
-      // Attribute without prefix (shouldn't normally happen, but be safe)
-      rawAttrs[key] = attrs[key];
-    }
-  }
-  return rawAttrs;
-}
-
-/**
- * 
- * @param {array} node 
- * @param {any} options 
- * @param {Matcher} matcher - Path matcher instance
- * @returns 
- */
-function prettify(node, options, matcher, readonlyMatcher) {
-  return compress(node, options, matcher, readonlyMatcher);
-}
-
-/**
- * @param {array} arr 
- * @param {object} options 
- * @param {Matcher} matcher - Path matcher instance
- * @returns object
- */
-function compress(arr, options, matcher, readonlyMatcher) {
-  let text;
-  const compressedObj = {}; //This is intended to be a plain object
-  for (let i = 0; i < arr.length; i++) {
-    const tagObj = arr[i];
-    const property = propName(tagObj);
-
-    // Push current property to matcher WITH RAW ATTRIBUTES (no prefix)
-    if (property !== undefined && property !== options.textNodeName) {
-      const rawAttrs = stripAttributePrefix(
-        tagObj[":@"] || {},
-        options.attributeNamePrefix
-      );
-      matcher.push(property, rawAttrs);
-    }
-
-    if (property === options.textNodeName) {
-      if (text === undefined) text = tagObj[property];
-      else text += "" + tagObj[property];
-    } else if (property === undefined) {
-      continue;
-    } else if (tagObj[property]) {
-
-      let val = compress(tagObj[property], options, matcher, readonlyMatcher);
-      const isLeaf = isLeafTag(val, options);
-
-      if (Object.keys(val).length === 0 && options.alwaysCreateTextNode) {
-        val[options.textNodeName] = "";
-      }
-
-      if (tagObj[":@"]) {
-        assignAttributes(val, tagObj[":@"], readonlyMatcher, options);
-      } else if (Object.keys(val).length === 1 && val[options.textNodeName] !== undefined && !options.alwaysCreateTextNode) {
-        val = val[options.textNodeName];
-      } else if (Object.keys(val).length === 0) {
-        if (options.alwaysCreateTextNode) val[options.textNodeName] = "";
-        else val = "";
-      }
-
-      if (tagObj[METADATA_SYMBOL] !== undefined && typeof val === "object" && val !== null) {
-        val[METADATA_SYMBOL] = tagObj[METADATA_SYMBOL]; // copy over metadata
-      }
-
-
-      if (compressedObj[property] !== undefined && Object.prototype.hasOwnProperty.call(compressedObj, property)) {
-        if (!Array.isArray(compressedObj[property])) {
-          compressedObj[property] = [compressedObj[property]];
-        }
-        compressedObj[property].push(val);
-      } else {
-        //TODO: if a node is not an array, then check if it should be an array
-        //also determine if it is a leaf node
-
-        // Pass jPath string or readonlyMatcher based on options.jPath setting
-        const jPathOrMatcher = options.jPath ? readonlyMatcher.toString() : readonlyMatcher;
-        if (options.isArray(property, jPathOrMatcher, isLeaf)) {
-          compressedObj[property] = [val];
-        } else {
-          compressedObj[property] = val;
-        }
-      }
-
-      // Pop property from matcher after processing
-      if (property !== undefined && property !== options.textNodeName) {
-        matcher.pop();
-      }
-    }
-
-  }
-  // if(text && text.length > 0) compressedObj[options.textNodeName] = text;
-  if (typeof text === "string") {
-    if (text.length > 0) compressedObj[options.textNodeName] = text;
-  } else if (text !== undefined) compressedObj[options.textNodeName] = text;
-
-
-  return compressedObj;
-}
-
-function propName(obj) {
-  const keys = Object.keys(obj);
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i];
-    if (key !== ":@") return key;
-  }
-}
-
-function assignAttributes(obj, attrMap, readonlyMatcher, options) {
-  if (attrMap) {
-    const keys = Object.keys(attrMap);
-    const len = keys.length; //don't make it inline
-    for (let i = 0; i < len; i++) {
-      const atrrName = keys[i];  // This is the PREFIXED name (e.g., "@_class")
-
-      // Strip prefix for matcher path (for isArray callback)
-      const rawAttrName = atrrName.startsWith(options.attributeNamePrefix)
-        ? atrrName.substring(options.attributeNamePrefix.length)
-        : atrrName;
-
-      // For attributes, we need to create a temporary path
-      // Pass jPath string or matcher based on options.jPath setting
-      const jPathOrMatcher = options.jPath
-        ? readonlyMatcher.toString() + "." + rawAttrName
-        : readonlyMatcher;
-
-      if (options.isArray(atrrName, jPathOrMatcher, true, true)) {
-        obj[atrrName] = [attrMap[atrrName]];
-      } else {
-        obj[atrrName] = attrMap[atrrName];
-      }
-    }
-  }
-}
-
-function isLeafTag(obj, options) {
-  const { textNodeName } = options;
-  const propCount = Object.keys(obj).length;
-
-  if (propCount === 0) {
-    return true;
-  }
-
-  if (
-    propCount === 1 &&
-    (obj[textNodeName] || typeof obj[textNodeName] === "boolean" || obj[textNodeName] === 0)
-  ) {
-    return true;
-  }
-
-  return false;
-}
-
-/***/ },
-
-/***/ 45062
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   A: () => (/* binding */ XmlNode)
-/* harmony export */ });
-
-
-let METADATA_SYMBOL;
-
-if (typeof Symbol !== "function") {
-  METADATA_SYMBOL = "@@xmlMetadata";
-} else {
-  METADATA_SYMBOL = Symbol("XML Node Metadata");
-}
-
-class XmlNode {
-  constructor(tagname) {
-    this.tagname = tagname;
-    this.child = []; //nested tags, text, cdata, comments in order
-    this[":@"] = Object.create(null); //attributes map
-  }
-  add(key, val) {
-    // this.child.push( {name : key, val: val, isCdata: isCdata });
-    if (key === "__proto__") key = "#__proto__";
-    this.child.push({ [key]: val });
-  }
-  addChild(node, startIndex) {
-    if (node.tagname === "__proto__") node.tagname = "#__proto__";
-    if (node[":@"] && Object.keys(node[":@"]).length > 0) {
-      this.child.push({ [node.tagname]: node.child, [":@"]: node[":@"] });
-    } else {
-      this.child.push({ [node.tagname]: node.child });
-    }
-    // if requested, add the startIndex
-    if (startIndex !== undefined) {
-      // Note: for now we just overwrite the metadata. If we had more complex metadata,
-      // we might need to do an object append here:  metadata = { ...metadata, startIndex }
-      this.child[this.child.length - 1][METADATA_SYMBOL] = { startIndex };
-    }
-  }
-  /** symbol used for metadata */
-  static getMetaDataSymbol() {
-    return METADATA_SYMBOL;
-  }
-}
-
-
-/***/ },
-
-/***/ 80785
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   U: () => (/* binding */ devAssert)
-/* harmony export */ });
-/** @internal */
-function devAssert(condition, message) {
-  const booleanCondition = Boolean(condition);
-
-  if (!booleanCondition) {
-    throw new Error(message);
-  }
-}
-
-
-/***/ },
-
-/***/ 19342
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   N: () => (/* binding */ inspect)
-/* harmony export */ });
-const MAX_ARRAY_LENGTH = 10;
-const MAX_RECURSIVE_DEPTH = 2;
-/**
- * Used to print values in error messages.
- *
- * @internal
- */
-
-function inspect(value) {
-  return formatValue(value, []);
-}
-
-function formatValue(value, seenValues) {
-  switch (typeof value) {
-    case 'string':
-      return JSON.stringify(value);
-
-    case 'function':
-      return value.name ? `[function ${value.name}]` : '[function]';
-
-    case 'object':
-      return formatObjectValue(value, seenValues);
-
-    default:
-      return String(value);
-  }
-}
-
-function formatObjectValue(value, previouslySeenValues) {
-  if (value === null) {
-    return 'null';
-  }
-
-  if (previouslySeenValues.includes(value)) {
-    return '[Circular]';
-  }
-
-  const seenValues = [...previouslySeenValues, value];
-
-  if (isJSONable(value)) {
-    const jsonValue = value.toJSON(); // check for infinite recursion
-
-    if (jsonValue !== value) {
-      return typeof jsonValue === 'string'
-        ? jsonValue
-        : formatValue(jsonValue, seenValues);
-    }
-  } else if (Array.isArray(value)) {
-    return formatArray(value, seenValues);
-  }
-
-  return formatObject(value, seenValues);
-}
-
-function isJSONable(value) {
-  return typeof value.toJSON === 'function';
-}
-
-function formatObject(object, seenValues) {
-  const entries = Object.entries(object);
-
-  if (entries.length === 0) {
-    return '{}';
-  }
-
-  if (seenValues.length > MAX_RECURSIVE_DEPTH) {
-    return '[' + getObjectTag(object) + ']';
-  }
-
-  const properties = entries.map(
-    ([key, value]) => key + ': ' + formatValue(value, seenValues),
-  );
-  return '{ ' + properties.join(', ') + ' }';
-}
-
-function formatArray(array, seenValues) {
-  if (array.length === 0) {
-    return '[]';
-  }
-
-  if (seenValues.length > MAX_RECURSIVE_DEPTH) {
-    return '[Array]';
-  }
-
-  const len = Math.min(MAX_ARRAY_LENGTH, array.length);
-  const remaining = array.length - len;
-  const items = [];
-
-  for (let i = 0; i < len; ++i) {
-    items.push(formatValue(array[i], seenValues));
-  }
-
-  if (remaining === 1) {
-    items.push('... 1 more item');
-  } else if (remaining > 1) {
-    items.push(`... ${remaining} more items`);
-  }
-
-  return '[' + items.join(', ') + ']';
-}
-
-function getObjectTag(object) {
-  const tag = Object.prototype.toString
-    .call(object)
-    .replace(/^\[object /, '')
-    .replace(/]$/, '');
-
-  if (tag === 'Object' && typeof object.constructor === 'function') {
-    const name = object.constructor.name;
-
-    if (typeof name === 'string' && name !== '') {
-      return name;
-    }
-  }
-
-  return tag;
-}
-
-
-/***/ },
-
-/***/ 87202
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   Ll: () => (/* binding */ isNode),
-/* harmony export */   aD: () => (/* binding */ QueryDocumentKeys),
-/* harmony export */   cE: () => (/* binding */ OperationTypeNode)
-/* harmony export */ });
-/* unused harmony exports Location, Token */
-/** @category AST */
-
-/**
- * Contains a range of UTF-8 character offsets and token references that
- * identify the region of the source from which the AST derived.
- */
-class Location {
-  /** The character offset at which this Node begins. */
-
-  /** The character offset at which this Node ends. */
-
-  /** The Token at which this Node begins. */
-
-  /** The Token at which this Node ends. */
-
-  /** The Source document the AST represents. */
-
-  /**
-   * Creates a Location instance.
-   * @param startToken - The start token.
-   * @param endToken - The end token.
-   * @param source - Source document used to derive error locations.
-   * @example
-   * ```ts
-   * import { Location, Source, Token, TokenKind } from 'graphql/language';
-   *
-   * const source = new Source('{ hello }');
-   * const startToken = new Token(TokenKind.BRACE_L, 0, 1, 1, 1);
-   * const endToken = new Token(TokenKind.BRACE_R, 8, 9, 1, 9);
-   * const location = new Location(startToken, endToken, source);
-   *
-   * location.start; // => 0
-   * location.end; // => 9
-   * location.source.body; // => '{ hello }'
-   * ```
-   */
-  constructor(startToken, endToken, source) {
-    this.start = startToken.start;
-    this.end = endToken.end;
-    this.startToken = startToken;
-    this.endToken = endToken;
-    this.source = source;
-  }
-  /**
-   * Returns the value used by `Object.prototype.toString`.
-   * @returns The built-in string tag for this object.
-   */
-
-  get [Symbol.toStringTag]() {
-    return 'Location';
-  }
-  /**
-   * Returns a JSON representation of this location.
-   * @returns The JSON-serializable representation.
-   * @example
-   * ```ts
-   * import { parse } from 'graphql/language';
-   *
-   * const document = parse('{ hello }');
-   * const location = document.loc?.toJSON();
-   *
-   * location; // => { start: 0, end: 9 }
-   * ```
-   */
-
-  toJSON() {
-    return {
-      start: this.start,
-      end: this.end,
-    };
-  }
-}
-/**
- * Represents a range of characters represented by a lexical token
- * within a Source.
- */
-
-class Token {
-  /** The kind of Token. */
-
-  /** The character offset at which this Node begins. */
-
-  /** The character offset at which this Node ends. */
-
-  /** The 1-indexed line number on which this Token appears. */
-
-  /** The 1-indexed column number at which this Token begins. */
-
-  /**
-   * For non-punctuation tokens, represents the interpreted value of the token.
-   *
-   * Note: is undefined for punctuation tokens, but typed as string for
-   * convenience in the parser.
-   */
-
-  /**
-   * Tokens exist as nodes in a double-linked-list amongst all tokens
-   * including ignored tokens. <SOF> is always the first node and <EOF>
-   * the last.
-   */
-
-  /** Next token in the token stream, including ignored tokens. */
-
-  /**
-   * Creates a Token instance.
-   * @param kind - Token kind produced by lexical analysis.
-   * @param start - Character offset where this token begins.
-   * @param end - Character offset where this token ends.
-   * @param line - One-indexed line number where this token begins.
-   * @param column - One-indexed column number where this token begins.
-   * @param value - Interpreted value for non-punctuation tokens.
-   * @example
-   * ```ts
-   * import { Token, TokenKind } from 'graphql/language';
-   *
-   * const token = new Token(TokenKind.NAME, 2, 7, 1, 3, 'hello');
-   *
-   * token.kind; // => TokenKind.NAME
-   * token.value; // => 'hello'
-   * token.toJSON(); // => { kind: 'Name', value: 'hello', line: 1, column: 3 }
-   * ```
-   */
-  constructor(kind, start, end, line, column, value) {
-    this.kind = kind;
-    this.start = start;
-    this.end = end;
-    this.line = line;
-    this.column = column; // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-
-    this.value = value;
-    this.prev = null;
-    this.next = null;
-  }
-  /**
-   * Returns the value used by `Object.prototype.toString`.
-   * @returns The built-in string tag for this object.
-   */
-
-  get [Symbol.toStringTag]() {
-    return 'Token';
-  }
-  /**
-   * Returns a JSON representation of this token.
-   * @returns The JSON-serializable representation.
-   * @example
-   * ```ts
-   * import { Lexer, Source } from 'graphql/language';
-   *
-   * const lexer = new Lexer(new Source('{ hello }'));
-   * const token = lexer.advance().toJSON();
-   *
-   * token; // => { kind: '{', value: undefined, line: 1, column: 1 }
-   * ```
-   */
-
-  toJSON() {
-    return {
-      kind: this.kind,
-      value: this.value,
-      line: this.line,
-      column: this.column,
-    };
-  }
-}
-/** The list of all possible AST node types. */
-
-/** @internal */
-const QueryDocumentKeys = {
-  Name: [],
-  Document: ['definitions'],
-  OperationDefinition: [
-    'description',
-    'name',
-    'variableDefinitions',
-    'directives',
-    'selectionSet',
-  ],
-  VariableDefinition: [
-    'description',
-    'variable',
-    'type',
-    'defaultValue',
-    'directives',
-  ],
-  Variable: ['name'],
-  SelectionSet: ['selections'],
-  Field: ['alias', 'name', 'arguments', 'directives', 'selectionSet'],
-  Argument: ['name', 'value'],
-  FragmentSpread: ['name', 'directives'],
-  InlineFragment: ['typeCondition', 'directives', 'selectionSet'],
-  FragmentDefinition: [
-    'description',
-    'name', // Note: fragment variable definitions are deprecated and will removed in v17.0.0
-    'variableDefinitions',
-    'typeCondition',
-    'directives',
-    'selectionSet',
-  ],
-  IntValue: [],
-  FloatValue: [],
-  StringValue: [],
-  BooleanValue: [],
-  NullValue: [],
-  EnumValue: [],
-  ListValue: ['values'],
-  ObjectValue: ['fields'],
-  ObjectField: ['name', 'value'],
-  Directive: ['name', 'arguments'],
-  NamedType: ['name'],
-  ListType: ['type'],
-  NonNullType: ['type'],
-  SchemaDefinition: ['description', 'directives', 'operationTypes'],
-  OperationTypeDefinition: ['type'],
-  ScalarTypeDefinition: ['description', 'name', 'directives'],
-  ObjectTypeDefinition: [
-    'description',
-    'name',
-    'interfaces',
-    'directives',
-    'fields',
-  ],
-  FieldDefinition: ['description', 'name', 'arguments', 'type', 'directives'],
-  InputValueDefinition: [
-    'description',
-    'name',
-    'type',
-    'defaultValue',
-    'directives',
-  ],
-  InterfaceTypeDefinition: [
-    'description',
-    'name',
-    'interfaces',
-    'directives',
-    'fields',
-  ],
-  UnionTypeDefinition: ['description', 'name', 'directives', 'types'],
-  EnumTypeDefinition: ['description', 'name', 'directives', 'values'],
-  EnumValueDefinition: ['description', 'name', 'directives'],
-  InputObjectTypeDefinition: ['description', 'name', 'directives', 'fields'],
-  DirectiveDefinition: [
-    'description',
-    'name',
-    'arguments',
-    'directives',
-    'locations',
-  ],
-  SchemaExtension: ['directives', 'operationTypes'],
-  DirectiveExtension: ['name', 'directives'],
-  ScalarTypeExtension: ['name', 'directives'],
-  ObjectTypeExtension: ['name', 'interfaces', 'directives', 'fields'],
-  InterfaceTypeExtension: ['name', 'interfaces', 'directives', 'fields'],
-  UnionTypeExtension: ['name', 'directives', 'types'],
-  EnumTypeExtension: ['name', 'directives', 'values'],
-  InputObjectTypeExtension: ['name', 'directives', 'fields'],
-  TypeCoordinate: ['name'],
-  MemberCoordinate: ['name', 'memberName'],
-  ArgumentCoordinate: ['name', 'fieldName', 'argumentName'],
-  DirectiveCoordinate: ['name'],
-  DirectiveArgumentCoordinate: ['name', 'argumentName'],
-};
-const kindValues = new Set(Object.keys(QueryDocumentKeys));
-/** @internal */
-
-function isNode(maybeNode) {
-  const maybeKind =
-    maybeNode === null || maybeNode === void 0 ? void 0 : maybeNode.kind;
-  return typeof maybeKind === 'string' && kindValues.has(maybeKind);
-}
-/** An identifier in a GraphQL document. */
-
-/**
- * The operation types supported by GraphQL executable definitions.
- * @category Kinds
- */
-var OperationTypeNode;
-
-(function (OperationTypeNode) {
-  OperationTypeNode['QUERY'] = 'query';
-  OperationTypeNode['MUTATION'] = 'mutation';
-  OperationTypeNode['SUBSCRIPTION'] = 'subscription';
-})(OperationTypeNode || (OperationTypeNode = {}));
-
-
-/** A variable declaration in an operation or legacy fragment definition. */
-
-
-/***/ },
-
-/***/ 16402
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   yo: () => (/* binding */ printBlockString)
-/* harmony export */ });
-/* unused harmony exports dedentBlockStringLines, isPrintableAsBlockString */
-/* unused harmony import specifier */ var isWhiteSpace;
-if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _characterClasses_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(30409);
-}
-
-/**
- * Produces the value of a block string from its parsed raw value, similar to
- * CoffeeScript's block string, Python's docstring trim or Ruby's strip_heredoc.
- *
- * This implements the GraphQL spec's BlockStringValue() static algorithm.
- *
- * @internal
- */
-
-function dedentBlockStringLines(lines) {
-  var _firstNonEmptyLine2;
-
-  let commonIndent = Number.MAX_SAFE_INTEGER;
-  let firstNonEmptyLine = null;
-  let lastNonEmptyLine = -1;
-
-  for (let i = 0; i < lines.length; ++i) {
-    var _firstNonEmptyLine;
-
-    const line = lines[i];
-    const indent = leadingWhitespace(line);
-
-    if (indent === line.length) {
-      continue; // skip empty lines
-    }
-
-    firstNonEmptyLine =
-      (_firstNonEmptyLine = firstNonEmptyLine) !== null &&
-      _firstNonEmptyLine !== void 0
-        ? _firstNonEmptyLine
-        : i;
-    lastNonEmptyLine = i;
-
-    if (i !== 0 && indent < commonIndent) {
-      commonIndent = indent;
-    }
-  }
-
-  return lines // Remove common indentation from all lines but first.
-    .map((line, i) => (i === 0 ? line : line.slice(commonIndent))) // Remove leading and trailing blank lines.
-    .slice(
-      (_firstNonEmptyLine2 = firstNonEmptyLine) !== null &&
-        _firstNonEmptyLine2 !== void 0
-        ? _firstNonEmptyLine2
-        : 0,
-      lastNonEmptyLine + 1,
-    );
-}
-
-function leadingWhitespace(str) {
-  let i = 0;
-
-  while (i < str.length && isWhiteSpace(str.charCodeAt(i))) {
-    ++i;
-  }
-
-  return i;
-}
-/** @internal */
-
-function isPrintableAsBlockString(value) {
-  if (value === '') {
-    return true; // empty string is printable
-  }
-
-  let isEmptyLine = true;
-  let hasIndent = false;
-  let hasCommonIndent = true;
-  let seenNonEmptyLine = false;
-
-  for (let i = 0; i < value.length; ++i) {
-    switch (value.codePointAt(i)) {
-      case 0x0000:
-      case 0x0001:
-      case 0x0002:
-      case 0x0003:
-      case 0x0004:
-      case 0x0005:
-      case 0x0006:
-      case 0x0007:
-      case 0x0008:
-      case 0x000b:
-      case 0x000c:
-      case 0x000e:
-      case 0x000f:
-        return false;
-      // Has non-printable characters
-
-      case 0x000d:
-        //  \r
-        return false;
-      // Has \r or \r\n which will be replaced as \n
-
-      case 10:
-        //  \n
-        if (isEmptyLine && !seenNonEmptyLine) {
-          return false; // Has leading new line
-        }
-
-        seenNonEmptyLine = true;
-        isEmptyLine = true;
-        hasIndent = false;
-        break;
-
-      case 9: //   \t
-
-      case 32:
-        //  <space>
-        hasIndent || (hasIndent = isEmptyLine);
-        break;
-
-      default:
-        hasCommonIndent && (hasCommonIndent = hasIndent);
-        isEmptyLine = false;
-    }
-  }
-
-  if (isEmptyLine) {
-    return false; // Has trailing empty lines
-  }
-
-  if (hasCommonIndent && seenNonEmptyLine) {
-    return false; // Has internal indent
-  }
-
-  return true;
-}
-/**
- * Print a block string in the indented block form by adding a leading and
- * trailing blank line. However, if a block string starts with whitespace and is
- * a single-line, adding a leading blank line would strip that whitespace.
- *
- * @internal
- */
-
-function printBlockString(value, options) {
-  const escapedValue = value.replace(/"""/g, '\\"""'); // Expand a block string's raw value into independent lines.
-
-  const lines = escapedValue.split(/\r\n|[\n\r]/g);
-  const isSingleLine = lines.length === 1; // If common indentation is found we can fix some of those cases by adding leading new line
-
-  const forceLeadingNewLine =
-    lines.length > 1 &&
-    lines
-      .slice(1)
-      .every((line) => line.length === 0 || (0,_characterClasses_mjs__WEBPACK_IMPORTED_MODULE_0__/* .isWhiteSpace */ .i0)(line.charCodeAt(0))); // Trailing triple quotes just looks confusing but doesn't force trailing new line
-
-  const hasTrailingTripleQuotes = escapedValue.endsWith('\\"""'); // Trailing quote (single or double) or slash forces trailing new line
-
-  const hasTrailingQuote = value.endsWith('"') && !hasTrailingTripleQuotes;
-  const hasTrailingSlash = value.endsWith('\\');
-  const forceTrailingNewline = hasTrailingQuote || hasTrailingSlash;
-  const printAsMultipleLines =
-    !(options !== null && options !== void 0 && options.minimize) && // add leading and trailing new lines only if it improves readability
-    (!isSingleLine ||
-      value.length > 70 ||
-      forceTrailingNewline ||
-      forceLeadingNewLine ||
-      hasTrailingTripleQuotes);
-  let result = ''; // Format a multi-line block quote to account for leading space.
-
-  const skipLeadingNewLine = isSingleLine && (0,_characterClasses_mjs__WEBPACK_IMPORTED_MODULE_0__/* .isWhiteSpace */ .i0)(value.charCodeAt(0));
-
-  if ((printAsMultipleLines && !skipLeadingNewLine) || forceLeadingNewLine) {
-    result += '\n';
-  }
-
-  result += escapedValue;
-
-  if (printAsMultipleLines || forceTrailingNewline) {
-    result += '\n';
-  }
-
-  return '"""' + result + '"""';
-}
-
-
-/***/ },
-
-/***/ 30409
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   i0: () => (/* binding */ isWhiteSpace)
-/* harmony export */ });
-/* unused harmony exports isDigit, isLetter, isNameStart, isNameContinue */
-/**
- * ```
- * WhiteSpace ::
- *   - "Horizontal Tab (U+0009)"
- *   - "Space (U+0020)"
- * ```
- * @internal
- */
-function isWhiteSpace(code) {
-  return code === 0x0009 || code === 0x0020;
-}
-/**
- * ```
- * Digit :: one of
- *   - `0` `1` `2` `3` `4` `5` `6` `7` `8` `9`
- * ```
- * @internal
- */
-
-function isDigit(code) {
-  return code >= 0x0030 && code <= 0x0039;
-}
-/**
- * ```
- * Letter :: one of
- *   - `A` `B` `C` `D` `E` `F` `G` `H` `I` `J` `K` `L` `M`
- *   - `N` `O` `P` `Q` `R` `S` `T` `U` `V` `W` `X` `Y` `Z`
- *   - `a` `b` `c` `d` `e` `f` `g` `h` `i` `j` `k` `l` `m`
- *   - `n` `o` `p` `q` `r` `s` `t` `u` `v` `w` `x` `y` `z`
- * ```
- * @internal
- */
-
-function isLetter(code) {
-  return (
-    (code >= 0x0061 && code <= 0x007a) || // A-Z
-    (code >= 0x0041 && code <= 0x005a) // a-z
-  );
-}
-/**
- * ```
- * NameStart ::
- *   - Letter
- *   - `_`
- * ```
- * @internal
- */
-
-function isNameStart(code) {
-  return isLetter(code) || code === 0x005f;
-}
-/**
- * ```
- * NameContinue ::
- *   - Letter
- *   - Digit
- *   - `_`
- * ```
- * @internal
- */
-
-function isNameContinue(code) {
-  return isLetter(code) || isDigit(code) || code === 0x005f;
-}
-
-
-/***/ },
-
-/***/ 7015
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   b: () => (/* binding */ Kind)
-/* harmony export */ });
-/** @category Kinds */
-
-/** The set of allowed kind values for AST nodes. */
-var Kind;
-
-(function (Kind) {
-  Kind['NAME'] = 'Name';
-  Kind['DOCUMENT'] = 'Document';
-  Kind['OPERATION_DEFINITION'] = 'OperationDefinition';
-  Kind['VARIABLE_DEFINITION'] = 'VariableDefinition';
-  Kind['SELECTION_SET'] = 'SelectionSet';
-  Kind['FIELD'] = 'Field';
-  Kind['ARGUMENT'] = 'Argument';
-  Kind['FRAGMENT_SPREAD'] = 'FragmentSpread';
-  Kind['INLINE_FRAGMENT'] = 'InlineFragment';
-  Kind['FRAGMENT_DEFINITION'] = 'FragmentDefinition';
-  Kind['VARIABLE'] = 'Variable';
-  Kind['INT'] = 'IntValue';
-  Kind['FLOAT'] = 'FloatValue';
-  Kind['STRING'] = 'StringValue';
-  Kind['BOOLEAN'] = 'BooleanValue';
-  Kind['NULL'] = 'NullValue';
-  Kind['ENUM'] = 'EnumValue';
-  Kind['LIST'] = 'ListValue';
-  Kind['OBJECT'] = 'ObjectValue';
-  Kind['OBJECT_FIELD'] = 'ObjectField';
-  Kind['DIRECTIVE'] = 'Directive';
-  Kind['NAMED_TYPE'] = 'NamedType';
-  Kind['LIST_TYPE'] = 'ListType';
-  Kind['NON_NULL_TYPE'] = 'NonNullType';
-  Kind['SCHEMA_DEFINITION'] = 'SchemaDefinition';
-  Kind['OPERATION_TYPE_DEFINITION'] = 'OperationTypeDefinition';
-  Kind['SCALAR_TYPE_DEFINITION'] = 'ScalarTypeDefinition';
-  Kind['OBJECT_TYPE_DEFINITION'] = 'ObjectTypeDefinition';
-  Kind['FIELD_DEFINITION'] = 'FieldDefinition';
-  Kind['INPUT_VALUE_DEFINITION'] = 'InputValueDefinition';
-  Kind['INTERFACE_TYPE_DEFINITION'] = 'InterfaceTypeDefinition';
-  Kind['UNION_TYPE_DEFINITION'] = 'UnionTypeDefinition';
-  Kind['ENUM_TYPE_DEFINITION'] = 'EnumTypeDefinition';
-  Kind['ENUM_VALUE_DEFINITION'] = 'EnumValueDefinition';
-  Kind['INPUT_OBJECT_TYPE_DEFINITION'] = 'InputObjectTypeDefinition';
-  Kind['DIRECTIVE_DEFINITION'] = 'DirectiveDefinition';
-  Kind['SCHEMA_EXTENSION'] = 'SchemaExtension';
-  Kind['DIRECTIVE_EXTENSION'] = 'DirectiveExtension';
-  Kind['SCALAR_TYPE_EXTENSION'] = 'ScalarTypeExtension';
-  Kind['OBJECT_TYPE_EXTENSION'] = 'ObjectTypeExtension';
-  Kind['INTERFACE_TYPE_EXTENSION'] = 'InterfaceTypeExtension';
-  Kind['UNION_TYPE_EXTENSION'] = 'UnionTypeExtension';
-  Kind['ENUM_TYPE_EXTENSION'] = 'EnumTypeExtension';
-  Kind['INPUT_OBJECT_TYPE_EXTENSION'] = 'InputObjectTypeExtension';
-  Kind['TYPE_COORDINATE'] = 'TypeCoordinate';
-  Kind['MEMBER_COORDINATE'] = 'MemberCoordinate';
-  Kind['ARGUMENT_COORDINATE'] = 'ArgumentCoordinate';
-  Kind['DIRECTIVE_COORDINATE'] = 'DirectiveCoordinate';
-  Kind['DIRECTIVE_ARGUMENT_COORDINATE'] = 'DirectiveArgumentCoordinate';
-})(Kind || (Kind = {}));
-
-
-/**
- * Deprecated legacy alias for the enum type representing the possible kind
- * values of AST nodes. This alias will be removed in v17. In v17, `Kind` is
- * exported as the single public symbol for both the runtime object and the
- * corresponding TypeScript type.
- * @deprecated Will be removed in v17. In v17, use `Kind` as both the runtime
- * value and the type.
- */
-
-
-/***/ },
-
-/***/ 7424
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   T: () => (/* binding */ printString)
-/* harmony export */ });
-/**
- * Prints a string as a GraphQL StringValue literal. Replaces control characters
- * and excluded characters (" U+0022 and \\ U+005C) with escape sequences.
- *
- * @internal
- */
-function printString(str) {
-  return `"${str.replace(escapedRegExp, escapedReplacer)}"`;
-}
-/** @internal */
-// eslint-disable-next-line no-control-regex
-
-const escapedRegExp = /[\x00-\x1f\x22\x5c\x7f-\x9f]/g;
-
-function escapedReplacer(str) {
-  return escapeSequences[str.charCodeAt(0)];
-} // prettier-ignore
-
-const escapeSequences = (/* runtime-dependent pure expression or super */ /^(250|49|6|748|792|888)$/.test(__webpack_require__.j) ? ([
-  '\\u0000',
-  '\\u0001',
-  '\\u0002',
-  '\\u0003',
-  '\\u0004',
-  '\\u0005',
-  '\\u0006',
-  '\\u0007',
-  '\\b',
-  '\\t',
-  '\\n',
-  '\\u000B',
-  '\\f',
-  '\\r',
-  '\\u000E',
-  '\\u000F',
-  '\\u0010',
-  '\\u0011',
-  '\\u0012',
-  '\\u0013',
-  '\\u0014',
-  '\\u0015',
-  '\\u0016',
-  '\\u0017',
-  '\\u0018',
-  '\\u0019',
-  '\\u001A',
-  '\\u001B',
-  '\\u001C',
-  '\\u001D',
-  '\\u001E',
-  '\\u001F',
-  '',
-  '',
-  '\\"',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '', // 2F
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '', // 3F
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '', // 4F
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '\\\\',
-  '',
-  '',
-  '', // 5F
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '', // 6F
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '',
-  '\\u007F',
-  '\\u0080',
-  '\\u0081',
-  '\\u0082',
-  '\\u0083',
-  '\\u0084',
-  '\\u0085',
-  '\\u0086',
-  '\\u0087',
-  '\\u0088',
-  '\\u0089',
-  '\\u008A',
-  '\\u008B',
-  '\\u008C',
-  '\\u008D',
-  '\\u008E',
-  '\\u008F',
-  '\\u0090',
-  '\\u0091',
-  '\\u0092',
-  '\\u0093',
-  '\\u0094',
-  '\\u0095',
-  '\\u0096',
-  '\\u0097',
-  '\\u0098',
-  '\\u0099',
-  '\\u009A',
-  '\\u009B',
-  '\\u009C',
-  '\\u009D',
-  '\\u009E',
-  '\\u009F',
-]) : null);
-
-
-/***/ },
-
-/***/ 92904
-(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
-
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   YR: () => (/* binding */ visit),
-/* harmony export */   sP: () => (/* binding */ BREAK)
-/* harmony export */ });
-/* unused harmony exports visitInParallel, getEnterLeaveForKind, getVisitFn */
-/* unused harmony import specifier */ var Kind;
-if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _jsutils_devAssert_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(80785);
-}
-if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _jsutils_inspect_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(19342);
-}
-if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _ast_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(87202);
-}
-if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _kinds_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(7015);
-}
-/** @category Visiting */
-
-
-
-
-/** A visitor defines the callbacks called during AST traversal. */
-
-/** A value that can be returned from a visitor function to stop traversal. */
-const BREAK = Object.freeze({});
-/**
- * visit() will walk through an AST using a depth-first traversal, calling
- * the visitor's enter function at each node in the traversal, and calling the
- * leave function after visiting that node and all of its child nodes.
- *
- * By returning different values from the enter and leave functions, the
- * behavior of the visitor can be altered, including skipping over a sub-tree of
- * the AST (by returning false), editing the AST by returning a value or null
- * to remove the value, or to stop the whole traversal by returning BREAK.
- *
- * When using visit() to edit an AST, the original AST will not be modified, and
- * a new version of the AST with the changes applied will be returned from the
- * visit function.
- * @param root - The AST node at which to start traversal.
- * @param visitor - The visitor or reducer functions to call while traversing.
- * @param visitorKeys - Optional map of child keys to visit for each AST node kind.
- * @returns The original AST, an edited AST, or a reduced value depending on the visitor.
- * @typeParam N - The root AST node type returned when visiting without reducing.
- * @example
- * ```ts
- * // Return values control traversal: undefined makes no change, false skips
- * // a subtree, BREAK stops traversal, null removes a node, and any other
- * // value replaces the current node.
- * import { Kind, parse, print, visit } from 'graphql/language';
- *
- * const document = parse('{ hero { name } }');
- * const editedAST = visit(document, {
- *   Field: (node) => {
- *     if (node.name.value === 'hero') {
- *       return {
- *         ...node,
- *         name: { kind: Kind.NAME, value: 'human' },
- *       };
- *     }
- *   },
- * });
- *
- * print(editedAST); // => '{\n  human {\n    name\n  }\n}'
- * ```
- * @example
- * ```ts
- * // A named visitor function runs when entering nodes of that kind.
- * import { parse, visit } from 'graphql/language';
- *
- * const document = parse('{ hero { name } }');
- * const fieldNames = [];
- *
- * visit(document, {
- *   Field: (node) => {
- *     fieldNames.push(node.name.value);
- *   },
- * });
- *
- * fieldNames; // => ['hero', 'name']
- * ```
- * @example
- * ```ts
- * // A named visitor object can provide separate enter and leave handlers for
- * // nodes of that kind.
- * import { parse, visit } from 'graphql/language';
- *
- * const document = parse('{ hero { name } }');
- * const events = [];
- *
- * visit(document, {
- *   Field: {
- *     enter: (node) => {
- *       events.push(`enter:${node.name.value}`);
- *     },
- *     leave: (node) => {
- *       events.push(`leave:${node.name.value}`);
- *     },
- *   },
- * });
- *
- * events; // => ['enter:hero', 'enter:name', 'leave:name', 'leave:hero']
- * ```
- * @example
- * ```ts
- * // Generic enter and leave handlers run for every node.
- * import { parse, visit } from 'graphql/language';
- *
- * const document = parse('{ hero { name } }');
- * let enterCount = 0;
- * let leaveCount = 0;
- *
- * visit(document, {
- *   enter: (node) => {
- *     enterCount += 1;
- *   },
- *   leave: (node) => {
- *     leaveCount += 1;
- *   },
- * });
- *
- * enterCount; // => leaveCount
- * enterCount > 0; // => true
- * ```
- */
-
-/** @internal */
-function visit(root, visitor, visitorKeys = _ast_mjs__WEBPACK_IMPORTED_MODULE_2__/* .QueryDocumentKeys */ .aD) {
-  const enterLeaveMap = new Map();
-
-  for (const kind of Object.values(_kinds_mjs__WEBPACK_IMPORTED_MODULE_3__/* .Kind */ .b)) {
-    enterLeaveMap.set(kind, getEnterLeaveForKind(visitor, kind));
-  }
-  /* eslint-disable no-undef-init */
-
-  let stack = undefined;
-  let inArray = Array.isArray(root);
-  let keys = [root];
-  let index = -1;
-  let edits = [];
-  let node = root;
-  let key = undefined;
-  let parent = undefined;
-  const path = [];
-  const ancestors = [];
-  /* eslint-enable no-undef-init */
-
-  do {
-    index++;
-    const isLeaving = index === keys.length;
-    const isEdited = isLeaving && edits.length !== 0;
-
-    if (isLeaving) {
-      key = ancestors.length === 0 ? undefined : path[path.length - 1];
-      node = parent;
-      parent = ancestors.pop();
-
-      if (isEdited) {
-        if (inArray) {
-          node = node.slice();
-          let editOffset = 0;
-
-          for (const [editKey, editValue] of edits) {
-            const arrayKey = editKey - editOffset;
-
-            if (editValue === null) {
-              node.splice(arrayKey, 1);
-              editOffset++;
-            } else {
-              node[arrayKey] = editValue;
-            }
-          }
-        } else {
-          node = { ...node };
-
-          for (const [editKey, editValue] of edits) {
-            node[editKey] = editValue;
-          }
-        }
-      }
-
-      index = stack.index;
-      keys = stack.keys;
-      edits = stack.edits;
-      inArray = stack.inArray;
-      stack = stack.prev;
-    } else if (parent) {
-      key = inArray ? index : keys[index];
-      node = parent[key];
-
-      if (node === null || node === undefined) {
-        continue;
-      }
-
-      path.push(key);
-    }
-
-    let result;
-
-    if (!Array.isArray(node)) {
-      var _enterLeaveMap$get, _enterLeaveMap$get2;
-
-      (0,_ast_mjs__WEBPACK_IMPORTED_MODULE_2__/* .isNode */ .Ll)(node) || (0,_jsutils_devAssert_mjs__WEBPACK_IMPORTED_MODULE_0__/* .devAssert */ .U)(false, `Invalid AST Node: ${(0,_jsutils_inspect_mjs__WEBPACK_IMPORTED_MODULE_1__/* .inspect */ .N)(node)}.`);
-      const visitFn = isLeaving
-        ? (_enterLeaveMap$get = enterLeaveMap.get(node.kind)) === null ||
-          _enterLeaveMap$get === void 0
-          ? void 0
-          : _enterLeaveMap$get.leave
-        : (_enterLeaveMap$get2 = enterLeaveMap.get(node.kind)) === null ||
-          _enterLeaveMap$get2 === void 0
-        ? void 0
-        : _enterLeaveMap$get2.enter;
-      result =
-        visitFn === null || visitFn === void 0
-          ? void 0
-          : visitFn.call(visitor, node, key, parent, path, ancestors);
-
-      if (result === BREAK) {
-        break;
-      }
-
-      if (result === false) {
-        if (!isLeaving) {
-          path.pop();
-          continue;
-        }
-      } else if (result !== undefined) {
-        edits.push([key, result]);
-
-        if (!isLeaving) {
-          if ((0,_ast_mjs__WEBPACK_IMPORTED_MODULE_2__/* .isNode */ .Ll)(result)) {
-            node = result;
-          } else {
-            path.pop();
-            continue;
-          }
-        }
-      }
-    }
-
-    if (result === undefined && isEdited) {
-      edits.push([key, node]);
-    }
-
-    if (isLeaving) {
-      path.pop();
-    } else {
-      var _node$kind;
-
-      stack = {
-        inArray,
-        index,
-        keys,
-        edits,
-        prev: stack,
-      };
-      inArray = Array.isArray(node);
-      keys = inArray
-        ? node
-        : (_node$kind = visitorKeys[node.kind]) !== null &&
-          _node$kind !== void 0
-        ? _node$kind
-        : [];
-      index = -1;
-      edits = [];
-
-      if (parent) {
-        ancestors.push(parent);
-      }
-
-      parent = node;
-    }
-  } while (stack !== undefined);
-
-  if (edits.length !== 0) {
-    // New root
-    return edits[edits.length - 1][1];
-  }
-
-  return root;
-}
-/**
- * Creates a new visitor instance which delegates to many visitors to run in
- * parallel. Each visitor will be visited for each node before moving on.
- *
- * If a prior visitor edits a node, no following visitors will see that node.
- * @param visitors - The visitors to merge into one parallel visitor.
- * @returns A visitor that delegates traversal to each provided visitor.
- * @example
- * ```ts
- * import { parse, visit, visitInParallel } from 'graphql/language';
- *
- * const document = parse('{ hero { name } }');
- * const events = [];
- *
- * visit(
- *   document,
- *   visitInParallel([
- *     { Field: (node) => { events.push(`field:${node.name.value}`); } },
- *     { Name: (node) => { events.push(`name:${node.value}`); } },
- *   ]),
- * );
- *
- * events; // => ['field:hero', 'name:hero', 'field:name', 'name:name']
- * ```
- */
-
-function visitInParallel(visitors) {
-  const skipping = new Array(visitors.length).fill(null);
-  const mergedVisitor = Object.create(null);
-
-  for (const kind of Object.values(Kind)) {
-    let hasVisitor = false;
-    const enterList = new Array(visitors.length).fill(undefined);
-    const leaveList = new Array(visitors.length).fill(undefined);
-
-    for (let i = 0; i < visitors.length; ++i) {
-      const { enter, leave } = getEnterLeaveForKind(visitors[i], kind);
-      hasVisitor || (hasVisitor = enter != null || leave != null);
-      enterList[i] = enter;
-      leaveList[i] = leave;
-    }
-
-    if (!hasVisitor) {
-      continue;
-    }
-
-    const mergedEnterLeave = {
-      enter(...args) {
-        const node = args[0];
-
-        for (let i = 0; i < visitors.length; i++) {
-          if (skipping[i] === null) {
-            var _enterList$i;
-
-            const result =
-              (_enterList$i = enterList[i]) === null || _enterList$i === void 0
-                ? void 0
-                : _enterList$i.apply(visitors[i], args);
-
-            if (result === false) {
-              skipping[i] = node;
-            } else if (result === BREAK) {
-              skipping[i] = BREAK;
-            } else if (result !== undefined) {
-              return result;
-            }
-          }
-        }
-      },
-
-      leave(...args) {
-        const node = args[0];
-
-        for (let i = 0; i < visitors.length; i++) {
-          if (skipping[i] === null) {
-            var _leaveList$i;
-
-            const result =
-              (_leaveList$i = leaveList[i]) === null || _leaveList$i === void 0
-                ? void 0
-                : _leaveList$i.apply(visitors[i], args);
-
-            if (result === BREAK) {
-              skipping[i] = BREAK;
-            } else if (result !== undefined && result !== false) {
-              return result;
-            }
-          } else if (skipping[i] === node) {
-            skipping[i] = null;
-          }
-        }
-      },
-    };
-    mergedVisitor[kind] = mergedEnterLeave;
-  }
-
-  return mergedVisitor;
-}
-/**
- * Given a visitor instance and a node kind, return EnterLeaveVisitor for that kind.
- * @param visitor - The visitor object to inspect.
- * @param kind - The AST node kind to resolve handlers for.
- * @returns The enter and leave handlers that apply for the given node kind.
- * @example
- * ```ts
- * import { Kind, getEnterLeaveForKind } from 'graphql/language';
- *
- * const handlers = getEnterLeaveForKind({ Field: () => {} }, Kind.FIELD);
- *
- * typeof handlers.enter; // => 'function'
- * handlers.leave; // => undefined
- * ```
- */
-
-function getEnterLeaveForKind(visitor, kind) {
-  const kindVisitor = visitor[kind];
-
-  if (typeof kindVisitor === 'object') {
-    // { Kind: { enter() {}, leave() {} } }
-    return kindVisitor;
-  } else if (typeof kindVisitor === 'function') {
-    // { Kind() {} }
-    return {
-      enter: kindVisitor,
-      leave: undefined,
-    };
-  } // { enter() {}, leave() {} }
-
-  return {
-    enter: visitor.enter,
-    leave: visitor.leave,
-  };
-}
-/**
- * Given a visitor instance, if it is leaving or not, and a node kind, return
- * the function the visitor runtime should call. This deprecated compatibility
- * helper delegates to `getEnterLeaveForKind`; call `getEnterLeaveForKind`
- * directly because getVisitFn will be removed in v17.
- * @param visitor - The visitor object to inspect.
- * @param kind - The AST node kind to resolve a handler for.
- * @param isLeaving - Whether to resolve the leave handler instead of the enter handler.
- * @returns The visit function that applies for the given node kind and traversal phase, if one exists.
- * @example
- * ```ts
- * import { Kind, getVisitFn } from 'graphql/language';
- *
- * const enter = getVisitFn({ Field: () => {} }, Kind.FIELD, false);
- * const leave = getVisitFn({ Field: () => {} }, Kind.FIELD, true);
- *
- * typeof enter; // => 'function'
- * leave; // => undefined
- * ```
- * @category Visiting
- * @deprecated Please use `getEnterLeaveForKind` instead. Will be removed in v17
- */
-
-/* c8 ignore next 8 */
-
-function getVisitFn(visitor, kind, isLeaving) {
-  const { enter, leave } = getEnterLeaveForKind(visitor, kind);
-  return isLeaving ? leave : enter;
-}
-
 
 /***/ },
 
@@ -71875,8 +70929,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   FetchError: () => (/* binding */ FetchError),
 /* harmony export */   Headers: () => (/* binding */ Headers),
 /* harmony export */   Request: () => (/* binding */ Request),
-/* harmony export */   Response: () => (/* binding */ Response),
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   Response: () => (/* binding */ Response)
 /* harmony export */ });
 /* harmony import */ var stream__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(80702);
 /* harmony import */ var http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(53782);
@@ -73659,6 +72712,10 @@ fetch.Promise = global.Promise;
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((/* runtime-dependent pure expression or super */ /^(250|49|6|748|792|888)$/.test(__webpack_require__.j) ? (fetch) : null));
 
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "default", 0, /* export default binding */ __WEBPACK_DEFAULT_EXPORT__
+/* harmony export */ ]);
 
 
 /***/ },
@@ -75542,6 +74599,444 @@ class Matcher {
 
 /***/ },
 
+/***/ 19580
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  A: () => (/* binding */ toNumber)
+});
+
+;// ./node_modules/.pnpm/anynum@1.0.1/node_modules/anynum/digitTable.js
+/**
+ * Flat lookup table: maps Unicode code point → ASCII digit (0-9).
+ * Only decimal digit characters (Unicode category Nd) are included.
+ *
+ * Strategy: Int32Array of size (maxCodePoint - minCodePoint + 1).
+ * Value 0xFF means "not a digit". Value 0-9 is the ASCII digit value.
+ * This gives O(1) lookup with no branching, no bisect, no loop.
+ *
+ * Memory: range is 0x0660 to 0x1FBF0 → ~129,936 entries × 1 byte = ~127 KB.
+ * Acceptable for a one-time init; lookup is a single array index.
+ */
+
+// All known Unicode Nd (decimal digit) script zero code points.
+// Each script has exactly 10 consecutive digits: zero+0 .. zero+9.
+const SCRIPT_ZEROS = [
+  // Basic Latin (ASCII) — included for completeness / pass-through
+  0x0030, // 0-9
+
+  // Arabic scripts
+  0x0660, // Arabic-Indic ٠١٢٣٤٥٦٧٨٩
+  0x06F0, // Extended Arabic-Indic (Urdu/Persian/Sindhi) ۰۱۲۳
+
+  // Indic scripts
+  0x0966, // Devanagari ०१२३४५६७८९
+  0x09E6, // Bengali ০১২৩৪৫৬৭৮৯
+  0x0A66, // Gurmukhi ੦੧੨੩੪੫੬੭੮੯
+  0x0AE6, // Gujarati ૦૧૨૩૪૫૬૭૮૯
+  0x0B66, // Odia ୦୧୨୩୪୫୬୭୮୯
+  0x0BE6, // Tamil ௦௧௨௩௪௫௬௭௮௯
+  0x0C66, // Telugu ౦౧౨౩౪౫౬౭౮౯
+  0x0CE6, // Kannada ೦೧೨೩೪೫೬೭೮೯
+  0x0D66, // Malayalam ൦൧൨൩൪൫൬൭൮൯
+  0x0DE6, // Sinhala Archaic ෦෧෨෩෪෫෬෭෮෯
+
+  // Southeast Asian scripts
+  0x0E50, // Thai ๐๑๒๓๔๕๖๗๘๙
+  0x0ED0, // Lao ໐໑໒໓໔໕໖໗໘໙
+  0x0F20, // Tibetan ༠༡༢༣༤༥༦༧༨༩
+  0x1040, // Myanmar ၀၁၂၃၄၅၆၇၈၉
+  0x1090, // Myanmar Shan ႐႑႒႓႔႕႖႗႘႙
+  0x17E0, // Khmer ០១២៣៤៥៦៧៨៩
+  0x1810, // Mongolian ᠐᠑᠒᠓᠔᠕᠖᠗᠘᠙
+  0x1946, // Limbu ᥆᥇᥈᥉᥊᥋᥌᥍᥎᥏
+  0x19D0, // New Tai Lue ᧐᧑᧒᧓᧔᧕᧖᧗᧘᧙
+  0x1A80, // Tai Tham Hora ᪀᪁᪂᪃᪄᪅᪆᪇᪈᪉
+  0x1A90, // Tai Tham Tham ᪐᪑᪒᪓᪔᪕᪖᪗᪘᪙
+  0x1B50, // Balinese ᭐᭑᭒᭓᭔᭕᭖᭗᭘᭙
+  0x1BB0, // Sundanese ᮰᮱᮲᮳᮴᮵᮶᮷᮸᮹
+  0x1C40, // Lepcha ᱀᱁᱂᱃᱄᱅᱆᱇᱈᱉
+  0x1C50, // Ol Chiki ᱐᱑᱒᱓᱔᱕᱖᱗᱘᱙
+
+  // Fullwidth (CJK context)
+  0xFF10, // Fullwidth ０１２３４５６７８９
+
+  // Mathematical digit variants (Unicode math block)
+  0x1D7CE, // Mathematical Bold
+  0x1D7D8, // Mathematical Double-Struck
+  0x1D7E2, // Mathematical Sans-Serif
+  0x1D7EC, // Mathematical Sans-Serif Bold
+  0x1D7F6, // Mathematical Monospace
+
+  // Other scripts
+  0x104A0, // Osmanya 𐒠𐒡𐒢𐒣𐒤𐒥𐒦𐒧𐒨𐒩
+  0x10D30, // Hanifi Rohingya 𐴰𐴱𐴲𐴳𐴴𐴵𐴶𐴷𐴸𐴹
+  0x11066, // Brahmi 𑁦𑁧𑁨𑁩𑁪𑁫𑁬𑁭𑁮𑁯
+  0x110F0, // Sora Sompeng 𑃰𑃱𑃲𑃳𑃴𑃵𑃶𑃷𑃸𑃹
+  0x11136, // Chakma 𑄶𑄷𑄸𑄹𑄺𑄻𑄼𑄽𑄾𑄿
+  0x111D0, // Sharada 𑇐𑇑𑇒𑇓𑇔𑇕𑇖𑇗𑇘𑇙
+  0x112F0, // Khudawadi 𑋰𑋱𑋲𑋳𑋴𑋵𑋶𑋷𑋸𑋹
+  0x11450, // Newa 𑑐𑑑𑑒𑑓𑑔𑑕𑑖𑑗𑑘𑑙
+  0x114D0, // Tirhuta 𑓐𑓑𑓒𑓓𑓔𑓕𑓖𑓗𑓘𑓙
+  0x11650, // Modi 𑙐𑙑𑙒𑙓𑙔𑙕𑙖𑙗𑙘𑙙
+  0x116C0, // Takri 𑛀𑛁𑛂𑛃𑛄𑛅𑛆𑛇𑛈𑛉
+  0x11730, // Ahom 𑜰𑜱𑜲𑜳𑜴𑜵𑜶𑜷𑜸𑜹
+  0x118E0, // Warang Citi 𑣠𑣡𑣢𑣣𑣤𑣥𑣦𑣧𑣨𑣩
+  0x11950, // Dives Akuru 𑥐𑥑𑥒𑥓𑥔𑥕𑥖𑥗𑥘𑥙
+  0x11BF0, // Khitan Small Script 𑯰𑯱𑯲𑯳𑯴𑯵𑯶𑯷𑯸𑯹
+  0x11C50, // Bhaiksuki 𑱐𑱑𑱒𑱓𑱔𑱕𑱖𑱗𑱘𑱙
+  0x11D50, // Masaram Gondi 𑵐𑵑𑵒𑵓𑵔𑵕𑵖𑵗𑵘𑵙
+  0x11DA0, // Gunjala Gondi 𑶠𑶡𑶢𑶣𑶤𑶥𑶦𑶧𑶨𑶩
+  0x11F50, // Kawi 𑽐𑽑𑽒𑽓𑽔𑽕𑽖𑽗𑽘𑽙
+  0x16A60, // Mro 𖩠𖩡𖩢𖩣𖩤𖩥𖩦𖩧𖩨𖩩
+  0x16AC0, // Tangsa 𖫀𖫁𖫂𖫃𖫄𖫅𖫆𖫇𖫈𖫉
+  0x16B50, // Pahawh Hmong 𖭐𖭑𖭒𖭓𖭔𖭕𖭖𖭗𖭘𖭙
+  0x1E140, // Nyiakeng Puachue Hmong 𞅀𞅁𞅂𞅃𞅄𞅅𞅆𞅇𞅈𞅉
+  0x1E2F0, // Wancho 𞋰𞋱𞋲𞋳𞋴𞋵𞋶𞋷𞋸𞋹
+  0x1E4F0, // Nag Mundari 𞓰𞓱𞓲𞓳𞓴𞓵𞓶𞓷𞓸𞓹
+  0x1E950, // Adlam 𞥐𞥑𞥒𞥓𞥔𞥕𞥖𞥗𞥘𞥙
+  0x1FBF0, // Segmented digit symbols 🯰🯱🯲🯳🯴🯵🯶🯷🯸🯹
+];
+
+// Build a sparse Map for scripts above 0xFFFF (surrogate-pair range).
+// These can't go into a flat Uint8Array indexed by code point efficiently.
+const NOT_DIGIT = 0xFF;
+const HIGH_MAP = new Map(); // codePoint → digit value (0-9)
+
+const LOW_MAX = 0xFFFF;
+const LOW_MIN = 0x0660; // first non-ASCII digit script
+
+// Flat Uint8Array covering 0x0660 .. 0xFFFF
+const TABLE_OFFSET = LOW_MIN;
+const TABLE_SIZE = LOW_MAX - LOW_MIN + 1;
+const TABLE = new Uint8Array(TABLE_SIZE).fill(NOT_DIGIT);
+
+for (const zero of SCRIPT_ZEROS) {
+  for (let d = 0; d < 10; d++) {
+    const cp = zero + d;
+    if (cp <= LOW_MAX) {
+      TABLE[cp - TABLE_OFFSET] = d;
+    } else {
+      HIGH_MAP.set(cp, d);
+    }
+  }
+}
+
+
+
+;// ./node_modules/.pnpm/anynum@1.0.1/node_modules/anynum/anynum.js
+
+
+
+
+const CHAR_0 = 48; // '0'.charCodeAt(0)
+const CHAR_9 = 57; // '9'.charCodeAt(0)
+const CHAR_MINUS = 45; // '-'.charCodeAt(0)
+
+// Unicode minus/hyphen variants worth normalizing to ASCII '-' in numeric context:
+//   U+2212  MINUS SIGN       − (mathematically correct minus)
+//   U+FF0D  FULLWIDTH HYPHEN-MINUS  － (Japanese fullwidth context)
+//   U+FE63  SMALL HYPHEN-MINUS     ﹣ (small form variant)
+//
+// NOT normalized (deliberate):
+//   U+2013  EN DASH  –  (punctuation, not a numeric sign)
+//   U+2014  EM DASH  —  (punctuation)
+//   U+2010  HYPHEN   ‐  (typographic hyphen)
+//
+// Rationale: only characters a human or locale formatter would plausibly use
+// as a numeric minus sign are normalized. Dashes used for punctuation are left
+// alone to avoid mangling non-numeric strings.
+const MINUS_SET = new Set([0x2212, 0xFF0D, 0xFE63]);
+
+/**
+ * Normalize all Unicode decimal digit characters in a string to ASCII (0-9),
+ * and normalize Unicode minus variants to ASCII '-' (U+002D).
+ *
+ * Non-digit, non-minus characters are passed through unchanged.
+ *
+ * Performance design:
+ * - Fast path: if the string has no convertible characters, return it unchanged
+ *   (zero allocation).
+ * - BMP digits (0x0660..0xFFFF excl. surrogates): flat Uint8Array lookup (O(1)).
+ * - Supplementary plane digits (> 0xFFFF, encoded as surrogate pairs): Map lookup.
+ * - Minus variants: checked inline with a small fixed Set.
+ *
+ * @param {string} str
+ * @returns {string}
+ */
+function anynum(str) {
+  if (typeof str !== 'string') return str;
+
+  const len = str.length;
+  if (len === 0) return str;
+
+  // Scan for first character needing conversion.
+  // If none found, return original string (zero allocation).
+  let firstHit = -1;
+
+  for (let i = 0; i < len; i++) {
+    const cc = str.charCodeAt(i);
+
+    // ASCII digit or ASCII minus — already normalized, skip fast
+    if ((cc >= CHAR_0 && cc <= CHAR_9) || cc === CHAR_MINUS) continue;
+
+    // Below first unicode digit script — check minus variants only
+    if (cc < (/* inlined export .TABLE_OFFSET */1632)) {
+      if (MINUS_SET.has(cc)) { firstHit = i; break; }
+      continue;
+    }
+
+    // Surrogate pairs live in BMP range 0xD800-0xDFFF — check before TABLE
+    if (cc >= 0xD800 && cc <= 0xDBFF) {
+      if (i + 1 < len) {
+        const low = str.charCodeAt(i + 1);
+        if (low >= 0xDC00 && low <= 0xDFFF) {
+          const cp = 0x10000 + ((cc - 0xD800) << 10) + (low - 0xDC00);
+          if (HIGH_MAP.has(cp)) { firstHit = i; break; }
+        }
+      }
+      continue;
+    }
+
+    // BMP non-surrogate: flat table lookup; also check minus variants in this range
+    if (TABLE[cc - (/* inlined export .TABLE_OFFSET */1632)] !== (/* inlined export .NOT_DIGIT */255) || MINUS_SET.has(cc)) {
+      firstHit = i;
+      break;
+    }
+  }
+
+  // Nothing to replace — return original, zero allocation
+  if (firstHit === -1) return str;
+
+  // Build result: copy unchanged prefix, then convert from firstHit onward
+  const chars = [];
+
+  if (firstHit > 0) chars.push(str.slice(0, firstHit));
+
+  for (let i = firstHit; i < len; i++) {
+    const cc = str.charCodeAt(i);
+
+    // ASCII digit or ASCII minus — pass through
+    if ((cc >= CHAR_0 && cc <= CHAR_9) || cc === CHAR_MINUS) {
+      chars.push(str[i]);
+      continue;
+    }
+
+    // Below TABLE_OFFSET — check minus variants, else pass through
+    if (cc < (/* inlined export .TABLE_OFFSET */1632)) {
+      chars.push(MINUS_SET.has(cc) ? '-' : str[i]);
+      continue;
+    }
+
+    // Surrogate pairs
+    if (cc >= 0xD800 && cc <= 0xDBFF) {
+      if (i + 1 < len) {
+        const low = str.charCodeAt(i + 1);
+        if (low >= 0xDC00 && low <= 0xDFFF) {
+          const cp = 0x10000 + ((cc - 0xD800) << 10) + (low - 0xDC00);
+          const d = HIGH_MAP.get(cp);
+          if (d !== undefined) {
+            chars.push(String.fromCharCode(d + 48));
+            i++; // consume low surrogate
+            continue;
+          }
+        }
+      }
+      chars.push(str[i]);
+      continue;
+    }
+
+    // BMP non-surrogate: flat table lookup + minus variants
+    if (MINUS_SET.has(cc)) {
+      chars.push('-');
+      continue;
+    }
+    const d = TABLE[cc - (/* inlined export .TABLE_OFFSET */1632)];
+    chars.push(d !== (/* inlined export .NOT_DIGIT */255) ? String.fromCharCode(d + 48) : str[i]);
+  }
+
+  return chars.join('');
+}
+
+
+/* harmony default export */ const anynum_anynum = (anynum);
+;// ./node_modules/.pnpm/strnum@2.4.1/node_modules/strnum/strnum.js
+const hexRegex = /^[-+]?0x[a-fA-F0-9]+$/;
+const binRegex = /^0b[01]+$/;
+const octRegex = /^0o[0-7]+$/;
+const numRegex = /^([\-\+])?(0*)([0-9]*(\.[0-9]*)?)$/;
+
+
+
+const consider = {
+    hex: true,
+    binary: false,
+    octal: false,
+    leadingZeros: true,
+    decimalPoint: "\.",
+    eNotation: true,
+    //skipLike: /regex/,
+    infinity: "original", // "null", "infinity" (Infinity type), "string" ("Infinity" (the string literal))
+    unicode: false,
+};
+
+function toNumber(str, options = {}) {
+    options = Object.assign({}, consider, options);
+    if (!str || typeof str !== "string") return str;
+
+    let trimmedStr = str.trim();
+
+    if (trimmedStr.length === 0) return str;
+    else if (options.skipLike !== undefined && options.skipLike.test(trimmedStr)) return str;
+    else if (trimmedStr === "0") return 0;
+
+    if (options.unicode) {
+        trimmedStr = anynum_anynum(trimmedStr);
+        if (trimmedStr === "0") return 0; // re-check after normalization
+    }
+    if (options.hex && hexRegex.test(trimmedStr)) {
+        return parse_int(trimmedStr, 16);
+    } else if (options.binary && binRegex.test(trimmedStr)) {
+        return parse_int(trimmedStr, 2);
+    } else if (options.octal && octRegex.test(trimmedStr)) {
+        return parse_int(trimmedStr, 8);
+    } else if (!isFinite(trimmedStr)) { //Infinity
+        return handleInfinity(str, Number(trimmedStr), options);
+    } else if (trimmedStr.includes('e') || trimmedStr.includes('E')) { //eNotation
+        return resolveEnotation(str, trimmedStr, options);
+    } else {
+        //separate negative sign, leading zeros, and rest number
+        const match = numRegex.exec(trimmedStr);
+        // +00.123 => [ , '+', '00', '.123', ..
+        if (match) {
+            const sign = match[1] || "";
+            const leadingZeros = match[2];
+            let numTrimmedByZeros = trimZeros(match[3]); //complete num without leading zeros
+            const decimalAdjacentToLeadingZeros = sign ? // 0., -00., 000.
+                str[leadingZeros.length + 1] === "."
+                : str[leadingZeros.length] === ".";
+
+            //trim ending zeros for floating number
+            if (!options.leadingZeros //leading zeros are not allowed
+                && (leadingZeros.length > 1
+                    || (leadingZeros.length === 1 && !decimalAdjacentToLeadingZeros))) {
+                // 00, 00.3, +03.24, 03, 03.24
+                return str;
+            }
+            else {//no leading zeros or leading zeros are allowed
+                const num = Number(trimmedStr);
+                const parsedStr = String(num);
+
+                if (num === 0) return num;
+                if (parsedStr.search(/[eE]/) !== -1) { //given number is long and parsed to eNotation
+                    if (options.eNotation) return num;
+                    else return str;
+                } else if (trimmedStr.indexOf(".") !== -1) { //floating number
+                    if (parsedStr === "0") return num; //0.0
+                    else if (parsedStr === numTrimmedByZeros) return num; //0.456. 0.79000
+                    else if (parsedStr === `${sign}${numTrimmedByZeros}`) return num;
+                    else return str;
+                }
+
+                let n = leadingZeros ? numTrimmedByZeros : trimmedStr;
+                if (leadingZeros) {
+                    // -009 => -9
+                    return (n === parsedStr) || (sign + n === parsedStr) ? num : str
+                } else {
+                    // +9
+                    return (n === parsedStr) || (n === sign + parsedStr) ? num : str
+                }
+            }
+        } else { //non-numeric string
+            return str;
+        }
+    }
+}
+
+const eNotationRegx = /^([-+])?(0*)(\d*(\.\d*)?[eE][-\+]?\d+)$/;
+function resolveEnotation(str, trimmedStr, options) {
+    if (!options.eNotation) return str;
+    const notation = trimmedStr.match(eNotationRegx);
+    if (notation) {
+        let sign = notation[1] || "";
+        const eChar = notation[3].indexOf("e") === -1 ? "E" : "e";
+        const leadingZeros = notation[2];
+        const eAdjacentToLeadingZeros = sign ? // 0E.
+            str[leadingZeros.length + 1] === eChar
+            : str[leadingZeros.length] === eChar;
+
+        if (leadingZeros.length > 1 && eAdjacentToLeadingZeros) return str;
+        else if (leadingZeros.length === 1
+            && (notation[3].startsWith(`.${eChar}`) || notation[3][0] === eChar)) {
+            return Number(trimmedStr);
+        } else if (leadingZeros.length > 0) {
+            // Has leading zeros — only accept if leadingZeros option allows it
+            if (options.leadingZeros && !eAdjacentToLeadingZeros) {
+                trimmedStr = (notation[1] || "") + notation[3];
+                return Number(trimmedStr);
+            } else return str;
+        } else {
+            // No leading zeros — always valid e-notation, parse it
+            return Number(trimmedStr);
+        }
+    } else {
+        return str;
+    }
+}
+
+/**
+ * 
+ * @param {string} numStr without leading zeros
+ * @returns 
+ */
+function trimZeros(numStr) {
+    if (numStr && numStr.indexOf(".") !== -1) {//float
+        numStr = numStr.replace(/0+$/, ""); //remove ending zeros
+        if (numStr === ".") numStr = "0";
+        else if (numStr[0] === ".") numStr = "0" + numStr;
+        else if (numStr[numStr.length - 1] === ".") numStr = numStr.substring(0, numStr.length - 1);
+        return numStr;
+    }
+    return numStr;
+}
+
+function parse_int(numStr, base) {
+    const str = numStr.trim();
+    if (base === 2 || base === 8) numStr = str.substring(2);
+
+    if (parseInt) return parseInt(numStr, base);
+    else if (Number.parseInt) return Number.parseInt(numStr, base);
+    else if (window && window.parseInt) return window.parseInt(numStr, base);
+    else throw new Error("parseInt, Number.parseInt, window.parseInt are not supported");
+}
+
+/**
+ * Handle infinite values based on user option
+ * @param {string} str - original input string
+ * @param {number} num - parsed number (Infinity or -Infinity)
+ * @param {object} options - user options
+ * @returns {string|number|null} based on infinity option
+ */
+function handleInfinity(str, num, options) {
+    const isPositive = num === Infinity;
+
+    switch (options.infinity.toLowerCase()) {
+        case "null":
+            return null;
+        case "infinity":
+            return num; // Return Infinity or -Infinity
+        case "string":
+            return isPositive ? "Infinity" : "-Infinity";
+        case "original":
+        default:
+            return str; // Return original string like "1e1000"
+    }
+}
+
+/***/ },
+
 /***/ 96556
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
@@ -75561,6 +75056,287 @@ function getUserAgent() {
 
   return "<environment undetectable>";
 }
+
+
+/***/ },
+
+/***/ 88250
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* unused harmony exports name, ncName, nmToken, nmTokens, validate, validateAll, sanitize */
+/**
+ * xml-naming
+ * Validates XML Name productions as defined in the XML 1.0 and 1.1 specifications.
+ * Covers: Name, NCName, QName, NMToken, NMTokens
+ *
+ * XML 1.0 spec: https://www.w3.org/TR/xml/#NT-Name
+ * XML 1.1 spec: https://www.w3.org/TR/xml11/#NT-NameStartChar
+ * XML NS spec:  https://www.w3.org/TR/xml-names/#NT-NCName
+ */
+
+// ---------------------------------------------------------------------------
+// Character class strings — XML 1.0
+//
+// NameStartChar ::= ":" | [A-Z] | "_" | [a-z]
+//   | [#xC0-#xD6]   | [#xD8-#xF6]   | [#xF8-#x2FF]
+//   | [#x370-#x37D] | [#x37F-#x1FFF]    <- split to exclude #x0487
+//   | [#x200C-#x200D]
+//   | [#x2070-#x218F] | [#x2C00-#x2FEF]
+//   | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD]
+//
+// NameChar ::= NameStartChar | "-" | "." | [0-9]
+//   | #xB7 | [#x0300-#x036F] | [#x203F-#x2040]
+//
+// Note: \u0487 (Combining Cyrillic Millions Sign) was added in Unicode 4.0,
+// after XML 1.0 was defined against Unicode 2.0. It falls inside the range
+// \u037F-\u1FFF but must be excluded. We split that range into
+// \u037F-\u0486 and \u0488-\u1FFF to exclude it explicitly.
+// ---------------------------------------------------------------------------
+
+const nameStartChar10 =
+  ':A-Za-z_' +
+  '\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF' +
+  '\u0370-\u037D' +
+  '\u037F-\u0486\u0488-\u1FFF' +  // split to exclude \u0487
+  '\u200C-\u200D' +
+  '\u2070-\u218F' +
+  '\u2C00-\u2FEF' +
+  '\u3001-\uD7FF' +
+  '\uF900-\uFDCF' +
+  '\uFDF0-\uFFFD';
+
+const nameChar10 =
+  nameStartChar10 +
+  '\\-\\.\\d' +
+  '\u00B7' +
+  '\u0300-\u036F' +
+  '\u203F-\u2040';
+
+// ---------------------------------------------------------------------------
+// Character class strings — XML 1.1
+//
+// Differences from XML 1.0:
+//
+// NameStartChar:
+//   1.0 has split ranges: \u00C0-\u00D6, \u00D8-\u00F6, \u00F8-\u02FF
+//   1.1 merges them into: \u00C0-\u02FF
+//   (\u00D7 x and \u00F7 / are division symbols, excluded in both versions)
+//
+//   1.0 tops out at \uFFFD (BMP only)
+//   1.1 adds \u{10000}-\u{EFFFF} (supplementary planes)
+//   These require the /u flag on the RegExp — see buildRegexes below.
+//
+// NameChar:
+//   1.1 adds \u0487 (Combining Cyrillic Millions Sign, added in Unicode 4.0)
+// ---------------------------------------------------------------------------
+
+const nameStartChar11 =
+  ':A-Za-z_' +
+  '\u00C0-\u02FF' +                    // merged — 1.0 had three split ranges here
+  '\u0370-\u037D' +
+  '\u037F-\u0486\u0488-\u1FFF' +       // split to exclude \u0487 (combining mark, never a NameStartChar)
+  '\u200C-\u200D' +
+  '\u2070-\u218F' +
+  '\u2C00-\u2FEF' +
+  '\u3001-\uD7FF' +
+  '\uF900-\uFDCF' +
+  '\uFDF0-\uFFFD' +
+  '\u{10000}-\u{EFFFF}';     // supplementary planes — REQUIRES /u flag on RegExp
+
+const nameChar11 =
+  nameStartChar11 +
+  '\\-\\.\\d' +
+  '\u00B7' +
+  '\u0300-\u036F' +
+  '\u0487' +                 // Combining Cyrillic Millions Sign — valid in 1.1, not 1.0
+  '\u203F-\u2040';
+
+// ---------------------------------------------------------------------------
+// Regex builders
+//
+// XML 1.0 regexes: no flags — BMP only, standard JS regex behaviour.
+// XML 1.1 regexes: /u flag — required for \u{10000}-\u{EFFFF} to match actual
+//   supplementary code points rather than lone surrogates (which are illegal XML).
+// ---------------------------------------------------------------------------
+
+const buildRegexes = (startChar, char, flags = '') => {
+  const ncStart = startChar.replace(':', '');
+  const ncChar = char.replace(':', '');
+  const ncNamePat = `[${ncStart}][${ncChar}]*`;
+
+  return {
+    name: new RegExp(`^[${startChar}][${char}]*$`, flags),
+    ncName: new RegExp(`^${ncNamePat}$`, flags),
+    qName: new RegExp(`^${ncNamePat}(?::${ncNamePat})?$`, flags),
+    nmToken: new RegExp(`^[${char}]+$`, flags),
+    nmTokens: new RegExp(`^[${char}]+(?:\\s+[${char}]+)*$`, flags),
+  };
+};
+
+const regexes10 = buildRegexes(nameStartChar10, nameChar10);       // no /u — BMP only
+const regexes11 = buildRegexes(nameStartChar11, nameChar11, 'u');  // /u — enables \u{10000}-\u{EFFFF}
+
+const getRegexes = (xmlVersion = '1.0') =>
+  xmlVersion === '1.1' ? regexes11 : regexes10;
+
+// ---------------------------------------------------------------------------
+// Boolean validators
+// ---------------------------------------------------------------------------
+
+/**
+ * Returns true if the string is a valid XML Name.
+ * Colons are allowed anywhere (Name production).
+ * Used for: DOCTYPE entity names, notation names, DTD element declarations.
+ */
+const name = (str, { xmlVersion = '1.0' } = {}) =>
+  getRegexes(xmlVersion).name.test(str);
+
+/**
+ * Returns true if the string is a valid NCName (Non-Colonized Name).
+ * Colons are not permitted.
+ * Used for: namespace prefixes, local names, SVG id attributes.
+ */
+const ncName = (str, { xmlVersion = '1.0' } = {}) =>
+  getRegexes(xmlVersion).ncName.test(str);
+
+/**
+ * Returns true if the string is a valid QName (Qualified Name).
+ * Allows exactly one colon as a prefix separator: prefix:localName.
+ * Used for: element and attribute names in namespace-aware XML/SVG.
+ */
+const qName = (str, { xmlVersion = '1.0' } = {}) =>
+  getRegexes(xmlVersion).qName.test(str);
+
+/**
+ * Returns true if the string is a valid NMToken.
+ * Like Name but no restriction on the first character.
+ * Used for: DTD NMTOKEN attribute values.
+ */
+const nmToken = (str, { xmlVersion = '1.0' } = {}) =>
+  getRegexes(xmlVersion).nmToken.test(str);
+
+/**
+ * Returns true if the string is a valid NMTokens value.
+ * A whitespace-separated list of NMToken values.
+ * Used for: DTD NMTOKENS attribute values.
+ */
+const nmTokens = (str, { xmlVersion = '1.0' } = {}) =>
+  getRegexes(xmlVersion).nmTokens.test(str);
+
+// ---------------------------------------------------------------------------
+// Diagnostic validator
+// ---------------------------------------------------------------------------
+
+const PRODUCTIONS = (/* unused pure expression or super */ null && (['name', 'ncName', 'qName', 'nmToken', 'nmTokens']));
+
+/**
+ * Validates a string against a named production and returns a detailed result.
+ *
+ * @param {string} str
+ * @param {'name'|'ncName'|'qName'|'nmToken'|'nmTokens'} production
+ * @param {{ xmlVersion?: '1.0'|'1.1' }} [opts]
+ * @returns {{ valid: boolean, production: string, input: string, reason?: string, position?: number }}
+ */
+const validate = (str, production, { xmlVersion = '1.0' } = {}) => {
+  if (!PRODUCTIONS.includes(production)) {
+    throw new TypeError(
+      `Unknown production "${production}". Must be one of: ${PRODUCTIONS.join(', ')}`
+    );
+  }
+
+  const validators = { name, ncName, qName, nmToken, nmTokens };
+  const isValid = validators[production](str, { xmlVersion });
+
+  if (isValid) return { valid: true, production, input: str };
+
+  let reason = 'Does not match the production rules';
+  let position;
+
+  if (str.length === 0) {
+    reason = 'Input is empty';
+  } else if (production === 'ncName' && str.includes(':')) {
+    position = str.indexOf(':');
+    reason = 'Colon is not allowed in NCName';
+  } else if (production === 'qName' && str.startsWith(':')) {
+    reason = 'QName cannot start with a colon';
+    position = 0;
+  } else if (production === 'qName' && str.endsWith(':')) {
+    reason = 'QName cannot end with a colon';
+    position = str.length - 1;
+  } else if (production === 'qName' && (str.match(/:/g) || []).length > 1) {
+    reason = 'QName can have at most one colon';
+    position = str.lastIndexOf(':');
+  } else if (
+    ['name', 'ncName', 'qName'].includes(production) &&
+    !/^[:A-Za-z_\u00C0-\uFFFD]/.test(str[0])
+  ) {
+    reason = `First character "${str[0]}" is not a valid NameStartChar`;
+    position = 0;
+  } else {
+    for (let i = 0; i < str.length; i++) {
+      if (!/[\w\-\\.:\u00B7\u00C0-\uFFFD]/.test(str[i])) {
+        reason = `Character "${str[i]}" at position ${i} is not a valid NameChar`;
+        position = i;
+        break;
+      }
+    }
+  }
+
+  return { valid: false, production, input: str, reason, position };
+};
+
+// ---------------------------------------------------------------------------
+// Batch validator
+// ---------------------------------------------------------------------------
+
+/**
+ * Validates an array of strings against a named production.
+ *
+ * @param {string[]} strings
+ * @param {'name'|'ncName'|'qName'|'nmToken'|'nmTokens'} production
+ * @param {{ xmlVersion?: '1.0'|'1.1' }} [opts]
+ * @returns {Array<{ valid: boolean, production: string, input: string, reason?: string, position?: number }>}
+ */
+const validateAll = (strings, production, opts = {}) =>
+  strings.map(str => validate(str, production, opts));
+
+// ---------------------------------------------------------------------------
+// Sanitizer
+// ---------------------------------------------------------------------------
+
+/**
+ * Transforms an invalid string into the nearest valid XML name for the given production.
+ *
+ * @param {string} str
+ * @param {'name'|'ncName'|'qName'|'nmToken'|'nmTokens'} production
+ * @param {{ replacement?: string }} [opts]
+ * @returns {string}
+ */
+const sanitize = (str, production = 'name', { replacement = '_' } = {}) => {
+  if (!str) return replacement;
+
+  let result = str;
+
+  // Strip colons for NCName
+  if (production === 'ncName') {
+    result = result.replace(/:/g, '');
+  }
+
+  // Replace illegal characters
+  result = result.replace(/[^\w\-\.:\u00B7\u00C0-\uFFFD]/g, replacement);
+
+  // Fix invalid start character for Name / NCName / QName
+  if (production !== 'nmToken' && production !== 'nmTokens') {
+    if (/^[\-\.\d]/.test(result)) {
+      result = replacement + result;
+    }
+  }
+
+  return result || replacement;
+};
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "fG", 0, /* binding */ qName
+/* harmony export */ ]);
 
 
 /***/ },
