@@ -17,7 +17,7 @@ import { createRequire as __WEBPACK_EXTERNAL_createRequire } from "node:module";
 const __WEBPACK_EXTERNAL_createRequire_require = __WEBPACK_EXTERNAL_createRequire(import.meta.url);
 /******/ var __webpack_modules__ = ({
 
-/***/ 58997
+/***/ 12062
 (__unused_webpack_module, __unused_webpack___webpack_exports__, __webpack_require__) {
 
 
@@ -212,7 +212,7 @@ class GitHubContext {
 }
 
 // EXTERNAL MODULE: ./graphql/graphql.ts
-var graphql = __webpack_require__(57471);
+var graphql = __webpack_require__(87716);
 ;// ./src/github/client.ts
 
 
@@ -1741,6 +1741,6 @@ module.exports = __WEBPACK_EXTERNAL_createRequire_require("util");
 /******/ // startup
 /******/ // Load entry module and return exports
 /******/ // This entry module depends on other loaded chunks and execution need to be delayed
-/******/ let __webpack_exports__ = __webpack_require__.O(undefined, [121,630], () => (__webpack_require__(58997)))
+/******/ let __webpack_exports__ = __webpack_require__.O(undefined, [121,630], () => (__webpack_require__(12062)))
 /******/ __webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 
