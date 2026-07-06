@@ -151,7 +151,7 @@ function option_getInputOrNull(key) {
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __webpack_require__(44421);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@actions+glob@0.7.0/node_modules/@actions/glob/lib/glob.js + 15 modules
-var glob = __webpack_require__(94108);
+var glob = __webpack_require__(72911);
 ;// external "vm"
 
 // EXTERNAL MODULE: external "path"

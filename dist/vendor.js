@@ -46294,7 +46294,7 @@ function getOctokit(token, options, ...additionalPlugins) {
 
 /***/ },
 
-/***/ 94108
+/***/ 72911
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 
@@ -46609,7 +46609,7 @@ function internal_pattern_helper_partialMatch(patterns, itemPath) {
 var external_os_ = __webpack_require__(8116);
 // EXTERNAL MODULE: ./node_modules/.pnpm/balanced-match@4.0.4/node_modules/balanced-match/dist/esm/index.js
 var esm = __webpack_require__(26681);
-;// ./node_modules/.pnpm/brace-expansion@5.0.6/node_modules/brace-expansion/dist/esm/index.js
+;// ./node_modules/.pnpm/brace-expansion@5.0.7/node_modules/brace-expansion/dist/esm/index.js
 
 const escSlash = '\0SLASH' + Math.random() + '\0';
 const escOpen = '\0OPEN' + Math.random() + '\0';
@@ -46703,19 +46703,23 @@ function gte(i, y) {
 function expand_(str, max, isTop) {
     /** @type {string[]} */
     const expansions = [];
-    const m = (0,esm/* balanced */.l)('{', '}', str);
-    if (!m)
-        return [str];
-    // no need to expand pre, since it is guaranteed to be free of brace-sets
-    const pre = m.pre;
-    const post = m.post.length ? expand_(m.post, max, false) : [''];
-    if (/\$$/.test(m.pre)) {
-        for (let k = 0; k < post.length && k < max; k++) {
-            const expansion = pre + '{' + m.body + '}' + post[k];
-            expansions.push(expansion);
+    // The `{a},b}` rewrite below restarts expansion on a rewritten string with
+    // the same `max` and `isTop = true`. Loop instead of recursing so a long run
+    // of non-expanding `{}` groups can't exhaust the call stack.
+    for (;;) {
+        const m = (0,esm/* balanced */.l)('{', '}', str);
+        if (!m)
+            return [str];
+        // no need to expand pre, since it is guaranteed to be free of brace-sets
+        const pre = m.pre;
+        if (/\$$/.test(m.pre)) {
+            const post = m.post.length ? expand_(m.post, max, false) : [''];
+            for (let k = 0; k < post.length && k < max; k++) {
+                const expansion = pre + '{' + m.body + '}' + post[k];
+                expansions.push(expansion);
+            }
+            return expansions;
         }
-    }
-    else {
         const isNumericSequence = /^-?\d+\.\.-?\d+(?:\.\.-?\d+)?$/.test(m.body);
         const isAlphaSequence = /^[a-zA-Z]\.\.[a-zA-Z](?:\.\.-?\d+)?$/.test(m.body);
         const isSequence = isNumericSequence || isAlphaSequence;
@@ -46724,10 +46728,16 @@ function expand_(str, max, isTop) {
             // {a},b}
             if (m.post.match(/,(?!,).*\}/)) {
                 str = m.pre + '{' + m.body + escClose + m.post;
-                return expand_(str, max, true);
+                isTop = true;
+                continue;
             }
             return [str];
         }
+        // Only expand post once we know this brace set actually expands. Computing
+        // it before the early returns above expanded post a second time on every
+        // non-expanding `{}`, which is what made inputs like `a{},{},{}...` blow up
+        // exponentially.
+        const post = m.post.length ? expand_(m.post, max, false) : [''];
         let n;
         if (isSequence) {
             n = m.body.split(/\.\./);
@@ -46803,8 +46813,8 @@ function expand_(str, max, isTop) {
                 }
             }
         }
+        return expansions;
     }
-    return expansions;
 }
 //# sourceMappingURL=index.js.map
 ;// ./node_modules/.pnpm/minimatch@10.2.5/node_modules/minimatch/dist/esm/assert-valid-pattern.js
