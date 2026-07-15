@@ -130,16 +130,18 @@ export async function getCommitStatusAndCheckRunWithPaging(
         variables,
         (variables) => client.getCommitStatusAndCheckRun(variables),
         (response) => {
-            if (response.repository?.object?.__typename != "Commit") {
+            const object = response.repository?.object;
+            if (object?.__typename !== "Commit") {
                 return null;
             }
-            return response.repository.object.statusCheckRollup?.contexts.pageInfo;
+            return object.statusCheckRollup?.contexts.pageInfo;
         },
         (response) => {
-            if (response.repository?.object?.__typename != "Commit") {
+            const object = response.repository?.object;
+            if (object?.__typename !== "Commit") {
                 return null;
             }
-            return response.repository.object.statusCheckRollup?.contexts.nodes;
+            return object.statusCheckRollup?.contexts.nodes;
         },
     );
 }

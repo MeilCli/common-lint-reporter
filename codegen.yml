@@ -4,11 +4,14 @@ documents:
   - graphql/*.graphql
 emitLegacyCommonJSImports: false
 generates:
-  graphql/graphql.ts:
-    config:
-      documentMode: documentNode
+  graphql/graphql-types.ts:
     plugins:
       - 'typescript'
       - 'typescript-resolvers'
+  graphql/graphql-operations.ts:
+    config:
+      documentMode: documentNode
+      importSchemaTypesFrom: ./graphql/graphql-types.js
+    plugins:
       - 'typescript-document-nodes'
       - 'typescript-operations'

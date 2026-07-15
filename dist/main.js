@@ -141,14 +141,14 @@ function writeLintResults(path, lintResults) {
 // EXTERNAL MODULE: ./node_modules/.pnpm/cross-fetch@4.1.0/node_modules/cross-fetch/dist/node-ponyfill.js
 var node_ponyfill = __webpack_require__(45745);
 var node_ponyfill_default = /*#__PURE__*/__webpack_require__.n(node_ponyfill);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.6_graphql-ws@6.0.8_graphql@16.14.2_ws@8.21.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/core/ApolloClient.js + 3 modules
-var ApolloClient = __webpack_require__(51096);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.6_graphql-ws@6.0.8_graphql@16.14.2_ws@8.21.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/link/http/HttpLink.js + 8 modules
-var HttpLink = __webpack_require__(47053);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.6_graphql-ws@6.0.8_graphql@16.14.2_ws@8.21.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/inMemoryCache.js + 7 modules
-var inMemoryCache = __webpack_require__(6457);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.6_graphq_160b3825407bde2e4abcd888cc2c6075/node_modules/@apollo/client/core/ApolloClient.js + 3 modules
+var ApolloClient = __webpack_require__(73214);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.6_graphq_160b3825407bde2e4abcd888cc2c6075/node_modules/@apollo/client/link/http/HttpLink.js + 8 modules
+var HttpLink = __webpack_require__(60767);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.6_graphq_160b3825407bde2e4abcd888cc2c6075/node_modules/@apollo/client/cache/inmemory/inMemoryCache.js + 7 modules
+var inMemoryCache = __webpack_require__(81007);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@9.1.1/node_modules/@actions/github/lib/github.js + 9 modules
-var github = __webpack_require__(93998);
+var github = __webpack_require__(57932);
 ;// ./src/github/context.ts
 
 function githubContext(option) {
@@ -211,8 +211,8 @@ class GitHubContext {
     }
 }
 
-// EXTERNAL MODULE: ./graphql/graphql.ts
-var graphql = __webpack_require__(16019);
+// EXTERNAL MODULE: ./graphql/graphql.ts + 2 modules
+var graphql = __webpack_require__(90614);
 ;// ./src/github/client.ts
 
 
@@ -414,15 +414,17 @@ async function getPullRequestChangedFileWithPaging(client, variables) {
 }
 async function getCommitStatusAndCheckRunWithPaging(client, variables) {
     return getResponseWithPaging(variables, (variables) => client.getCommitStatusAndCheckRun(variables), (response) => {
-        if (response.repository?.object?.__typename != "Commit") {
+        const object = response.repository?.object;
+        if (object?.__typename !== "Commit") {
             return null;
         }
-        return response.repository.object.statusCheckRollup?.contexts.pageInfo;
+        return object.statusCheckRollup?.contexts.pageInfo;
     }, (response) => {
-        if (response.repository?.object?.__typename != "Commit") {
+        const object = response.repository?.object;
+        if (object?.__typename !== "Commit") {
             return null;
         }
-        return response.repository.object.statusCheckRollup?.contexts.nodes;
+        return object.statusCheckRollup?.contexts.nodes;
     });
 }
 async function getCheckRunAnnotationsWithPaging(client, variables) {
