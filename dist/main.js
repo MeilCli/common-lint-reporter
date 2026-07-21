@@ -141,12 +141,12 @@ function writeLintResults(path, lintResults) {
 // EXTERNAL MODULE: ./node_modules/.pnpm/cross-fetch@4.1.0/node_modules/cross-fetch/dist/node-ponyfill.js
 var node_ponyfill = __webpack_require__(45745);
 var node_ponyfill_default = /*#__PURE__*/__webpack_require__.n(node_ponyfill);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.6_graphql-ws@6.1.0_graphql@16.14.2_ws@8.21.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/core/ApolloClient.js + 3 modules
-var ApolloClient = __webpack_require__(35611);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.6_graphql-ws@6.1.0_graphql@16.14.2_ws@8.21.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/link/http/HttpLink.js + 8 modules
-var HttpLink = __webpack_require__(52228);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.6_graphql-ws@6.1.0_graphql@16.14.2_ws@8.21.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/inMemoryCache.js + 7 modules
-var inMemoryCache = __webpack_require__(29072);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.7_graphql-ws@6.1.0_graphql@16.14.2_ws@8.21.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/core/ApolloClient.js + 3 modules
+var ApolloClient = __webpack_require__(61094);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.7_graphql-ws@6.1.0_graphql@16.14.2_ws@8.21.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/link/http/HttpLink.js + 8 modules
+var HttpLink = __webpack_require__(15399);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.7_graphql-ws@6.1.0_graphql@16.14.2_ws@8.21.0__graphql@16.14.2_react@19.2.7_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/inMemoryCache.js + 7 modules
+var inMemoryCache = __webpack_require__(47111);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@actions+github@9.1.1/node_modules/@actions/github/lib/github.js + 9 modules
 var github = __webpack_require__(93998);
 ;// ./src/github/context.ts
