@@ -31,7 +31,7 @@
         "@actions/glob": "0.7.0",
         "@apollo/client": "4.2.7",
         "cross-fetch": "4.1.0",
-        "fast-xml-parser": "5.10.0",
+        "fast-xml-parser": "5.10.1",
         "graphql": "16.14.2",
         "graphql-ws": "6.1.0",
         "he": "1.2.0"
