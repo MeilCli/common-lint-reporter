@@ -26,8 +26,8 @@ __webpack_require__.d(__webpack_exports__, {
 
 // EXTERNAL MODULE: ./node_modules/.pnpm/@actions+core@3.0.1/node_modules/@actions/core/lib/core.js + 13 modules
 var core = __webpack_require__(22989);
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.10.0/node_modules/fast-xml-parser/src/xmlparser/XMLParser.js
-var XMLParser = __webpack_require__(3806);
+// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.10.1/node_modules/fast-xml-parser/src/xmlparser/XMLParser.js
+var XMLParser = __webpack_require__(2467);
 // EXTERNAL MODULE: ./node_modules/.pnpm/he@1.2.0/node_modules/he/he.js
 var he = __webpack_require__(12953);
 var he_default = /*#__PURE__*/__webpack_require__.n(he);
