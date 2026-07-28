@@ -64,7 +64,7 @@
         "jest-environment-node": "30.4.1",
         "jest-mock": "30.4.1",
         "prettier": "3.9.6",
-        "react": "19.2.7",
+        "react": "19.2.8",
         "replace-in-files-cli": "4.0.0",
         "ts-jest": "29.4.11",
         "ts-loader": "9.6.2",
