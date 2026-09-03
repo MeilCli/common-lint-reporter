@@ -15,7 +15,7 @@ import { createRequire as __WEBPACK_EXTERNAL_createRequire } from "node:module";
 const __WEBPACK_EXTERNAL_createRequire_require = __WEBPACK_EXTERNAL_createRequire(import.meta.url);
 /******/ var __webpack_modules__ = ({
 
-/***/ 77612
+/***/ 55300
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 
@@ -26,8 +26,8 @@ __webpack_require__.d(__webpack_exports__, {
 
 // EXTERNAL MODULE: ./node_modules/.pnpm/@actions+core@3.0.1/node_modules/@actions/core/lib/core.js + 13 modules
 var core = __webpack_require__(22989);
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.11.0/node_modules/fast-xml-parser/src/xmlparser/XMLParser.js
-var XMLParser = __webpack_require__(54287);
+// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.11.1/node_modules/fast-xml-parser/src/xmlparser/XMLParser.js
+var XMLParser = __webpack_require__(44842);
 // EXTERNAL MODULE: ./node_modules/.pnpm/he@1.2.0/node_modules/he/he.js
 var he = __webpack_require__(12953);
 var he_default = /*#__PURE__*/__webpack_require__.n(he);
@@ -876,7 +876,7 @@ module.exports = __WEBPACK_EXTERNAL_createRequire_require("util");
 /******/ 			let [chunkIds, fn, priority] = deferred[i];
 /******/ 			let fulfilled = true;
 /******/ 			for (var j = 0; j < chunkIds.length; j++) {
-/******/ 				if ((priority & 1 === 0 || notFulfilled >= priority) && Object.keys(__webpack_require__.O).every((key) => (__webpack_require__.O[key](chunkIds[j])))) {
+/******/ 				if (((priority & 1) === 0 || notFulfilled >= priority) && Object.keys(__webpack_require__.O).every((key) => (__webpack_require__.O[key](chunkIds[j])))) {
 /******/ 					chunkIds.splice(j--, 1);
 /******/ 				} else {
 /******/ 					fulfilled = false;
@@ -894,73 +894,101 @@ module.exports = __WEBPACK_EXTERNAL_createRequire_require("util");
 /******/ })();
 /******/ 
 /******/ /* webpack/runtime/compat get default export */
+/******/ // getDefaultExport function for compatibility with non-harmony modules
+/******/ __webpack_require__.n = (module) => {
+/******/ 	const getter = module && module.__esModule ?
+/******/ 		() => (module['default']) :
+/******/ 		() => (module);
+/******/ 	__webpack_require__.d(getter, { a: getter });
+/******/ 	return getter;
+/******/ };
+/******/ 
+/******/ /* webpack/runtime/concatenation wrap */
+/******/ // wrap a concatenated module body as a lazy, memoized accessor; mod is
+/******/ // set before the body runs so re-entrant calls (require cycles) observe
+/******/ // the partial exports like Node.js
+/******/ __webpack_require__.cw = (body) => {
+/******/ 	var mod;
+/******/ 	return () => {
+/******/ 		if (body) {
+/******/ 			var fn = body;
+/******/ 			body = 0;
+/******/ 			mod = { exports: {} };
+/******/ 			fn.call(mod.exports, mod, mod.exports);
+/******/ 		}
+/******/ 		return mod.exports;
+/******/ 	};
+/******/ };
+/******/ 
+/******/ /* webpack/runtime/create fake namespace object */
 /******/ (() => {
-/******/ 	// getDefaultExport function for compatibility with non-harmony modules
-/******/ 	__webpack_require__.n = (module) => {
-/******/ 		const getter = module && module.__esModule ?
-/******/ 			() => (module['default']) :
-/******/ 			() => (module);
-/******/ 		__webpack_require__.d(getter, { a: getter });
-/******/ 		return getter;
+/******/ 	const getProto = Object.getPrototypeOf;
+/******/ 	let leafPrototypes;
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 16: return value when it's Promise-like
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = this(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if(typeof value === 'object' && value) {
+/******/ 			if((mode & 4) && value.__esModule) return value;
+/******/ 			if((mode & 16) && typeof value.then === 'function') return value;
+/******/ 		}
+/******/ 		const ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		const def = {};
+/******/ 		leafPrototypes = leafPrototypes || [null, getProto({}), getProto([]), getProto(getProto)];
+/******/ 		for(var current = mode & 2 && value; (typeof current == 'object' || typeof current == 'function') && !~leafPrototypes.indexOf(current); current = getProto(current)) {
+/******/ 			Object.getOwnPropertyNames(current).forEach((key) => (def[key] = () => (value[key])));
+/******/ 		}
+/******/ 		def['default'] = () => (value);
+/******/ 		__webpack_require__.d(ns, def);
+/******/ 		return ns;
 /******/ 	};
 /******/ })();
 /******/ 
 /******/ /* webpack/runtime/define property getters */
-/******/ (() => {
-/******/ 	// define getter/value functions for harmony exports
-/******/ 	__webpack_require__.d = (exports, definition) => {
-/******/ 		if(Array.isArray(definition)) {
-/******/ 			var i = 0;
-/******/ 			while(i < definition.length) {
-/******/ 				var key = definition[i++];
-/******/ 				var binding = definition[i++];
-/******/ 				if(!__webpack_require__.o(exports, key)) {
-/******/ 					if(binding === 0) {
-/******/ 						Object.defineProperty(exports, key, { enumerable: true, value: definition[i++] });
-/******/ 					} else {
-/******/ 						Object.defineProperty(exports, key, { enumerable: true, get: binding });
-/******/ 					}
-/******/ 				} else if(binding === 0) { i++; }
-/******/ 			}
-/******/ 		} else {
-/******/ 			for(var key in definition) {
-/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
+/******/ // define getter/value functions for harmony exports
+/******/ __webpack_require__.d = (exports, definition) => {
+/******/ 	if(Array.isArray(definition)) {
+/******/ 		var i = 0;
+/******/ 		while(i < definition.length) {
+/******/ 			var key = definition[i++];
+/******/ 			var binding = definition[i++];
+/******/ 			var descriptor = binding === 0 ? { enumerable: true, value: definition[i++] } : { enumerable: true, get: binding };
+/******/ 			if(!__webpack_require__.o(exports, key)) Object.defineProperty(exports, key, descriptor);
+/******/ 		}
+/******/ 	} else {
+/******/ 		for(var key in definition) {
+/******/ 			if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 				Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
 /******/ 			}
 /******/ 		}
-/******/ 	};
-/******/ })();
+/******/ 	}
+/******/ };
 /******/ 
 /******/ /* webpack/runtime/hasOwnProperty shorthand */
-/******/ (() => {
-/******/ 	__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ })();
+/******/ __webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop));
 /******/ 
 /******/ /* webpack/runtime/make namespace object */
-/******/ (() => {
-/******/ 	// define __esModule on exports
-/******/ 	__webpack_require__.r = (exports) => {
-/******/ 		if(Symbol.toStringTag) {
-/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 		}
-/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 	};
-/******/ })();
+/******/ // define __esModule on exports
+/******/ __webpack_require__.r = (exports) => {
+/******/ 	Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 	Object.defineProperty(exports, '__esModule', { value: true });
+/******/ };
 /******/ 
 /******/ /* webpack/runtime/node module decorator */
-/******/ (() => {
-/******/ 	__webpack_require__.nmd = (module) => {
-/******/ 		module.paths = [];
-/******/ 		if (!module.children) module.children = [];
-/******/ 		return module;
-/******/ 	};
-/******/ })();
+/******/ __webpack_require__.nmd = (module) => {
+/******/ 	module.paths = [];
+/******/ 	if (!module.children) module.children = [];
+/******/ 	return module;
+/******/ };
 /******/ 
 /******/ /* webpack/runtime/runtimeId */
-/******/ (() => {
-/******/ 	__webpack_require__.j = 367;
-/******/ })();
+/******/ __webpack_require__.j = 367;
 /******/ 
 /******/ /* webpack/runtime/export webpack runtime */
 /******/ export { __webpack_require__ };
@@ -992,7 +1020,7 @@ module.exports = __WEBPACK_EXTERNAL_createRequire_require("util");
 /******/ 			if(__webpack_require__.o(installedChunks, chunkId) && installedChunks[chunkId]) {
 /******/ 				installedChunks[chunkId][0]();
 /******/ 			}
-/******/ 			installedChunks[__webpack_esm_ids__[i]] = 0;
+/******/ 			installedChunks[chunkId] = 0;
 /******/ 		}
 /******/ 		__webpack_require__.O();
 /******/ 	}
@@ -1021,7 +1049,7 @@ module.exports = __WEBPACK_EXTERNAL_createRequire_require("util");
 /******/ // startup
 /******/ // Load entry module and return exports
 /******/ // This entry module depends on other loaded chunks and execution need to be delayed
-/******/ let __webpack_exports__ = __webpack_require__.O(undefined, [121], () => (__webpack_require__(77612)))
+/******/ let __webpack_exports__ = __webpack_require__.O(undefined, [121], () => (__webpack_require__(55300)))
 /******/ __webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ const __webpack_exports__JunitTransformer = __webpack_exports__.Q;
 /******/ export { __webpack_exports__JunitTransformer as JunitTransformer };
