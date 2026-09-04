@@ -18,7 +18,7 @@ import { createRequire as __WEBPACK_EXTERNAL_createRequire } from "node:module";
 const __WEBPACK_EXTERNAL_createRequire_require = __WEBPACK_EXTERNAL_createRequire(import.meta.url);
 /******/ var __webpack_modules__ = ({
 
-/***/ 94434
+/***/ 79991
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 
@@ -230,7 +230,7 @@ var HttpLink = __webpack_require__(58685);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.2.8_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/inMemoryCache.js + 7 modules
 var inMemoryCache = __webpack_require__(51689);
 // EXTERNAL MODULE: ./graphql/graphql.ts + 2 modules
-var graphql = __webpack_require__(23983);
+var graphql = __webpack_require__(7756);
 ;// ./src/github/client.ts
 
 
@@ -1163,7 +1163,7 @@ module.exports = __WEBPACK_EXTERNAL_createRequire_require("util");
 /******/ // startup
 /******/ // Load entry module and return exports
 /******/ // This entry module depends on other loaded chunks and execution need to be delayed
-/******/ let __webpack_exports__ = __webpack_require__.O(undefined, [121,630], () => (__webpack_require__(94434)))
+/******/ let __webpack_exports__ = __webpack_require__.O(undefined, [121,630], () => (__webpack_require__(79991)))
 /******/ __webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ const __webpack_exports__MapOperator = __webpack_exports__.z;
 /******/ export { __webpack_exports__MapOperator as MapOperator };
