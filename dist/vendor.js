@@ -40037,11 +40037,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.HttpClient = exports.HttpClientResponse = exports.HttpClientError = exports.MediaTypes = exports.Headers = exports.HttpCodes = void 0;
 exports.getProxyUrl = getProxyUrl;
 exports.isHttps = isHttps;
-const http = __importStar(external_http_namespaceFn());
-const https = __importStar(external_https_namespaceFn());
-const pm = __importStar(proxy_namespaceFn());
-const tunnel = __importStar(tunnel_namespaceObject());
-const undici_1 = undici_namespaceObject();
+const http = __importStar((external_http_namespaceFn()));
+const https = __importStar((external_https_namespaceFn()));
+const pm = __importStar((proxy_namespaceFn()));
+const tunnel = __importStar((tunnel_namespaceFn()));
+const undici_1 = (undici_namespaceFn());
 var HttpCodes;
 (function (HttpCodes) {
     HttpCodes[HttpCodes["OK"] = 200] = "OK";
@@ -40810,11 +40810,9 @@ class Context {
     }
 }
 //# sourceMappingURL=context.js.map
-function tunnel_namespaceObject() { return tunnel_namespaceObject.c || (tunnel_namespaceObject.c = __webpack_require__.t(tunnel_namespaceFn(), 2)); }
 ;// EXTERNAL MODULE: ./node_modules/.pnpm/undici@6.25.0/node_modules/undici/index.js
 undici_namespaceFn();
 
-function undici_namespaceObject() { return undici_namespaceObject.c || (undici_namespaceObject.c = __webpack_require__.t(undici_namespaceFn(), 2)); }
 ;// ./node_modules/.pnpm/@actions+http-client@3.0.2/node_modules/@actions/http-client/lib/index.js
 lib_namespaceFn();
 
@@ -69872,8 +69870,8 @@ var tr46_namespaceFn = /*#__PURE__*/__webpack_require__.cw(function(module, expo
 var __webpack_unused_export__;
 
 
-var punycode = external_punycode_namespaceFn();
-var mappingTable = mappingTable_namespaceFn();
+var punycode = (external_punycode_namespaceFn());
+var mappingTable = (mappingTable_namespaceFn());
 
 var PROCESSING_OPTIONS = {
   TRANSITIONAL: 0,
@@ -70263,7 +70261,7 @@ conversions["RegExp"] = function (V, opts) {
 // MODULE: ./node_modules/.pnpm/whatwg-url@5.0.0/node_modules/whatwg-url/lib/URL-impl.js
 var URL_impl_namespaceFn = /*#__PURE__*/__webpack_require__.cw(function(module, exports) {
 
-const usm = url_state_machine_namespaceFn();
+const usm = (url_state_machine_namespaceFn());
 
 exports.implementation = class URLImpl {
   constructor(constructorArgs) {
@@ -70469,9 +70467,9 @@ exports.implementation = class URLImpl {
 var URL_namespaceFn = /*#__PURE__*/__webpack_require__.cw(function(module, exports) {
 
 
-const conversions = lib_namespaceFn();
-const utils = utils_namespaceFn();
-const Impl = URL_impl_namespaceFn();
+const conversions = (lib_namespaceFn());
+const utils = (utils_namespaceFn());
+const Impl = (URL_impl_namespaceFn());
 
 const impl = utils.implSymbol;
 
@@ -70685,8 +70683,8 @@ exports.URL = (URL_namespaceFn()["interface"]);
 // MODULE: ./node_modules/.pnpm/whatwg-url@5.0.0/node_modules/whatwg-url/lib/url-state-machine.js
 var url_state_machine_namespaceFn = /*#__PURE__*/__webpack_require__.cw(function(module, exports) {
 
-const punycode = external_punycode_namespaceFn();
-const tr46 = tr46_namespaceFn();
+const punycode = (external_punycode_namespaceFn());
+const tr46 = (tr46_namespaceFn());
 
 const specialSchemes = {
   ftp: 21,
