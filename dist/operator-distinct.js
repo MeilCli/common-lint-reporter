@@ -18,7 +18,7 @@ import { createRequire as __WEBPACK_EXTERNAL_createRequire } from "node:module";
 const __WEBPACK_EXTERNAL_createRequire_require = __WEBPACK_EXTERNAL_createRequire(import.meta.url);
 /******/ var __webpack_modules__ = ({
 
-/***/ 69886
+/***/ 73420
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 
@@ -223,14 +223,14 @@ class GitHubContext {
 // EXTERNAL MODULE: ./node_modules/.pnpm/cross-fetch@4.1.0/node_modules/cross-fetch/dist/node-ponyfill.js
 var node_ponyfill = __webpack_require__(45745);
 var node_ponyfill_default = /*#__PURE__*/__webpack_require__.n(node_ponyfill);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/core/ApolloClient.js + 3 modules
-var ApolloClient = __webpack_require__(33939);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/link/http/HttpLink.js + 8 modules
-var HttpLink = __webpack_require__(26812);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/inMemoryCache.js + 7 modules
-var inMemoryCache = __webpack_require__(13784);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/core/ApolloClient.js + 3 modules
+var ApolloClient = __webpack_require__(19133);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/link/http/HttpLink.js + 8 modules
+var HttpLink = __webpack_require__(13042);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/inMemoryCache.js + 8 modules
+var inMemoryCache = __webpack_require__(82);
 // EXTERNAL MODULE: ./graphql/graphql.ts + 2 modules
-var graphql = __webpack_require__(75549);
+var graphql = __webpack_require__(23669);
 ;// ./src/github/client.ts
 
 
@@ -984,23 +984,19 @@ module.exports = __WEBPACK_EXTERNAL_createRequire_require("util");
 /******/ /* webpack/runtime/chunk loaded */
 /******/ (() => {
 /******/ 	const deferred = [];
-/******/ 	__webpack_require__.O = (result, chunkIds, fn, priority) => {
+/******/ 	__webpack_require__.O = (result, chunkIds, fn) => {
 /******/ 		if(chunkIds) {
-/******/ 			priority = priority || 0;
-/******/ 			for(var i = deferred.length; i > 0 && deferred[i - 1][2] > priority; i--) deferred[i] = deferred[i - 1];
-/******/ 			deferred[i] = [chunkIds, fn, priority];
+/******/ 			deferred.push([chunkIds, fn]);
 /******/ 			return;
 /******/ 		}
-/******/ 		let notFulfilled = Infinity;
 /******/ 		for (var i = 0; i < deferred.length; i++) {
-/******/ 			let [chunkIds, fn, priority] = deferred[i];
+/******/ 			let [chunkIds, fn] = deferred[i];
 /******/ 			let fulfilled = true;
 /******/ 			for (var j = 0; j < chunkIds.length; j++) {
-/******/ 				if (((priority & 1) === 0 || notFulfilled >= priority) && Object.keys(__webpack_require__.O).every((key) => (__webpack_require__.O[key](chunkIds[j])))) {
+/******/ 				if (__webpack_require__.O.j(chunkIds[j])) {
 /******/ 					chunkIds.splice(j--, 1);
 /******/ 				} else {
 /******/ 					fulfilled = false;
-/******/ 					if(priority < notFulfilled) notFulfilled = priority;
 /******/ 				}
 /******/ 			}
 /******/ 			if(fulfilled) {
@@ -1123,8 +1119,6 @@ module.exports = __WEBPACK_EXTERNAL_createRequire_require("util");
 /******/ 	
 /******/ 	__webpack_require__.C = installChunk;
 /******/ 	
-/******/ 	// no analyzable chunk import
-/******/ 	
 /******/ 	__webpack_require__.O.j = (chunkId) => (installedChunks[chunkId] === 0);
 /******/ 	// no HMR
 /******/ 	
@@ -1141,7 +1135,7 @@ module.exports = __WEBPACK_EXTERNAL_createRequire_require("util");
 /******/ // startup
 /******/ // Load entry module and return exports
 /******/ // This entry module depends on other loaded chunks and execution need to be delayed
-/******/ let __webpack_exports__ = __webpack_require__.O(undefined, [121,630], () => (__webpack_require__(69886)))
+/******/ let __webpack_exports__ = __webpack_require__.O(undefined, [121,630], () => (__webpack_require__(73420)))
 /******/ __webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ const __webpack_exports__DistinctOperator = __webpack_exports__.B;
 /******/ export { __webpack_exports__DistinctOperator as DistinctOperator };

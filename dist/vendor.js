@@ -47426,7 +47426,7 @@ class SearchState {
 
 /***/ },
 
-/***/ 68445
+/***/ 56731
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -47464,7 +47464,7 @@ class MissingFieldError extends Error {
 
 /***/ },
 
-/***/ 28211
+/***/ 89013
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -47473,17 +47473,21 @@ class MissingFieldError extends Error {
 /* harmony export */   M2: () => (/* binding */ maybeDependOnExistenceOfEntity)
 /* harmony export */ });
 /* unused harmony import specifier */ var isReference;
+/* unused harmony import specifier */ var unwrapScalarType;
 /* unused harmony import specifier */ var invariant;
 /* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25012);
 /* harmony import */ var _wry_trie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(57235);
 /* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(18618);
-/* harmony import */ var _apollo_client_utilities__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(47962);
-/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(39906);
-/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(97053);
-/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(81743);
-/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(39473);
-/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(31512);
-/* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(34090);
+/* harmony import */ var _apollo_client_utilities__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(88004);
+/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(99152);
+/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(15751);
+/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(13477);
+/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(78965);
+/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(77739);
+/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(16583);
+/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(91543);
+/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(86854);
+/* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(2404);
 
 
 
@@ -47514,14 +47518,14 @@ class EntityStore {
     }
     get(dataId, fieldName) {
         this.group.depend(dataId, fieldName);
-        if (_helpers_js__WEBPACK_IMPORTED_MODULE_10__/* .hasOwn */ .$3.call(this.data, dataId)) {
+        if (_helpers_js__WEBPACK_IMPORTED_MODULE_13__/* .hasOwn */ .$3.call(this.data, dataId)) {
             const storeObject = this.data[dataId];
-            if (storeObject && _helpers_js__WEBPACK_IMPORTED_MODULE_10__/* .hasOwn */ .$3.call(storeObject, fieldName)) {
+            if (storeObject && _helpers_js__WEBPACK_IMPORTED_MODULE_13__/* .hasOwn */ .$3.call(storeObject, fieldName)) {
                 return storeObject[fieldName];
             }
         }
         if (fieldName === "__typename" &&
-            _helpers_js__WEBPACK_IMPORTED_MODULE_10__/* .hasOwn */ .$3.call(this.policies.rootTypenamesById, dataId)) {
+            _helpers_js__WEBPACK_IMPORTED_MODULE_13__/* .hasOwn */ .$3.call(this.policies.rootTypenamesById, dataId)) {
             return this.policies.rootTypenamesById[dataId];
         }
         if (this instanceof Layer) {
@@ -47536,7 +47540,7 @@ class EntityStore {
         // without the object being added or removed.
         if (dependOnExistence)
             this.group.depend(dataId, "__exists");
-        if (_helpers_js__WEBPACK_IMPORTED_MODULE_10__/* .hasOwn */ .$3.call(this.data, dataId)) {
+        if (_helpers_js__WEBPACK_IMPORTED_MODULE_13__/* .hasOwn */ .$3.call(this.data, dataId)) {
             return this.data[dataId];
         }
         if (this instanceof Layer) {
@@ -47554,12 +47558,17 @@ class EntityStore {
         if ((0,_apollo_client_utilities__WEBPACK_IMPORTED_MODULE_3__/* .isReference */ .A)(newer))
             newer = newer.__ref;
         const existing = typeof older === "string" ? this.lookup((dataId = older)) : older;
-        const incoming = typeof newer === "string" ? this.lookup((dataId = newer)) : newer;
+        let incoming = typeof newer === "string" ? this.lookup((dataId = newer)) : newer;
         // If newer was a string ID, but that ID was not defined in this store,
         // then there are no fields to be merged, so we're done.
         if (!incoming)
             return;
-        (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_9__/* .invariant */ .V1)(typeof dataId === "string", 105);
+        (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_12__/* .invariant */ .V1)(typeof dataId === "string", 108);
+        // Parse all scalars before merging so that the storeObjectReconciler can
+        // deep compare the parsed value with the existing value
+        incoming = this.coerceStoreObject(incoming, (scalar, value) => scalar.coerceToParsed(value), incoming.__typename ||
+            existing?.__typename ||
+            this.policies.rootTypenamesById[dataId]);
         const merged = new _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_5__/* .DeepMerger */ .Z({
             reconciler: storeObjectReconciler,
         }).merge(existing, incoming);
@@ -47590,7 +47599,7 @@ class EntityStore {
                         // name but different arguments might be interrelated, so it
                         // must err on the side of invalidating all field values that
                         // share the same short fieldName, regardless of arguments.
-                        const fieldName = (0,_helpers_js__WEBPACK_IMPORTED_MODULE_10__/* .fieldNameFromStoreName */ .iJ)(storeFieldName);
+                        const fieldName = (0,_helpers_js__WEBPACK_IMPORTED_MODULE_13__/* .fieldNameFromStoreName */ .iJ)(storeFieldName);
                         if (fieldName !== storeFieldName &&
                             !this.policies.hasKeyArgs(merged.__typename, fieldName)) {
                             fieldsToDirty[fieldName] = 1;
@@ -47631,18 +47640,18 @@ class EntityStore {
                 readField: (fieldNameOrOptions, from) => this.policies.readField(typeof fieldNameOrOptions === "string" ?
                     {
                         fieldName: fieldNameOrOptions,
-                        from: from || (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__/* .makeReference */ .W)(dataId),
+                        from: from || (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_8__/* .makeReference */ .W)(dataId),
                     }
                     : fieldNameOrOptions, { store: this }),
             };
             Object.keys(storeObject).forEach((storeFieldName) => {
-                const fieldName = (0,_helpers_js__WEBPACK_IMPORTED_MODULE_10__/* .fieldNameFromStoreName */ .iJ)(storeFieldName);
+                const fieldName = (0,_helpers_js__WEBPACK_IMPORTED_MODULE_13__/* .fieldNameFromStoreName */ .iJ)(storeFieldName);
                 let fieldValue = storeObject[storeFieldName];
                 if (fieldValue === void 0)
                     return;
                 const modify = typeof fields === "function" ? fields : (fields[storeFieldName] || (exact ? undefined : fields[fieldName]));
                 if (modify) {
-                    let newValue = modify === delModifier ? DELETE : (modify((0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_8__/* .maybeDeepFreeze */ .G)(fieldValue), {
+                    let newValue = modify === delModifier ? DELETE : (modify((0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_10__/* .maybeDeepFreeze */ .G)(fieldValue), {
                         ...sharedDetails,
                         fieldName,
                         storeFieldName,
@@ -47661,7 +47670,7 @@ class EntityStore {
                             if ((/* inlined export .__DEV__ */false)) {
                                 const checkReference = (ref) => {
                                     if (this.lookup(ref.__ref) === undefined) {
-                                        (/* inlined export .__DEV__ */false) && invariant.warn(106, ref);
+                                        (/* inlined export .__DEV__ */false) && invariant.warn(109, ref);
                                         return true;
                                     }
                                 };
@@ -47690,7 +47699,7 @@ class EntityStore {
                                             }
                                         }
                                         if (seenReference && someNonReference !== undefined) {
-                                            (/* inlined export .__DEV__ */false) && invariant.warn(107, someNonReference);
+                                            (/* inlined export .__DEV__ */false) && invariant.warn(110, someNonReference);
                                             break;
                                         }
                                     }
@@ -47743,7 +47752,7 @@ class EntityStore {
     evict(options, limit) {
         let evicted = false;
         if (options.id) {
-            if (_helpers_js__WEBPACK_IMPORTED_MODULE_10__/* .hasOwn */ .$3.call(this.data, options.id)) {
+            if (_helpers_js__WEBPACK_IMPORTED_MODULE_13__/* .hasOwn */ .$3.call(this.data, options.id)) {
                 evicted = this.delete(options.id, options.fieldName, options.args);
             }
             if (this instanceof Layer && this !== limit) {
@@ -47763,10 +47772,17 @@ class EntityStore {
         this.replace(null);
     }
     extract() {
-        const obj = this.toObject();
+        let obj = this.toObject();
+        if (this.hasScalarConfig()) {
+            obj = Object.fromEntries(Object.entries(obj).map(([dataId, storeObject]) => [
+                dataId,
+                storeObject &&
+                    this.coerceStoreObject(storeObject, (scalar, value) => scalar.coerceToSerialized(value), storeObject?.__typename || this.policies.rootTypenamesById[dataId]),
+            ]));
+        }
         const extraRootIds = [];
         this.getRootIdSet().forEach((id) => {
-            if (!_helpers_js__WEBPACK_IMPORTED_MODULE_10__/* .hasOwn */ .$3.call(this.policies.rootTypenamesById, id)) {
+            if (!_helpers_js__WEBPACK_IMPORTED_MODULE_13__/* .hasOwn */ .$3.call(this.policies.rootTypenamesById, id)) {
                 extraRootIds.push(id);
             }
         });
@@ -47775,9 +47791,55 @@ class EntityStore {
         }
         return obj;
     }
+    hasScalarConfig() {
+        return !!this.policies.cache["config"].scalars;
+    }
+    coerceStoreObject(obj, coerce, typename = obj.__typename) {
+        if (!typename || !this.hasScalarConfig()) {
+            return obj;
+        }
+        let changed = false;
+        const entries = Object.entries(obj).map(([storeFieldName, value]) => {
+            const fieldName = (0,_helpers_js__WEBPACK_IMPORTED_MODULE_13__/* .fieldNameFromStoreName */ .iJ)(storeFieldName);
+            const scalarType = this.policies.getScalarTypeForField(typename, fieldName);
+            const newValue = this.coerceValue(value, coerce, scalarType, `${typename}.${fieldName}`);
+            changed ||= newValue !== value;
+            return [storeFieldName, newValue];
+        });
+        return changed ? Object.fromEntries(entries) : obj;
+    }
+    coerceValue(value, coerce, scalarType, coordinate) {
+        if (value == null) {
+            return value;
+        }
+        if (scalarType) {
+            const match = (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_9__/* .matchScalarList */ .W)(scalarType);
+            if (match) {
+                if (Array.isArray(value)) {
+                    return value.map((item) => this.coerceValue(item, coerce, match[1], coordinate));
+                }
+                else {
+                    if ((/* inlined export .__DEV__ */false)) {
+                        (/* inlined export .__DEV__ */false) && invariant.warn(111, coordinate, scalarType, unwrapScalarType(scalarType));
+                    }
+                }
+            }
+            const scalar = this.policies.cache.getScalar((0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_11__/* .unwrapScalarType */ .s)(scalarType));
+            if (scalar) {
+                return coerce(scalar, value);
+            }
+        }
+        if (Array.isArray(value)) {
+            return value.map((item) => this.coerceValue(item, coerce, scalarType, coordinate));
+        }
+        if ((0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__/* .isPlainObject */ .Q)(value) && "__typename" in value) {
+            return this.coerceStoreObject(value, coerce);
+        }
+        return value;
+    }
     replace(newData) {
         Object.keys(this.data).forEach((dataId) => {
-            if (!(newData && _helpers_js__WEBPACK_IMPORTED_MODULE_10__/* .hasOwn */ .$3.call(newData, dataId))) {
+            if (!(newData && _helpers_js__WEBPACK_IMPORTED_MODULE_13__/* .hasOwn */ .$3.call(newData, dataId))) {
                 this.delete(dataId);
             }
         });
@@ -47830,7 +47892,7 @@ class EntityStore {
         const ids = this.getRootIdSet();
         const snapshot = this.toObject();
         ids.forEach((id) => {
-            if (_helpers_js__WEBPACK_IMPORTED_MODULE_10__/* .hasOwn */ .$3.call(snapshot, id)) {
+            if (_helpers_js__WEBPACK_IMPORTED_MODULE_13__/* .hasOwn */ .$3.call(snapshot, id)) {
                 // Because we are iterating over an ECMAScript Set, the IDs we add here
                 // will be visited in later iterations of the forEach loop only if they
                 // were not previously contained by the Set.
@@ -47852,7 +47914,7 @@ class EntityStore {
     // Lazily tracks { __ref: <dataId> } strings contained by this.data[dataId].
     refs = {};
     findChildRefIds(dataId) {
-        if (!_helpers_js__WEBPACK_IMPORTED_MODULE_10__/* .hasOwn */ .$3.call(this.refs, dataId)) {
+        if (!_helpers_js__WEBPACK_IMPORTED_MODULE_13__/* .hasOwn */ .$3.call(this.refs, dataId)) {
             const found = (this.refs[dataId] = {});
             const root = this.data[dataId];
             if (!root)
@@ -47890,7 +47952,7 @@ class EntityStore {
     }
     // Bound function that can be passed around to provide easy access to fields
     // of Reference objects as well as ordinary objects.
-    getFieldValue = (objectOrReference, storeFieldName) => (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_8__/* .maybeDeepFreeze */ .G)((0,_apollo_client_utilities__WEBPACK_IMPORTED_MODULE_3__/* .isReference */ .A)(objectOrReference) ?
+    getFieldValue = (objectOrReference, storeFieldName) => (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_10__/* .maybeDeepFreeze */ .G)((0,_apollo_client_utilities__WEBPACK_IMPORTED_MODULE_3__/* .isReference */ .A)(objectOrReference) ?
         this.get(objectOrReference.__ref, storeFieldName)
         : objectOrReference && objectOrReference[storeFieldName]);
     // Returns true for non-normalized StoreObjects and non-dangling
@@ -47907,14 +47969,14 @@ class EntityStore {
     // an object into the store.
     toReference = (objOrIdOrRef, mergeIntoStore) => {
         if (typeof objOrIdOrRef === "string") {
-            return (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__/* .makeReference */ .W)(objOrIdOrRef);
+            return (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_8__/* .makeReference */ .W)(objOrIdOrRef);
         }
         if ((0,_apollo_client_utilities__WEBPACK_IMPORTED_MODULE_3__/* .isReference */ .A)(objOrIdOrRef)) {
             return objOrIdOrRef;
         }
         const [id] = this.policies.identify(objOrIdOrRef);
         if (id) {
-            const ref = (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__/* .makeReference */ .W)(id);
+            const ref = (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_8__/* .makeReference */ .W)(id);
             if (mergeIntoStore) {
                 this.merge(id, objOrIdOrRef);
             }
@@ -47957,7 +48019,7 @@ class CacheGroup {
     depend(dataId, storeFieldName) {
         if (this.d) {
             this.d(makeDepKey(dataId, storeFieldName));
-            const fieldName = (0,_helpers_js__WEBPACK_IMPORTED_MODULE_10__/* .fieldNameFromStoreName */ .iJ)(storeFieldName);
+            const fieldName = (0,_helpers_js__WEBPACK_IMPORTED_MODULE_13__/* .fieldNameFromStoreName */ .iJ)(storeFieldName);
             if (fieldName !== storeFieldName) {
                 // Fields with arguments that contribute extra identifying
                 // information to the fieldName (thus forming the storeFieldName)
@@ -48103,7 +48165,7 @@ class Layer extends EntityStore {
     }
     findChildRefIds(dataId) {
         const fromParent = this.parent.findChildRefIds(dataId);
-        return _helpers_js__WEBPACK_IMPORTED_MODULE_10__/* .hasOwn */ .$3.call(this.data, dataId) ?
+        return _helpers_js__WEBPACK_IMPORTED_MODULE_13__/* .hasOwn */ .$3.call(this.data, dataId) ?
             {
                 ...fromParent,
                 ...super.findChildRefIds(dataId),
@@ -48157,7 +48219,7 @@ function supportsResultCaching(store) {
 
 /***/ },
 
-/***/ 34090
+/***/ 2404
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -48166,40 +48228,45 @@ function supportsResultCaching(store) {
 /* harmony export */   Ui: () => (/* binding */ getTypenameFromStoreObject),
 /* harmony export */   d1: () => (/* binding */ storeValueIsStoreObject),
 /* harmony export */   iJ: () => (/* binding */ fieldNameFromStoreName),
+/* harmony export */   js: () => (/* binding */ getScalarTypeFromTypeNode),
 /* harmony export */   lq: () => (/* binding */ extractFragmentContext),
 /* harmony export */   mv: () => (/* binding */ makeProcessedFieldsMerger),
 /* harmony export */   or: () => (/* binding */ defaultDataIdFromObject)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(47962);
+	/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7015);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(47037);
+	/* harmony import */ var _apollo_client_utilities__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(88004);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(14470);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(55119);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(39906);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(33620);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(31612);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(99152);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(97645);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(5054);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(9824);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(45367);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(97053);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(76574);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(98375);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(15751);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(537);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(48841);
 }
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(88231);
+}
+
 
 
 const { hasOwnProperty: hasOwn } = Object.prototype;
@@ -48227,10 +48294,10 @@ const defaultConfig = (/* runtime-dependent pure expression or super */ /^(250|4
     resultCaching: true,
 }) : null);
 function normalizeConfig(config) {
-    return (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_1__/* .compact */ .o)(defaultConfig, config);
+    return (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_2__/* .compact */ .o)(defaultConfig, config);
 }
 function getTypenameFromStoreObject(store, objectOrReference) {
-    return (0,_apollo_client_utilities__WEBPACK_IMPORTED_MODULE_0__/* .isReference */ .A)(objectOrReference) ?
+    return (0,_apollo_client_utilities__WEBPACK_IMPORTED_MODULE_1__/* .isReference */ .A)(objectOrReference) ?
         store.get(objectOrReference.__ref, "__typename")
         : objectOrReference && objectOrReference.__typename;
 }
@@ -48240,12 +48307,12 @@ function fieldNameFromStoreName(storeFieldName) {
     return match ? match[0] : storeFieldName;
 }
 function selectionSetMatchesResult(selectionSet, result, variables) {
-    if ((0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__/* .isNonNullObject */ .U)(result)) {
-        return (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_5__/* .isArray */ .c)(result) ?
+    if ((0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_8__/* .isNonNullObject */ .U)(result)) {
+        return (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_6__/* .isArray */ .c)(result) ?
             result.every((item) => selectionSetMatchesResult(selectionSet, item, variables))
             : selectionSet.selections.every((field) => {
-                if ((0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_6__/* .isField */ .d)(field) && (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_9__/* .shouldInclude */ .M)(field, variables)) {
-                    const key = (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_8__/* .resultKeyNameFromField */ .u)(field);
+                if ((0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__/* .isField */ .d)(field) && (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_10__/* .shouldInclude */ .M)(field, variables)) {
+                    const key = (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_9__/* .resultKeyNameFromField */ .u)(field);
                     return (hasOwn.call(result, key) &&
                         (!field.selectionSet ||
                             selectionSetMatchesResult(field.selectionSet, result[key], variables)));
@@ -48261,15 +48328,15 @@ function selectionSetMatchesResult(selectionSet, result, variables) {
     return false;
 }
 function storeValueIsStoreObject(value) {
-    return (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__/* .isNonNullObject */ .U)(value) && !(0,_apollo_client_utilities__WEBPACK_IMPORTED_MODULE_0__/* .isReference */ .A)(value) && !(0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_5__/* .isArray */ .c)(value);
+    return (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_8__/* .isNonNullObject */ .U)(value) && !(0,_apollo_client_utilities__WEBPACK_IMPORTED_MODULE_1__/* .isReference */ .A)(value) && !(0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_6__/* .isArray */ .c)(value);
 }
 function makeProcessedFieldsMerger() {
-    return new _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_3__/* .DeepMerger */ .Z();
+    return new _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_4__/* .DeepMerger */ .Z();
 }
 function extractFragmentContext(document, fragments) {
     // FragmentMap consisting only of fragments defined directly in document, not
     // including other fragments registered in the FragmentRegistry.
-    const fragmentMap = (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_2__/* .createFragmentMap */ .J)((0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_4__/* .getFragmentDefinitions */ .z)(document));
+    const fragmentMap = (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_3__/* .createFragmentMap */ .J)((0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_5__/* .getFragmentDefinitions */ .z)(document));
     return {
         fragmentMap,
         lookupFragment(name) {
@@ -48281,6 +48348,16 @@ function extractFragmentContext(document, fragments) {
         },
     };
 }
+function getScalarTypeFromTypeNode(node) {
+    switch (node.kind) {
+        case graphql__WEBPACK_IMPORTED_MODULE_0__/* .Kind */ .b.NAMED_TYPE:
+            return node.name.value;
+        case graphql__WEBPACK_IMPORTED_MODULE_0__/* .Kind */ .b.LIST_TYPE:
+            return `[${getScalarTypeFromTypeNode(node.type)}]`;
+        case graphql__WEBPACK_IMPORTED_MODULE_0__/* .Kind */ .b.NON_NULL_TYPE:
+            return getScalarTypeFromTypeNode(node.type);
+    }
+}
 //# sourceMappingURL=helpers.js.map
 /* harmony export */ __webpack_require__.d(__webpack_exports__, [
 /* harmony export */   "$3", 0, /* binding */ hasOwn,
@@ -48290,7 +48367,7 @@ function extractFragmentContext(document, fragments) {
 
 /***/ },
 
-/***/ 13784
+/***/ 82
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 
@@ -48303,29 +48380,48 @@ __webpack_require__.d(__webpack_exports__, {
 var lib = __webpack_require__(25012);
 // EXTERNAL MODULE: ./node_modules/.pnpm/optimism@0.18.1/node_modules/optimism/lib/index.js + 6 modules
 var optimism_lib = __webpack_require__(18618);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/DocumentTransform.js
-var DocumentTransform = __webpack_require__(45801);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/transform.js
-var transform = __webpack_require__(79070);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/caching/sizes.js
-var sizes = __webpack_require__(25404);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/canonicalStringify.js
-var canonicalStringify = __webpack_require__(72097);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/print.js + 1 modules
-var print = __webpack_require__(31723);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/storeUtils.js
-var storeUtils = __webpack_require__(47962);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/invariant/index.js + 1 modules
-var invariant = __webpack_require__(31512);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/DocumentTransform.js
+var DocumentTransform = __webpack_require__(97139);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/transform.js
+var transform = __webpack_require__(32260);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/caching/sizes.js
+var sizes = __webpack_require__(47974);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/canonicalStringify.js
+var canonicalStringify = __webpack_require__(19867);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/print.js + 1 modules
+var print = __webpack_require__(24153);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/storeUtils.js
+var storeUtils = __webpack_require__(88004);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getOperationDefinition.js
+var getOperationDefinition = __webpack_require__(88048);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/matchScalarList.js
+var matchScalarList = __webpack_require__(77739);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/unwrapScalarType.js
+var unwrapScalarType = __webpack_require__(91543);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/isPlainObject.js
+var isPlainObject = __webpack_require__(13477);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/invariant/index.js + 1 modules
+var invariant = __webpack_require__(86854);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@wry+caches@1.0.1/node_modules/@wry/caches/lib/weak.js
 var weak = __webpack_require__(818);
 // EXTERNAL MODULE: ./node_modules/.pnpm/@wry+trie@0.5.0/node_modules/@wry/trie/lib/index.js
 var trie_lib = __webpack_require__(57235);
 // EXTERNAL MODULE: ./node_modules/.pnpm/rxjs@7.8.2/node_modules/rxjs/dist/cjs/index.js
 var cjs = __webpack_require__(71530);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/memoize.js
-var memoize = __webpack_require__(73772);
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/mapObservableFragment.js
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/capitalize.js
+/**
+* @internal
+* 
+* @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
+*/
+function capitalize(str) {
+    return str[0].toUpperCase() + str.slice(1);
+}
+//# sourceMappingURL=capitalize.js.map
+
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/memoize.js
+var memoize = __webpack_require__(65922);
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/mapObservableFragment.js
 
 
 function mapObservableFragment(observable, mapFn) {
@@ -48350,7 +48446,7 @@ _cacheKey, mapFn) {
     return mapObservableFragment(observable, mapFn);
 }, { max: 1, makeCacheKey: (args) => args.slice(0, 2) });
 //# sourceMappingURL=mapObservableFragment.js.map
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/combineLatestBatched.js
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/combineLatestBatched.js
 
 /**
  * Like `combineLatest` but with some differences:
@@ -48419,9 +48515,9 @@ function combineLatestBatched(observables) {
     });
 }
 //# sourceMappingURL=combineLatestBatched.js.map
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/equalByQuery.js
-var equalByQuery = __webpack_require__(69069);
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getFragmentQueryDocument.js
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/equalByQuery.js
+var equalByQuery = __webpack_require__(90623);
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getFragmentQueryDocument.js
 
 /**
 * Returns a query document which adds a single query operation that only
@@ -48470,7 +48566,7 @@ function getFragmentQueryDocument(document, fragmentName) {
         // define our own operation definition later on.
         if (definition.kind === "OperationDefinition") {
             throw (0,invariant/* newInvariantError */.vA)(
-                10,
+                12,
                 definition.operation,
                 definition.name ? ` named '${definition.name.value}'` : ""
             );
@@ -48484,7 +48580,7 @@ function getFragmentQueryDocument(document, fragmentName) {
     // If the user did not give us a fragment name then let us try to get a
     // name from a single fragment in the definition.
     if (typeof actualFragmentName === "undefined") {
-        (0,invariant/* invariant */.V1)(fragments.length === 1, 11, fragments.length);
+        (0,invariant/* invariant */.V1)(fragments.length === 1, 13, fragments.length);
         actualFragmentName = fragments[0].name.value;
     }
     // Generate a query document with an operation that simply spreads the
@@ -48516,7 +48612,7 @@ function getFragmentQueryDocument(document, fragmentName) {
 }
 //# sourceMappingURL=getFragmentQueryDocument.js.map
 
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/bindCacheKey.js
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/bindCacheKey.js
 
 /**
  * A variant of `optimism`'s `defaultMakeCacheKey` function that allows us to
@@ -48535,7 +48631,7 @@ function bindCacheKey(...prebound) {
     return optimism_lib/* defaultMakeCacheKey */.NS.bind(null, ...prebound);
 }
 //# sourceMappingURL=bindCacheKey.js.map
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/cache/core/cache.js
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/cache/core/cache.js
 /* unused harmony import specifier */ var getApolloCacheMemoryInternals;
 /* unused harmony import specifier */ var getFragmentDefinition;
 /* unused harmony import specifier */ var cache_invariant;
@@ -48555,6 +48651,37 @@ class ApolloCache {
     // that register fragments ahead of time so they can be referenced by name.
     lookupFragment(fragmentName) {
         return null;
+    }
+    /**
+     * Get the root typename value for an operation type.
+     *
+     * @defaultValue Query, Mutation, or Subscription
+     */
+    getRootTypename(operation) {
+        return capitalize(operation);
+    }
+    // Custom scalars API
+    getScalar(key) {
+        return;
+    }
+    /** Get the configured scalar type for a field */
+    getScalarTypeForField(typename, fieldName) {
+        return;
+    }
+    /**
+     * Determines whether the cache configures custom scalars or not. This allows
+     * Apollo Client to skip processing results unnecessarily when there is
+     * nothing to transform into a scalar value.
+     *
+     * @remarks
+     * 3rd party caches should override this method if they have the ability to
+     * configure scalar implementations.
+     */
+    configuresScalars() {
+        return false;
+    }
+    serializeVariables(document, variables) {
+        return variables;
     }
     // Transactional API
     /**
@@ -48674,7 +48801,7 @@ class ApolloCache {
             if ((/* inlined export .__DEV__ */false)) {
                 const actualFragmentName = fragmentName || getFragmentDefinition(fragment).name.value;
                 if (id === undefined) {
-                    (/* inlined export .__DEV__ */false) && cache_invariant.warn(119, actualFragmentName);
+                    (/* inlined export .__DEV__ */false) && cache_invariant.warn(126, actualFragmentName);
                 }
             }
             return id;
@@ -48894,47 +49021,58 @@ const emptyArrayObservable = Object.assign(new cjs.Observable((observer) => {
 }), { getCurrentResult: () => emptyArrayResult });
 //# sourceMappingURL=cache.js.map
 
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/entityStore.js
-var entityStore = __webpack_require__(28211);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/helpers.js
-var helpers = __webpack_require__(34090);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/policies.js
-var inmemory_policies = __webpack_require__(36413);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/reactiveVars.js
-var reactiveVars = __webpack_require__(65906);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/entityStore.js
+var entityStore = __webpack_require__(89013);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/helpers.js
+var helpers = __webpack_require__(2404);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/policies.js
+var inmemory_policies = __webpack_require__(66543);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/reactiveVars.js
+var reactiveVars = __webpack_require__(51984);
 // EXTERNAL MODULE: ./node_modules/.pnpm/graphql@16.14.2/node_modules/graphql/language/kinds.mjs
 var kinds = __webpack_require__(7015);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/compact.js
-var compact = __webpack_require__(47037);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getDefaultValues.js
-var getDefaultValues = __webpack_require__(57885);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getQueryDefinition.js
-var getQueryDefinition = __webpack_require__(49523);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/makeReference.js
-var makeReference = __webpack_require__(81743);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getMainDefinition.js
-var getMainDefinition = __webpack_require__(63896);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/DeepMerger.js
-var DeepMerger = __webpack_require__(39906);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/shouldInclude.js
-var shouldInclude = __webpack_require__(537);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/isField.js
-var isField = __webpack_require__(9824);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/resultKeyNameFromField.js
-var resultKeyNameFromField = __webpack_require__(98375);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/isArray.js
-var isArray = __webpack_require__(97645);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getFragmentFromSelection.js
-var getFragmentFromSelection = __webpack_require__(89000);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/mergeDeepArray.js
-var mergeDeepArray = __webpack_require__(64769);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/maybeDeepFreeze.js
-var maybeDeepFreeze = __webpack_require__(39473);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/isNonNullObject.js
-var isNonNullObject = __webpack_require__(97053);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/cache/core/types/common.js
-var common = __webpack_require__(68445);
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/readFromStore.js
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/isStreamField.js
+var isStreamField = __webpack_require__(80622);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/constants.js
+var constants = __webpack_require__(68447);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/compact.js
+var compact = __webpack_require__(55119);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getDefaultValues.js
+var getDefaultValues = __webpack_require__(18111);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getQueryDefinition.js
+var getQueryDefinition = __webpack_require__(61549);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/makeReference.js
+var makeReference = __webpack_require__(78965);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getMainDefinition.js
+var getMainDefinition = __webpack_require__(33110);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/DeepMerger.js
+var DeepMerger = __webpack_require__(99152);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/shouldInclude.js
+var shouldInclude = __webpack_require__(88231);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/isField.js
+var isField = __webpack_require__(76574);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/resultKeyNameFromField.js
+var resultKeyNameFromField = __webpack_require__(48841);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/isArray.js
+var isArray = __webpack_require__(45367);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getFragmentFromSelection.js
+var getFragmentFromSelection = __webpack_require__(69506);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/isDeferredFragment.js
+var isDeferredFragment = __webpack_require__(45915);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/mergeDeepArray.js
+var mergeDeepArray = __webpack_require__(7683);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/maybeDeepFreeze.js
+var maybeDeepFreeze = __webpack_require__(16583);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getDirectiveArgValue.js
+var getDirectiveArgValue = __webpack_require__(75756);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/isNonNullObject.js
+var isNonNullObject = __webpack_require__(15751);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/cache/core/types/common.js
+var common = __webpack_require__(56731);
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/readFromStore.js
+/* unused harmony import specifier */ var readFromStore_invariant;
+
+
 
 
 
@@ -48952,8 +49090,11 @@ class StoreReader {
     executeSelectionSet;
     // cached version of executeSubSelectedArray
     executeSubSelectedArray;
+    prunePartialStreamArray;
+    prunePartialBoundaries;
     config;
     knownResults = new WeakMap();
+    keyMaker = new trie_lib/* Trie */.b();
     constructor(config) {
         this.config = config;
         // memoized functions in this class will be "garbage-collected"
@@ -48996,44 +49137,124 @@ class StoreReader {
                 }
             },
         });
+        this.prunePartialBoundaries = (0,optimism_lib/* wrap */.LV)((options) => this.prunePartialBoundariesImpl(options), {
+            max: sizes/* cacheSizes */.v["inMemoryCache.prunePartialBoundaries"] ||
+                20000 /* defaultCacheSizes["inMemoryCache.prunePartialBoundaries"] */,
+            makeCacheKey: ({ boundaries, context, selectionSet }) => {
+                if ((0,entityStore/* supportsResultCaching */.$7)(context.store)) {
+                    return this.keyMaker.lookup(selectionSet, boundaries, context.streamInfo, context.deferInfo);
+                }
+            },
+        });
+        this.prunePartialStreamArray = (0,optimism_lib/* wrap */.LV)((options) => {
+            const { field, context, path } = options;
+            if ((0,isStreamField/* isStreamField */.f)(field, context.variables)) {
+                context.streamInfo?.lookupArray(path).state.depend();
+            }
+            return this.prunePartialStreamArrayImpl(options);
+        }, {
+            max: sizes/* cacheSizes */.v["inMemoryCache.prunePartialStreamArray"] ||
+                20000 /* defaultCacheSizes["inMemoryCache.prunePartialStreamArray"] */,
+            makeCacheKey: ({ field, context, boundaries }) => {
+                if ((0,entityStore/* supportsResultCaching */.$7)(context.store)) {
+                    return this.keyMaker.lookup(field, boundaries, context.streamInfo, context.deferInfo);
+                }
+            },
+        });
     }
-    /**
-     * Given a store and a query, return as much of the result as possible and
-     * identify if any data was missing from the store.
-     */
-    diffQueryAgainstStore({ store, query, rootId = "ROOT_QUERY", variables, returnPartialData = true, }) {
+    diffQueryAgainstStore({ store, query, rootId = "ROOT_QUERY", variables, returnPartialData = true, ...options }) {
+        const returnIncremental = Object.hasOwn(options, constants/* handleIncrementalSymbol */.PJ);
         const policies = this.config.cache.policies;
         variables = (0,compact/* compact */.o)((0,getDefaultValues/* getDefaultValues */.w)((0,getQueryDefinition/* getQueryDefinition */.A)(query)), variables);
         const rootRef = (0,makeReference/* makeReference */.W)(rootId);
-        const execResult = this.executeSelectionSet({
+        const context = {
+            store,
+            query,
+            policies,
+            variables,
+            varString: (0,canonicalStringify/* canonicalStringify */.M)(variables),
+            ...(0,helpers/* extractFragmentContext */.lq)(query, this.config.fragments),
+            ...options[constants/* handleIncrementalSymbol */.PJ],
+        };
+        let execResult = this.executeSelectionSet({
             selectionSet: (0,getMainDefinition/* getMainDefinition */.V)(query).selectionSet,
             objectOrReference: rootRef,
             enclosingRef: rootRef,
-            context: {
-                store,
-                query,
-                policies,
-                variables,
-                varString: (0,canonicalStringify/* canonicalStringify */.M)(variables),
-                ...(0,helpers/* extractFragmentContext */.lq)(query, this.config.fragments),
-            },
+            context,
         });
-        let missing;
-        if (execResult.missing) {
-            missing = new common/* MissingFieldError */.Z(firstMissing(execResult.missing), execResult.missing, query, variables);
+        // Since executeSelectionSet doesn't know about returnPartialData, we need
+        // to perform a 2nd pass over the result to prune any fields inside
+        // partial defer boundaries. The "deferPartial" data state tells us that the
+        // only part of the result that contributed to its partiality is data inside
+        // a defer boundary.
+        if (returnIncremental && shouldPrune(execResult, context)) {
+            const pruned = this.prunePartialBoundaries({
+                selectionSet: (0,getMainDefinition/* getMainDefinition */.V)(query).selectionSet,
+                data: execResult.result,
+                boundaries: execResult.partialBoundaries,
+                context,
+                path: [],
+            });
+            const changed = execResult.result !== pruned.result;
+            // It's possible that pruning didn't actually change the result which can
+            // happen if a defer boundary is misclassified as "deferPartial" instead
+            // of "streaming" (sibling defer boundaries with overlapping selection
+            // sets, one of which is complete). In this case, pruning corrects the
+            // dataState to streaming instead of leaving it as partial. If we tolerate
+            // partial results and pruning changed the result by dropping fields, then
+            // we want to keep the original execResult which contains the partial
+            // data.
+            if (!changed || !returnPartialData) {
+                // Omit `missing` property since pruning puts it in a state that doesn't
+                // report missing fields.
+                execResult = {
+                    result: pruned.result,
+                    partialBoundaries: execResult.partialBoundaries,
+                    dataState: pruned.dataState,
+                };
+            }
         }
-        const complete = !missing;
-        const { result } = execResult;
-        return {
-            result: complete ? result
-                : returnPartialData ?
-                    Object.keys(result).length === 0 ?
-                        null
-                        : result
-                    : null,
+        let { result, dataState, missing } = execResult;
+        // Evaluate this condition before we start mucking with dataState for the
+        // publicly returned value
+        const includeMissing = !!missing &&
+            // We don't need to report missing fields inside defer boundaries since
+            // the "streaming" dataState tells us that the only missing fields in
+            // the object is inside a defer boundary.
+            (dataState !== "streaming" || !returnIncremental);
+        // If we get all root @defer boundaries with an empty result, report it as
+        // empty instead of streaming.
+        if (dataState === "streaming" && Object.keys(result).length === 0) {
+            dataState = "empty";
+        }
+        let missingError;
+        if (dataState === "deferPartial" ||
+            dataState === "streamPartial" ||
+            (dataState === "streaming" && !returnIncremental)) {
+            dataState = "partial";
+        }
+        if (dataState === "partial" && !returnPartialData) {
+            dataState = "empty";
+        }
+        const complete = dataState === "complete";
+        const keepResult = complete ||
+            dataState === "streaming" ||
+            (returnPartialData && Object.keys(result).length);
+        const diffResult = {
+            result: keepResult ? result : null,
             complete,
-            missing,
+            get missing() {
+                if (includeMissing) {
+                    missingError ||= new common/* MissingFieldError */.Z(firstMissing(missing), missing, query, variables);
+                }
+                return missingError;
+            },
         };
+        if (returnIncremental) {
+            diffResult.dataState =
+                dataState;
+        }
+        return diffResult;
     }
     isFresh(result, parent, selectionSet, context) {
         if ((0,entityStore/* supportsResultCaching */.$7)(context.store) &&
@@ -49052,14 +49273,18 @@ class StoreReader {
             !context.store.has(objectOrReference.__ref)) {
             return {
                 result: {},
+                dataState: "empty",
                 missing: `Dangling reference to missing ${objectOrReference.__ref} object`,
+                partialBoundaries: new PartialBoundaries(),
             };
         }
         const { variables, policies, store } = context;
         const typename = store.getFieldValue(objectOrReference, "__typename");
         const objectsToMerge = [];
+        let dataState;
         let missing;
         const missingMerger = new DeepMerger/* DeepMerger */.Z();
+        const partialBoundaries = new PartialBoundaries();
         if (typeof typename === "string" && !policies.rootIdsByTypename[typename]) {
             // Ensure we always include a default value for the __typename
             // field, if we have one. Note that this field can be overridden by other
@@ -49072,7 +49297,7 @@ class StoreReader {
                     [resultName]: result.missing,
                 });
             }
-            return result.result;
+            return result;
         }
         const workSet = new Set(selectionSet.selections);
         workSet.forEach((selection) => {
@@ -49090,36 +49315,75 @@ class StoreReader {
                 const resultName = (0,resultKeyNameFromField/* resultKeyNameFromField */.u)(selection);
                 if (fieldValue === void 0) {
                     if (!transform/* addTypenameToDocument */.X.added(selection)) {
+                        const id = (0,storeUtils/* isReference */.A)(objectOrReference) ? objectOrReference.__ref
+                            : objectOrReference ? policies.identify(objectOrReference)[0]
+                                : undefined;
                         missing = missingMerger.merge(missing, {
-                            [resultName]: `Can't find field '${selection.name.value}' on ${(0,storeUtils/* isReference */.A)(objectOrReference) ?
-                                objectOrReference.__ref + " object"
-                                : "object " + JSON.stringify(objectOrReference, null, 2)}`,
+                            [resultName]: `Can't find field '${selection.name.value}' on ${id ?
+                                `${id} object`
+                                : `object ${JSON.stringify(objectOrReference || {}, null, 2)}`}`,
                         });
+                        dataState = mergeDataState(dataState, "empty");
                     }
                 }
                 else if ((0,isArray/* isArray */.c)(fieldValue)) {
                     if (fieldValue.length > 0) {
-                        fieldValue = handleMissing(this.executeSubSelectedArray({
+                        const execResult = handleMissing(this.executeSubSelectedArray({
                             field: selection,
                             array: fieldValue,
                             enclosingRef,
                             context,
                         }), resultName);
+                        fieldValue = execResult.result;
+                        dataState = mergeDataState(dataState, execResult.dataState);
+                        partialBoundaries.set(resultName, execResult.partialBoundaries);
+                    }
+                    else {
+                        dataState = mergeDataState(dataState, "complete");
                     }
                 }
                 else if (!selection.selectionSet) {
-                    // do nothing
+                    // Auto-inserted __typename should not affect dataState (see empty
+                    // @defer boundaries, which must stay "empty" → parent "streaming").
+                    if (!transform/* addTypenameToDocument */.X.added(selection)) {
+                        dataState = mergeDataState(dataState, "complete");
+                    }
                 }
                 else if (fieldValue != null) {
+                    if ((/* inlined export .__DEV__ */false)) {
+                        const fieldName = selection.name.value;
+                        if (typename) {
+                            const policy = policies["getFieldPolicy"](typename, fieldName);
+                            if (policy?.scalar) {
+                                (/* inlined export .__DEV__ */false) && readFromStore_invariant.warn(119, `${typename}.${fieldName}`, policy.scalar);
+                            }
+                        }
+                    }
                     // In this case, because we know the field has a selection set,
                     // it must be trying to query a GraphQLObjectType, which is why
                     // fieldValue must be != null.
-                    fieldValue = handleMissing(this.executeSelectionSet({
+                    const execResult = handleMissing(this.executeSelectionSet({
                         selectionSet: selection.selectionSet,
                         objectOrReference: fieldValue,
                         enclosingRef: (0,storeUtils/* isReference */.A)(fieldValue) ? fieldValue : enclosingRef,
                         context,
                     }), resultName);
+                    fieldValue = execResult.result;
+                    partialBoundaries.set(resultName, execResult.partialBoundaries);
+                    // If the object's fields resolved to an "empty" dataState (e.g. no
+                    // field resolved with a non-undefined value), but the fieldValue
+                    // object itself is present, this object should be considered
+                    // partial instead of empty. This also ensures defer boundaries that
+                    // select this object remain as partial defer boundaries rather than
+                    // mistakenly get reported as streaming. This is especially necessary
+                    // when combined with GraphQL Codegen which generates its type and
+                    // relies on the outer object to be absent when its fields haven't
+                    // streamed in. Reporting the defer boundary as "streaming" instead of
+                    // "partial" would otherwise have the potential to cause runtime
+                    // crashes since the runtime values and types would not line up
+                    // properly (types expect object to be undefined, but its instead
+                    // present without its fields)
+                    dataState = mergeDataState(dataState, execResult.dataState === "empty" ? "partial" : execResult.dataState);
                 }
                 if (fieldValue !== void 0) {
                     objectsToMerge.push({ [resultName]: fieldValue });
@@ -49128,15 +49392,60 @@ class StoreReader {
             else {
                 const fragment = (0,getFragmentFromSelection/* getFragmentFromSelection */.H)(selection, context.lookupFragment);
                 if (!fragment && selection.kind === kinds/* Kind */.b.FRAGMENT_SPREAD) {
-                    throw (0,invariant/* newInvariantError */.vA)(113, selection.name.value);
+                    throw (0,invariant/* newInvariantError */.vA)(120, selection.name.value);
                 }
                 if (fragment && policies.fragmentMatches(fragment, typename)) {
-                    fragment.selectionSet.selections.forEach(workSet.add, workSet);
+                    const isDeferBoundary = (0,isDeferredFragment/* isDeferredFragment */.A)(selection, context.variables);
+                    // Prior to 4.3, this branch just flattened the fragment's
+                    // selectionSet into the existing workSet so that it continued
+                    // iterating as if the fragment didn't exist. The cache is
+                    // incremental aware as of 4.3 and as such, we need to resolve the
+                    // per-fragment selection set so that we can properly strip partial
+                    // defer fragment data when returnPartialData is false. We need to
+                    // call execSelectionSetImpl directly (non-cached version) so that we
+                    // scope the dataState correctly for its fields. Using the cached
+                    // executeSelectionSet can result in cache poisoning when combined
+                    // with the fragment registry where it might cache either a) an error
+                    // thrown when a registered fragment references a named fragment that
+                    // the query is expected to supply and doesn't or b) resolve to the
+                    // wrong data result when combined with queries that provide different
+                    // implementations of the same fragment (see inmemory/fragmentRegistry and
+                    // cache.diff/incremental tests which provide guards against this
+                    // behavior).
+                    const execResult = this.execSelectionSetImpl({
+                        selectionSet: fragment.selectionSet,
+                        objectOrReference,
+                        enclosingRef,
+                        context,
+                    });
+                    const { result, dataState: nextDataState } = execResult;
+                    partialBoundaries.merge(execResult.partialBoundaries);
+                    if (result !== void 0) {
+                        objectsToMerge.push(result);
+                    }
+                    if (execResult.missing) {
+                        missing = missingMerger.merge(missing, execResult.missing);
+                    }
+                    if (isDeferBoundary &&
+                        (nextDataState === "partial" || nextDataState === "empty")) {
+                        partialBoundaries.add(selection);
+                    }
+                    dataState = mergeDataState(dataState, isDeferBoundary ?
+                        nextDataState === "empty" ? "streaming"
+                            : nextDataState === "partial" ? "deferPartial"
+                                : nextDataState
+                        : nextDataState);
                 }
             }
         });
+        dataState ||= "complete";
         const result = (0,mergeDeepArray/* mergeDeepArray */.I)(objectsToMerge);
-        const finalResult = { result, missing };
+        const finalResult = {
+            result,
+            missing,
+            dataState,
+            partialBoundaries,
+        };
         const frozen = (0,maybeDeepFreeze/* maybeDeepFreeze */.G)(finalResult);
         // Store this result with its selection set so that we can quickly
         // recognize it again in the StoreReader#isFresh method.
@@ -49147,8 +49456,11 @@ class StoreReader {
     }
     // Uncached version of executeSubSelectedArray.
     execSubSelectedArrayImpl({ field, array, enclosingRef, context, }) {
+        let dataState = "complete";
         let missing;
         let missingMerger = new DeepMerger/* DeepMerger */.Z();
+        const partialBoundaries = new PartialBoundaries();
+        const isStreamed = (0,isStreamField/* isStreamField */.f)(field, context.variables);
         function handleMissing(childResult, i) {
             if (childResult.missing) {
                 missing = missingMerger.merge(missing, { [i]: childResult.missing });
@@ -49163,23 +49475,36 @@ class StoreReader {
             if (item === null) {
                 return null;
             }
+            let execResult;
             // This is a nested array, recurse
             if ((0,isArray/* isArray */.c)(item)) {
-                return handleMissing(this.executeSubSelectedArray({
+                execResult = this.executeSubSelectedArray({
                     field,
                     array: item,
                     enclosingRef,
                     context,
-                }), i);
+                });
             }
-            // This is an object, run the selection set on it
-            if (field.selectionSet) {
-                return handleMissing(this.executeSelectionSet({
+            else if (field.selectionSet) {
+                execResult = this.executeSelectionSet({
                     selectionSet: field.selectionSet,
                     objectOrReference: item,
                     enclosingRef: (0,storeUtils/* isReference */.A)(item) ? item : enclosingRef,
                     context,
-                }), i);
+                });
+            }
+            if (execResult) {
+                const { dataState: nextDataState } = execResult;
+                partialBoundaries.set(i, nextDataState === "partial" ?
+                    // avoid mutating the execResult partialBoundaries object
+                    execResult.partialBoundaries.clone().add(field)
+                    : execResult.partialBoundaries);
+                dataState = mergeDataState(dataState, isStreamed ?
+                    nextDataState === "partial" ?
+                        "streamPartial"
+                        : nextDataState
+                    : nextDataState);
+                return handleMissing(execResult, i);
             }
             if ((/* inlined export .__DEV__ */false)) {
                 assertSelectionSetForIdValue(context.store, field, item);
@@ -49188,8 +49513,161 @@ class StoreReader {
         });
         return {
             result: array,
+            dataState,
             missing,
+            partialBoundaries,
         };
+    }
+    prunePartialBoundariesImpl({ boundaries, context, data, path, selectionSet, }) {
+        const { variables, lookupFragment, policies } = context;
+        if (data == null || !boundaries) {
+            return { result: data, dataState: "complete" };
+        }
+        const merger = new DeepMerger/* DeepMerger */.Z();
+        let changed = false;
+        let dataState = "complete";
+        const result = {};
+        // __typename might not be part of the selection set, so preserve it when
+        // available, otherwise it gets removed since it's never visited when
+        // iterating the selection set.
+        if (Object.hasOwn(data, "__typename")) {
+            result.__typename = data.__typename;
+        }
+        const workSet = new Set(selectionSet.selections);
+        workSet.forEach((selection) => {
+            if (!(0,shouldInclude/* shouldInclude */.M)(selection, variables))
+                return;
+            if ((0,isField/* isField */.d)(selection)) {
+                const resultName = (0,resultKeyNameFromField/* resultKeyNameFromField */.u)(selection);
+                if (!Object.hasOwn(data, resultName)) {
+                    return;
+                }
+                const fieldValue = data[resultName];
+                if (Array.isArray(fieldValue)) {
+                    const pruned = this.prunePartialStreamArray({
+                        field: selection,
+                        array: fieldValue,
+                        boundaries: boundaries.getChild(resultName),
+                        context,
+                        path: path.concat(resultName),
+                    });
+                    changed ||= pruned.result !== fieldValue;
+                    result[resultName] = pruned.result;
+                    dataState = mergeDataState(dataState, pruned.dataState);
+                }
+                else if (!selection.selectionSet) {
+                    result[resultName] = fieldValue;
+                }
+                else {
+                    const pruned = this.prunePartialBoundaries({
+                        data: fieldValue,
+                        selectionSet: selection.selectionSet,
+                        boundaries: boundaries.getChild(resultName),
+                        context,
+                        path: path.concat(resultName),
+                    });
+                    changed ||= pruned.result !== fieldValue;
+                    dataState = mergeDataState(dataState, pruned.dataState);
+                    // A response key can be selected by more than one selection (e.g. a
+                    // field and an overlapping fragment), so merge their kept fields.
+                    result[resultName] =
+                        Object.hasOwn(result, resultName) ?
+                            merger.merge(result[resultName], pruned.result)
+                            : pruned.result;
+                }
+                return;
+            }
+            // Note: we do NOT set `changed` to true anywhere in this branch of the
+            // conditional, despite the fact that we might have encountered a
+            // partial @defer boundary. Dropping a fragment does not guarantee keys
+            // are actually dropped which can happen when overlapping sibling
+            // selections contribute to the construction of the object. The final
+            // Object.keys(result).length check actually detects whether keys were
+            // dropped or not.
+            const fragment = (0,getFragmentFromSelection/* getFragmentFromSelection */.H)(selection, lookupFragment);
+            let prune = false;
+            if (context.deferInfo && (0,isDeferredFragment/* isDeferredFragment */.A)(selection, variables)) {
+                const directive = selection.directives?.find((d) => d.name.value === "defer");
+                const label = directive && (0,getDirectiveArgValue/* getDirectiveArgValue */.H)(directive, "label", kinds/* Kind */.b.STRING);
+                prune = !!context.deferInfo.peekArray(path.concat(label || []));
+            }
+            if (fragment && policies.fragmentMatches(fragment, data.__typename)) {
+                if (boundaries.has(selection) || prune) {
+                    dataState = mergeDataState(dataState, "streaming");
+                }
+                else {
+                    fragment.selectionSet.selections.forEach(workSet.add, workSet);
+                }
+            }
+        });
+        if (Object.keys(result).length !== Object.keys(data).length) {
+            changed = true;
+        }
+        else if (changed && boundaries.hasSelections()) {
+            // Overlapping siblings may rebuild the same fields under a new object
+            // identity (e.g. changed === true) after a partial @defer is skipped.
+            // We perform a deep equality check to verify whether anything was
+            // actually dropped by the partial @defer fragment.
+            changed = !(0,lib/* equal */.L)(result, data);
+        }
+        return { result: changed ? result : data, dataState };
+    }
+    prunePartialStreamArrayImpl({ field, array, boundaries, context, path, }) {
+        if (!boundaries)
+            return { result: array, dataState: "complete" };
+        let changed = false;
+        let dataState = "complete";
+        let pruned = [];
+        const state = context.streamInfo?.peekArray(path)?.state;
+        const length = Math.min(array.length, state?.truncate ? state.streamPosition : Number.MAX_SAFE_INTEGER);
+        for (let i = 0; i < length; i++) {
+            const item = array[i];
+            let prunedResult = {
+                result: item,
+                dataState: "complete",
+            };
+            const boundary = boundaries.getChild(i);
+            if (boundary?.has(field)) {
+                // The presence of streamInfo determines how we truncate partial
+                // stream arrays. Stream info is only given to cache.diff during
+                // in-flight requests so we want keep items in the array equal to the
+                // total that have streamed in (this is represented by streamPosition
+                // above). For all other cache reads, partial stream boundaries are
+                // pruned back to an empty array.
+                if (state) {
+                    state.truncate = true;
+                    pruned = pruned.slice(0, state.streamPosition);
+                }
+                else {
+                    pruned = [];
+                    dataState = "complete";
+                }
+                break;
+            }
+            if (Array.isArray(item)) {
+                prunedResult = this.prunePartialStreamArray({
+                    field,
+                    array: item,
+                    boundaries: boundaries.getChild(i),
+                    context,
+                    path: path.concat(i),
+                });
+            }
+            else if (field.selectionSet) {
+                prunedResult = this.prunePartialBoundaries({
+                    data: item,
+                    selectionSet: field.selectionSet,
+                    boundaries: boundaries.getChild(i),
+                    context,
+                    path: path.concat(i),
+                });
+            }
+            pruned.push(prunedResult.result);
+            changed ||= prunedResult.result !== item;
+            dataState = mergeDataState(dataState, prunedResult.dataState);
+        }
+        changed ||= pruned.length !== array.length;
+        return { result: changed ? pruned : array, dataState };
     }
 }
 function firstMissing(tree) {
@@ -49211,7 +49689,7 @@ function assertSelectionSetForIdValue(store, field, fieldValue) {
             if ((0,isNonNullObject/* isNonNullObject */.U)(value)) {
                 (0,invariant/* invariant */.V1)(
                     !(0,storeUtils/* isReference */.A)(value),
-                    114,
+                    121,
                     (0,helpers/* getTypenameFromStoreObject */.Ui)(store, value),
                     field.name.value
                 );
@@ -49220,17 +49698,111 @@ function assertSelectionSetForIdValue(store, field, fieldValue) {
         });
     }
 }
+// We deliberately leave `returnPartialData` out of `executeSelectionSet`'s
+// cache key. `isFresh` runs during writes and cannot provide a reliable value
+// for this option, so including it would prevent a reliable cache hit.
+//
+// When `returnPartialData` is false, `diffQueryAgainstStore` prunes data from
+// partial @defer boundaries after reading the cached result. `PartialBoundaries`
+// records the selection paths needed for that pass, including empty nodes along
+// a path. Overlapping non-deferred selections must still be rebuilt so fields
+// contributed only by a partial deferred sibling are removed. The prune pass
+// can then skip unrelated result branches.
+class PartialBoundaries {
+    selections = new Set();
+    children = new Map();
+    add(selection) {
+        this.selections.add(selection);
+        return this;
+    }
+    has(selection) {
+        return this.selections.has(selection);
+    }
+    hasSelections() {
+        return this.selections.size > 0;
+    }
+    getChild(key) {
+        return this.children.get(key);
+    }
+    clone() {
+        return new PartialBoundaries().merge(this);
+    }
+    set(key, boundary) {
+        const child = this.getChild(key);
+        this.children.set(key, 
+        // Create a new PartialBoundaries instance to avoid mutating any cached
+        // execResult partialBoundaries objects
+        child ? child.clone().merge(boundary) : boundary);
+    }
+    merge(boundaries) {
+        boundaries.selections.forEach((selection) => this.add(selection));
+        boundaries.children.forEach((child, key) => this.set(key, child));
+        return this;
+    }
+}
+function shouldPrune({ dataState }, context) {
+    if (dataState === "deferPartial" || dataState === "streamPartial") {
+        return true;
+    }
+    if (dataState === "complete" || dataState === "streaming") {
+        return !!(
+        // If the last cache write repaired a partial @stream array to a
+        // complete array, the stream array might contain stale entries after
+        // the last written value. We only want to deliver the results up to
+        // the index the network wrote so we need to prune it too.
+        (context.streamInfo ||
+            // The network hasn't delivered these @defer boundaries yet, so prune
+            // the (possibly complete) cached data sitting at them.
+            context.deferInfo));
+    }
+    return false;
+}
+// Describes the data state transitions that change the running state when it's
+// combined with the next data state. Omitted object values represent
+// "impossible" merges where the data state should remain the same.
+const DATA_STATE_MERGES = {
+    empty: {
+        complete: "partial",
+        deferPartial: "partial",
+        streaming: "partial",
+        streamPartial: "partial",
+    },
+    deferPartial: {
+        empty: "partial",
+    },
+    streamPartial: {
+        deferPartial: "deferPartial",
+        empty: "partial",
+    },
+    streaming: {
+        deferPartial: "deferPartial",
+        empty: "partial",
+        streamPartial: "streamPartial",
+    },
+    complete: {
+        deferPartial: "deferPartial",
+        streaming: "streaming",
+        streamPartial: "streamPartial",
+        empty: "partial",
+    },
+    partial: {},
+};
+function mergeDataState(current, next) {
+    if (next === "partial") {
+        return "partial";
+    }
+    if (!current || current === next) {
+        return next;
+    }
+    return DATA_STATE_MERGES[current][next] || current;
+}
 //# sourceMappingURL=readFromStore.js.map
 
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getOperationDefinition.js
-var getOperationDefinition = __webpack_require__(3386);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/constants.js
-var constants = __webpack_require__(34033);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/isNonEmptyArray.js
-var isNonEmptyArray = __webpack_require__(32373);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/argumentsObjectFromField.js
-var argumentsObjectFromField = __webpack_require__(3763);
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/writeToStore.js
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/isNonEmptyArray.js
+var isNonEmptyArray = __webpack_require__(36283);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/argumentsObjectFromField.js
+var argumentsObjectFromField = __webpack_require__(51085);
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/writeToStore.js
 /* unused harmony import specifier */ var cloneDeep;
 /* unused harmony import specifier */ var writeToStore_resultKeyNameFromField;
 /* unused harmony import specifier */ var writeToStore_invariant;
@@ -49305,7 +49877,7 @@ class StoreWriter {
             path: [],
         });
         if (!(0,storeUtils/* isReference */.A)(ref)) {
-            throw (0,invariant/* newInvariantError */.vA)(115, result);
+            throw (0,invariant/* newInvariantError */.vA)(122, result);
         }
         // So far, the store has not been modified, so now it's time to process
         // context.incomingById and merge those incoming fields into context.store.
@@ -49444,7 +50016,7 @@ class StoreWriter {
                 }
                 else if (context.extensions?.[constants/* streamInfoSymbol */.DH] &&
                     Array.isArray(incomingValue) &&
-                    hasStreamDirective(field)) {
+                    (0,isStreamField/* isStreamField */.f)(field, context.variables)) {
                     childTree.info = {
                         field,
                         typename,
@@ -49467,7 +50039,7 @@ class StoreWriter {
                 // provide a default value, so its absence from the written data should
                 // not be cause for alarm.
                 !policies.getReadFunction(typename, field.name.value)) {
-                writeToStore_invariant.error(116, writeToStore_resultKeyNameFromField(field), result);
+                writeToStore_invariant.error(123, writeToStore_resultKeyNameFromField(field), result);
             }
         });
         // Identify the result object, even if dataId was already provided,
@@ -49615,7 +50187,7 @@ class StoreWriter {
                 else {
                     const fragment = (0,getFragmentFromSelection/* getFragmentFromSelection */.H)(selection, context.lookupFragment);
                     if (!fragment && selection.kind === kinds/* Kind */.b.FRAGMENT_SPREAD) {
-                        throw (0,invariant/* newInvariantError */.vA)(117, selection.name.value);
+                        throw (0,invariant/* newInvariantError */.vA)(124, selection.name.value);
                     }
                     if (fragment &&
                         policies.fragmentMatches(fragment, typename, result, context.variables)) {
@@ -49730,10 +50302,6 @@ function mergeMergeTrees(left, right) {
     }
     return merged;
 }
-function hasStreamDirective(field) {
-    return (!!field.directives &&
-        field.directives.some((directive) => directive.name.value === "stream"));
-}
 function mergeTreeIsEmpty(tree) {
     return !tree || !(tree.info || tree.map.size);
 }
@@ -49791,7 +50359,7 @@ function warnAboutDataLoss(existingRef, incomingObj, storeFieldName, store) {
             }
         });
     }
-    (/* inlined export .__DEV__ */false) && invariant/* invariant */.V1.warn(118, fieldName, parentType, childTypenames.length ?
+    (/* inlined export .__DEV__ */false) && invariant/* invariant */.V1.warn(125, fieldName, parentType, childTypenames.length ?
         "either ensure all objects of type " +
             childTypenames.join(" and ") +
             " have an ID or a custom merge function, or "
@@ -49826,8 +50394,10 @@ function getTypenameFromResult(result, selectionSet, fragmentMap) {
 }
 //# sourceMappingURL=writeToStore.js.map
 
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/inMemoryCache.js
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/cache/inmemory/inMemoryCache.js
 /* unused harmony import specifier */ var getInMemoryCacheMemoryInternals;
+/* unused harmony import specifier */ var inMemoryCache_unwrapScalarType;
+/* unused harmony import specifier */ var inMemoryCache_invariant;
 
 
 
@@ -49858,9 +50428,9 @@ class InMemoryCache extends ApolloCache {
     // cache.policies.addPossibletypes.
     policies;
     makeVar = reactiveVars/* makeVar */.UT;
-    constructor(config = {}) {
+    constructor(...args) {
         super();
-        this.config = (0,helpers/* normalizeConfig */.I6)(config);
+        this.config = (0,helpers/* normalizeConfig */.I6)(args[0] ?? {});
         this.policies = new inmemory_policies/* Policies */.lx({
             cache: this,
             dataIdFromObject: this.config.dataIdFromObject,
@@ -49920,6 +50490,90 @@ class InMemoryCache extends ApolloCache {
         // all CacheGroup dependency information.
         new Set([this.data.group, this.optimisticData.group]).forEach((group) => group.resetCaching());
     }
+    getRootTypename(operation) {
+        return this.policies.rootTypenamesById[`ROOT_${operation.toUpperCase()}`];
+    }
+    getScalar(key) {
+        return this.config.scalars?.[key];
+    }
+    /** Get the configured scalar type for a field */
+    getScalarTypeForField(typename, fieldName) {
+        return this.policies.getScalarTypeForField(typename, fieldName);
+    }
+    configuresScalars() {
+        return !!this.config.scalars;
+    }
+    serializeVariables(document, variables) {
+        if (!variables ||
+            Object.keys(variables).length === 0 ||
+            (!this.config.scalars && !this.config.inputObjects)) {
+            return variables;
+        }
+        const variableTypes = (0,getOperationDefinition/* getOperationDefinition */.V)(document)?.variableDefinitions?.reduce((memo, node) => {
+            memo[node.variable.name.value] = (0,helpers/* getScalarTypeFromTypeNode */.js)(node.type);
+            return memo;
+        }, {});
+        if (!variableTypes || Object.keys(variableTypes).length === 0) {
+            return variables;
+        }
+        return this.serializeVariablesValue(variables, variableTypes);
+    }
+    serializeVariablesValue(value, variableTypes, scalarType, coordinate) {
+        if (value == null) {
+            return value;
+        }
+        if (scalarType) {
+            const match = (0,matchScalarList/* matchScalarList */.W)(scalarType);
+            if (match) {
+                if (Array.isArray(value)) {
+                    return this.serializeInputArray(value, variableTypes, match[1], coordinate);
+                }
+                else if ((/* inlined export .__DEV__ */false)) {
+                    (/* inlined export .__DEV__ */false) && inMemoryCache_invariant.warn(112, coordinate, scalarType, inMemoryCache_unwrapScalarType(scalarType));
+                }
+            }
+            const scalar = this.getScalar((0,unwrapScalarType/* unwrapScalarType */.s)(scalarType));
+            if (scalar) {
+                return scalar.coerceToSerialized(value);
+            }
+        }
+        if (Array.isArray(value)) {
+            return this.serializeInputArray(value, variableTypes, undefined, coordinate);
+        }
+        if ((0,isPlainObject/* isPlainObject */.Q)(value)) {
+            return this.serializeInputObject(value, variableTypes, coordinate);
+        }
+        return value;
+    }
+    serializeInputArray(value, variableTypes, scalarType, coordinate) {
+        let changed = false;
+        const newValue = value.map((item) => {
+            const newItem = this.serializeVariablesValue(item, variableTypes, scalarType, coordinate);
+            changed ||= newItem !== item;
+            return newItem;
+        });
+        return changed ? newValue : value;
+    }
+    serializeInputObject(value, variableTypes, coordinate) {
+        let changed = false;
+        const entries = Object.entries(value).map(([name, value]) => {
+            const type = variableTypes[name];
+            const fieldCoordinate = coordinate ? `${coordinate}.${name}` : name;
+            if (!type) {
+                return [name, value];
+            }
+            const inputObject = this.config.inputObjects?.[(0,unwrapScalarType/* unwrapScalarType */.s)(type)];
+            if (inputObject) {
+                const newValue = this.serializeVariablesValue(value, inputObject.fields, undefined, fieldCoordinate);
+                changed ||= newValue !== value;
+                return [name, newValue];
+            }
+            const newValue = this.serializeVariablesValue(value, variableTypes, type, fieldCoordinate);
+            changed ||= newValue !== value;
+            return [name, newValue];
+        });
+        return changed ? Object.fromEntries(entries) : value;
+    }
     restore(data) {
         this.init();
         // Since calling this.init() discards/replaces the entire StoreReader, along
@@ -49933,7 +50587,7 @@ class InMemoryCache extends ApolloCache {
         return (optimistic ? this.optimisticData : this.data).extract();
     }
     read(options) {
-        const { 
+        const { query, variables, 
         // Since read returns data or null, without any additional metadata
         // about whether/where there might have been missing fields, the
         // default behavior cannot be returnPartialData = true (like it is
@@ -49944,15 +50598,20 @@ class InMemoryCache extends ApolloCache {
         returnPartialData = false, } = options;
         return this.storeReader.diffQueryAgainstStore({
             ...options,
+            variables: this.serializeVariables(query, variables),
             store: options.optimistic ? this.optimisticData : this.data,
             config: this.config,
             returnPartialData,
         }).result;
     }
     write(options) {
+        const { query, variables } = options;
         try {
             ++this.txCount;
-            return this.storeWriter.writeToStore(this.data, options);
+            return this.storeWriter.writeToStore(this.data, {
+                ...options,
+                variables: this.serializeVariables(query, variables),
+            });
         }
         finally {
             if (!--this.txCount && options.broadcast !== false) {
@@ -49988,8 +50647,10 @@ class InMemoryCache extends ApolloCache {
         }
     }
     diff(options) {
+        const { variables } = options;
         return this.storeReader.diffQueryAgainstStore({
             ...options,
+            variables: this.serializeVariables(options.query, variables),
             store: options.optimistic ? this.optimisticData : this.data,
             rootId: options.id || "ROOT_QUERY",
             config: this.config,
@@ -50338,7 +50999,7 @@ if ((/* inlined export .__DEV__ */false)) {
 
 /***/ },
 
-/***/ 98749
+/***/ 34979
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -50347,25 +51008,25 @@ if ((/* inlined export .__DEV__ */false)) {
 /* harmony export */ });
 /* unused harmony exports collectSpecifierPaths, getSpecifierPaths, extractKeyPath */
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3763);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(51085);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(39906);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(99152);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(97645);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(45367);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(32373);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(36283);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(97053);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(15751);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(31512);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(86854);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(34090);
+	/* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(2404);
 }
 
 
@@ -50403,7 +51064,7 @@ function keyFieldsFnFromSpecifier(specifier) {
                     // context.readField for this extraction.
                     extracted = extractKeyPath(object, schemaKeyPath, extractKey);
                 }
-                ;(0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_5__/* .invariant */ .V1)(extracted !== void 0, 108, schemaKeyPath.join("."), object);
+                ;(0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_5__/* .invariant */ .V1)(extracted !== void 0, 113, schemaKeyPath.join("."), object);
                 return extracted;
             }));
             return `${context.typename}:${JSON.stringify(keyObject)}`;
@@ -50556,7 +51217,7 @@ function normalize(value) {
 
 /***/ },
 
-/***/ 36413
+/***/ 66543
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -50567,40 +51228,40 @@ function normalize(value) {
 /* unused harmony import specifier */ var invariant;
 /* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25012);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_masking__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(22681);
+	/* harmony import */ var _apollo_client_masking__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(97075);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(47962);
+	/* harmony import */ var _apollo_client_utilities__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(88004);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(34033);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(68447);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(3763);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(51085);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(66431);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(89877);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(97645);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(45367);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(97053);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(15751);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(12365);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(47151);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(31512);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(86854);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(34090);
+	/* harmony import */ var _helpers_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(2404);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _key_extractor_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(98749);
+	/* harmony import */ var _key_extractor_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(34979);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _reactiveVars_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(65906);
+	/* harmony import */ var _reactiveVars_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(51984);
 }
 
 
@@ -50789,10 +51450,32 @@ class Policies {
                 }
                 const incoming = fields[fieldName];
                 if (typeof incoming === "function") {
-                    existing.read = incoming;
+                    if (existing.scalar) {
+                        if ((/* inlined export .__DEV__ */false)) {
+                            warnAboutScalarConfig(typename, fieldName, existing.scalar, "read");
+                        }
+                    }
+                    else {
+                        existing.read = incoming;
+                    }
                 }
                 else {
-                    const { keyArgs, read, merge } = incoming;
+                    let { keyArgs, read, merge, scalar } = incoming;
+                    if (scalar) {
+                        existing.scalar = scalar;
+                    }
+                    if (existing.scalar) {
+                        if ((/* inlined export .__DEV__ */false)) {
+                            if (read !== undefined || existing.read !== undefined) {
+                                warnAboutScalarConfig(typename, fieldName, existing.scalar, "read");
+                            }
+                            if (merge !== undefined || existing.merge !== undefined) {
+                                warnAboutScalarConfig(typename, fieldName, existing.scalar, "merge");
+                            }
+                        }
+                        existing.read = read = undefined;
+                        existing.merge = merge = undefined;
+                    }
                     existing.keyFn =
                         // Pass false to disable argument-based differentiation of
                         // field identities.
@@ -50824,7 +51507,7 @@ class Policies {
         const rootId = "ROOT_" + which.toUpperCase();
         const old = this.rootTypenamesById[rootId];
         if (typename !== old) {
-            (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_10__/* .invariant */ .V1)(!old || old === which, 109, which);
+            (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_10__/* .invariant */ .V1)(!old || old === which, 114, which);
             // First, delete any old __typename associated with this rootId from
             // rootIdsByTypename.
             if (old)
@@ -50967,7 +51650,7 @@ class Policies {
                 if (supertypeSet.has(supertype)) {
                     if (!typenameSupertypeSet.has(supertype)) {
                         if (checkingFuzzySubtypes) {
-                            (/* inlined export .__DEV__ */false) && _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_10__/* .invariant */ .V1.warn(110, typename, supertype);
+                            (/* inlined export .__DEV__ */false) && _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_10__/* .invariant */ .V1.warn(115, typename, supertype);
                         }
                         // Record positive results for faster future lookup.
                         // Unfortunately, we cannot safely cache negative results,
@@ -51053,6 +51736,9 @@ class Policies {
         // StoreObject correspond to which original field names.
         return fieldName === (0,_helpers_js__WEBPACK_IMPORTED_MODULE_11__/* .fieldNameFromStoreName */ .iJ)(storeFieldName) ? storeFieldName
             : fieldName + ":" + storeFieldName;
+    }
+    getScalarTypeForField(typename, fieldName) {
+        return this.getFieldPolicy(typename, fieldName)?.scalar;
     }
     readField(options, context) {
         const objectOrReference = options.from;
@@ -51219,7 +51905,7 @@ function normalizeReadFieldOptions(readFieldArgs, objectOrReference, variables) 
         }
     }
     if ((/* inlined export .__DEV__ */false) && options.from === void 0) {
-        (/* inlined export .__DEV__ */false) && invariant.warn(111, stringifyForDisplay(Array.from(readFieldArgs)));
+        (/* inlined export .__DEV__ */false) && invariant.warn(116, stringifyForDisplay(Array.from(readFieldArgs)));
     }
     if (void 0 === options.variables) {
         options.variables = variables;
@@ -51229,7 +51915,7 @@ function normalizeReadFieldOptions(readFieldArgs, objectOrReference, variables) 
 function makeMergeObjectsFunction(store) {
     return function mergeObjects(existing, incoming) {
         if ((0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__/* .isArray */ .c)(existing) || (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_7__/* .isArray */ .c)(incoming)) {
-            throw (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_10__/* .newInvariantError */ .vA)(112);
+            throw (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_10__/* .newInvariantError */ .vA)(117);
         }
         // These dynamic checks are necessary because the parameters of a
         // custom merge function can easily have the any type, so the type
@@ -51265,6 +51951,9 @@ function makeMergeObjectsFunction(store) {
         return incoming;
     };
 }
+function warnAboutScalarConfig(typename, fieldName, scalar, kind) {
+    (/* inlined export .__DEV__ */false) && _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_10__/* .invariant */ .V1.warn(118, `${typename}.${fieldName}`, scalar, kind);
+}
 //# sourceMappingURL=policies.js.map
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, [
@@ -51274,7 +51963,7 @@ function makeMergeObjectsFunction(store) {
 
 /***/ },
 
-/***/ 65906
+/***/ 51984
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -51373,7 +52062,7 @@ function broadcast(cache) {
 
 /***/ },
 
-/***/ 33939
+/***/ 19133
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 
@@ -51386,11 +52075,11 @@ __webpack_require__.d(__webpack_exports__, {
 var ast = __webpack_require__(87202);
 // EXTERNAL MODULE: ./node_modules/.pnpm/rxjs@7.8.2/node_modules/rxjs/dist/cjs/index.js
 var cjs = __webpack_require__(71530);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/hasDirectives.js
-var hasDirectives = __webpack_require__(1598);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/invariant/index.js + 1 modules
-var invariant = __webpack_require__(31512);
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/incremental/handlers/notImplemented.js
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/hasDirectives.js
+var hasDirectives = __webpack_require__(99312);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/invariant/index.js + 1 modules
+var invariant = __webpack_require__(86854);
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/incremental/handlers/notImplemented.js
 
 
 class NotImplementedHandler {
@@ -51398,7 +52087,7 @@ class NotImplementedHandler {
         return false;
     }
     prepareRequest(request) {
-        ;(0,invariant/* invariant */.V1)(!(0,hasDirectives/* hasDirectives */.d)(["defer", "stream"], request.query), 67);
+        ;(0,invariant/* invariant */.V1)(!(0,hasDirectives/* hasDirectives */.d)(["defer", "stream"], request.query), 69);
         return request;
     }
     extractErrors() { }
@@ -51407,19 +52096,19 @@ class NotImplementedHandler {
 }
 //# sourceMappingURL=notImplemented.js.map
 
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/link/core/execute.js
-var execute = __webpack_require__(81985);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/DocumentTransform.js
-var DocumentTransform = __webpack_require__(45801);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/mergeOptions.js
-var mergeOptions = __webpack_require__(26388);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/compact.js
-var compact = __webpack_require__(47037);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/checkDocument.js
-var checkDocument = __webpack_require__(90449);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/link/core/execute.js
+var execute = __webpack_require__(53571);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/DocumentTransform.js
+var DocumentTransform = __webpack_require__(97139);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/mergeOptions.js
+var mergeOptions = __webpack_require__(18686);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/compact.js
+var compact = __webpack_require__(55119);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/checkDocument.js
+var checkDocument = __webpack_require__(57687);
 // EXTERNAL MODULE: ./node_modules/.pnpm/graphql@16.14.2/node_modules/graphql/language/visitor.mjs
 var visitor = __webpack_require__(92904);
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/removeFragmentSpreads.js
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/removeFragmentSpreads.js
 
 function removeMaskedFragmentSpreads(document) {
     return (0,visitor/* visit */.YR)(document, {
@@ -51435,61 +52124,66 @@ function removeMaskedFragmentSpreads(document) {
 var lib = __webpack_require__(57235);
 // EXTERNAL MODULE: ./node_modules/.pnpm/graphql@16.14.2/node_modules/graphql/language/kinds.mjs
 var kinds = __webpack_require__(7015);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/canonicalStringify.js
-var canonicalStringify = __webpack_require__(72097);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/errors/CombinedGraphQLErrors.js
-var CombinedGraphQLErrors = __webpack_require__(59508);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/errors/index.js
-var errors = __webpack_require__(14811);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/errors/LinkError.js
-var LinkError = __webpack_require__(75921);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/masking/maskOperation.js
-var maskOperation = __webpack_require__(29765);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/masking/maskFragment.js
-var maskFragment = __webpack_require__(61538);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/caching/sizes.js
-var sizes = __webpack_require__(25404);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/print.js + 1 modules
-var print = __webpack_require__(31723);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/isNetworkRequestInFlight.js
-var isNetworkRequestInFlight = __webpack_require__(97268);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/graphQLResultHasError.js
-var graphQLResultHasError = __webpack_require__(2746);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/filterMap.js
-var filterMap = __webpack_require__(19904);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/toQueryResult.js
-var toQueryResult = __webpack_require__(30942);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/caches.js
-var caches = __webpack_require__(22225);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getOperationDefinition.js
-var getOperationDefinition = __webpack_require__(3386);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/hasForcedResolvers.js
-var hasForcedResolvers = __webpack_require__(15234);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/removeDirectivesFromDocument.js
-var removeDirectivesFromDocument = __webpack_require__(45881);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getDefaultValues.js
-var getDefaultValues = __webpack_require__(57885);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/isDocumentNode.js
-var isDocumentNode = __webpack_require__(58651);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getOperationName.js
-var getOperationName = __webpack_require__(98728);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/isNonNullObject.js
-var isNonNullObject = __webpack_require__(97053);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/constants.js
-var constants = __webpack_require__(34033);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/makeUniqueId.js
-var makeUniqueId = __webpack_require__(79142);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/core/networkStatus.js
-var core_networkStatus = __webpack_require__(46935);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/core/ObservableQuery.js + 1 modules
-var ObservableQuery = __webpack_require__(46893);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/core/QueryInfo.js
-var QueryInfo = __webpack_require__(64751);
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/core/QueryManager.js
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/canonicalStringify.js
+var canonicalStringify = __webpack_require__(19867);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/errors/CombinedGraphQLErrors.js
+var CombinedGraphQLErrors = __webpack_require__(66350);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/errors/index.js
+var errors = __webpack_require__(93277);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/errors/LinkError.js
+var LinkError = __webpack_require__(44735);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/masking/maskOperation.js
+var maskOperation = __webpack_require__(79363);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/masking/maskFragment.js
+var maskFragment = __webpack_require__(65724);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/caching/sizes.js
+var sizes = __webpack_require__(47974);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/print.js + 1 modules
+var print = __webpack_require__(24153);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/isNetworkRequestInFlight.js
+var isNetworkRequestInFlight = __webpack_require__(3902);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/graphQLResultHasError.js
+var graphQLResultHasError = __webpack_require__(82516);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/filterMap.js
+var filterMap = __webpack_require__(25582);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/toQueryResult.js
+var toQueryResult = __webpack_require__(16060);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/caches.js
+var caches = __webpack_require__(82543);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getOperationDefinition.js
+var getOperationDefinition = __webpack_require__(88048);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/hasForcedResolvers.js
+var hasForcedResolvers = __webpack_require__(87384);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/removeDirectivesFromDocument.js
+var removeDirectivesFromDocument = __webpack_require__(42351);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getDefaultValues.js
+var getDefaultValues = __webpack_require__(18111);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/isDocumentNode.js
+var isDocumentNode = __webpack_require__(16501);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getOperationName.js
+var getOperationName = __webpack_require__(22970);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/isNonNullObject.js
+var isNonNullObject = __webpack_require__(15751);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/constants.js
+var constants = __webpack_require__(68447);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/makeUniqueId.js
+var makeUniqueId = __webpack_require__(47864);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/coerceScalarFieldsToParsed.js
+var coerceScalarFieldsToParsed = __webpack_require__(82080);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/core/dataStateErrorCache.js
+var dataStateErrorCache = __webpack_require__(30188);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/core/networkStatus.js
+var core_networkStatus = __webpack_require__(82465);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/core/ObservableQuery.js + 1 modules
+var ObservableQuery = __webpack_require__(80515);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/core/QueryInfo.js
+var QueryInfo = __webpack_require__(22901);
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/core/QueryManager.js
 /* unused harmony import specifier */ var QueryManager_getOperationDefinition;
 /* unused harmony import specifier */ var QueryManager_getOperationName;
 /* unused harmony import specifier */ var QueryManager_invariant;
 /* unused harmony import specifier */ var logMissingFieldErrors;
+
 
 
 
@@ -51567,6 +52261,12 @@ class QueryManager {
                     // selections and fragments from the fragment registry.
                     .concat(defaultDocumentTransform)
                 : defaultDocumentTransform;
+        // Put the incremental transform last so custom document transforms don't
+        // revert changes made to the document accidentally. Adding last also
+        // ensures `@defer` fragments added by the fragment registry are labeled.
+        if (this.incrementalHandler.documentTransform) {
+            this.documentTransform = this.documentTransform.concat(this.incrementalHandler.documentTransform);
+        }
         this.defaultContext = options.defaultContext || {};
         if ((this.onBroadcast = options.onBroadcast)) {
             this.mutationStore = {};
@@ -51584,7 +52284,7 @@ class QueryManager {
      */
     stop() {
         this.obsQueries.forEach((oq) => oq.stop());
-        this.cancelPendingFetches((0,invariant/* newInvariantError */.vA)(90));
+        this.cancelPendingFetches((0,invariant/* newInvariantError */.vA)(93));
     }
     cancelPendingFetches(error) {
         this.fetchCancelFns.forEach((cancel) => cancel(error));
@@ -51597,7 +52297,7 @@ class QueryManager {
         variables = this.getVariables(mutation, variables);
         if (hasClientExports) {
             if ((/* inlined export .__DEV__ */false)) {
-                QueryManager_invariant(this.localState, 91, QueryManager_getOperationName(mutation, "(anonymous)"));
+                QueryManager_invariant(this.localState, 94, QueryManager_getOperationName(mutation, "(anonymous)"));
             }
             variables = await this.localState.getExportedVariables({
                 client: this.client,
@@ -51609,7 +52309,7 @@ class QueryManager {
         const mutationStoreValue = this.mutationStore &&
             (this.mutationStore[queryInfo.id] = {
                 mutation,
-                variables,
+                variables: this.cache.serializeVariables(mutation, variables),
                 loading: true,
                 error: null,
             });
@@ -51830,7 +52530,7 @@ class QueryManager {
         // depend on values that previously existed in the data portion of the
         // store. So, we cancel the promises and observers that we have issued
         // so far and not yet resolved (in the case of queries).
-        this.cancelPendingFetches((0,invariant/* newInvariantError */.vA)(92));
+        this.cancelPendingFetches((0,invariant/* newInvariantError */.vA)(95));
         this.obsQueries.forEach((observableQuery) => {
             // Set loading to true so listeners don't trigger unless they want
             // results with partial data.
@@ -51900,10 +52600,10 @@ class QueryManager {
                 if (!included) {
                     const queryName = queryNames.get(nameOrQueryString);
                     if (queryName) {
-                        (/* inlined export .__DEV__ */false) && QueryManager_invariant.warn(93, queryName);
+                        (/* inlined export .__DEV__ */false) && QueryManager_invariant.warn(96, queryName);
                     }
                     else {
-                        (/* inlined export .__DEV__ */false) && QueryManager_invariant.warn(94);
+                        (/* inlined export .__DEV__ */false) && QueryManager_invariant.warn(97);
                     }
                 }
             });
@@ -51932,7 +52632,7 @@ class QueryManager {
         if ((/* inlined export .__DEV__ */false)) {
             QueryManager_invariant(
                 !this.getDocumentInfo(query).hasClientExports || this.localState,
-                95,
+                98,
                 QueryManager_getOperationName(query, "(anonymous)")
             );
         }
@@ -52007,6 +52707,7 @@ class QueryManager {
         const executeContext = {
             client: this.client,
         };
+        variables = this.cache.serializeVariables(query, variables);
         if (serverQuery) {
             const { inFlightLinkObservables, link } = this;
             try {
@@ -52076,14 +52777,14 @@ class QueryManager {
             if ((/* inlined export .__DEV__ */false)) {
                 QueryManager_invariant(
                     this.localState,
-                    96,
+                    99,
                     operation[0].toUpperCase() + operation.slice(1),
                     operationName ?? "(anonymous)"
                 );
             }
             ;(0,invariant/* invariant */.V1)(
                 !hasIncrementalDirective,
-                97,
+                100,
                 operation[0].toUpperCase() + operation.slice(1),
                 operationName ?? "(anonymous)"
             );
@@ -52107,7 +52808,7 @@ class QueryManager {
             })),
         };
     }
-    getResultsFromLink(options, { queryInfo, cacheWriteBehavior, observableQuery, exposeExtensions, }) {
+    getResultsFromLink(options, { queryInfo, cacheWriteBehavior, observableQuery, exposeExtensions, prunePendingDeferFragments, }) {
         const { errorPolicy } = options;
         // Performing transformForLink here gives this.cache a chance to fill in
         // missing fragment definitions (for example) before sending this document
@@ -52117,52 +52818,49 @@ class QueryManager {
             // Use linkDocument rather than queryInfo.document so the
             // operation/fragments used to write the result are the same as the
             // ones used to obtain it from the link.
-            const result = queryInfo.markQueryResult(incoming, {
+            const { dataState, ...result } = queryInfo.markQueryResult(incoming, {
                 ...options,
                 document: linkDocument,
                 cacheWriteBehavior,
+                returnPartialData: options.returnPartialData,
+                prunePendingDeferFragments,
             });
             const hasErrors = (0,graphQLResultHasError/* graphQLResultHasError */.t)(result);
             if (hasErrors && errorPolicy === "none") {
-                queryInfo.resetLastWrite();
                 observableQuery?.["resetNotifications"]();
-                throw new CombinedGraphQLErrors/* CombinedGraphQLErrors */.K(removeStreamDetailsFromExtensions(result));
+                const error = new CombinedGraphQLErrors/* CombinedGraphQLErrors */.K(removeStreamDetailsFromExtensions(result));
+                dataStateErrorCache/* dataStateErrorCache */.K.set(error, dataState);
+                throw error;
             }
+            const partial = dataState !== "complete";
             const aqr = {
                 data: result.data,
                 ...(queryInfo.hasNext ?
                     {
                         loading: true,
                         networkStatus: core_networkStatus/* NetworkStatus */.p.streaming,
-                        dataState: "streaming",
-                        partial: true,
+                        dataState,
+                        partial,
                     }
                     : {
-                        dataState: result.data ? "complete" : "empty",
+                        dataState,
                         loading: false,
                         networkStatus: core_networkStatus/* NetworkStatus */.p.ready,
-                        partial: !result.data,
+                        partial,
                     }),
             };
             if (exposeExtensions && "extensions" in result) {
                 aqr[constants/* extensionsSymbol */.X] = result.extensions;
             }
-            if (hasErrors) {
-                if (errorPolicy === "none") {
-                    aqr.data = void 0;
-                    aqr.dataState = "empty";
-                }
-                if (errorPolicy !== "ignore") {
-                    aqr.error = new CombinedGraphQLErrors/* CombinedGraphQLErrors */.K(removeStreamDetailsFromExtensions(result));
-                    if (aqr.dataState !== "streaming") {
-                        aqr.networkStatus = core_networkStatus/* NetworkStatus */.p.error;
-                    }
+            if (hasErrors && errorPolicy !== "ignore") {
+                aqr.error = new CombinedGraphQLErrors/* CombinedGraphQLErrors */.K(removeStreamDetailsFromExtensions(result));
+                if (aqr.networkStatus !== core_networkStatus/* NetworkStatus */.p.streaming) {
+                    aqr.networkStatus = core_networkStatus/* NetworkStatus */.p.error;
                 }
             }
             return aqr;
         }), (0,cjs.catchError)((error) => {
             if (errorPolicy === "none") {
-                queryInfo.resetLastWrite();
                 observableQuery?.["resetNotifications"]();
                 throw error;
             }
@@ -52197,6 +52895,7 @@ class QueryManager {
             fetchPolicy,
             errorPolicy,
             returnPartialData,
+            networkStatus,
             notifyOnNetworkStatusChange,
             context,
         });
@@ -52253,7 +52952,7 @@ class QueryManager {
         // we deprecated and removed LocalState.
         if (this.getDocumentInfo(normalized.query).hasClientExports) {
             if ((/* inlined export .__DEV__ */false)) {
-                QueryManager_invariant(this.localState, 98, QueryManager_getOperationName(normalized.query, "(anonymous)"));
+                QueryManager_invariant(this.localState, 101, QueryManager_getOperationName(normalized.query, "(anonymous)"));
             }
             observable = (0,cjs.from)(this.localState.getExportedVariables({
                 client: this.client,
@@ -52426,7 +53125,7 @@ class QueryManager {
                 !isFullyUnmaskedOperation(document) &&
                 !this.noCacheWarningsByCause.has(cause)) {
                 this.noCacheWarningsByCause.add(cause);
-                (/* inlined export .__DEV__ */false) && QueryManager_invariant.warn(99, QueryManager_getOperationName(document, `Unnamed ${operationType ?? "operation"}`));
+                (/* inlined export .__DEV__ */false) && QueryManager_invariant.warn(102, QueryManager_getOperationName(document, `Unnamed ${operationType ?? "operation"}`));
             }
         }
         return (this.dataMasking ?
@@ -52439,32 +53138,33 @@ class QueryManager {
             (0,maskFragment/* maskFragment */.z)(data, fragment, this.cache, fragmentName)
             : data;
     }
-    fetchQueryByPolicy({ query, variables, fetchPolicy, errorPolicy, returnPartialData, context, }, { cacheWriteBehavior, onCacheHit, queryInfo, observableQuery, exposeExtensions, }) {
-        const readCache = () => this.cache.diff({
-            query,
-            variables,
-            returnPartialData: true,
-            optimistic: true,
-        });
+    fetchQueryByPolicy({ query, variables, fetchPolicy, errorPolicy, returnPartialData, context, networkStatus, }, { cacheWriteBehavior, onCacheHit, queryInfo, observableQuery, exposeExtensions, }) {
+        const readCache = () => {
+            return queryInfo.getDiff({
+                query,
+                variables,
+                returnPartialData: true,
+                optimistic: true,
+            });
+        };
         const resultsFromCache = (diff, networkStatus) => {
             const data = diff.result;
             if ((/* inlined export .__DEV__ */false) && !returnPartialData && data !== null) {
                 logMissingFieldErrors(diff.missing);
             }
-            const toResult = (data) => {
+            const toResult = (data, dataState = diff.dataState) => {
                 // TODO: Eventually we should move this handling into
                 // queryInfo.getDiff() directly. Since getDiff is updated to return null
                 // on returnPartialData: false, we should take advantage of that instead
                 // of having to patch it elsewhere.
                 if (!diff.complete && !returnPartialData) {
                     data = undefined;
+                    dataState = "empty";
                 }
                 return {
                     // TODO: Handle partial data
                     data: data,
-                    dataState: diff.complete ? "complete"
-                        : data ? "partial"
-                            : "empty",
+                    dataState,
                     loading: (0,isNetworkRequestInFlight/* isNetworkRequestInFlight */.b)(networkStatus),
                     networkStatus,
                     partial: !diff.complete,
@@ -52488,7 +53188,7 @@ class QueryManager {
             (diff.complete || returnPartialData) &&
                 this.getDocumentInfo(query).hasForcedResolvers) {
                 if ((/* inlined export .__DEV__ */false)) {
-                    QueryManager_invariant(this.localState, 100, QueryManager_getOperationName(query, "(anonymous)"));
+                    QueryManager_invariant(this.localState, 103, QueryManager_getOperationName(query, "(anonymous)"));
                 }
                 onCacheHit();
                 return (0,cjs.from)(this.localState.execute({
@@ -52502,7 +53202,9 @@ class QueryManager {
                     fetchPolicy,
                 }).then((resolved) => ({
                     kind: "N",
-                    value: toResult(resolved.data || void 0),
+                    value: toResult(resolved.data || void 0, diff.complete ? "complete"
+                        : resolved.data ? "partial"
+                            : "empty"),
                     // Always attach the variables used for this fetch so @export
                     // resolution can update ObservableQuery.options.variables and
                     // resubscribe the cache watch under the correct variable set.
@@ -52521,17 +53223,20 @@ class QueryManager {
             }
             return fromData(data || undefined);
         };
-        const resultsFromLink = () => this.getResultsFromLink({
+        const resultsFromLink = ({ prunePendingDeferFragments = true, } = {}) => this.getResultsFromLink({
             query,
             variables,
             context,
             fetchPolicy,
             errorPolicy,
+            returnPartialData,
+            networkStatus,
         }, {
             cacheWriteBehavior,
             queryInfo,
             observableQuery,
             exposeExtensions,
+            prunePendingDeferFragments,
         }).pipe(validateDidEmitValue(), (0,cjs.materialize)(), (0,cjs.map)((result) => ({
             ...result,
             // Always attach the variables used for this fetch so @export
@@ -52563,7 +53268,7 @@ class QueryManager {
                 if (diff.complete || returnPartialData) {
                     return {
                         fromLink: true,
-                        observable: (0,cjs.concat)(resultsFromCache(diff, core_networkStatus/* NetworkStatus */.p.loading), resultsFromLink()),
+                        observable: (0,cjs.concat)(resultsFromCache(diff, core_networkStatus/* NetworkStatus */.p.loading), resultsFromLink({ prunePendingDeferFragments: false })),
                     };
                 }
                 return { fromLink: true, observable: resultsFromLink() };
@@ -52574,9 +53279,24 @@ class QueryManager {
                     observable: (0,cjs.concat)(resultsFromCache(readCache(), core_networkStatus/* NetworkStatus */.p.ready)),
                 };
             case "network-only":
-                return { fromLink: true, observable: resultsFromLink() };
+                return {
+                    fromLink: true,
+                    observable: resultsFromLink({
+                        prunePendingDeferFragments: networkStatus !== core_networkStatus/* NetworkStatus */.p.refetch,
+                    }),
+                };
             case "no-cache":
-                return { fromLink: true, observable: resultsFromLink() };
+                return {
+                    fromLink: true,
+                    observable: resultsFromLink().pipe((0,cjs.map)((notification) => {
+                        if (notification.kind === "N" &&
+                            notification.value.data != null &&
+                            this.cache.configuresScalars()) {
+                            notification.value.data = (0,coerceScalarFieldsToParsed/* coerceScalarFieldsToParsed */.h)(notification.value.data, query, this.cache);
+                        }
+                        return notification;
+                    })),
+                };
             case "standby":
                 return { fromLink: false, observable: cjs.EMPTY };
         }
@@ -52589,7 +53309,7 @@ function validateDidEmitValue() {
             didEmitValue = true;
         },
         complete() {
-            (0,invariant/* invariant */.V1)(didEmitValue, 101);
+            (0,invariant/* invariant */.V1)(didEmitValue, 104);
         },
     });
 }
@@ -52640,7 +53360,7 @@ function removeStreamDetailsFromExtensions(original) {
 }
 //# sourceMappingURL=QueryManager.js.map
 
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/core/ApolloClient.js
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/core/ApolloClient.js
 /* unused harmony import specifier */ var getApolloClientMemoryInternals;
 /* unused harmony import specifier */ var ApolloClient_getOperationName;
 /* unused harmony import specifier */ var mapObservableFragmentMemoized;
@@ -52718,8 +53438,8 @@ class ApolloClient {
      */
     constructor(options) {
         if ((/* inlined export .__DEV__ */false)) {
-            ApolloClient_invariant(options.cache, 68);
-            ApolloClient_invariant(options.link, 69);
+            ApolloClient_invariant(options.cache, 70);
+            ApolloClient_invariant(options.link, 71);
         }
         const { cache, documentTransform, ssrMode = false, ssrForceFetchDelay = 0, queryDeduplication = true, defaultOptions, defaultContext, assumeImmutableResults = cache.assumeImmutableResults, localState, devtools, dataMasking, link, incrementalHandler = new NotImplementedHandler(), experiments = [], refetchEventManager, } = options;
         this.link = link;
@@ -52741,7 +53461,7 @@ class ApolloClient {
         this.resetStore = this.resetStore.bind(this);
         this.reFetchObservableQueries = this.refetchObservableQueries =
             this.refetchObservableQueries.bind(this);
-        this.version = (/* inlined export .version */"4.2.12");
+        this.version = (/* inlined export .version */"4.3.0");
         this.queryManager = new QueryManager({
             client: this,
             defaultOptions: this.defaultOptions,
@@ -52907,12 +53627,12 @@ class ApolloClient {
             if (refetchOn) {
                 const operationName = ApolloClient_getOperationName(query, "(anonymous)");
                 if (!refetchEventManager) {
-                    (/* inlined export .__DEV__ */false) && ApolloClient_invariant.warn(70, operationName);
+                    (/* inlined export .__DEV__ */false) && ApolloClient_invariant.warn(72, operationName);
                 }
                 else if (typeof refetchOn === "object") {
                     Object.keys(refetchOn).forEach((source) => {
                         if (!refetchEventManager.hasSource(source)) {
-                            (/* inlined export .__DEV__ */false) && ApolloClient_invariant.warn(71, source, operationName);
+                            (/* inlined export .__DEV__ */false) && ApolloClient_invariant.warn(73, source, operationName);
                         }
                     });
                 }
@@ -52934,13 +53654,13 @@ class ApolloClient {
             options = (0,mergeOptions/* mergeOptions */.l)(this.defaultOptions.query, options);
         }
         if ((/* inlined export .__DEV__ */false)) {
-            ApolloClient_invariant(options.fetchPolicy !== "cache-and-network", 72);
-            ApolloClient_invariant(options.fetchPolicy !== "standby", 73);
-            ApolloClient_invariant(options.query, 74);
-            ApolloClient_invariant(options.query.kind === "Document", 75);
-            ApolloClient_invariant(!options.returnPartialData, 76);
-            ApolloClient_invariant(!options.pollInterval, 77);
-            ApolloClient_invariant(!options.notifyOnNetworkStatusChange, 78);
+            ApolloClient_invariant(options.fetchPolicy !== "cache-and-network", 74);
+            ApolloClient_invariant(options.fetchPolicy !== "standby", 75);
+            ApolloClient_invariant(options.query, 76);
+            ApolloClient_invariant(options.query.kind === "Document", 77);
+            ApolloClient_invariant(!options.returnPartialData, 78);
+            ApolloClient_invariant(!options.pollInterval, 79);
+            ApolloClient_invariant(!options.notifyOnNetworkStatusChange, 80);
         }
         return this.queryManager.query(options);
     };
@@ -52958,9 +53678,9 @@ class ApolloClient {
             errorPolicy: "none",
         }, this.defaultOptions.mutate), options);
         if ((/* inlined export .__DEV__ */false)) {
-            ApolloClient_invariant(optionsWithDefaults.mutation, 79);
+            ApolloClient_invariant(optionsWithDefaults.mutation, 81);
             ApolloClient_invariant(optionsWithDefaults.fetchPolicy === "network-only" ||
-                optionsWithDefaults.fetchPolicy === "no-cache", 80);
+                optionsWithDefaults.fetchPolicy === "no-cache", 82);
         }
         ;(0,checkDocument/* checkDocument */.s)(optionsWithDefaults.mutation, ast/* OperationTypeNode */.cE.MUTATION);
         return this.queryManager.mutate(optionsWithDefaults);
@@ -53166,7 +53886,7 @@ class ApolloClient {
         // result.queries and result.results instead, you shouldn't have to worry
         // about preventing uncaught rejections for the Promise.all result.
         result.catch((error) => {
-            (/* inlined export .__DEV__ */false) && invariant/* invariant */.V1.debug(81, error);
+            (/* inlined export .__DEV__ */false) && invariant/* invariant */.V1.debug(83, error);
         });
         return result;
     }
@@ -53235,7 +53955,7 @@ if ((/* inlined export .__DEV__ */false)) {
 
 /***/ },
 
-/***/ 46893
+/***/ 80515
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 
@@ -53249,38 +53969,43 @@ __webpack_require__.d(__webpack_exports__, {
 var lib = __webpack_require__(25012);
 // EXTERNAL MODULE: ./node_modules/.pnpm/rxjs@7.8.2/node_modules/rxjs/dist/cjs/index.js
 var cjs = __webpack_require__(71530);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/isNetworkRequestSettled.js
-var isNetworkRequestSettled = __webpack_require__(37460);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/isNetworkRequestInFlight.js
-var isNetworkRequestInFlight = __webpack_require__(97268);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/constants.js
-var constants = __webpack_require__(34033);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getOperationDefinition.js
-var getOperationDefinition = __webpack_require__(3386);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/filterMap.js
-var filterMap = __webpack_require__(19904);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/equalByQuery.js
-var equalByQuery = __webpack_require__(69069);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getOperationName.js
-var getOperationName = __webpack_require__(98728);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/compact.js
-var compact = __webpack_require__(47037);
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/preventUnhandledRejection.js
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/isNetworkRequestSettled.js
+var isNetworkRequestSettled = __webpack_require__(36082);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/isNetworkRequestInFlight.js
+var isNetworkRequestInFlight = __webpack_require__(3902);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/constants.js
+var constants = __webpack_require__(68447);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getOperationDefinition.js
+var getOperationDefinition = __webpack_require__(88048);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/filterMap.js
+var filterMap = __webpack_require__(25582);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/equalByQuery.js
+var equalByQuery = __webpack_require__(90623);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/toDiffWithDataState.js
+var toDiffWithDataState = __webpack_require__(59041);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getOperationName.js
+var getOperationName = __webpack_require__(22970);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/compact.js
+var compact = __webpack_require__(55119);
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/preventUnhandledRejection.js
 function preventUnhandledRejection(promise) {
     promise.catch(() => { });
     return promise;
 }
 //# sourceMappingURL=preventUnhandledRejection.js.map
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/toQueryResult.js
-var toQueryResult = __webpack_require__(30942);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/invariant/index.js + 1 modules
-var invariant = __webpack_require__(31512);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/core/networkStatus.js
-var core_networkStatus = __webpack_require__(46935);
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/core/ObservableQuery.js
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/toQueryResult.js
+var toQueryResult = __webpack_require__(16060);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/invariant/index.js + 1 modules
+var invariant = __webpack_require__(86854);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/core/dataStateErrorCache.js
+var dataStateErrorCache = __webpack_require__(30188);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/core/networkStatus.js
+var core_networkStatus = __webpack_require__(82465);
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/core/ObservableQuery.js
 /* unused harmony import specifier */ var ObservableQuery_getOperationName;
 /* unused harmony import specifier */ var getQueryDefinition;
 /* unused harmony import specifier */ var ObservableQuery_invariant;
+
 
 
 
@@ -53303,16 +54028,29 @@ const empty = {
     dataState: "empty",
     partial: true,
 };
+const destructiveMethodCounts = new WeakMap();
+function wrapDestructiveCacheMethod(cache, methodName) {
+    const original = cache[methodName];
+    if (typeof original === "function") {
+        // @ts-expect-error this is just too generic to be typed correctly
+        cache[methodName] = function () {
+            destructiveMethodCounts.set(cache, 
+            // The %1e15 allows the count to wrap around to 0 safely every
+            // quadrillion evictions, so there's no risk of overflow. To be
+            // clear, this is more of a pedantic principle than something
+            // that matters in any conceivable practical scenario.
+            (destructiveMethodCounts.get(cache) + 1) % 1e15);
+            // @ts-expect-error this is just too generic to be typed correctly
+            return original.apply(this, arguments);
+        };
+    }
+}
 class ObservableQuery {
     options;
     queryName;
     variablesUnknown = false;
-    /**
-    * @internal will be read and written from `QueryInfo`
-    * 
-    * @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
-    */
-    _lastWrite;
+    didWarnOnFeud = false;
+    lastMissing;
     // The `query` computed property will always reflect the document transformed
     // by the last run query. `this.options.query` will always reflect the raw
     // untransformed query to ensure document transforms with runtime conditionals
@@ -53349,6 +54087,18 @@ class ObservableQuery {
     }
     constructor({ queryManager, options, transformedQuery = queryManager.transform(options.query), }) {
         this.queryManager = queryManager;
+        // Track how often destructive cache methods are called, since we want
+        // eviction to override the feud-stopping logic in `shouldAutoRefetch`,
+        // by causing it to return true. Wrapping these cache methods is a bit of a
+        // hack, but it saves us from having to make eviction counting an official
+        // part of the ApolloCache API.
+        const { cache } = queryManager;
+        if (!destructiveMethodCounts.has(cache)) {
+            destructiveMethodCounts.set(cache, 0);
+            wrapDestructiveCacheMethod(cache, "evict");
+            wrapDestructiveCacheMethod(cache, "modify");
+            wrapDestructiveCacheMethod(cache, "reset");
+        }
         // active state
         this.waitForNetworkResult = options.fetchPolicy === "network-only";
         this.isTornDown = false;
@@ -53359,7 +54109,7 @@ class ObservableQuery {
         // Make sure we don't store "standby" as the initialFetchPolicy.
         initialFetchPolicy = fetchPolicy === "standby" ? defaultFetchPolicy : (fetchPolicy), } = options;
         if (options[constants/* variablesUnknownSymbol */._K]) {
-            (0,invariant/* invariant */.V1)(fetchPolicy === "standby", 82);
+            (0,invariant/* invariant */.V1)(fetchPolicy === "standby", 84);
             this.variablesUnknown = true;
         }
         this.lastQuery = transformedQuery;
@@ -53488,12 +54238,13 @@ class ObservableQuery {
     * @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
     */
     getCacheDiff({ optimistic = true } = {}) {
-        return this.cache.diff({
+        return (0,toDiffWithDataState/* toDiffWithDataState */.S)(this.cache.diff({
             query: this.query,
             variables: this.variables,
             returnPartialData: true,
             optimistic,
-        });
+            [constants/* handleIncrementalSymbol */.PJ]: undefined,
+        }));
     }
     getInitialResult(initialFetchPolicy) {
         let fetchPolicy = initialFetchPolicy || this.options.fetchPolicy;
@@ -53503,16 +54254,18 @@ class ObservableQuery {
         }
         const cacheResult = () => {
             const diff = this.getCacheDiff();
+            let { dataState } = diff;
             // TODO: queryInfo.getDiff should handle this since cache.diff returns a
             // null when returnPartialData is false
             const data = this.options.returnPartialData || diff.complete ?
                 diff.result ?? undefined
                 : undefined;
+            if (data === undefined) {
+                dataState = "empty";
+            }
             return this.maskResult({
                 data,
-                dataState: diff.complete ? "complete"
-                    : data === undefined ? "empty"
-                        : "partial",
+                dataState,
                 loading: !diff.complete,
                 networkStatus: diff.complete ? core_networkStatus/* NetworkStatus */.p.ready : core_networkStatus/* NetworkStatus */.p.loading,
                 partial: !diff.complete,
@@ -53665,7 +54418,7 @@ class ObservableQuery {
             const queryDef = getQueryDefinition(this.query);
             const vars = queryDef.variableDefinitions;
             if (!vars || !vars.some((v) => v.variable.name.value === "variables")) {
-                (/* inlined export .__DEV__ */false) && ObservableQuery_invariant.warn(83, variables, queryDef.name?.value || queryDef);
+                (/* inlined export .__DEV__ */false) && ObservableQuery_invariant.warn(85, variables, queryDef.name?.value || queryDef);
             }
         }
         if (variables && !(0,lib/* equal */.L)(this.variables, variables)) {
@@ -53673,7 +54426,6 @@ class ObservableQuery {
             reobserveOptions.variables = this.options.variables =
                 this.getVariablesWithDefaults({ ...this.variables, ...variables });
         }
-        this._lastWrite = undefined;
         return this._reobserve(reobserveOptions, {
             newNetworkStatus: core_networkStatus/* NetworkStatus */.p.refetch,
         });
@@ -53681,7 +54433,7 @@ class ObservableQuery {
     fetchMore({ query, variables, context, errorPolicy, updateQuery, }) {
         ;(0,invariant/* invariant */.V1)(
             this.options.fetchPolicy !== "cache-only",
-            84,
+            86,
             (0,getOperationName/* getOperationName */.n)(this.query, "(anonymous)")
         );
         const combinedOptions = {
@@ -53715,7 +54467,7 @@ class ObservableQuery {
         let wasUpdated = false;
         const isCached = this.options.fetchPolicy !== "no-cache";
         if (!isCached) {
-            (0,invariant/* invariant */.V1)(updateQuery, 85);
+            (0,invariant/* invariant */.V1)(updateQuery, 87);
         }
         const { finalize, pushNotification } = this.pushOperation(core_networkStatus/* NetworkStatus */.p.fetchMore);
         pushNotification({
@@ -53792,9 +54544,7 @@ class ObservableQuery {
                                             // will be overwritten anyways, just here for types sake
                                             loading: false,
                                             data: diff.result,
-                                            dataState: fetchMoreResult.dataState === "streaming" ?
-                                                "streaming"
-                                                : "complete",
+                                            dataState: diff.complete ? "complete" : "streaming",
                                         },
                                     });
                                 }
@@ -53891,7 +54641,7 @@ class ObservableQuery {
                         onError(error);
                     }
                     else {
-                        invariant/* invariant */.V1.error(86, error);
+                        invariant/* invariant */.V1.error(88, error);
                     }
                     return;
                 }
@@ -54142,7 +54892,7 @@ class ObservableQuery {
                 if (!this.didWarnCacheOnlyPolling &&
                     pollInterval &&
                     fetchPolicy === "cache-only") {
-                    (/* inlined export .__DEV__ */false) && ObservableQuery_invariant.warn(87, ObservableQuery_getOperationName(this.query, "(anonymous)"));
+                    (/* inlined export .__DEV__ */false) && ObservableQuery_invariant.warn(89, ObservableQuery_getOperationName(this.query, "(anonymous)"));
                     this.didWarnCacheOnlyPolling = true;
                 }
             }
@@ -54208,7 +54958,10 @@ class ObservableQuery {
     }
     _reobserve(newOptions, internalOptions) {
         this.isTornDown = false;
-        let { newNetworkStatus } = internalOptions || {};
+        let { newNetworkStatus, keepLastMissing } = internalOptions || {};
+        if (!keepLastMissing) {
+            this.lastMissing = undefined;
+        }
         this.queryManager.obsQueries.add(this);
         const useDisposableObservable = 
         // Refetching uses a disposable Observable to allow refetches using different
@@ -54349,7 +55102,7 @@ class ObservableQuery {
         this.queryManager.obsQueries.delete(this);
         this.isTornDown = true;
         this.abortActiveOperations();
-        this._lastWrite = undefined;
+        this.lastMissing = undefined;
     }
     transformDocument(document) {
         return this.queryManager.transform(document);
@@ -54407,53 +55160,126 @@ class ObservableQuery {
                 return;
             }
         }
-        const { dirty } = this;
+        const { dirty, lastMissing } = this;
+        const { fetchPolicy } = this.options;
         this.resetNotifications();
-        if (dirty &&
-            (this.options.fetchPolicy === "cache-only" ||
-                this.options.fetchPolicy === "cache-and-network" ||
-                !this.activeOperations.size)) {
-            const diff = this.getCacheDiff();
-            if (
-            // `fromOptimisticTransaction` is not available through the `cache.diff`
-            // code path, so we need to check it this way
-            (0,lib/* equal */.L)(diff.result, this.getCacheDiff({ optimistic: false }).result)) {
-                //If this diff did not come from an optimistic transaction
-                // make the ObservableQuery "reobserve" the latest data
-                // using a temporary fetch policy of "cache-first", so complete cache
-                // results have a chance to be delivered without triggering additional
-                // network requests, even when options.fetchPolicy is "network-only"
-                // or "cache-and-network". All other fetch policies are preserved by
-                // this method, and are handled by calling oq.reobserve(). If this
-                // reobservation is spurious, distinctUntilChanged still has a
-                // chance to catch it before delivery to ObservableQuery subscribers.
-                this.reobserveCacheFirst();
-            }
-            else {
-                // If this diff came from an optimistic transaction, deliver the
-                // current cache data to the ObservableQuery, but don't perform a
-                // reobservation, since oq.reobserveCacheFirst might make a network
-                // request, and we never want to trigger network requests in the
-                // middle of optimistic updates.
-                this.input.next({
-                    kind: "N",
-                    value: {
-                        data: diff.result,
-                        dataState: diff.complete ? "complete"
-                            : diff.result ? "partial"
-                                : "empty",
-                        networkStatus: core_networkStatus/* NetworkStatus */.p.ready,
-                        loading: false,
-                        error: undefined,
-                        partial: !diff.complete,
-                    },
-                    source: "cache",
-                    query: this.query,
-                    variables: this.variables,
-                    meta: {},
-                });
-            }
+        if (!dirty ||
+            (fetchPolicy !== "cache-only" &&
+                fetchPolicy !== "cache-and-network" &&
+                this.activeOperations.size)) {
+            return;
         }
+        const diff = this.getCacheDiff();
+        const current = this.getCurrentResult();
+        // `fromOptimisticTransaction` is not available through the `cache.diff`
+        // code path, so we need to check whether the cache result is an optimistic
+        // result this way.
+        const isOptimistic = !(0,lib/* equal */.L)(diff.result, this.getCacheDiff({ optimistic: false }).result);
+        if (
+        // When this diff came from an optimistic transaction, deliver the
+        // current cache data to the ObservableQuery, but don't perform a
+        // reobservation, since oq.reobserveCacheFirst might make a network
+        // request, and we never want to trigger network requests in the
+        // middle of optimistic updates.
+        isOptimistic ||
+            // If we get a cache update in the middle of streaming (possible with
+            // cache-and-network fetch policy), just deliver the cache value without
+            // going through the full reobserve which would otherwise trigger another
+            // request (deduplication should kick in, but doing so replays any
+            // previous emits from the link chain, which get rewritten into the cache
+            // and might clobber this cache update)
+            (!diff.complete && current.networkStatus === core_networkStatus/* NetworkStatus */.p.streaming)) {
+            this.deliverCacheDiff(diff);
+            return;
+        }
+        if (diff.complete) {
+            this.lastMissing = undefined;
+        }
+        else if (!lastMissing ||
+            // If a destructive cache method has been called since the last recorded
+            // incomplete result, there's a chance fetching this data again will
+            // restore what was evicted, even though the cache result looks the same
+            // as before.
+            lastMissing.dmCount !== destructiveMethodCounts.get(this.cache) ||
+            !(0,lib/* equal */.L)(lastMissing.variables, this.variables) ||
+            !(0,lib/* equal */.L)(lastMissing.missing, diff.missing?.missing)) {
+            this.didWarnOnFeud = false;
+            this.lastMissing = {
+                variables: this.variables,
+                missing: diff.missing?.missing,
+                dmCount: destructiveMethodCounts.get(this.cache),
+            };
+        }
+        else if (
+        // reobserveCacheFirst with cache-only fetch policy only calls
+        // reobserve which never fetches from the network so we are ok
+        // allowing cache-only queries to fallthrough to reobserveCacheFirst.
+        // This also prevents the feud warning which would be confusing for a
+        // cache-only query anyways.
+        fetchPolicy !== "cache-only") {
+            // If we've fallen through to this case, a cache emit has returned the
+            // same missing fields which means at least one value on the fields we've
+            // already delivered have changed. We are ok delivering the updated
+            // partial result in this case to keep the result as fresh as possible. We
+            // NEVER want to downgrade this query from a complete query to a partial
+            // query though, so we also make sure we only deliver if the previous
+            // result was also partial.
+            if (current.dataState === "partial") {
+                this.deliverCacheDiff(diff);
+            }
+            // If the (partial) result is the same as the last partial result
+            // we recorded from a previous broadcast (and the variables match
+            // too), avoid calling reobserveCacheFirst to refetch this query
+            // again. If we allow refetching anytime this result becomes partial,
+            // we risk feuds between queries competing to update the same data in
+            // incompatible ways, which can lead to an endless cycle of cache
+            // broadcasts and useless network requests. As with any
+            // feud, eventually one side must step back from the brink,
+            // letting the other side(s) have the last word(s). There may
+            // be other points where we could break this cycle, such as
+            // silencing the broadcast for cache.writeQuery (not a good
+            // idea, since it just delays the feud a bit) or somehow
+            // avoiding the network request that just happened (also bad,
+            // because the server could return useful new data). All
+            // options considered, returning early and stopping the
+            // reobserveCacheFirst cycle seems to be the least damaging place to
+            // break the cycle because it allows read functions/custom scalars to
+            // be applied to the feuding query while avoiding the endless cycle of
+            // requests.
+            if ((/* inlined export .__DEV__ */false) && !this.didWarnOnFeud) {
+                this.didWarnOnFeud = true;
+                warnOnFeud(this.query, diff);
+            }
+            return;
+        }
+        //If this diff did not come from an optimistic transaction
+        // make the ObservableQuery "reobserve" the latest data
+        // using a temporary fetch policy of "cache-first", so complete cache
+        // results have a chance to be delivered without triggering additional
+        // network requests, even when options.fetchPolicy is "network-only"
+        // or "cache-and-network". All other fetch policies are preserved by
+        // this method, and are handled by calling oq.reobserve(). If this
+        // reobservation is spurious, distinctUntilChanged still has a
+        // chance to catch it before delivery to ObservableQuery subscribers.
+        this.reobserveCacheFirst();
+    }
+    deliverCacheDiff(diff) {
+        const current = this.getCurrentResult();
+        this.input.next({
+            kind: "N",
+            value: {
+                data: diff.result,
+                dataState: diff.dataState,
+                networkStatus: current.networkStatus,
+                loading: current.loading,
+                error: undefined,
+                partial: !diff.complete,
+            },
+            source: "cache",
+            query: this.query,
+            variables: this.variables,
+            meta: {},
+        });
     }
     activeOperations = new Set();
     pushOperation(networkStatus) {
@@ -54516,6 +55342,7 @@ class ObservableQuery {
         // exception for cache-only queries - we reset them into a "ready" state
         // as we won't trigger a refetch for them
         const resetToEmpty = this.options.fetchPolicy === "cache-only";
+        this.lastMissing = undefined;
         this.setResult(resetToEmpty ? empty : uninitialized, {
             shouldEmit: resetToEmpty ? 1 /* EmitBehavior.force */ : 2 /* EmitBehavior.never */,
         });
@@ -54585,7 +55412,7 @@ class ObservableQuery {
         if (notification.source === "cache") {
             result = notification.value;
             if (result.networkStatus === core_networkStatus/* NetworkStatus */.p.ready &&
-                result.partial &&
+                result.dataState === "partial" &&
                 (!this.options.returnPartialData ||
                     previous.result.networkStatus === core_networkStatus/* NetworkStatus */.p.error) &&
                 this.options.fetchPolicy !== "cache-only") {
@@ -54611,7 +55438,8 @@ class ObservableQuery {
                     }
                     : notification.value;
             if (notification.kind === "E" && result.dataState === "streaming") {
-                result.dataState = "complete";
+                result.dataState =
+                    dataStateErrorCache/* dataStateErrorCache */.K.get(notification.error) ?? "complete";
             }
             if (result.error) {
                 meta.shouldEmit = 1 /* EmitBehavior.force */;
@@ -54659,7 +55487,10 @@ class ObservableQuery {
     reobserveCacheFirst() {
         const { fetchPolicy, nextFetchPolicy } = this.options;
         if (fetchPolicy === "cache-and-network" || fetchPolicy === "network-only") {
-            this.reobserve({
+            // Preserve this.lastMissing so a cache update that triggers this
+            // reobserve doesn't reset feud detection. All user-initiated calls to
+            // reobserve (refetch/poll/reobserve, etc) should clear it.
+            this._reobserve({
                 fetchPolicy: "cache-first",
                 // Use a temporary nextFetchPolicy function that replaces itself with the
                 // previous nextFetchPolicy value and returns the original fetchPolicy.
@@ -54675,10 +55506,10 @@ class ObservableQuery {
                     // Otherwise go back to the original this.options.fetchPolicy.
                     return fetchPolicy;
                 },
-            });
+            }, { keepLastMissing: true });
         }
         else {
-            this.reobserve();
+            this._reobserve(undefined, { keepLastMissing: true });
         }
     }
     getVariablesWithDefaults(variables) {
@@ -54687,7 +55518,7 @@ class ObservableQuery {
 }
 function logMissingFieldErrors(missing) {
     if ((/* inlined export .__DEV__ */false) && missing) {
-        (/* inlined export .__DEV__ */false) && ObservableQuery_invariant.debug(88, missing);
+        (/* inlined export .__DEV__ */false) && ObservableQuery_invariant.debug(90, missing);
     }
 }
 function isEqualQuery(a, b) {
@@ -54730,52 +55561,48 @@ function getTrackingOperatorPromise(defaultValue) {
     });
     return { promise, operator };
 }
+function warnOnFeud(query, diff) {
+    (/* inlined export .__DEV__ */false) && invariant/* invariant */.V1.warn(91, (0,getOperationName/* getOperationName */.n)(query, "(anonymous)"), diff.missing?.missing);
+}
 //# sourceMappingURL=ObservableQuery.js.map
 
 
 /***/ },
 
-/***/ 64751
+/***/ 22901
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   L: () => (/* binding */ QueryInfo)
 /* harmony export */ });
-/* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25012);
+/* harmony import */ var _wry_trie__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(57235);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(98728);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(22970);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(2746);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(82516);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(34033);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(99312);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(31512);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(59041);
 }
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(68447);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(86854);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _networkStatus_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(82465);
+}
+
 
 
 
 
 const IGNORE = (/* runtime-dependent pure expression or super */ /^(250|49|6|748|792|888)$/.test(__webpack_require__.j) ? ({}) : null);
-const destructiveMethodCounts = new WeakMap();
-function wrapDestructiveCacheMethod(cache, methodName) {
-    const original = cache[methodName];
-    if (typeof original === "function") {
-        // @ts-expect-error this is just too generic to be typed correctly
-        cache[methodName] = function () {
-            destructiveMethodCounts.set(cache, 
-            // The %1e15 allows the count to wrap around to 0 safely every
-            // quadrillion evictions, so there's no risk of overflow. To be
-            // clear, this is more of a pedantic principle than something
-            // that matters in any conceivable practical scenario.
-            (destructiveMethodCounts.get(cache) + 1) % 1e15);
-            // @ts-expect-error this is just too generic to be typed correctly
-            return original.apply(this, arguments);
-        };
-    }
-}
 const queryInfoIds = new WeakMap();
 // A QueryInfo object represents a single network request, either initiated
 // from the QueryManager or from an ObservableQuery.
@@ -54789,182 +55616,155 @@ class QueryInfo {
     observableQuery;
     incremental;
     constructor(queryManager, observableQuery) {
-        const cache = (this.cache = queryManager.cache);
+        this.cache = queryManager.cache;
         const id = (queryInfoIds.get(queryManager) || 0) + 1;
         queryInfoIds.set(queryManager, id);
         this.id = id + "";
         this.observableQuery = observableQuery;
         this.queryManager = queryManager;
-        // Track how often cache.evict is called, since we want eviction to
-        // override the feud-stopping logic in the markQueryResult method, by
-        // causing shouldWrite to return true. Wrapping the cache.evict method
-        // is a bit of a hack, but it saves us from having to make eviction
-        // counting an official part of the ApolloCache API.
-        if (!destructiveMethodCounts.has(cache)) {
-            destructiveMethodCounts.set(cache, 0);
-            wrapDestructiveCacheMethod(cache, "evict");
-            wrapDestructiveCacheMethod(cache, "modify");
-            wrapDestructiveCacheMethod(cache, "reset");
-        }
-    }
-    /**
-    * @internal
-    * For feud-preventing behaviour, `lastWrite` should be shared by all `QueryInfo` instances of an `ObservableQuery`.
-    * In the case of a standalone `QueryInfo`, we will keep a local version.
-    * 
-    * @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
-    */
-    _lastWrite;
-    get lastWrite() {
-        return (this.observableQuery || this)._lastWrite;
-    }
-    set lastWrite(value) {
-        (this.observableQuery || this)._lastWrite = value;
-    }
-    resetLastWrite() {
-        this.lastWrite = void 0;
-    }
-    shouldWrite(result, variables) {
-        const { lastWrite } = this;
-        return !(lastWrite &&
-            // If cache.evict has been called since the last time we wrote this
-            // data into the cache, there's a chance writing this result into
-            // the cache will repair what was evicted.
-            lastWrite.dmCount === destructiveMethodCounts.get(this.cache) &&
-            (0,_wry_equality__WEBPACK_IMPORTED_MODULE_0__/* .equal */ .L)(variables, lastWrite.variables) &&
-            (0,_wry_equality__WEBPACK_IMPORTED_MODULE_0__/* .equal */ .L)(result.data, lastWrite.result.data) &&
-            // We have to compare these values because its possible the final chunk
-            // emitted in the incremental result is just `hasNext: false`. This
-            // ensures we trigger a cache write when we get `isLastChunk: true`.
-            result.extensions?.[_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_4__/* .streamInfoSymbol */ .DH] ===
-                lastWrite.result.extensions?.[_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_4__/* .streamInfoSymbol */ .DH]);
     }
     get hasNext() {
         return this.incremental ? this.incremental.hasNext : false;
     }
+    get incrementalHandler() {
+        return this.queryManager.incrementalHandler;
+    }
     maybeHandleIncrementalResult(cacheData, incoming, query) {
-        const { incrementalHandler } = this.queryManager;
-        if (incrementalHandler.isIncrementalResult(incoming)) {
-            this.incremental ||= incrementalHandler.startRequest({
+        if (this.incrementalHandler.isIncrementalResult(incoming)) {
+            this.incremental ||= this.incrementalHandler.startRequest({
                 query,
             });
             return this.incremental.handle(cacheData, incoming);
         }
         return incoming;
     }
-    markQueryResult(incoming, { document: query, variables, errorPolicy, cacheWriteBehavior, }) {
+    markQueryResult(incoming, { document: query, variables, errorPolicy, cacheWriteBehavior, returnPartialData, fetchPolicy, networkStatus, prunePendingDeferFragments: prune, }) {
         const diffOptions = {
             query,
             variables,
-            returnPartialData: true,
             optimistic: true,
         };
         // Cancel the pending notify timeout (if it exists) to prevent extraneous network
         // requests. To allow future notify timeouts, diff and dirty are reset as well.
         this.observableQuery?.["resetNotifications"]();
         const skipCache = cacheWriteBehavior === 0 /* CacheWriteBehavior.FORBID */;
-        const lastDiff = skipCache ? undefined : this.cache.diff(diffOptions);
-        let result = this.maybeHandleIncrementalResult(lastDiff?.result, incoming, query);
-        if (skipCache) {
+        const diff = skipCache ? undefined : (this.getDiff({
+            ...diffOptions,
+            // We usually request partial data to ensure the network incremental
+            // result is merged with all existing data (especially true to
+            // maintain @stream arrays with partial list items in the right order
+            // or when chunk might otherwise replace a partial non-normalized
+            // object), but if we are about to throw away the result anyways due
+            // to the error policy (which early returns below), prune any
+            // pending boundaries so that CombinedGraphQLErrors contains the
+            // right `data` value.
+            returnPartialData: errorPolicy !== "none" ||
+                !this.incrementalHandler.extractErrors(incoming)?.length,
+        }, this.getIncrementalInfo({ prune })));
+        const incrementalResult = this.maybeHandleIncrementalResult(diff?.result, incoming, query);
+        let result = {
+            ...incrementalResult,
+            dataState: incrementalResult.data == null ? "empty" : "complete",
+        };
+        const hasPendingDefer = this.incremental
+            ?.getPendingWithInfo?.()
+            .some((pending) => pending.type === "defer" && !pending.delivered);
+        if (hasPendingDefer ||
+            // The Defer20220824Handler cannot track pending/completed incremental
+            // chunks due to its data format so we naively set dataState to
+            // streaming if we are still processing chunks. The only case where
+            // streaming is incorrect and should actually be complete is when
+            // both a @defer and @stream boundary is present and the @defer chunk
+            // has completed before the `@stream` array.
+            //
+            // Assigning the naive "streaming" value avoids a much more expensive
+            // pass over `result.data` that would otherwise need to traverse the
+            // selection sets and evaluate the data object at each defer boundary
+            // to see if it fulfills the selection set. For such a narrow case where
+            // its incorrect on a format that is now outdated is not worth the
+            // fix so we are ok with reporting a `streaming` here.
+            (!this.incremental?.getPendingWithInfo &&
+                this.hasNext &&
+                (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_4__/* .hasDirectives */ .d)(["defer"], query))) {
+            result.dataState = "streaming";
+        }
+        if (skipCache || !shouldWriteResult(result, errorPolicy)) {
             return result;
         }
-        if (shouldWriteResult(result, errorPolicy)) {
-            let written = false;
-            // Using a transaction here so we have a chance to read the result
-            // back from the cache before the watch callback fires as a result
-            // of writeQuery, so we can store the new diff quietly and ignore
-            // it when we receive it redundantly from the watch callback.
-            this.cache.batch({
-                onWatchUpdated: (
-                // all additional options on ObservableQuery.CacheWatchOptions are
-                // optional so we can use the type here
-                watch, diff) => {
-                    if (watch.watcher === this.observableQuery) {
-                        // see comment on `lastOwnDiff` for explanation
-                        watch.lastOwnDiff = diff;
-                    }
-                },
-                update: (cache) => {
-                    if (this.shouldWrite(result, variables)) {
-                        cache.writeQuery({
-                            query,
-                            data: result.data,
-                            variables,
-                            overwrite: cacheWriteBehavior === 1 /* CacheWriteBehavior.OVERWRITE */,
-                            extensions: result.extensions,
-                        });
-                        written = true;
-                        this.lastWrite = {
-                            result,
-                            variables,
-                            dmCount: destructiveMethodCounts.get(this.cache),
-                        };
-                    }
-                    else {
-                        // If result is the same as the last result we received from
-                        // the network (and the variables match too), avoid writing
-                        // result into the cache again. The wisdom of skipping this
-                        // cache write is far from obvious, since any cache write
-                        // could be the one that puts the cache back into a desired
-                        // state, fixing corruption or missing data. However, if we
-                        // always write every network result into the cache, we enable
-                        // feuds between queries competing to update the same data in
-                        // incompatible ways, which can lead to an endless cycle of
-                        // cache broadcasts and useless network requests. As with any
-                        // feud, eventually one side must step back from the brink,
-                        // letting the other side(s) have the last word(s). There may
-                        // be other points where we could break this cycle, such as
-                        // silencing the broadcast for cache.writeQuery (not a good
-                        // idea, since it just delays the feud a bit) or somehow
-                        // avoiding the network request that just happened (also bad,
-                        // because the server could return useful new data). All
-                        // options considered, skipping this cache write seems to be
-                        // the least damaging place to break the cycle, because it
-                        // reflects the intuition that we recently wrote this exact
-                        // result into the cache, so the cache *should* already/still
-                        // contain this data. If some other query has clobbered that
-                        // data in the meantime, that's too bad, but there will be no
-                        // winners if every query blindly reverts to its own version
-                        // of the data. This approach also gives the network a chance
-                        // to return new data, which will be written into the cache as
-                        // usual, notifying only those queries that are directly
-                        // affected by the cache updates, as usual. In the future, an
-                        // even more sophisticated cache could perhaps prevent or
-                        // mitigate the clobbering somehow, but that would make this
-                        // particular cache write even less important, and thus
-                        // skipping it would be even safer than it is today.
-                        if (lastDiff && lastDiff.complete) {
-                            // Reuse data from the last good (complete) diff that we
-                            // received, when possible.
-                            result = { ...result, data: lastDiff.result };
-                            return;
-                        }
-                        // If the previous this.diff was incomplete, fall through to
-                        // re-reading the latest data with cache.diff, below.
-                    }
-                    const diff = cache.diff(diffOptions);
-                    // If we're allowed to write to the cache, and we can read a
-                    // complete result from the cache, update result.data to be the
-                    // result from the cache, rather than the raw network result.
-                    // Set without setDiff to avoid triggering a notify call, since
-                    // we have other ways of notifying for this result.
-                    if (diff.complete) {
-                        result = { ...result, data: diff.result };
-                    }
-                    else if ((/* inlined export .__DEV__ */false) &&
-                        written &&
-                        // A result that is still streaming is expected to read back
-                        // incomplete until the remaining chunks arrive.
-                        !this.hasNext) {
-                        warnAboutPartialCacheResult(query, result.data, diff);
-                    }
-                },
-            });
-        }
-        else {
-            this.lastWrite = void 0;
-        }
+        // Using a transaction here so we have a chance to read the result
+        // back from the cache before the watch callback fires as a result
+        // of writeQuery, so we can store the new diff quietly and ignore
+        // it when we receive it redundantly from the watch callback.
+        this.cache.batch({
+            onWatchUpdated: (
+            // all additional options on ObservableQuery.CacheWatchOptions are
+            // optional so we can use the type here
+            watch, diff) => {
+                if (watch.watcher === this.observableQuery) {
+                    // see comment on `lastOwnDiff` for explanation
+                    watch.lastOwnDiff = diff;
+                }
+            },
+            update: (cache) => {
+                cache.writeQuery({
+                    query,
+                    data: result.data,
+                    variables,
+                    overwrite: cacheWriteBehavior === 1 /* CacheWriteBehavior.OVERWRITE */,
+                    extensions: result.extensions,
+                });
+                const { dataState, result: diffResult } = this.getDiff({
+                    ...diffOptions,
+                    returnPartialData: returnPartialData &&
+                        // Never deliver partial data for network-only requests
+                        (fetchPolicy !== "network-only" ||
+                            networkStatus === _networkStatus_js__WEBPACK_IMPORTED_MODULE_8__/* .NetworkStatus */ .p.refetch),
+                }, this.getIncrementalInfo({ prune }));
+                if (dataState === "complete" ||
+                    dataState === "streaming" ||
+                    (returnPartialData && dataState === "partial")) {
+                    result = { ...result, data: diffResult, dataState };
+                }
+                else if ((/* inlined export .__DEV__ */false) &&
+                    // A result that is still streaming is expected to read back
+                    // incomplete until the remaining chunks arrive.
+                    !this.hasNext) {
+                    warnAboutPartialCacheResult(query, result.data, 
+                    // Always show the partial result for debugging, otherwise the user
+                    // sees `null` when `returnPartialData` is false which isn't helpful
+                    // for figuring out where the problem is.
+                    cache.diff({ ...diffOptions, returnPartialData: true }));
+                }
+            },
+        });
         return result;
+    }
+    getIncrementalInfo({ prune }) {
+        const pending = this.incremental?.getPendingWithInfo?.() ?? [];
+        const streamInfo = this.incremental?.streamInfo;
+        const incrementalInfo = { streamInfo };
+        // We don't want to deliver stream items or complete defer boundaries
+        // for a network-only request if they haven't yet streamed from the
+        // network. We record all the still-pending paths so that cache.diff
+        // can prune complete defer/stream boundaries at those paths.
+        if (prune) {
+            for (const item of pending) {
+                if (item.type === "defer" && !item.delivered) {
+                    incrementalInfo.deferInfo ||= new _wry_trie__WEBPACK_IMPORTED_MODULE_0__/* .Trie */ .b(true, () => true);
+                    incrementalInfo.deferInfo.lookupArray(item.path.concat(item.label || []));
+                }
+                else if (streamInfo && item.type === "stream") {
+                    streamInfo.lookupArray(item.path).state.truncate = true;
+                }
+            }
+        }
+        return incrementalInfo;
+    }
+    getDiff(options, incrementalInfo) {
+        return (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_5__/* .toDiffWithDataState */ .S)(this.cache.diff({
+            ...options,
+            [_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_6__/* .handleIncrementalSymbol */ .PJ]: incrementalInfo,
+        }));
     }
     markMutationResult(incoming, mutation, cache = this.cache) {
         const cacheWrites = [];
@@ -55053,37 +55853,33 @@ class QueryInfo {
                     const { update } = mutation;
                     // Determine whether result is a SingleExecutionResult,
                     // or the final ExecutionPatchResult.
-                    if (update) {
-                        if (!skipCache) {
-                            // Re-read the ROOT_MUTATION data we just wrote into the cache
-                            // (the first cache.write call in the cacheWrites.forEach loop
-                            // above), so field read functions have a chance to run for
-                            // fields within mutation result objects.
-                            const diff = cache.diff({
-                                id: "ROOT_MUTATION",
-                                // The cache complains if passed a mutation where it expects a
-                                // query, so we transform mutations and subscriptions to queries
-                                // (only once, thanks to this.transformCache).
-                                query: this.queryManager.getDocumentInfo(mutation.document)
-                                    .asQuery,
-                                variables: mutation.variables,
-                                optimistic: false,
-                                returnPartialData: true,
-                            });
-                            if (diff.complete) {
-                                result = {
-                                    ...result,
-                                    data: diff.result,
-                                };
-                            }
+                    // Re-read from the cache after writing to it to update `result`
+                    // with any parsed scalar values that might have been written.
+                    if (!skipCache) {
+                        const diff = cache.diff({
+                            id: "ROOT_MUTATION",
+                            // The cache complains if passed a mutation where it expects a
+                            // query, so we transform mutations and subscriptions to queries
+                            // (only once, thanks to this.transformCache).
+                            query: this.queryManager.getDocumentInfo(mutation.document)
+                                .asQuery,
+                            variables: mutation.variables,
+                            optimistic: false,
+                            returnPartialData: true,
+                        });
+                        if (diff.complete) {
+                            result = {
+                                ...result,
+                                data: diff.result,
+                            };
                         }
-                        // If we've received the whole response, call the update function.
-                        if (!this.hasNext) {
-                            update(cache, result, {
-                                context: mutation.context,
-                                variables: mutation.variables,
-                            });
-                        }
+                    }
+                    // If we've received the whole response, call the update function.
+                    if (update && !this.hasNext) {
+                        update(cache, result, {
+                            context: mutation.context,
+                            variables: mutation.variables,
+                        });
                     }
                     // TODO Do this with cache.evict({ id: 'ROOT_MUTATION' }) but make it
                     // shallow to allow rolling back optimistic evictions.
@@ -55130,7 +55926,7 @@ class QueryInfo {
                 this.markMutationResult({ data }, mutation, cache);
             }
             catch (error) {
-                _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_5__/* .invariant */ .V1.error(error);
+                _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_7__/* .invariant */ .V1.error(error);
             }
         }, this.id);
         return true;
@@ -55145,14 +55941,28 @@ class QueryInfo {
                     variables: variables,
                     extensions: result.extensions,
                 });
+                // Re-read from the cache to get parsed scalar values
+                const diff = this.cache.diff({
+                    // The cache complains if passed a mutation where it expects a
+                    // query, so we transform mutations and subscriptions to queries
+                    // (only once, thanks to this.transformCache).
+                    query: this.queryManager.getDocumentInfo(document).asQuery,
+                    id: "ROOT_SUBSCRIPTION",
+                    variables,
+                    optimistic: false,
+                    returnPartialData: true,
+                });
+                if (diff.complete) {
+                    result.data = diff.result;
+                }
             }
             this.queryManager.broadcastQueries();
         }
     }
 }
 function warnAboutPartialCacheResult(query, networkResult, diff) {
-    (/* inlined export .__DEV__ */false) && _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_5__/* .invariant */ .V1.warn(
-        89,
+    (/* inlined export .__DEV__ */false) && _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_7__/* .invariant */ .V1.warn(
+        92,
         (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_2__/* .getOperationName */ .n)(query, "(anonymous)"),
         diff.missing?.missing,
         networkResult,
@@ -55172,7 +55982,26 @@ function shouldWriteResult(result, errorPolicy = "none") {
 
 /***/ },
 
-/***/ 46935
+/***/ 30188
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+// When working with an incremental result, errors in `@defer` fragments might
+// bubble to the fragment boundary which leaves a hole in the data. When the
+// `errorPolicy` is `"none"` we `throw` the constructed error so that it moves
+// through the observable error flow. Because of this, we need a way to
+// communicate the known dataState returned by QueryInfo to ObservableQuery.
+// This ensures a "streaming" dataState can still be reported for errorPolicy:
+// "none" queries.
+const dataStateErrorCache = new WeakMap();
+//# sourceMappingURL=dataStateErrorCache.js.map
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "K", 0, /* binding */ dataStateErrorCache
+/* harmony export */ ]);
+
+
+/***/ },
+
+/***/ 82465
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -55229,13 +56058,13 @@ var NetworkStatus;
 
 /***/ },
 
-/***/ 59508
+/***/ 66350
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   K: () => (/* binding */ CombinedGraphQLErrors)
 /* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(41574);
+/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1512);
 
 function defaultFormatMessage(errors) {
     return (errors
@@ -55341,13 +56170,13 @@ class CombinedGraphQLErrors extends Error {
 
 /***/ },
 
-/***/ 39519
+/***/ 43025
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   d: () => (/* binding */ CombinedProtocolErrors)
 /* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(41574);
+/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1512);
 
 function defaultFormatMessage(errors) {
     return errors.map((e) => e.message || "Error message not found.").join("\n");
@@ -55432,7 +56261,7 @@ class CombinedProtocolErrors extends Error {
 
 /***/ },
 
-/***/ 75921
+/***/ 44735
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -55506,13 +56335,13 @@ const LinkError = (/* unused pure expression or super */ null && ({
 
 /***/ },
 
-/***/ 19360
+/***/ 67606
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   g: () => (/* binding */ ServerError)
 /* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(41574);
+/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1512);
 
 /**
  * Represents an error when a non-200 HTTP status code is returned from the
@@ -55592,13 +56421,13 @@ class ServerError extends Error {
 
 /***/ },
 
-/***/ 3919
+/***/ 16457
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   f: () => (/* binding */ ServerParseError)
 /* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(41574);
+/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1512);
 
 /**
  * Represents a failure to parse the response as JSON from the server. This
@@ -55675,13 +56504,13 @@ class ServerParseError extends Error {
 
 /***/ },
 
-/***/ 75934
+/***/ 23580
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   e: () => (/* binding */ UnconventionalError)
 /* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(41574);
+/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1512);
 
 /**
  * A wrapper error type that represents a non-standard error thrown from a
@@ -55748,7 +56577,7 @@ class UnconventionalError extends Error {
 
 /***/ },
 
-/***/ 14811
+/***/ 93277
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -55759,13 +56588,13 @@ class UnconventionalError extends Error {
 /* empty/unused harmony star reexport */
 /* empty/unused harmony star reexport */
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _CombinedProtocolErrors_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(39519);
+	/* harmony import */ var _CombinedProtocolErrors_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(43025);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _isErrorLike_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(79862);
+	/* harmony import */ var _isErrorLike_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(28100);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _UnconventionalError_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(75934);
+	/* harmony import */ var _UnconventionalError_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(23580);
 }
 
 
@@ -55805,7 +56634,7 @@ function toErrorLike(error) {
 
 /***/ },
 
-/***/ 79862
+/***/ 28100
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -55823,7 +56652,7 @@ function isErrorLike(error) {
 
 /***/ },
 
-/***/ 41574
+/***/ 1512
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -55847,7 +56676,7 @@ function brand(error) {
 
 /***/ },
 
-/***/ 32967
+/***/ 46369
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -55858,10 +56687,10 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(71530);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_link_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(80727);
+	/* harmony import */ var _apollo_client_link_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(56489);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(31512);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(86854);
 }
 
 
@@ -55965,7 +56794,7 @@ class ApolloLink {
             const result = test(operation);
             if ((/* inlined export .__DEV__ */false)) {
                 if (typeof result !== "boolean") {
-                    (/* inlined export .__DEV__ */false) && invariant.warn(63, result);
+                    (/* inlined export .__DEV__ */false) && invariant.warn(65, result);
                 }
             }
             return result ?
@@ -56007,7 +56836,7 @@ class ApolloLink {
     static execute(link, request, context) {
         return link.request((0,_apollo_client_link_utils__WEBPACK_IMPORTED_MODULE_1__/* .createOperation */ .k)(request, context), () => {
             if ((/* inlined export .__DEV__ */false)) {
-                (/* inlined export .__DEV__ */false) && invariant.warn(64);
+                (/* inlined export .__DEV__ */false) && invariant.warn(66);
             }
             return rxjs__WEBPACK_IMPORTED_MODULE_0__.EMPTY;
         });
@@ -56111,7 +56940,7 @@ class ApolloLink {
      * > request instead.
      */
     request(operation, forward) {
-        throw (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__/* .newInvariantError */ .vA)(65);
+        throw (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__/* .newInvariantError */ .vA)(67);
     }
     /**
     * @internal
@@ -56133,10 +56962,10 @@ class ApolloLink {
 
 /***/ },
 
-/***/ 81985
+/***/ 53571
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
-/* harmony import */ var _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(32967);
+/* harmony import */ var _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(46369);
 
 const execute = _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__/* .ApolloLink */ .C.execute;
 //# sourceMappingURL=execute.js.map
@@ -56147,7 +56976,7 @@ const execute = _ApolloLink_js__WEBPACK_IMPORTED_MODULE_0__/* .ApolloLink */ .C.
 
 /***/ },
 
-/***/ 26812
+/***/ 13042
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 
@@ -56158,11 +56987,11 @@ __webpack_require__.d(__webpack_exports__, {
 
 // UNUSED EXPORTS: createHttpLink
 
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/link/core/ApolloLink.js
-var ApolloLink = __webpack_require__(32967);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/compact.js
-var compact = __webpack_require__(47037);
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/link/client-awareness/ClientAwarenessLink.js
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/link/core/ApolloLink.js
+var ApolloLink = __webpack_require__(46369);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/compact.js
+var compact = __webpack_require__(55119);
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/link/client-awareness/ClientAwarenessLink.js
 
 
 /**
@@ -56253,7 +57082,7 @@ class ClientAwarenessLink extends ApolloLink/* ApolloLink */.C {
 var cjs = __webpack_require__(71530);
 // EXTERNAL MODULE: ./node_modules/.pnpm/graphql@16.14.2/node_modules/graphql/language/visitor.mjs
 var visitor = __webpack_require__(92904);
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/link/utils/filterOperationVariables.js
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/link/utils/filterOperationVariables.js
 
 function filterOperationVariables(variables, query) {
     const result = { ...variables };
@@ -56276,9 +57105,9 @@ function filterOperationVariables(variables, query) {
     return result;
 }
 //# sourceMappingURL=filterOperationVariables.js.map
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getOperationDefinition.js
-var getOperationDefinition = __webpack_require__(3386);
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/operations.js
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/getOperationDefinition.js
+var getOperationDefinition = __webpack_require__(88048);
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/operations.js
 
 function isOperation(document, operation) {
     return (0,getOperationDefinition/* getOperationDefinition */.V)(document)?.operation === operation;
@@ -56365,21 +57194,21 @@ function isSubscriptionOperation(document) {
     return isOperation(document, "subscription");
 }
 //# sourceMappingURL=operations.js.map
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/globals/maybe.js
-var maybe = __webpack_require__(99695);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/errors/index.js
-var errors = __webpack_require__(14811);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/errors/CombinedProtocolErrors.js
-var CombinedProtocolErrors = __webpack_require__(39519);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/errors/ServerError.js
-var ServerError = __webpack_require__(19360);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/errors/ServerParseError.js
-var ServerParseError = __webpack_require__(3919);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/isNonNullObject.js
-var isNonNullObject = __webpack_require__(97053);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/invariant/index.js + 1 modules
-var invariant = __webpack_require__(31512);
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/link/http/parseAndCheckHttpResponse.js
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/globals/maybe.js
+var maybe = __webpack_require__(88301);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/errors/index.js
+var errors = __webpack_require__(93277);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/errors/CombinedProtocolErrors.js
+var CombinedProtocolErrors = __webpack_require__(43025);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/errors/ServerError.js
+var ServerError = __webpack_require__(67606);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/errors/ServerParseError.js
+var ServerParseError = __webpack_require__(16457);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/isNonNullObject.js
+var isNonNullObject = __webpack_require__(15751);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/invariant/index.js + 1 modules
+var invariant = __webpack_require__(86854);
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/link/http/parseAndCheckHttpResponse.js
 
 
 
@@ -56415,7 +57244,7 @@ async function* consumeMultipartBody(response) {
     /;\s*boundary=(?:'([^']+)'|"([^"]+)"|([^"'].+?))\s*(?:;|$)/i);
     const boundary = "\r\n--" + (match ? match[1] ?? match[2] ?? match[3] ?? "-" : "-");
     let buffer = "";
-    (0,invariant/* invariant */.V1)(response.body && typeof response.body.getReader === "function", 62);
+    (0,invariant/* invariant */.V1)(response.body && typeof response.body.getReader === "function", 64);
     const stream = response.body;
     const reader = stream.getReader();
     let done = false;
@@ -56540,7 +57369,7 @@ function parseAndCheckHttpResponse(operations) {
 }
 //# sourceMappingURL=parseAndCheckHttpResponse.js.map
 
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/link/http/rewriteURIForGET.js
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/link/http/rewriteURIForGET.js
 // For GET operations, returns the given URI rewritten with parameters, or a
 // parse error.
 function rewriteURIForGET(chosenURI, body) {
@@ -56593,9 +57422,9 @@ function rewriteURIForGET(chosenURI, body) {
     return { newURI };
 }
 //# sourceMappingURL=rewriteURIForGET.js.map
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/print.js + 1 modules
-var print = __webpack_require__(31723);
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/link/http/selectHttpOptionsAndBody.js
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/print.js + 1 modules
+var print = __webpack_require__(24153);
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/link/http/selectHttpOptionsAndBody.js
 
 const defaultHttpOptions = {
     includeQuery: true,
@@ -56699,7 +57528,7 @@ function removeDuplicateHeaders(headers, preserveHeaderCase) {
     return normalizedHeaders;
 }
 //# sourceMappingURL=selectHttpOptionsAndBody.js.map
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/link/http/selectURI.js
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/link/http/selectURI.js
 const selectURI = (operation, fallbackURI) => {
     const context = operation.getContext();
     const contextURI = context.uri;
@@ -56714,7 +57543,7 @@ const selectURI = (operation, fallbackURI) => {
     }
 };
 //# sourceMappingURL=selectURI.js.map
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/link/http/BaseHttpLink.js
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/link/http/BaseHttpLink.js
 /* unused harmony import specifier */ var checkFetcher;
 
 
@@ -56873,7 +57702,7 @@ class BaseHttpLink extends ApolloLink/* ApolloLink */.C {
     }
 }
 //# sourceMappingURL=BaseHttpLink.js.map
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/link/http/HttpLink.js
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/link/http/HttpLink.js
 
 
 
@@ -56918,17 +57747,17 @@ const createHttpLink = (options = {}) => new HttpLink(options);
 
 /***/ },
 
-/***/ 80727
+/***/ 56489
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   k: () => (/* binding */ createOperation)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3386);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(88048);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(98728);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(22970);
 }
 
 function createOperation(request, { client }) {
@@ -56967,7 +57796,7 @@ function createOperation(request, { client }) {
 
 /***/ },
 
-/***/ 24979
+/***/ 32621
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -56977,16 +57806,16 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7015);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(39473);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(16583);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(98375);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(48841);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(31512);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(86854);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(22681);
+	/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(97075);
 }
 
 
@@ -57076,7 +57905,7 @@ function maskSelectionSet(data, selectionSet, context, migration, path) {
             const fragment = context.fragmentMap[fragmentName] ||
                 (context.fragmentMap[fragmentName] =
                     context.cache.lookupFragment(fragmentName));
-            (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__/* .invariant */ .V1)(fragment, 39, fragmentName);
+            (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__/* .invariant */ .V1)(fragment, 41, fragmentName);
             const mode = (0,_utils_js__WEBPACK_IMPORTED_MODULE_5__/* .getFragmentMaskMode */ .s)(selection);
             if (mode !== "mask") {
                 value = maskSelectionSet(data, fragment.selectionSet, context, mode === "migrate", path);
@@ -57102,7 +57931,7 @@ function getAccessorWarningDescriptor(fieldName, value, path, operationName, ope
         if (_utils_js__WEBPACK_IMPORTED_MODULE_5__/* .disableWarningsSlot */ .y.getValue()) {
             return value;
         }
-        (/* inlined export .__DEV__ */false) && _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__/* .invariant */ .V1.warn(40, operationName ?
+        (/* inlined export .__DEV__ */false) && _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__/* .invariant */ .V1.warn(42, operationName ?
             `${operationType} '${operationName}'`
             : `anonymous ${operationType}`, `${path}.${fieldName}`.replace(/^\./, ""));
         getValue = () => value;
@@ -57124,7 +57953,7 @@ function getAccessorWarningDescriptor(fieldName, value, path, operationName, ope
 
 /***/ },
 
-/***/ 61538
+/***/ 65724
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -57135,16 +57964,16 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7015);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(14470);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(33620);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(31612);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5054);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(31512);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(86854);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _maskDefinition_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(24979);
+	/* harmony import */ var _maskDefinition_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(32621);
 }
 
 
@@ -57159,11 +57988,11 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 function maskFragment(data, document, cache, fragmentName) {
     const fragments = document.definitions.filter((node) => node.kind === graphql__WEBPACK_IMPORTED_MODULE_1__/* .Kind */ .b.FRAGMENT_DEFINITION);
     if (typeof fragmentName === "undefined") {
-        (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__/* .invariant */ .V1)(fragments.length === 1, 41, fragments.length);
+        (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__/* .invariant */ .V1)(fragments.length === 1, 43, fragments.length);
         fragmentName = fragments[0].name.value;
     }
     const fragment = fragments.find((fragment) => fragment.name.value === fragmentName);
-    (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__/* .invariant */ .V1)(!!fragment, 42, fragmentName);
+    (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__/* .invariant */ .V1)(!!fragment, 44, fragmentName);
     if (data == null) {
         // Maintain the original `null` or `undefined` value
         return data;
@@ -57188,26 +58017,26 @@ function maskFragment(data, document, cache, fragmentName) {
 
 /***/ },
 
-/***/ 29765
+/***/ 79363
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   m: () => (/* binding */ maskOperation)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(14470);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(33620);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(31612);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5054);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3386);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(88048);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(31512);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(86854);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _maskDefinition_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(24979);
+	/* harmony import */ var _maskDefinition_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(32621);
 }
 
 
@@ -57219,7 +58048,7 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 */
 function maskOperation(data, document, cache) {
     const definition = (0,_apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_2__/* .getOperationDefinition */ .V)(document);
-    (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__/* .invariant */ .V1)(definition, 43);
+    (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__/* .invariant */ .V1)(definition, 45);
     if (data == null) {
         // Maintain the original `null` or `undefined` value
         return data;
@@ -57238,7 +58067,7 @@ function maskOperation(data, document, cache) {
 
 /***/ },
 
-/***/ 22681
+/***/ 97075
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -57268,13 +58097,13 @@ function getFragmentMaskMode(fragment) {
     if ((/* inlined export .__DEV__ */false)) {
         if (modeArg) {
             if (modeArg.value.kind === Kind.VARIABLE) {
-                (/* inlined export .__DEV__ */false) && invariant.warn(44);
+                (/* inlined export .__DEV__ */false) && invariant.warn(46);
             }
             else if (modeArg.value.kind !== Kind.STRING) {
-                (/* inlined export .__DEV__ */false) && invariant.warn(45);
+                (/* inlined export .__DEV__ */false) && invariant.warn(47);
             }
             else if (modeArg.value.value !== "migrate") {
-                (/* inlined export .__DEV__ */false) && invariant.warn(46, modeArg.value.value);
+                (/* inlined export .__DEV__ */false) && invariant.warn(48, modeArg.value.value);
             }
         }
     }
@@ -57294,10 +58123,10 @@ function getFragmentMaskMode(fragment) {
 
 /***/ },
 
-/***/ 25404
+/***/ 47974
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
-/* harmony import */ var _apollo_client_utilities_internal_globals__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(86168);
+/* harmony import */ var _apollo_client_utilities_internal_globals__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(22690);
 
 const cacheSizeSymbol = Symbol.for("apollo.cacheSize");
 /**
@@ -57331,7 +58160,7 @@ const cacheSizes = { ..._apollo_client_utilities_internal_globals__WEBPACK_IMPOR
 
 /***/ },
 
-/***/ 45801
+/***/ 97139
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -57343,13 +58172,13 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 /* harmony import */ var _wry_trie__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(57235);
 /* harmony import */ var optimism__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(18618);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(90449);
+	/* harmony import */ var _apollo_client_utilities_internal__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(57687);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(31512);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(86854);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _caching_sizes_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(25404);
+	/* harmony import */ var _caching_sizes_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(47974);
 }
 
 
@@ -57449,7 +58278,7 @@ class DocumentTransform {
                 makeCacheKey: (document) => {
                     const cacheKeys = this.getCacheKey(document);
                     if (cacheKeys) {
-                        (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__/* .invariant */ .V1)(Array.isArray(cacheKeys), 20);
+                        (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_4__/* .invariant */ .V1)(Array.isArray(cacheKeys), 22);
                         return stableCacheKeys.lookupArray(cacheKeys);
                     }
                 },
@@ -57541,7 +58370,7 @@ class DocumentTransform {
 
 /***/ },
 
-/***/ 31723
+/***/ 24153
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 
@@ -57956,11 +58785,11 @@ function hasMultilineItems(maybeArray) {
     : false;
 }
 
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/caches.js
-var caches = __webpack_require__(22225);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/caching/sizes.js
-var sizes = __webpack_require__(25404);
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/print.js
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/caches.js
+var caches = __webpack_require__(82543);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/caching/sizes.js
+var sizes = __webpack_require__(47974);
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/graphql/print.js
 /* unused harmony import specifier */ var registerGlobalCache;
 
 
@@ -57995,7 +58824,7 @@ if ((/* inlined export .__DEV__ */false)) {
 
 /***/ },
 
-/***/ 47962
+/***/ 88004
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -58022,7 +58851,7 @@ function isReference(obj) {
 
 /***/ },
 
-/***/ 79070
+/***/ 32260
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7015);
@@ -58105,14 +58934,14 @@ const addTypenameToDocument = Object.assign(function (doc) {
 
 /***/ },
 
-/***/ 39906
+/***/ 99152
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   Z: () => (/* binding */ DeepMerger)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _isNonNullObject_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(97053);
+	/* harmony import */ var _isNonNullObject_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(15751);
 }
 
 const { hasOwnProperty } = Object.prototype;
@@ -58213,14 +59042,14 @@ class DeepMerger {
 
 /***/ },
 
-/***/ 3763
+/***/ 51085
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   M: () => (/* binding */ argumentsObjectFromField)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _valueToObjectRepresentation_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(71078);
+	/* harmony import */ var _valueToObjectRepresentation_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1148);
 }
 
 /**
@@ -58241,7 +59070,7 @@ function argumentsObjectFromField(field, variables) {
 
 /***/ },
 
-/***/ 22225
+/***/ 82543
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
@@ -58332,12 +59161,12 @@ const AutoCleanedStrongCache = function (max, dispose) {
 
 /***/ },
 
-/***/ 72097
+/***/ 19867
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* unused harmony import specifier */ var registerGlobalCache;
-/* harmony import */ var _caching_sizes_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(25404);
-/* harmony import */ var _caches_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(22225);
+/* harmony import */ var _caching_sizes_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(47974);
+/* harmony import */ var _caches_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(82543);
 
 
 
@@ -58454,17 +59283,17 @@ function everyKeyInOrder(key, i, keys) {
 
 /***/ },
 
-/***/ 90449
+/***/ 57687
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* unused harmony import specifier */ var newInvariantError;
 /* unused harmony import specifier */ var invariant;
 /* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7015);
 /* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(92904);
-/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(31512);
-/* harmony import */ var _caching_sizes_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(25404);
-/* harmony import */ var _getOperationName_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(98728);
-/* harmony import */ var _memoize_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(73772);
+/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(86854);
+/* harmony import */ var _caching_sizes_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(47974);
+/* harmony import */ var _getOperationName_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(22970);
+/* harmony import */ var _memoize_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(65922);
 // Checks the document for errors and throws an exception if there is an error.
 
 
@@ -58537,7 +59366,144 @@ const checkDocument = (0,_memoize_js__WEBPACK_IMPORTED_MODULE_6__/* .memoize */ 
 
 /***/ },
 
-/***/ 47037
+/***/ 82080
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   h: () => (/* binding */ coerceScalarFieldsToParsed)
+/* harmony export */ });
+/* unused harmony import specifier */ var invariant;
+/* unused harmony import specifier */ var unwrapScalarType;
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(86854);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _createFragmentMap_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(33620);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _getFragmentDefinitions_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5054);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _getFragmentFromSelection_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(69506);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _getMainDefinition_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(33110);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _getOperationDefinition_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(88048);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _isField_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(76574);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _matchScalarList_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(77739);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _resultKeyNameFromField_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(48841);
+}
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var _unwrapScalarType_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(91543);
+}
+
+
+
+
+
+
+
+
+
+
+
+/**
+* @internal
+* 
+* @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
+*/
+function coerceScalarFieldsToParsed(result, query, cache) {
+    const operationType = (0,_getOperationDefinition_js__WEBPACK_IMPORTED_MODULE_6__/* .getOperationDefinition */ .V)(query)?.operation;
+    const fragmentMap = (0,_createFragmentMap_js__WEBPACK_IMPORTED_MODULE_2__/* .createFragmentMap */ .J)((0,_getFragmentDefinitions_js__WEBPACK_IMPORTED_MODULE_3__/* .getFragmentDefinitions */ .z)(query));
+    (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_1__/* .invariant */ .V1)(operationType, 6);
+    function coerceFieldArray(field, fieldValue, typename, scalarType) {
+        let changed = false;
+        const items = fieldValue.map((item) => {
+            const coerced = coerceField(field, item, typename, scalarType);
+            changed ||= coerced !== item;
+            return coerced;
+        });
+        return changed ? items : fieldValue;
+    }
+    function coerceField(field, fieldValue, typename, scalarType) {
+        if (Array.isArray(fieldValue) && !scalarType) {
+            return coerceFieldArray(field, fieldValue, typename, scalarType);
+        }
+        if (field.selectionSet) {
+            return coerceSelectionSet(field.selectionSet, fieldValue);
+        }
+        if (fieldValue === null || !typename)
+            return fieldValue;
+        if (scalarType) {
+            const match = (0,_matchScalarList_js__WEBPACK_IMPORTED_MODULE_8__/* .matchScalarList */ .W)(scalarType);
+            if (match) {
+                if (Array.isArray(fieldValue)) {
+                    return coerceFieldArray(field, fieldValue, typename, match[1]);
+                }
+                else {
+                    if ((/* inlined export .__DEV__ */false)) {
+                        (/* inlined export .__DEV__ */false) && invariant.warn(
+                            7,
+                            `${typename}.${field.name.value}`,
+                            scalarType,
+                            unwrapScalarType(scalarType)
+                        );
+                    }
+                }
+            }
+            const scalar = cache.getScalar((0,_unwrapScalarType_js__WEBPACK_IMPORTED_MODULE_10__/* .unwrapScalarType */ .s)(scalarType));
+            if (scalar) {
+                return scalar.coerceToParsed(fieldValue);
+            }
+        }
+        return fieldValue;
+    }
+    function coerceSelectionSet(selectionSet, data, typename) {
+        if (data === null || typeof data !== "object")
+            return data;
+        const result = { ...data };
+        let changed = false;
+        if (Object.hasOwn(data, "__typename")) {
+            typename = data.__typename;
+        }
+        const workSet = new Set(selectionSet.selections);
+        workSet.forEach((selection) => {
+            if ((0,_isField_js__WEBPACK_IMPORTED_MODULE_7__/* .isField */ .d)(selection)) {
+                const resultName = (0,_resultKeyNameFromField_js__WEBPACK_IMPORTED_MODULE_9__/* .resultKeyNameFromField */ .u)(selection);
+                if (!Object.hasOwn(data, resultName))
+                    return;
+                const fieldValue = data[resultName];
+                const coerced = coerceField(selection, fieldValue, typename, typename ?
+                    cache.getScalarTypeForField(typename, selection.name.value)
+                    : undefined);
+                changed ||= coerced !== fieldValue;
+                result[resultName] = coerced;
+            }
+            else {
+                const fragment = (0,_getFragmentFromSelection_js__WEBPACK_IMPORTED_MODULE_4__/* .getFragmentFromSelection */ .H)(selection, fragmentMap);
+                if (fragment && typename && cache.fragmentMatches(fragment, typename)) {
+                    fragment.selectionSet.selections.forEach((s) => workSet.add(s));
+                }
+            }
+        });
+        return changed ? result : data;
+    }
+    return coerceSelectionSet((0,_getMainDefinition_js__WEBPACK_IMPORTED_MODULE_5__/* .getMainDefinition */ .V)(query).selectionSet, result, cache.getRootTypename(operationType));
+}
+//# sourceMappingURL=coerceScalarFieldsToParsed.js.map
+
+
+/***/ },
+
+/***/ 55119
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -58570,7 +59536,7 @@ function compact(...objects) {
 
 /***/ },
 
-/***/ 34033
+/***/ 68447
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /**
@@ -58595,10 +59561,30 @@ const streamInfoSymbol = Symbol.for("apollo.result.streamInfo");
 * @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
 */
 const variablesUnknownSymbol = Symbol.for("apollo.observableQuery.variablesUnknown");
+/**
+* @internal
+* Used to tell `ApolloCache.diff` whether to handle incremental results. This
+* changes the behavior of `returnPartialData: false` when handling incremental
+* queries with partial or empty data at a `@defer` or `@stream` boundary. This
+* also signals to the cache that it should return a data state.
+*
+* When `handleIncrementalSymbol` is not provided, the cache should behave as it
+* does today.
+*
+* 3rd party caches that want to implement this behavior should talk to the
+* Apollo Client team. Open a GitHub issue so we can chat with you on what is
+* required for this to work in Apollo Client version 4.x.
+*
+* Meant for cache implementers only. This should not be used in userland code.
+* 
+* @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
+*/
+const handleIncrementalSymbol = Symbol.for("apollo.cache.handleIncremental");
 //# sourceMappingURL=constants.js.map
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, [
 /* harmony export */   "DH", 0, /* binding */ streamInfoSymbol,
+/* harmony export */   "PJ", 0, /* binding */ handleIncrementalSymbol,
 /* harmony export */   "X", 0, /* binding */ extensionsSymbol,
 /* harmony export */   "_K", 0, /* binding */ variablesUnknownSymbol
 /* harmony export */ ]);
@@ -58606,7 +59592,7 @@ const variablesUnknownSymbol = Symbol.for("apollo.observableQuery.variablesUnkno
 
 /***/ },
 
-/***/ 14470
+/***/ 33620
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -58632,7 +59618,7 @@ function createFragmentMap(fragments = []) {
 
 /***/ },
 
-/***/ 69069
+/***/ 90623
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -58640,25 +59626,25 @@ function createFragmentMap(fragments = []) {
 /* harmony export */ });
 /* harmony import */ var _wry_equality__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(25012);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _createFragmentMap_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(14470);
+	/* harmony import */ var _createFragmentMap_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(33620);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _getFragmentDefinitions_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(31612);
+	/* harmony import */ var _getFragmentDefinitions_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5054);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _getFragmentFromSelection_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(89000);
+	/* harmony import */ var _getFragmentFromSelection_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(69506);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _getMainDefinition_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(63896);
+	/* harmony import */ var _getMainDefinition_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(33110);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _isField_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(9824);
+	/* harmony import */ var _isField_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(76574);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _resultKeyNameFromField_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(98375);
+	/* harmony import */ var _resultKeyNameFromField_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(48841);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _shouldInclude_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(537);
+	/* harmony import */ var _shouldInclude_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(88231);
 }
 
 
@@ -58753,7 +59739,7 @@ function directiveIsNonreactive(dir) {
 
 /***/ },
 
-/***/ 19904
+/***/ 25582
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -58793,14 +59779,14 @@ function filterMap(fn, makeContext = () => undefined) {
 
 /***/ },
 
-/***/ 57885
+/***/ 18111
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   w: () => (/* binding */ getDefaultValues)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _valueToObjectRepresentation_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(71078);
+	/* harmony import */ var _valueToObjectRepresentation_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1148);
 }
 
 /**
@@ -58825,14 +59811,43 @@ function getDefaultValues(definition) {
 
 /***/ },
 
-/***/ 33401
+/***/ 75756
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   H: () => (/* binding */ getDirectiveArgValue)
+/* harmony export */ });
+if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
+	/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7015);
+}
+
+/**
+* @internal
+* 
+* @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
+*/
+function getDirectiveArgValue(directive, name, kind) {
+    const arg = directive.arguments?.find((arg) => arg.name.value === name);
+    if (!arg || arg.value.kind !== kind)
+        return;
+    switch (arg.value.kind) {
+        case graphql__WEBPACK_IMPORTED_MODULE_0__/* .Kind */ .b.STRING:
+            return arg.value.value;
+    }
+}
+//# sourceMappingURL=getDirectiveArgValue.js.map
+
+
+/***/ },
+
+/***/ 4811
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   E: () => (/* binding */ getFragmentDefinition)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(31512);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(86854);
 }
 
 /**
@@ -58841,10 +59856,10 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 * @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
 */
 function getFragmentDefinition(doc) {
-    (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(doc.kind === "Document", 6);
-    (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(doc.definitions.length <= 1, 7);
+    (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(doc.kind === "Document", 8);
+    (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(doc.definitions.length <= 1, 9);
     const fragmentDef = doc.definitions[0];
-    (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(fragmentDef.kind === "FragmentDefinition", 8);
+    (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(fragmentDef.kind === "FragmentDefinition", 10);
     return fragmentDef;
 }
 //# sourceMappingURL=getFragmentDefinition.js.map
@@ -58852,7 +59867,7 @@ function getFragmentDefinition(doc) {
 
 /***/ },
 
-/***/ 31612
+/***/ 5054
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -58871,14 +59886,14 @@ function getFragmentDefinitions(doc) {
 
 /***/ },
 
-/***/ 89000
+/***/ 69506
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   H: () => (/* binding */ getFragmentFromSelection)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(31512);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(86854);
 }
 
 /**
@@ -58896,8 +59911,8 @@ function getFragmentFromSelection(selection, fragmentMap) {
                 return fragmentMap(fragmentName);
             }
             const fragment = fragmentMap && fragmentMap[fragmentName];
-            (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(fragment, 9, fragmentName);
-            return fragment || null;
+            (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(fragment, 11, fragmentName);
+            return fragment;
         }
         default:
             return null;
@@ -58908,17 +59923,17 @@ function getFragmentFromSelection(selection, fragmentMap) {
 
 /***/ },
 
-/***/ 63896
+/***/ 33110
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   V: () => (/* binding */ getMainDefinition)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(31512);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(86854);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _checkDocument_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(90449);
+	/* harmony import */ var _checkDocument_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(57687);
 }
 
 
@@ -58975,21 +59990,21 @@ function getMainDefinition(queryDoc) {
     if (fragmentDefinition) {
         return fragmentDefinition;
     }
-    throw (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(12);
+    throw (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__/* .newInvariantError */ .vA)(14);
 }
 //# sourceMappingURL=getMainDefinition.js.map
 
 
 /***/ },
 
-/***/ 3386
+/***/ 88048
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   V: () => (/* binding */ getOperationDefinition)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _checkDocument_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(90449);
+	/* harmony import */ var _checkDocument_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(57687);
 }
 
 /**
@@ -59006,7 +60021,7 @@ function getOperationDefinition(doc) {
 
 /***/ },
 
-/***/ 98728
+/***/ 22970
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -59025,17 +60040,17 @@ function getOperationName(doc, fallback) {
 
 /***/ },
 
-/***/ 49523
+/***/ 61549
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   A: () => (/* binding */ getQueryDefinition)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(31512);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(86854);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _getOperationDefinition_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3386);
+	/* harmony import */ var _getOperationDefinition_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(88048);
 }
 
 
@@ -59046,7 +60061,7 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 */
 function getQueryDefinition(doc) {
     const queryDef = (0,_getOperationDefinition_js__WEBPACK_IMPORTED_MODULE_1__/* .getOperationDefinition */ .V)(doc);
-    (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(queryDef && queryDef.operation === "query", 13);
+    (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(queryDef && queryDef.operation === "query", 15);
     return queryDef;
 }
 //# sourceMappingURL=getQueryDefinition.js.map
@@ -59054,10 +60069,10 @@ function getQueryDefinition(doc) {
 
 /***/ },
 
-/***/ 66431
+/***/ 89877
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
-/* harmony import */ var _canonicalStringify_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(72097);
+/* harmony import */ var _canonicalStringify_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(19867);
 
 const KNOWN_DIRECTIVES = [
     "connection",
@@ -59139,10 +60154,10 @@ const getStoreKeyName = Object.assign(function (fieldName, args, directives) {
 
 /***/ },
 
-/***/ 86168
+/***/ 22690
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
-/* harmony import */ var _maybe_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(99695);
+/* harmony import */ var _maybe_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(88301);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (// We don't expect the Function constructor ever to be invoked at runtime, as
 // long as at least one of globalThis, window, self, or global is defined, so
@@ -59159,13 +60174,13 @@ const getStoreKeyName = Object.assign(function (fieldName, args, directives) {
 //# sourceMappingURL=global.js.map
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, [
-/* harmony export */   "A", 0, /* export default binding */ __WEBPACK_DEFAULT_EXPORT__
+/* harmony export */   "A", 0, __WEBPACK_DEFAULT_EXPORT__
 /* harmony export */ ]);
 
 
 /***/ },
 
-/***/ 99695
+/***/ 88301
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -59181,7 +60196,7 @@ function maybe(thunk) {
 
 /***/ },
 
-/***/ 2746
+/***/ 82516
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -59200,7 +60215,7 @@ function graphQLResultHasError(result) {
 
 /***/ },
 
-/***/ 1598
+/***/ 99312
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -59234,7 +60249,7 @@ function hasDirectives(names, root, all) {
 
 /***/ },
 
-/***/ 15234
+/***/ 87384
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -59266,7 +60281,7 @@ function hasForcedResolvers(document) {
 
 /***/ },
 
-/***/ 97645
+/***/ 45367
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /**
@@ -59286,14 +60301,64 @@ const isArray = Array.isArray;
 
 /***/ },
 
-/***/ 58651
+/***/ 45915
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7015);
+/* harmony import */ var _caching_sizes_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(47974);
+/* harmony import */ var _canonicalStringify_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(19867);
+/* harmony import */ var _memoize_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(65922);
+
+
+
+
+/**
+* @internal
+* 
+* @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
+*/
+const isDeferredFragment = (0,_memoize_js__WEBPACK_IMPORTED_MODULE_3__/* .memoize */ .B)(function isDeferredFragment(fragmentSelection, variables) {
+    return !!fragmentSelection.directives?.some((directive) => {
+        if (directive.name.value !== "defer") {
+            return false;
+        }
+        for (const arg of directive.arguments ?? []) {
+            if (arg.name.value === "if") {
+                switch (arg.value.kind) {
+                    case graphql__WEBPACK_IMPORTED_MODULE_0__/* .Kind */ .b.BOOLEAN:
+                        return arg.value.value;
+                    case graphql__WEBPACK_IMPORTED_MODULE_0__/* .Kind */ .b.VARIABLE:
+                        return !!variables?.[arg.value.name.value];
+                }
+            }
+        }
+        return true;
+    });
+}, {
+    max: _caching_sizes_js__WEBPACK_IMPORTED_MODULE_1__/* .cacheSizes */ .v["isDeferredFragment"] ||
+        2000 /* defaultCacheSizes["isDeferredFragment"] */,
+    makeCacheKey: ([selection, variables]) => [
+        selection,
+        (0,_canonicalStringify_js__WEBPACK_IMPORTED_MODULE_2__/* .canonicalStringify */ .M)(variables),
+    ],
+});
+//# sourceMappingURL=isDeferredFragment.js.map
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "A", 0, /* binding */ isDeferredFragment
+/* harmony export */ ]);
+
+
+/***/ },
+
+/***/ 16501
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   K: () => (/* binding */ isDocumentNode)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _isNonNullObject_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(97053);
+	/* harmony import */ var _isNonNullObject_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(15751);
 }
 
 /**
@@ -59311,7 +60376,7 @@ function isDocumentNode(value) {
 
 /***/ },
 
-/***/ 9824
+/***/ 76574
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -59330,7 +60395,7 @@ function isField(selection) {
 
 /***/ },
 
-/***/ 32373
+/***/ 36283
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -59349,7 +60414,7 @@ function isNonEmptyArray(value) {
 
 /***/ },
 
-/***/ 97053
+/***/ 15751
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -59368,7 +60433,78 @@ function isNonNullObject(obj) {
 
 /***/ },
 
-/***/ 81743
+/***/ 13477
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Q: () => (/* binding */ isPlainObject)
+/* harmony export */ });
+/**
+* @internal
+* 
+* @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
+*/
+function isPlainObject(obj) {
+    return (obj !== null &&
+        typeof obj === "object" &&
+        (Object.getPrototypeOf(obj) === Object.prototype ||
+            Object.getPrototypeOf(obj) === null));
+}
+//# sourceMappingURL=isPlainObject.js.map
+
+
+/***/ },
+
+/***/ 80622
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7015);
+/* harmony import */ var _caching_sizes_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(47974);
+/* harmony import */ var _canonicalStringify_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(19867);
+/* harmony import */ var _memoize_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(65922);
+
+
+
+
+/**
+* @internal
+* 
+* @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
+*/
+const isStreamField = (0,_memoize_js__WEBPACK_IMPORTED_MODULE_3__/* .memoize */ .B)(function isStreamField(field, variables) {
+    return !!field.directives?.some((directive) => {
+        if (directive.name.value !== "stream") {
+            return false;
+        }
+        for (const arg of directive.arguments ?? []) {
+            if (arg.name.value === "if") {
+                switch (arg.value.kind) {
+                    case graphql__WEBPACK_IMPORTED_MODULE_0__/* .Kind */ .b.BOOLEAN:
+                        return arg.value.value;
+                    case graphql__WEBPACK_IMPORTED_MODULE_0__/* .Kind */ .b.VARIABLE:
+                        return !!variables?.[arg.value.name.value];
+                }
+            }
+        }
+        return true;
+    });
+}, {
+    max: _caching_sizes_js__WEBPACK_IMPORTED_MODULE_1__/* .cacheSizes */ .v["isStreamField"] || 2000 /* defaultCacheSizes["isStreamField"] */,
+    makeCacheKey: ([selection, variables]) => [
+        selection,
+        (0,_canonicalStringify_js__WEBPACK_IMPORTED_MODULE_2__/* .canonicalStringify */ .M)(variables),
+    ],
+});
+//# sourceMappingURL=isStreamField.js.map
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, [
+/* harmony export */   "f", 0, /* binding */ isStreamField
+/* harmony export */ ]);
+
+
+/***/ },
+
+/***/ 78965
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -59387,7 +60523,7 @@ function makeReference(id) {
 
 /***/ },
 
-/***/ 79142
+/***/ 47864
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -59412,7 +60548,26 @@ function makeUniqueId(prefix) {
 
 /***/ },
 
-/***/ 39473
+/***/ 77739
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   W: () => (/* binding */ matchScalarList)
+/* harmony export */ });
+/**
+* @internal
+* 
+* @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
+*/
+function matchScalarList(scalarType) {
+    return scalarType.match(/^\[(.*)\]$/);
+}
+//# sourceMappingURL=matchScalarList.js.map
+
+
+/***/ },
+
+/***/ 16583
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -59437,7 +60592,7 @@ function maybeDeepFreeze(obj) {
 
 /***/ },
 
-/***/ 73772
+/***/ 65922
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -59445,7 +60600,7 @@ function maybeDeepFreeze(obj) {
 /* harmony export */ });
 /* harmony import */ var _wry_trie__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(57235);
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _caches_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(22225);
+	/* harmony import */ var _caches_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(82543);
 }
 
 
@@ -59478,14 +60633,14 @@ function memoize(fn, { max, makeCacheKey = (args) => args, }) {
 
 /***/ },
 
-/***/ 64769
+/***/ 7683
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   I: () => (/* binding */ mergeDeepArray)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _DeepMerger_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(39906);
+	/* harmony import */ var _DeepMerger_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(99152);
 }
 
 // In almost any situation where you could succeed in getting the
@@ -59515,14 +60670,14 @@ function mergeDeepArray(sources) {
 
 /***/ },
 
-/***/ 26388
+/***/ 18686
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   l: () => (/* binding */ mergeOptions)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _compact_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(47037);
+	/* harmony import */ var _compact_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(55119);
 }
 
 /**
@@ -59543,7 +60698,7 @@ function mergeOptions(defaults, options) {
 
 /***/ },
 
-/***/ 45881
+/***/ 42351
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -59556,28 +60711,28 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(92904);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(31512);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(86854);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _checkDocument_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(90449);
+	/* harmony import */ var _checkDocument_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(57687);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _createFragmentMap_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(14470);
+	/* harmony import */ var _createFragmentMap_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(33620);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _getFragmentDefinition_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(33401);
+	/* harmony import */ var _getFragmentDefinition_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(4811);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _getFragmentDefinitions_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(31612);
+	/* harmony import */ var _getFragmentDefinitions_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(5054);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _getOperationDefinition_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(3386);
+	/* harmony import */ var _getOperationDefinition_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(88048);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _isArray_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(97645);
+	/* harmony import */ var _isArray_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(45367);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _isNonEmptyArray_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(32373);
+	/* harmony import */ var _isNonEmptyArray_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(36283);
 }
 
 
@@ -59613,7 +60768,7 @@ function removeDirectivesFromDocument(directives, doc) {
                 return getInUseByFragmentName(ancestor.name.value);
             }
         }
-        _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_2__/* .invariant */ .V1.error(14);
+        _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_2__/* .invariant */ .V1.error(16);
         return null;
     };
     let operationCount = 0;
@@ -59882,7 +61037,7 @@ function nullIfDocIsEmpty(doc) {
 
 /***/ },
 
-/***/ 98375
+/***/ 48841
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -59901,14 +61056,14 @@ function resultKeyNameFromField(field) {
 
 /***/ },
 
-/***/ 537
+/***/ 88231
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   M: () => (/* binding */ shouldInclude)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(31512);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(86854);
 }
 
 /**
@@ -59925,7 +61080,7 @@ function shouldInclude({ directives }, variables) {
         if (ifArgument.value.kind === "Variable") {
             evaledValue =
                 variables && variables[ifArgument.value.name.value];
-            (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(evaledValue !== void 0, 15, directive.name.value);
+            (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(evaledValue !== void 0, 17, directive.name.value);
         }
         else {
             evaledValue = ifArgument.value.value;
@@ -59944,13 +61099,13 @@ function getInclusionDirectives(directives) {
                 return;
             const directiveArguments = directive.arguments;
             const directiveName = directive.name.value;
-            (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(directiveArguments && directiveArguments.length === 1, 16, directiveName);
+            (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(directiveArguments && directiveArguments.length === 1, 18, directiveName);
             const ifArgument = directiveArguments[0];
-            (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(ifArgument.name && ifArgument.name.value === "if", 17, directiveName);
+            (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(ifArgument.name && ifArgument.name.value === "if", 19, directiveName);
             const ifValue = ifArgument.value;
             // means it has to be a variable value if this is a valid @skip or @include directive
             (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_0__/* .invariant */ .V1)(ifValue &&
-                (ifValue.kind === "Variable" || ifValue.kind === "BooleanValue"), 18, directiveName);
+                (ifValue.kind === "Variable" || ifValue.kind === "BooleanValue"), 20, directiveName);
             result.push({ directive, ifArgument });
         });
     }
@@ -59961,17 +61116,17 @@ function getInclusionDirectives(directives) {
 
 /***/ },
 
-/***/ 12365
+/***/ 47151
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   I: () => (/* binding */ storeKeyNameFromField)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _getStoreKeyName_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(66431);
+	/* harmony import */ var _getStoreKeyName_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(89877);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _valueToObjectRepresentation_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(71078);
+	/* harmony import */ var _valueToObjectRepresentation_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1148);
 }
 
 
@@ -60003,7 +61158,34 @@ function storeKeyNameFromField(field, variables) {
 
 /***/ },
 
-/***/ 30942
+/***/ 59041
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   S: () => (/* binding */ toDiffWithDataState)
+/* harmony export */ });
+/**
+* @internal
+* 
+* @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
+*/
+function toDiffWithDataState(diff) {
+    if ("dataState" in diff) {
+        return diff;
+    }
+    return {
+        ...diff,
+        dataState: diff.complete ? "complete"
+            : diff.result === null ? "empty"
+                : "partial",
+    };
+}
+//# sourceMappingURL=toDiffWithDataState.js.map
+
+
+/***/ },
+
+/***/ 16060
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -60028,7 +61210,26 @@ function toQueryResult(value) {
 
 /***/ },
 
-/***/ 71078
+/***/ 91543
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   s: () => (/* binding */ unwrapScalarType)
+/* harmony export */ });
+/**
+* @internal
+* 
+* @deprecated This is an internal API and should not be used directly. This can be removed or changed at any time.
+*/
+function unwrapScalarType(scalarType) {
+    return scalarType.replace(/[[\]]/g, "");
+}
+//# sourceMappingURL=unwrapScalarType.js.map
+
+
+/***/ },
+
+/***/ 1148
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -60038,7 +61239,7 @@ if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
 	/* harmony import */ var graphql__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7015);
 }
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(31512);
+	/* harmony import */ var _apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(86854);
 }
 
 
@@ -60077,7 +61278,7 @@ function valueToObjectRepresentation(argObj, name, value, variables) {
         argObj[name.value] = null;
     }
     else {
-        throw (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_1__/* .newInvariantError */ .vA)(19, name.value, value.kind);
+        throw (0,_apollo_client_utilities_invariant__WEBPACK_IMPORTED_MODULE_1__/* .newInvariantError */ .vA)(21, name.value, value.kind);
     }
 }
 //# sourceMappingURL=valueToObjectRepresentation.js.map
@@ -60085,7 +61286,7 @@ function valueToObjectRepresentation(argObj, name, value, variables) {
 
 /***/ },
 
-/***/ 31512
+/***/ 86854
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 
@@ -60097,11 +61298,11 @@ __webpack_require__.d(__webpack_exports__, {
 
 // UNUSED EXPORTS: ApolloErrorMessageHandler, InvariantError, setVerbosity
 
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/globals/global.js
-var global = __webpack_require__(86168);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/makeUniqueId.js
-var makeUniqueId = __webpack_require__(79142);
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/stringifyForDisplay.js
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/globals/global.js
+var global = __webpack_require__(22690);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/makeUniqueId.js
+var makeUniqueId = __webpack_require__(47864);
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/internal/stringifyForDisplay.js
 
 /**
 * @internal
@@ -60118,7 +61319,7 @@ function stringifyForDisplay(value, space = 0) {
 }
 //# sourceMappingURL=stringifyForDisplay.js.map
 
-;// ./node_modules/.pnpm/@apollo+client@4.2.12_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/invariant/index.js
+;// ./node_modules/.pnpm/@apollo+client@4.3.0_graphql-ws@6.2.1_graphql@16.14.2_ws@8.21.3__graphql@16.14.2_react@19.3.0_rxjs@7.8.2/node_modules/@apollo/client/utilities/invariant/index.js
 
 
 
@@ -60181,7 +61382,7 @@ function newInvariantError(message, ...optionalParams) {
         getFallbackErrorMsg(message, optionalParams));
 }
 // This is duplicated between `@apollo/client/dev` and `@apollo/client/utilities/invariant` to prevent circular references.
-const ApolloErrorMessageHandler = Symbol.for("ApolloErrorMessageHandler_" + (/* inlined export .version */"4.2.12"));
+const ApolloErrorMessageHandler = Symbol.for("ApolloErrorMessageHandler_" + (/* inlined export .version */"4.3.0"));
 function stringify(arg) {
     if (typeof arg == "string") {
         return arg;
@@ -60206,7 +61407,7 @@ function getFallbackErrorMsg(message, messageArgs = []) {
         return messageArgs.reduce((msg, arg) => msg.replace(/%[sdfo]/, stringify(arg)), message);
     }
     return `An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#${encodeURIComponent(JSON.stringify({
-        version: (/* inlined export .version */"4.2.12"),
+        version: (/* inlined export .version */"4.3.0"),
         message,
         args: messageArgs.map(stringify),
     }))}`;
@@ -60215,14 +61416,14 @@ function getFallbackErrorMsg(message, messageArgs = []) {
 
 /***/ },
 
-/***/ 97268
+/***/ 3902
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   b: () => (/* binding */ isNetworkRequestInFlight)
 /* harmony export */ });
 if (/^(250|49|6|748|792|888)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _isNetworkRequestSettled_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(37460);
+	/* harmony import */ var _isNetworkRequestSettled_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(36082);
 }
 
 /**
@@ -60236,7 +61437,7 @@ function isNetworkRequestInFlight(networkStatus) {
 
 /***/ },
 
-/***/ 37460
+/***/ 36082
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -66079,7 +67280,7 @@ function handleInfinity(str, num, options) {
 // EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.11.1/node_modules/fast-xml-parser/src/ignoreAttributes.js
 var ignoreAttributes = __webpack_require__(78230);
 // EXTERNAL MODULE: ./node_modules/.pnpm/path-expression-matcher@1.6.2/node_modules/path-expression-matcher/src/Matcher.js
-var Matcher = __webpack_require__(75756);
+var Matcher = __webpack_require__(53375);
 // EXTERNAL MODULE: ./node_modules/.pnpm/path-expression-matcher@1.6.2/node_modules/path-expression-matcher/src/Expression.js
 var Expression = __webpack_require__(34810);
 // EXTERNAL MODULE: ./node_modules/.pnpm/path-expression-matcher@1.6.2/node_modules/path-expression-matcher/src/ExpressionSet.js
@@ -68854,7 +70055,7 @@ const HTML_PATTERNS = (/* runtime-dependent pure expression or super */ /^(245|3
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((/* runtime-dependent pure expression or super */ /^(245|367|390)$/.test(__webpack_require__.j) ? (HTML_PATTERNS) : null));
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, [
-/* harmony export */   "A", 0, /* export default binding */ __WEBPACK_DEFAULT_EXPORT__
+/* harmony export */   "A", 0, __WEBPACK_DEFAULT_EXPORT__
 /* harmony export */ ]);
 
 
@@ -68944,7 +70145,7 @@ const XML_PATTERNS = (/* runtime-dependent pure expression or super */ /^(245|36
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((/* runtime-dependent pure expression or super */ /^(245|367|390)$/.test(__webpack_require__.j) ? (XML_PATTERNS) : null));
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, [
-/* harmony export */   "A", 0, /* export default binding */ __WEBPACK_DEFAULT_EXPORT__
+/* harmony export */   "A", 0, __WEBPACK_DEFAULT_EXPORT__
 /* harmony export */ ]);
 
 
@@ -75020,7 +76221,7 @@ class ExpressionSet {
 
 /***/ },
 
-/***/ 75756
+/***/ 53375
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
