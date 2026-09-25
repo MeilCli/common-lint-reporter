@@ -60,7 +60,7 @@
         "expect": "30.5.1",
         "globals": "17.12.0",
         "jest": "30.5.1",
-        "jest-circus": "30.5.1",
+        "jest-circus": "30.5.2",
         "jest-environment-node": "30.5.1",
         "jest-mock": "30.5.1",
         "prettier": "3.9.7",
