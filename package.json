@@ -63,7 +63,7 @@
         "jest-circus": "30.5.2",
         "jest-environment-node": "30.5.1",
         "jest-mock": "30.5.2",
-        "prettier": "3.9.7",
+        "prettier": "3.9.8",
         "react": "19.3.0",
         "replace-in-files-cli": "4.0.0",
         "ts-jest": "29.4.12",
