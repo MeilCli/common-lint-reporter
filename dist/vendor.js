@@ -61454,14 +61454,14 @@ function isNetworkRequestSettled(networkStatus) {
 
 /***/ },
 
-/***/ 17237
+/***/ 80124
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   A: () => (/* binding */ EntityDecoder)
 /* harmony export */ });
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _entities_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(57181);
+	/* harmony import */ var _entities_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(77746);
 }
 // ---------------------------------------------------------------------------
 // Built-in named entity map  (name → replacement string)
@@ -62114,7 +62114,7 @@ class EntityDecoder {
 
 /***/ },
 
-/***/ 57181
+/***/ 77746
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* unused harmony exports BASIC_LATIN, LATIN_ACCENTS, LATIN_EXTENDED, GREEK, CYRILLIC, MATH, MATH_ADVANCED, ARROWS, SHAPES, PUNCTUATION, FRACTIONS, MISC_SYMBOLS */
@@ -65197,7 +65197,7 @@ function removeHook(state, name, method) {
 
 /***/ },
 
-/***/ 78230
+/***/ 41879
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -65224,7 +65224,7 @@ function getIgnoreAttributesFn(ignoreAttributes) {
 
 /***/ },
 
-/***/ 42577
+/***/ 97804
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -65302,14 +65302,14 @@ const criticalProperties = (/* runtime-dependent pure expression or super */ /^(
 
 /***/ },
 
-/***/ 81151
+/***/ 34772
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   t: () => (/* binding */ validate)
 /* harmony export */ });
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(42577);
+	/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(97804);
 }
 
 
@@ -65832,7 +65832,7 @@ function getPositionFromMatch(match) {
 
 /***/ },
 
-/***/ 77788
+/***/ 21657
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 
@@ -66224,7 +66224,7 @@ const sanitize = (str, production = 'name', { replacement = '_', asciiOnly = fal
 
   return result || replacement;
 };
-;// ./node_modules/.pnpm/fast-xml-parser@5.11.1/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js
+;// ./node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js
 
 
 class DocTypeReader {
@@ -66654,12 +66654,12 @@ function validateEntityName(name, xmlVersion) {
 
 /***/ },
 
-/***/ 42415
+/***/ 69642
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* unused harmony export defaultOptions */
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(42577);
+	/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(97804);
 }
 
 
@@ -66832,7 +66832,7 @@ const buildOptions = function (options) {
 
 /***/ },
 
-/***/ 37731
+/***/ 94048
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 
@@ -66841,12 +66841,12 @@ __webpack_require__.d(__webpack_exports__, {
   A: () => (/* binding */ OrderedObjParser)
 });
 
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.11.1/node_modules/fast-xml-parser/src/util.js
-var util = __webpack_require__(42577);
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.11.1/node_modules/fast-xml-parser/src/xmlparser/xmlNode.js
-var xmlNode = __webpack_require__(47101);
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.11.1/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js + 1 modules
-var DocTypeReader = __webpack_require__(77788);
+// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/util.js
+var util = __webpack_require__(97804);
+// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/xmlparser/xmlNode.js
+var xmlNode = __webpack_require__(80434);
+// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js + 1 modules
+var DocTypeReader = __webpack_require__(21657);
 ;// ./node_modules/.pnpm/anynum@1.0.1/node_modules/anynum/digitTable.js
 /**
  * Flat lookup table: maps Unicode code point → ASCII digit (0-9).
@@ -67277,25 +67277,25 @@ function handleInfinity(str, num, options) {
             return str; // Return original string like "1e1000"
     }
 }
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.11.1/node_modules/fast-xml-parser/src/ignoreAttributes.js
-var ignoreAttributes = __webpack_require__(78230);
+// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/ignoreAttributes.js
+var ignoreAttributes = __webpack_require__(41879);
 // EXTERNAL MODULE: ./node_modules/.pnpm/path-expression-matcher@1.6.2/node_modules/path-expression-matcher/src/Matcher.js
 var Matcher = __webpack_require__(75756);
 // EXTERNAL MODULE: ./node_modules/.pnpm/path-expression-matcher@1.6.2/node_modules/path-expression-matcher/src/Expression.js
 var Expression = __webpack_require__(34810);
 // EXTERNAL MODULE: ./node_modules/.pnpm/path-expression-matcher@1.6.2/node_modules/path-expression-matcher/src/ExpressionSet.js
 var ExpressionSet = __webpack_require__(61404);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@nodable+entities@3.0.0/node_modules/@nodable/entities/src/entities.js
-var entities = __webpack_require__(57181);
-// EXTERNAL MODULE: ./node_modules/.pnpm/@nodable+entities@3.0.0/node_modules/@nodable/entities/src/EntityDecoder.js
-var EntityDecoder = __webpack_require__(17237);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@nodable+entities@3.1.0/node_modules/@nodable/entities/src/entities.js
+var entities = __webpack_require__(77746);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@nodable+entities@3.1.0/node_modules/@nodable/entities/src/EntityDecoder.js
+var EntityDecoder = __webpack_require__(80124);
 // EXTERNAL MODULE: ./node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/index.js + 7 modules
 var src = __webpack_require__(66309);
 // EXTERNAL MODULE: ./node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/html.js
 var html = __webpack_require__(84479);
 // EXTERNAL MODULE: ./node_modules/.pnpm/is-unsafe@2.0.2/node_modules/is-unsafe/src/contexts/xml.js
 var xml = __webpack_require__(82161);
-;// ./node_modules/.pnpm/fast-xml-parser@5.11.1/node_modules/fast-xml-parser/src/xmlparser/OrderedObjParser.js
+;// ./node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/xmlparser/OrderedObjParser.js
 
 ///@ts-check
 
@@ -68170,27 +68170,28 @@ function sanitizeName(name, options) {
 
 /***/ },
 
-/***/ 44842
+/***/ 56321
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   A: () => (/* binding */ XMLParser)
 /* harmony export */ });
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _OptionsBuilder_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(42415);
+	/* harmony import */ var _OptionsBuilder_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(69642);
 }
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _OrderedObjParser_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(37731);
+	/* harmony import */ var _OrderedObjParser_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(94048);
 }
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _node2json_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(74472);
+	/* harmony import */ var _node2json_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(35123);
 }
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _validator_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(81151);
+	/* harmony import */ var _validator_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(34772);
 }
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _xmlNode_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(47101);
+	/* harmony import */ var _xmlNode_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(80434);
 }
+/* global Uint8Array */
 
 
 
@@ -68211,7 +68212,12 @@ class XMLParser {
      */
     parse(xmlData, validationOption) {
         if (typeof xmlData !== "string" && xmlData.toString) {
-            xmlData = xmlData.toString();
+            if (xmlData instanceof Uint8Array &&
+                !(typeof Buffer !== "undefined" && Buffer.isBuffer(xmlData))) {
+                xmlData = new TextDecoder("utf-8", { ignoreBOM: true }).decode(xmlData);
+            } else {
+                xmlData = xmlData.toString();
+            }
         } else if (typeof xmlData !== "string") {
             throw new Error("XML data is accepted in String or Bytes[] form.")
         }
@@ -68265,13 +68271,13 @@ class XMLParser {
 
 /***/ },
 
-/***/ 74472
+/***/ 35123
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   A: () => (/* binding */ prettify)
 /* harmony export */ });
-/* harmony import */ var _xmlNode_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(47101);
+/* harmony import */ var _xmlNode_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(80434);
 
 
 
@@ -68452,7 +68458,7 @@ function isLeafTag(obj, options) {
 
 /***/ },
 
-/***/ 47101
+/***/ 80434
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
