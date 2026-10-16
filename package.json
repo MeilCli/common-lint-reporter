@@ -40,7 +40,7 @@
         "@eslint/eslintrc": "3.3.7",
         "@eslint/js": "10.0.1",
         "@graphql-codegen/cli": "7.4.5",
-        "@graphql-codegen/typescript": "6.1.1",
+        "@graphql-codegen/typescript": "6.1.2",
         "@graphql-codegen/typescript-document-nodes": "6.1.1",
         "@graphql-codegen/typescript-operations": "6.1.10",
         "@graphql-codegen/typescript-resolvers": "6.1.1",
