@@ -15,7 +15,7 @@ import { createRequire as __WEBPACK_EXTERNAL_createRequire } from "node:module";
 const __WEBPACK_EXTERNAL_createRequire_require = __WEBPACK_EXTERNAL_createRequire(import.meta.url);
 /******/ var __webpack_modules__ = ({
 
-/***/ 37458
+/***/ 36799
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 
@@ -27,7 +27,7 @@ __webpack_require__.d(__webpack_exports__, {
 // EXTERNAL MODULE: ./node_modules/.pnpm/@actions+core@3.0.1/node_modules/@actions/core/lib/core.js + 13 modules
 var core = __webpack_require__(22989);
 // EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.11.2/node_modules/fast-xml-parser/src/xmlparser/XMLParser.js
-var XMLParser = __webpack_require__(56321);
+var XMLParser = /*#__PURE__*/__webpack_require__(56321);
 // EXTERNAL MODULE: ./node_modules/.pnpm/he@1.2.0/node_modules/he/he.js
 var he = __webpack_require__(12953);
 var he_default = /*#__PURE__*/__webpack_require__.n(he);
@@ -1013,7 +1013,7 @@ module.exports = __WEBPACK_EXTERNAL_createRequire_require("util");
 /******/ // startup
 /******/ // Load entry module and return exports
 /******/ // This entry module depends on other loaded chunks and execution need to be delayed
-/******/ let __webpack_exports__ = __webpack_require__.O(undefined, [121], () => (__webpack_require__(37458)))
+/******/ let __webpack_exports__ = __webpack_require__.O(undefined, [121], () => (__webpack_require__(36799)))
 /******/ __webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ const __webpack_exports__JunitTransformer = __webpack_exports__.Q;
 /******/ export { __webpack_exports__JunitTransformer as JunitTransformer };
