@@ -33,8 +33,8 @@ importers:
         specifier: 6.4.1
         version: 6.4.1(graphql@16.14.2)(ws@8.22.0)
       he:
-        specifier: 1.2.0
-        version: 1.2.0
+        specifier: 2.0.0
+        version: 2.0.0
     devDependencies:
       '@eslint/eslintrc':
         specifier: 3.3.7
@@ -2249,8 +2249,9 @@ packages:
     resolution: {integrity: sha512-iZyKG96/JwPz1N55vj2Ie2vXbhu440zfUfJvSwEqEbeLluk7NnapfGqa7LH0mOsnDxTF85Mx8/dyR6HfqcbmbQ==}
     engines: {node: '>=20'}
 
-  he@1.2.0:
-    resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
+  he@2.0.0:
+    resolution: {integrity: sha512-0jE+JPv08nhXWmI1dULybzqNt34RbkH6Ul6V4cmDONpjYx1SfyObKF38FJLaJ1K7WWD93LWL9lewzk4E1Ria4A==}
+    engines: {node: '>=22'}
     hasBin: true
 
   hookified@1.15.1:
@@ -5927,7 +5928,7 @@ snapshots:
     dependencies:
       hookified: 1.15.1
 
-  he@1.2.0: {}
+  he@2.0.0: {}
 
   hookified@1.15.1: {}
 
