@@ -65291,7 +65291,7 @@ function removeHook(state, name, method) {
 
 /***/ },
 
-/***/ 22320
+/***/ 10771
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -65318,7 +65318,7 @@ function getIgnoreAttributesFn(ignoreAttributes) {
 
 /***/ },
 
-/***/ 45983
+/***/ 14552
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
@@ -65396,14 +65396,14 @@ const criticalProperties = (/* runtime-dependent pure expression or super */ /^(
 
 /***/ },
 
-/***/ 24917
+/***/ 51400
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   t: () => (/* binding */ validate)
 /* harmony export */ });
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = /*#__PURE__*/__webpack_require__(45983);
+	/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = /*#__PURE__*/__webpack_require__(14552);
 }
 
 
@@ -65728,9 +65728,9 @@ function readAttributeStr(xmlData, i) {
  * and moving to the next starting position — one full backtrack per
  * position, which is quadratic in the length of the run.
  *
- * A single forward-only scan can never backtrack, so it can't be made slow
- * this way no matter how much whitespace the input contains — it's always
- * proportional to the length of the string, once.
+ * The scan is forward-only: the cursor never moves backwards, so each
+ * character is visited a constant number of times and the cost is linear
+ * in the length of the string.
  *
  * Each returned token mirrors the shape the old regex match array had, so
  * the validation logic below (which reads token[1]..token[6]) didn't need
@@ -65762,8 +65762,7 @@ function scanAttributeTokens(attrStr) {
 
     if (attrStr[i] === '=') {
       // No name before this '=' — not a valid attribute start. Move past
-      // just this one character and try again from the next position.
-      i = tokenStart + 1;
+      i++;
       continue;
     }
 
@@ -65926,7 +65925,7 @@ function getPositionFromMatch(match) {
 
 /***/ },
 
-/***/ 22630
+/***/ 52997
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 
@@ -66318,7 +66317,7 @@ const sanitize = (str, production = 'name', { replacement = '_', asciiOnly = fal
 
   return result || replacement;
 };
-;// ./node_modules/.pnpm/fast-xml-parser@5.12.0/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js
+;// ./node_modules/.pnpm/fast-xml-parser@5.12.1/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js
 
 
 class DocTypeReader {
@@ -66748,12 +66747,12 @@ function validateEntityName(name, xmlVersion) {
 
 /***/ },
 
-/***/ 89677
+/***/ 42958
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* unused harmony export defaultOptions */
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = /*#__PURE__*/__webpack_require__(45983);
+	/* harmony import */ var _util_js__WEBPACK_IMPORTED_MODULE_0__ = /*#__PURE__*/__webpack_require__(14552);
 }
 
 
@@ -66926,7 +66925,7 @@ const buildOptions = function (options) {
 
 /***/ },
 
-/***/ 14539
+/***/ 44542
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 
@@ -66935,12 +66934,12 @@ __webpack_require__.d(__webpack_exports__, {
   A: () => (/* binding */ OrderedObjParser)
 });
 
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.12.0/node_modules/fast-xml-parser/src/util.js
-var util = /*#__PURE__*/__webpack_require__(45983);
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.12.0/node_modules/fast-xml-parser/src/xmlparser/xmlNode.js
-var xmlNode = /*#__PURE__*/__webpack_require__(74335);
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.12.0/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js + 1 modules
-var DocTypeReader = /*#__PURE__*/__webpack_require__(22630);
+// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.12.1/node_modules/fast-xml-parser/src/util.js
+var util = /*#__PURE__*/__webpack_require__(14552);
+// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.12.1/node_modules/fast-xml-parser/src/xmlparser/xmlNode.js
+var xmlNode = /*#__PURE__*/__webpack_require__(3470);
+// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.12.1/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js + 1 modules
+var DocTypeReader = /*#__PURE__*/__webpack_require__(52997);
 ;// ./node_modules/.pnpm/anynum@1.0.1/node_modules/anynum/digitTable.js
 /**
  * Flat lookup table: maps Unicode code point → ASCII digit (0-9).
@@ -67373,8 +67372,8 @@ function handleInfinity(str, num, options) {
     }
 }
 
-// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.12.0/node_modules/fast-xml-parser/src/ignoreAttributes.js
-var ignoreAttributes = /*#__PURE__*/__webpack_require__(22320);
+// EXTERNAL MODULE: ./node_modules/.pnpm/fast-xml-parser@5.12.1/node_modules/fast-xml-parser/src/ignoreAttributes.js
+var ignoreAttributes = /*#__PURE__*/__webpack_require__(10771);
 // EXTERNAL MODULE: ./node_modules/.pnpm/path-expression-matcher@1.6.2/node_modules/path-expression-matcher/src/Matcher.js
 var Matcher = /*#__PURE__*/__webpack_require__(75756);
 // EXTERNAL MODULE: ./node_modules/.pnpm/path-expression-matcher@1.6.2/node_modules/path-expression-matcher/src/Expression.js
@@ -67391,7 +67390,7 @@ var src = /*#__PURE__*/__webpack_require__(38918);
 var html = /*#__PURE__*/__webpack_require__(47198);
 // EXTERNAL MODULE: ./node_modules/.pnpm/is-unsafe@2.0.3/node_modules/is-unsafe/src/contexts/xml.js
 var xml = /*#__PURE__*/__webpack_require__(89018);
-;// ./node_modules/.pnpm/fast-xml-parser@5.12.0/node_modules/fast-xml-parser/src/xmlparser/OrderedObjParser.js
+;// ./node_modules/.pnpm/fast-xml-parser@5.12.1/node_modules/fast-xml-parser/src/xmlparser/OrderedObjParser.js
 
 ///@ts-check
 
@@ -67590,7 +67589,14 @@ function resolveNameSpace(tagname) {
 
 //TODO: change regex to capture NS
 //const attrsRegx = new RegExp("([\\w\\-\\.\\:]+)\\s*=\\s*(['\"])((.|\n)*?)\\2","gm");
-const attrsRegx = new RegExp('([^\\s=]+)\\s*(=\\s*([\'"])([\\s\\S]*?)\\3)?', 'gm');
+// The value is matched with a negated class per quote type rather than a lazy `[\s\S]*?` up to a
+// backreference, which is much slower on long values (SVG paths, data URIs)
+const attrsRegx = /([^\s=]+)\s*(=\s*(?:"([^"]*)"|'([^']*)'))?/gm;
+
+// value inside double quotes, or inside single quotes, or undefined when there is no value
+function attrValue(match) {
+  return match[3] !== undefined ? match[3] : match[4];
+}
 
 function buildAttributesMap(attrStr, jPath, tagName, force = false) {
   const options = this.options;
@@ -67610,7 +67616,7 @@ function buildAttributesMap(attrStr, jPath, tagName, force = false) {
 
     for (let i = 0; i < len; i++) {
       const attrName = this.resolveNameSpace(matches[i][1]);
-      const oldVal = matches[i][4];
+      const oldVal = attrValue(matches[i]);
 
       if (attrName.length && oldVal !== undefined) {
         let val = oldVal;
@@ -67646,7 +67652,7 @@ function buildAttributesMap(attrStr, jPath, tagName, force = false) {
         }
         aName = sanitizeName(aName, options);
 
-        if (matches[i][4] !== undefined) {
+        if (attrValue(matches[i]) !== undefined) {
           // Reuse already-processed value — no double entity replacement
           const oldVal = processedVals[i];
 
@@ -68101,7 +68107,6 @@ function isItStopNode() {
 function tagExpWithClosingIndex(xmlData, i, closingChar = ">") {
   //TODO: ignore boolean attributes in tag expression
   //TODO: if ignore attributes, dont read full attribute expression but the end. But read for xml declaration
-  let attrBoundary = 0;
   const len = xmlData.length;
   const closeCode0 = closingChar.charCodeAt(0);
   const closeCode1 = closingChar.length > 1 ? closingChar.charCodeAt(1) : -1;
@@ -68112,10 +68117,10 @@ function tagExpWithClosingIndex(xmlData, i, closingChar = ">") {
   for (let index = i; index < len; index++) {
     const code = xmlData.charCodeAt(index);
 
-    if (attrBoundary) {
-      if (code === attrBoundary) attrBoundary = 0;
-    } else if (code === 34 || code === 39) { // " or '
-      attrBoundary = code;
+    if (code === 34 || code === 39) { // " or '
+      // Skip the quoted value in one step: nothing inside it can close the tag
+      index = xmlData.indexOf(xmlData[index], index + 1);
+      if (index === -1) return;
     } else if (code === closeCode0) {
       if (closeCode1 !== -1) {
         if (xmlData.charCodeAt(index + 1) === closeCode1) {
@@ -68126,7 +68131,7 @@ function tagExpWithClosingIndex(xmlData, i, closingChar = ">") {
         result += xmlData.substring(segmentStart, index);
         return { data: result, index };
       }
-    } else if (code === 9 && !attrBoundary) { // \t - only replace with space outside attribute values
+    } else if (code === 9) { // \t - only replace with space outside attribute values
       // Flush accumulated segment, add space, start new segment
       result += xmlData.substring(segmentStart, index) + ' ';
       segmentStart = index + 1;
@@ -68302,26 +68307,26 @@ function sanitizeName(name, options) {
 
 /***/ },
 
-/***/ 47184
+/***/ 95109
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   A: () => (/* binding */ XMLParser)
 /* harmony export */ });
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _OptionsBuilder_js__WEBPACK_IMPORTED_MODULE_0__ = /*#__PURE__*/__webpack_require__(89677);
+	/* harmony import */ var _OptionsBuilder_js__WEBPACK_IMPORTED_MODULE_0__ = /*#__PURE__*/__webpack_require__(42958);
 }
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _OrderedObjParser_js__WEBPACK_IMPORTED_MODULE_1__ = /*#__PURE__*/__webpack_require__(14539);
+	/* harmony import */ var _OrderedObjParser_js__WEBPACK_IMPORTED_MODULE_1__ = /*#__PURE__*/__webpack_require__(44542);
 }
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _node2json_js__WEBPACK_IMPORTED_MODULE_2__ = /*#__PURE__*/__webpack_require__(89934);
+	/* harmony import */ var _node2json_js__WEBPACK_IMPORTED_MODULE_2__ = /*#__PURE__*/__webpack_require__(21519);
 }
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _validator_js__WEBPACK_IMPORTED_MODULE_3__ = /*#__PURE__*/__webpack_require__(24917);
+	/* harmony import */ var _validator_js__WEBPACK_IMPORTED_MODULE_3__ = /*#__PURE__*/__webpack_require__(51400);
 }
 if (/^(245|367|390)$/.test(__webpack_require__.j)) {
-	/* harmony import */ var _xmlNode_js__WEBPACK_IMPORTED_MODULE_4__ = /*#__PURE__*/__webpack_require__(74335);
+	/* harmony import */ var _xmlNode_js__WEBPACK_IMPORTED_MODULE_4__ = /*#__PURE__*/__webpack_require__(3470);
 }
 /* global Uint8Array */
 
@@ -68403,13 +68408,13 @@ class XMLParser {
 
 /***/ },
 
-/***/ 89934
+/***/ 21519
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   A: () => (/* binding */ prettify)
 /* harmony export */ });
-/* harmony import */ var _xmlNode_js__WEBPACK_IMPORTED_MODULE_0__ = /*#__PURE__*/__webpack_require__(74335);
+/* harmony import */ var _xmlNode_js__WEBPACK_IMPORTED_MODULE_0__ = /*#__PURE__*/__webpack_require__(3470);
 
 
 
@@ -68590,7 +68595,7 @@ function isLeafTag(obj, options) {
 
 /***/ },
 
-/***/ 74335
+/***/ 3470
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
